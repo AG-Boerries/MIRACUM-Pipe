@@ -114,7 +114,10 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   current_sig_df <- AlexCosmicValid_sig_df
   current_sigInd_df <- AlexCosmicValid_sigInd_df
   
-  
+  chromosomes <- c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7",
+                   "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
+                   "chr15", "chr16", "chr17", "chr18", "chr19", "chr20",
+                   "chr21", "chr22", "chrX", "chrY")
   ########
   # MAIN #
   ########
@@ -134,20 +137,27 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                             POS = start(mutations.coding),
                             REF = as.character(mutations.coding$REF),
                             ALT = as.character(unlist(mutations.coding$ALT)),
-                            Type = as.character(mutations.coding$CONSEQUENCE))
+                            Type = as.character(mutations.coding$CONSEQUENCE),
+                            FILT = as.character(mutations.coding$FILTER))
     mutations <- mutations[!mutations$Type == "synonymous", ]
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
-  }
-  else {  
+  } else {  
     mutations <- data.frame(CHROM = as.character(seqnames(sample.vcf)),
                             POS = start(sample.vcf),
                             REF = as.character(ref(sample.vcf)),
-                            ALT = as.character(unlist(alt(sample.vcf))))
+                            ALT = as.character(unlist(alt(sample.vcf))),
+                            FILT = as.character(filt(sample.vcf)))
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
   }
-
+  
+  idx <- which (mutations$CHROM %in% chromosomes)
+  mutations <- mutations[idx, ]
+  idx <- which (mutations$FILT == "PASS")
+  mutations <- mutations[idx, ]
+  
+  
   df <- mutations[(mutations$REF %in% DNA_BASES
                    & mutations$ALT %in% DNA_BASES), ]
 
