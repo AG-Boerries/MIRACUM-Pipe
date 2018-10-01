@@ -148,7 +148,7 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 <<eval=TRUE, results='tex', echo=FALSE>>=
 tmp <- read.delim('MutationTable.txt')
 colnames(tmp) <- c("Mutationstype", "Number of exonic", "Zygosity", "TS", "OG", "HS")
-kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = 8)
+kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = 12)
 n_s <- sum(tmp[c(1:2, 4:5), 2])
 n_l <- sum(tmp[c(3,6), 2])
 n_a <- n_s + n_l
@@ -166,7 +166,7 @@ if(dim(tmp)[1]!=0){
 tmp <- tmp[,c("Gene.refGene","GeneName","is_tumorsuppressor", "is_oncogene", "is_hotspot")]
 colnames(tmp) <- c('Symbol', 'Gene Name','TSG', 'OG', "HS")
 kable(tmp, format = "latex", caption = "Tumorsuppressoren und Onkogene - Überblick", booktabs = T, longtable = T,
-      digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(c(1, 3:5), width = "5em") %>% column_spec(2, width = "20em")
+      digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 8) %>% column_spec(c(1, 3:5), width = "5em") %>% column_spec(2, width = "20em")
   }else{print("No Tumorsuppressors or Oncogenes!")}
 @
 \clearpage
@@ -177,11 +177,11 @@ kable(tmp, format = "latex", caption = "Tumorsuppressoren und Onkogene - Überbl
 <<echo=FALSE, results='tex', eval=TRUE>>=
 tmp <- mutation_analysis_result$ts_og
 if(dim(tmp)[1]!=0){
-  colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF', 'Zygosity', 'Reads', 'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel','CLINSIG','COSMIC')
+  colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF', 'Zygosity', 'Reads', 'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
   tmp$MAF <- format(tmp$MAF,digits=3, scientific = TRUE)
   tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
   tmp$COSMIC <- gsub(",", ", ", tmp$COSMIC)
-  kable(tmp[,c(1:15)], format = "latex", caption = "Tumorsuppressoren und Onkogene", booktabs = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 8) %>% column_spec(c(1:4,11), width = "6em") %>% column_spec(c(5:10, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
+  kable(tmp[,c(1:16)], format = "latex", caption = "Tumorsuppressoren und Onkogene", booktabs = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 8) %>% column_spec(c(2:4,10:11), width = "6em") %>% column_spec(c(1,5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
 }else {print("No Tumorsuppressors or Oncogenes!")}
 @
 \clearpage
@@ -197,8 +197,8 @@ if(dim(tmp)[1]!=0){
   tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
   tmp$COSMIC <- gsub("," , ", ", tmp$COSMIC)
   if(dim(tmp)[1]>20){
-    kable(tmp[c(1:20),c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,11), width = "6em") %>% column_spec(c(5:10, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)} else{
-     kable(tmp[ ,c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,11), width = "6em") %>% column_spec(c(5:10, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
+    kable(tmp[c(1:20),c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,10:11), width = "6em") %>% column_spec(c(5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)} else{
+     kable(tmp[ ,c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,10:11), width = "6em") %>% column_spec(c(5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
     }
 }else {print("No somatic mutations!")}
 @
@@ -242,13 +242,13 @@ if(dim(mutation_analysis_result$consensus)[1] >= 20){
   tmp <- mutation_analysis_result$consensus[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val","Symbol")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol')
+  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol', fixed=TRUE)
   kable(tmp, format = "latex", caption = 'Ergebnisse Consensus Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 10) %>% column_spec(6, width = "10em")
 } else {
   tmp <- mutation_analysis_result$consensus[1:dim(mutation_analysis_result$consensus)[1],c("Term","Count", "Size", "p-value", "adj.P.Val","Symbol")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol')
+  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol', fixed=TRUE)
   kable(tmp, format = "latex", caption = 'Ergebnisse Consensus Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 10) %>% column_spec(6, width = "10em")
 }
 @

@@ -140,15 +140,15 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   
       x <- x.condel[, c(idx, idx2)]
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      return(list(Table = x, tmb = tmb))
+      return(list(table = x, tmb = tmb))
     } else if (mode == "N" | mode == "T") {
       print("No SNVs passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      return(list(Table = x, tmb = tmb))
+      return(list(table = x, tmb = tmb))
     } else if (mode == "LOH"){
       print("No LOH passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      return(list(Table = x, tmb = tmb))
+      return(list(table = x, tmb = tmb))
     }
   }
 }

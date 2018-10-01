@@ -77,14 +77,18 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   id_ex <- which(x_somatic$Func.refGene == "exonic")
   x_s <- x_somatic[id_ex, ]
   no_loh <- FALSE
-  print(x_loh)
   if (is.null(x_loh)){
     no_loh <- TRUE
   }
   if (!no_loh){
     x_loh$Func.refGene <- as.character(x_loh$Func.refGene)
     id_ex <- which(x_loh$Func.refGene == "exonic")
-    x_l <- x_loh[id_ex, ]
+    if (length(id_ex) == 0) {
+      x_l <- NULL
+      no_loh <- TRUE
+    } else {
+      x_l <- x_loh[id_ex, ]
+    }
   }
 # split lists into sublists
   sub_lst <- div(x_s, x_l, no_loh)
@@ -102,12 +106,14 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   }
 
 # produce circos plot
-  cc <- circos_colors(sub_lst$x_s_snp, sub_lst$x_s_indel, sub_lst$x_l_snp,
-                      sub_lst$x_l_indel, sub_lst$no_loh,
-                      sub_lst$no_indel_somatic, sub_lst$no_snp,
-                      sub_lst$no_indel_loh)
-  omicCircosUni(cc$map_mat, label = NULL, 125, outfile_circos,
-                circosColors = cc$circoscolors)
+  cc <- circos_colors(x_s_snp = sub_lst$x_s_snp, x_s_indel = sub_lst$x_s_indel,
+                      x_l_snp = sub_lst$x_l_snp,
+                      x_l_indel = sub_lst$x_l_indel, no_loh = sub_lst$no_loh,
+                      no_indel_somatic = sub_lst$no_indel_somatic,
+                      no_snp = sub_lst$no_snp,
+                      no_indel_loh = sub_lst$no_indel_loh)
+  omicCircosUni(listOfMap = as.matrix(cc$map_mat), label = NULL, 125,
+                outfile_circos, circosColors = as.vector(cc$circoscolors))
  # Pathway-Analysis
   prep <- prep_pwa(targets, all_mut$mut)
   result_go <- get_terms(go.bp, outfile_go, prep$de_genes, prep$universe)

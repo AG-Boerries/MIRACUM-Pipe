@@ -125,8 +125,8 @@ filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            path_data = path_data, path_script = path_script,
                            sureselect = sureselect, mode = "LOH")
 # Analysis
-mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$Table,
-                                              somatic = filt_result_td$Table,
+mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
+                                              somatic = filt_result_td$table,
                                               tumbu = filt_result_td$tmb,
                                               outfile_circos = outfile_circos,
                                               outfile_go = outfile_go,

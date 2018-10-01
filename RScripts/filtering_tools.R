@@ -22,7 +22,6 @@ tumbu <- function(x, sureselect){
     tmb <- nrow(x) / 75
   }
   tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
-  print(tm)
   return(tmb)
 }
 
@@ -211,8 +210,8 @@ ishs <- function(x, dbfile){
     if (length(idh_ret) > 0){
       idh <- idh[idh_ret]
       aachange <- hotspot[idh_ret]
-      if (length(idx != 0)){
-        x$is_hotspot[idx] <- aachange
+      if (length(idh != 0)){
+        x$is_hotspot[idh] <- aachange
       }
     }
   }

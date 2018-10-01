@@ -121,15 +121,12 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   ########
   # MAIN #
   ########
-  
   if(is.null(sample_name)){
     sam_na <- unlist(strsplit(vcf_file, "/", fixed = TRUE))
     sample_name <- unlist(strsplit(sam_na[length(sam_na)], ".", fixed = T))[1]
   }
-  
   ## load vcf Files
   sample.vcf <- readVcf(vcf_file,"hg19")
-  
   ## create data.frame from mutations
   if(only_coding == TRUE){
     mutations.coding <- predictCoding(sample.vcf, txdb, seqSource = Hsapiens)
@@ -138,7 +135,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                             REF = as.character(mutations.coding$REF),
                             ALT = as.character(unlist(mutations.coding$ALT)),
                             Type = as.character(mutations.coding$CONSEQUENCE),
-                            FILT = as.character(mutations.coding$FILTER))
+                            FILT = fixed(sample.vcf)[, "FILTER"])
     mutations <- mutations[!mutations$Type == "synonymous", ]
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
@@ -147,11 +144,10 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                             POS = start(sample.vcf),
                             REF = as.character(ref(sample.vcf)),
                             ALT = as.character(unlist(alt(sample.vcf))),
-                            FILT = as.character(filt(sample.vcf)))
+                            FILT = fixed(sample.vcf)[, "FILTER"])
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
   }
-  
   idx <- which (mutations$CHROM %in% chromosomes)
   mutations <- mutations[idx, ]
   idx <- which (mutations$FILT == "PASS")
@@ -190,7 +186,6 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   write.xlsx(output, paste0(sample_name, "_Mutation_Signature_cutoff_",
              cutoffPerc, "Percent.xlsx"), rowNames = T, firstRow = T,
              headerStyle = createStyle(textDecoration = 'bold'))
-
   return(list(CosmicValid_cutoffGen_LCDlist = CosmicValid_cutoffGen_LCDlist,
               mutationCataloge = mutCat_df))
 }

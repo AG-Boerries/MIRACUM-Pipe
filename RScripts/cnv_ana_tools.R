@@ -244,13 +244,13 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
       x$genes[i] <- paste(query2, collapse = ",")
       
       # Test for Tumor Suppressors
-      id.ts <- ts$V1 %in% query2
+      id.ts <- which(ts$Hugo.Symbol %in% query2)
       if(sum(id.ts) > 0) {
-        x$TumorSuppressor[i] <- paste(ts$V1[id.ts], collapse = ",")
+        x$TumorSuppressor[i] <- paste(ts$Hugo.Symbol[id.ts], collapse = ",")
       }
-      id.onc <- onc$V1 %in% query2
+      id.onc <- which(onc$Hugo.Symbol %in% query2)
       if(sum(id.onc) > 0) {
-        x$Oncogene[i] <- paste(onc$V1[id.onc], collapse = ",")
+        x$Oncogene[i] <- paste(onc$Hugo.Symbol[id.onc], collapse = ",")
       }
       x$Length[i] <- x$end[i] - x$start[i]
     } else {
@@ -374,13 +374,13 @@ cnv_dna_damage<- function(input, outfile_dna_damage, db){
   #' @details Genes with CNVs could play a role in the DNA Damage Response
   #' @details pathway. This function extracts these genes and stores them
   #' @details in the output file.
-  dnad <- read.delim(db, header=FALSE, sep="\t", colClasses = "character")
+  dnad <- read.delim(db, header = FALSE, sep = "\t", colClasses = "character")
   idx <- which (input$Gene %in% dnad$V1)
   l <-  list()
   gene <- input$Gene[idx]
   copynumber <- input$CopyNumber[idx]
   status <- input$Status[idx]
   l <- cbind(gene, copynumber, status)
-  write.xlsx(l, outfile_dna_damage, row.names = FALSE, col.names = TRUE)
+  write.xlsx(l, file = outfile_dna_damage, row.names = FALSE, col.names = TRUE)
   return(l)
 }

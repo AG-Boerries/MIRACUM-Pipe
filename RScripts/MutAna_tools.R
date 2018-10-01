@@ -215,6 +215,8 @@ tables <- function(x_s, x_l = NULL){
                      "is_hotspot", "target", "gnomAD_exome_NFE",
                      "CADD13_PHRED", "condel.label", "CLINSIG.SnpEff",
                      "cosmic84_coding"), drop = FALSE]
+  write.xlsx(sm_table, file = "somaticMutations.xlsx",
+             quote = F, sep = "\t", row.names = F, col.names = T)
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                        "AAChange.SnpEff", "VAF_Normal", "VAF_Tumor",
@@ -222,13 +224,12 @@ tables <- function(x_s, x_l = NULL){
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD13_PHRED", "condel.label",
                        "CLINSIG.SnpEff", "cosmic84_coding"), drop = FALSE]
+    write.xlsx(lm_table, file = "lohMutations.xlsx",
+               quote = F, sep = "\t", row.names = F, col.names = T)
   }else{
-    lm_table <- x_l
+    lm_table <- data.frame()
+    
   }
-  write.xlsx(sm_table, file = "somaticMutations.xlsx",
-             quote = F, sep = "\t", row.names = F, col.names = T)
-  write.xlsx(lm_table, file = "lohMutations.xlsx",
-             quote = F, sep = "\t", row.names = F, col.names = T)
   return(list(ts_og_table = ts_og_table, sm_table = sm_table,
               lm_table = lm_table))
 }
@@ -267,7 +268,8 @@ duplicate_first_raw <- function(mapping_matrix)
   return(new_matrix)
 }
 
-circos_colors <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, no_loh,
+circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL,
+                          x_l_indel = NULL, no_loh,
                           no_indel_somatic, no_snp, no_indel_loh){
   #' Circos Colors
   #'
@@ -455,7 +457,7 @@ write_all_mut <- function(x_s, x_l = NULL){
 
   tmp1 <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                   "Variant_Allele_Frequency", "Variant_Reads",
-                  "AAChange.SnpEff", "CChange.SnpEff", "is_tumorsuppressor",
+                  "AAChange.SnpEff", "is_tumorsuppressor",
                   "is_oncogene", "is_hotspot", "target", "gnomAD_exome_NFE",
                   "CADD13_PHRED", "condel.label", "CLINSIG.SnpEff",
                   "cosmic84_coding"),
@@ -463,7 +465,7 @@ write_all_mut <- function(x_s, x_l = NULL){
   if (!is.null(x_l)){
     tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                     "VAF_Tumor", "Count_Tumor", "AAChange.SnpEff",
-                    "CChange.SnpEff", "is_tumorsuppressor", "is_oncogene",
+                    "is_tumorsuppressor", "is_oncogene",
                     "is_hotspot", "target", "gnomAD_exome_NFE", "CADD13_PHRED",
                     "condel.label", "CLINSIG.SnpEff", "cosmic84_coding"),
                 drop = FALSE]

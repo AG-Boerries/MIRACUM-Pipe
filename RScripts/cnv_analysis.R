@@ -58,7 +58,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
   
   out <- cnv_table(cnvs = cnvs_annotated$CNVsAnnotated)
   ddr <- cnv_dna_damage(input = out, outfile_dna_damage = outfile_dna_damage,
-                        db = paste(path_data,"DNA_Damage_Response.txt",
+                        db = paste(path_data, "DNA_Damage_Response.txt",
                                    sep = "/"))
 return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
        = cnv_analysis_results, out = out, ddr = ddr))
