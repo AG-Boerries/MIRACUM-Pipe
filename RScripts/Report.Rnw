@@ -346,12 +346,12 @@ if(dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
-} else {
+  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
+  } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
 }
 @
 \clearpage
@@ -362,12 +362,12 @@ if(dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
 } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
 }
 @
 \clearpage

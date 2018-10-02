@@ -352,7 +352,7 @@ trgt <- function(x, dbfile){
                    row.names = NULL)
   x$target <- "."
   for (i in 1:nrow(x)){
-    idx <- which(rownames(db)  == x[i, "Gene.refGene"])
+    idx <- which(db$Gene == x[i, "Gene.refGene"])
     if (length(idx)) { 
     x$target[i] <- db$Examples.of.Therapeutic.Agents[idx]
     }
