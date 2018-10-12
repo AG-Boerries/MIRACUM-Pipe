@@ -83,10 +83,10 @@ Requiered environment, tools and databases.
 5. Additional Files
 	* CaptureRegions, e.g. Agilent SureSelect V5UTR according to the used CaptureKit
 	* dbSNP vcf file corresbonding to the one used from ANNOVAR, e.g. snp150hg19.vcf.gz
-	* FLAG genes (included, flag_genes.txt)
+	* FLAG genes (included, flag_genes.txt) (Shyr et al., 2014)
 	* CancerGenes from OncoKB (needed)
 	* Cancer hotspots from cancerhotspots.org (needed)
-	* RVIS score (included, RVIS_score.txt)
+	* RVIS score (included, RVIS_score.txt) (Petrovski S. et al., 2013)
 	* TARGET db (included, TARGET_db.txt)
 	* DGIdb from www.dgidb.org (needed)
 	* Actionable alterations from OncoKB (needed)
@@ -339,11 +339,15 @@ Li, Q. & Wang, K., 2017. InterVar: Clinical Interpretation of Genetic Variants b
 
 Liu, X. et al., 2016. dbNSFP v3.0: A One-Stop Database of Functional Predictions and Annotations for Human Nonsynonymous and Splice-Site SNVs. Human Mutation, 37, 235–241.
 
+Petrovski S. et al., PLoS Genet, 2013
+
 Quinlan, A.R. & Hall, I.M., 2010. BEDTools: A flexible suite of utilities for comparing genomic features. Bioinformatics, 26, 841–842.
 
 Sherry, S.T. et al., 2001. dbSNP: the NCBI database of genetic variation. Nucleic acids research, 29, 308–11.
 
 Sherry, S.T., Ward, M. & Sirotkin, K., 1999. dbSNP-database for single nucleotide polymorphisms and other classes of minor genetic variation. Genome research, 9, 677–9.
+
+Shyr et al., BMC Medical Genomics 2014
 
 Wang, K., Li, M. & Hakonarson, H., 2010. ANNOVAR: functional annotation of genetic variants from high-throughput sequencing data. Nucleic acids research, 38(16), p.e164.
 
