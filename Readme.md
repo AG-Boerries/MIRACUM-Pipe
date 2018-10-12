@@ -87,7 +87,7 @@ Requiered environment, tools and databases.
 	* CancerGenes from OncoKB (needed)
 	* Cancer hotspots from cancerhotspots.org (needed)
 	* RVIS score (included, RVIS_score.txt) (Petrovski S. et al., 2013)
-	* TARGET db (included, TARGET_db.txt)
+	* TARGET db (included, TARGET_db.txt) (https://software.broadinstitute.org/cancer/cga/target)
 	* DGIdb from www.dgidb.org (needed)
 	* Actionable alterations from OncoKB (needed)
 	* Condel score from FannsDB (needed)
