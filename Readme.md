@@ -3,6 +3,9 @@ MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs),
 
 ## Getting Started
 taken from Metzger P. et al. (submitted)
+
+![MIRACUM-Pipe workflow](figure/MIRACUM-Pipe.pdf)
+
 **General:** MIRACUM-Pipe is implemented using a bash script running all necessary programs and R scripts for further annotation and analysis of the results. Therefore, all tools and databases used have to be installed before running MIRACUM-Pipe. Although a default parameter set was established through extensive testing on various patients with different cancer entities and raw qualities, all parameters can be easily adjusted to the users’ needs as described later. The pipeline consists of three major parts, as depicted in Figure 1, namely (1) Alignment and Quality Control, (2) Analysis, Annotation and Interpretation (3) Composing of Results. The analysis part (2) is further divided in three subclasses, a) Coverage, b) Variant Calling and c) Copy Number Variations which were run in parallel.
 
 **Alignment and Quality Control:** After quality control with FastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and adjustment with Trimmomatic (Bolger et al. 2014)), the burros-wheeler aligner (bwa-mem) (Li & Durbin 2010) is used to map the sequencing reads to the reference genome. To obtain more reliable sequence quality scores and alignment results we make use of the Genome Analysis Toolkit (GATK) (McKenna et al. 2010), specifically the tools *BaseRecalibrator*, *RealignerTargetCreator*, *IndelRealigner* and *PrintReads*, and the *FixeMate* function from picard-tools (http://broadinstitute.github.io/picard/).
