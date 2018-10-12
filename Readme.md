@@ -272,7 +272,7 @@ All neccessary informations about the included R-scripts can be found with the *
 The predefined report in Report.rnw contains in line 45 the author name which should be adjusted to the person generating the report.
 
 ## Example
-For testing MIRACUM-Pipe the public available dataset from Texas (http://txcrb.org/data.html and https://www.nature.com/articles/sdata201610). We provide the PDF reports for samples TCRBOA6 and TCRBOA7. Both samples are run with the default parameters.
+For testing MIRACUM-Pipe the public available dataset from Texas (http://txcrb.org/data.html and https://www.nature.com/articles/sdata201610) can be used. We provide the PDF reports for the samples TCRBOA6 and TCRBOA7. Both samples were run with the default parameters.
 
 ## Authors
 
