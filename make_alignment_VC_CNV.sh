@@ -3,7 +3,7 @@
 ## WES Pipeline for somatic and germline ##
 ###########################################
 # script to run the actual analysis
-# Version 05.09.2018
+# Version 08.10.2018
 
 
 case=$1;  # somatic or somaticGermline
@@ -16,7 +16,7 @@ sex=$4;
 
 ## General
 homedata="/path/to/data" # folder contatining the raw data (.fastq files)
-annot="/path/to/annotation" # fodler containing annotation files like captureRegions.bed
+annot="/path/to/annotation" # folder containing annotation files like captureRegions.bed
 motherpath="/path/to/output"
 mtb="${motherpath}/${case}_${num}" # folder containing output
 wes="${mtb}/WES"
@@ -97,19 +97,19 @@ Rscript="${soft}/bin/Rscript"
 
 ### Software Parameters
 # VarScan somatic
-minCoverageNormal="8" #default
-minCoverageTumor="8" #default
-TumorPurity="0.5" # -> I would rather adjust the min-var-freq; tumnor-purity effectively changes (reduces) min-var-freq, i.e. VAF <- tumor-purity * VAF (0.5*0.1=0.05)
-minVarFreq="0.10" # VAF, default
+minCoverageNormal="8" 
+minCoverageTumor="8" 
+TumorPurity="0.5" 
+minVarFreq="0.10" # VAF
 minFreqForHom="0.75" # VAF to call homozygote
 
 # VarScan processSomatic
-minTumorFreq="0.10" # default
+minTumorFreq="0.10" 
 
 # VarScan fpfilter
 minRefBasequal="28"
 minVarBasequal="28"
-minVarCount="4" #default
+minVarCount="4" 
 
 # ANNOVAR Databases
 protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,1000g2015aug_eur,avsnp150,clinvar_20170905,cadd13,intervar_20170202,dbnsfp33a,cosmic84_coding,cosmic84_noncoding'

@@ -2,16 +2,16 @@
 MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs), insertions and deletions (InDels), loss of heterozygosi-ty (LoH), copy number variations (CNVs) as well as quality statistics including the coverage on WES data. Various functional prediction and annotation databases are integrated to automatically annotate the identi-fied variants. The workflow is designed as a fully automated “one-click” solution from the raw sequencing files to the PDF report containing quality assessments, the identified and annotated variants (SNVs, InDels and LoH), copy number variations as well as a functional enrichment of the SNVs and CNVs respectively.
 
 ## Getting Started
-taken from Metzger P. et al., 2018
+taken from Metzger P. et al. (submitted)
 **General:** MIRACUM-Pipe is implemented using a bash script running all necessary programs and R scripts for further annotation and analysis of the results. Therefore, all tools and databases used have to be installed before running MIRACUM-Pipe. Although a default parameter set was established through extensive testing on various patients with different cancer entities and raw qualities, all parameters can be easily adjusted to the users’ needs as described later. The pipeline consists of three major parts, as depicted in Figure 1, namely (1) Alignment and Quality Control, (2) Analysis, Annotation and Interpretation (3) Composing of Results. The analysis part (2) is further divided in three subclasses, a) Coverage, b) Variant Calling and c) Copy Number Variations which were run in parallel.
 
 **Alignment and Quality Control:** After quality control with FastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and adjustment with Trimmomatic (Bolger et al. 2014)), the burros-wheeler aligner (bwa-mem) (Li & Durbin 2010) is used to map the sequencing reads to the reference genome. To obtain more reliable sequence quality scores and alignment results we make use of the Genome Analysis Toolkit (GATK) (McKenna et al. 2010), specifically the tools *BaseRecalibrator*, *RealignerTargetCreator*, *IndelRealigner* and *PrintReads*, and the *FixeMate* function from picard-tools (http://broadinstitute.github.io/picard/).
 
 **Analysis, Annotation and Interpretation:** For somatic variant calling, VarScan2 (Koboldt et al. 2013) is used. In parallel to the variant calling, the coverage is calculated with bedtools (Quinlan & Hall 2010) and the copy number variations are identified with Control-FREEC (Boeva et al. 2012). The identified variants are processed with ANNOVAR (Wang et al. 2010) and therefore annotated with the minor allele frequency (MAF) from gnomAD (Lek et al. 2016), SNP identifiers (dbSNP) (Sherry et al. 2001; Sherry et al. 1999), COSMIC IDs (Forbes et al. 2015), clinically interpreted from ClinVar (Landrum et al. 2014) and InterVar (Li & Wang 2017) and functionally annotated with dbNSFP (Liu et al. 2016). Additionally to the annotation with ANNOVAR, the variants are further annotated with the help of R scripts. First of all, the genes carrying a variant are classified in tumor suppressors or oncogenes according to OncoKB (Chakravarty et al. 2017). Cancer hotspot mutations are marked based on cancer-hotspots.org (Chang et al. 2016; Chang et al. 2017) and possible therapy options are identified from OncoKB (Chakravarty et al. 2017), TARGET (http://archive.broadinstitute.org/cancer/cga/target) and the drug-gene-interaction database (DGIdb) (Cotto et al. 2017).
 
-**Composing of Results:** All identified and annotated variants and copy number variations are automatically composed to a PDF report. The report contains a general overview about the patient’s mutational burden, an overview about the number of SNVs and InDels, both separated for homozygous and heterozygous variants, and LoH. For the PDF report only exonic and variants leading to a protein change with a MAF < 0.1% and a variant allele frequency (VAF) > 10% are considered. The respected thresholds can be adjusted within the pipeline. The variants are further categorized in tumor suppressors, oncogenes and cancer hotspots. The latter are all listed in a table together with the top somatic variants according to VAF. For better understanding of the biological processes affected by the variants, a functional enrichment is calculated on Gene Ontology (GO) terms (Ashburner et al. 2000; Blake et al. 2015), ConsensusPathDB (Kamburov et al. 2012; Kamburov et al. 2013) and Reactome (Fabregat et al. 2018). The signaling pathways with the highest significance are reported. Additionally, the variants are checked against five cancers associated signaling pathways, namely PI3K-AKT-mTOR, RAF-MEK-ERK, DNA Damage Response, Cell Cycle and Tyrosine Kinases that play a role for cancer processes. The pathways were taken from Qiagen (https://www.qiagen.com/). Further, the COSMIC mutational signatures, e.g. BRCAness signature (AC3, DNA damage) that gives insight for therapeutical options like PARP-Inhibitors, according to (Alexandrov et al. 2013) are calculated.
+**Composing of Results:** All identified and annotated variants and copy number variations are automatically composed to a PDF report. The report contains a general overview about the patient’s mutational burden, an overview about the number of SNVs and InDels, both separated for homozygous and heterozygous variants, and LoH. For the PDF report only exonic and variants leading to a protein change with a MAF < 0.001 and a variant allele frequency (VAF) > 10% are considered. The respected thresholds can be adjusted within the pipeline. The variants are further categorized in tumor suppressors, oncogenes and cancer hotspots. The latter are all listed in a table together with the top somatic variants according to VAF. For better understanding of the biological processes affected by the variants, a functional enrichment is calculated on Gene Ontology (GO) terms (Ashburner et al. 2000; Blake et al. 2015), ConsensusPathDB (Kamburov et al. 2012; Kamburov et al. 2013) and Reactome (Fabregat et al. 2018). The signaling pathways with the highest significance are reported. Additionally, the variants are checked against five cancers associated signaling pathways, namely PI3K-AKT-mTOR, RAF-MEK-ERK, DNA Damage Response, Cell Cycle and Tyrosine Kinases that play a role for cancer processes. The pathways were taken from Qiagen (https://www.qiagen.com/). Further, the COSMIC mutational signatures, e.g. BRCAness signature (AC3, DNA damage) that gives insight for therapeutical options like PARP-Inhibitors, according to (Alexandrov et al. 2013) are calculated.
 The copy number variations are visualized and explicitly reported for tumor suppressors and oncogenes. For better insight in the altered processes by the chromosomal instabilities a functional enrichment based on GO terms, ConsensusPathDB and Reactome is performed.
-Last but not least, all used tools and databases, including version information, are reported.
+Last but not least, all used tools and databases, including version informations, are reported.
 
 
 ### Prerequisites
@@ -38,7 +38,7 @@ Requiered environment, tools and databases.
 	* R (3.4.1)
 	* LaTeX
 	
-4. Databases from ANNOVAR
+3. Databases from ANNOVAR
 	* refGene
 	* gnomAD_exome
 	* exac03
@@ -51,7 +51,7 @@ Requiered environment, tools and databases.
 	* dbnsfp33a
 	* cosmic84
 
-5. R package
+4. R package
 	* OmicCircos
 	* foreach
 	* doMC
@@ -77,7 +77,7 @@ Requiered environment, tools and databases.
 	* foreach
 	* docstring
 
-6. Additional Files
+5. Additional Files
 	* CaptureRegions, e.g. Agilent SureSelect V5UTR according to the used CaptureKit
 	* dbSNP vcf file corresbonding to the one used from ANNOVAR, e.g. snp150hg19.vcf.gz
 	* FLAG genes (included, flag_genes.txt)
@@ -93,14 +93,18 @@ Requiered environment, tools and databases.
 	* Consensus Pathways (included, Consensus.RData)
 	* Reactome Pathways (included, Reactome.RData)
 	* GO Pathways (included, GOGeneSets.RData)
+	* HallmarksOfCancer (needed)
 
-### Supported Capture Kits
+If available, the used versions are noted.
+
+### Supported Capture Kits / Library Preparation Kits
 MIRACUM-Pipe is currently designed to work with the following capture kits:
 
 	* Agilent SureSelect V6
 	* Agilent SureSelect V5UTR
 
-But it can be easily adjusted to any other capture kit as long as the captureRegions .bed file is available and the region covered in Mega-bases (MB) is known. Additionally the caputerd genes have to be known and saved in the *Targets.txt* file stored in the databases folder.
+But it can be easily adjusted to any other capture kit as long as the captureRegions .bed file is available, the covered genes and the region covered in Mega-bases (MB) is known. 
+If a different Capture Kit is used the covered regions in MB has to be added to the RScript *filtering_tools.R* in the function *tumbu* starting in line 3. Additionally the covered genes have to be stored in a plain text file named *Targets.txt* and the *captureRegions.bed* file needs to be placed in the used annotation folder.
 
 ### Additional Files
 #### Needed during processing of sequencing files
@@ -112,9 +116,9 @@ CancerGenes (OncoKB) from http://oncokb.org/#/cancerGenes -> CancerGenesList.txt
 Cancer Hotspots from http://www.cancerhotspots.org/#/download (hotspots_v2.xls) -> save the two excel sheets into separate tab-separated text files -> hotspots_v2.txt and hotspots_v2_indel.txt
 DGIdb from http://www.dgidb.org/downloads (Interactions TSV) -> DGIdb_interactions.tsv
 Condel from http://bbglab.irbbarcelona.org/fannsdb/home (fannsdb.tsv.gz + fannsdb.tsv.gz.tbi)
+HallmarksOfCancer from http://software.broadinstitute.org/gsea/msigdb/index.jsp converted to a RData file -> hallmarksOfCancer_GeneSets.Rdata
 
-
-
+All those databases have to be saved in the *Databases* folder.
 
 ## Running MIRACUM-Pipe
 After all tools and databases are installed and work properly, MIRACUM-Pipe can be used after adjusting three script to the environment of the working system. The scripts **createSet.sh** and **make\_alignment\_VC\_CNV.sh** have only to be adjusted once for the working environment. The thrid script **run.sh** is needed for every sample and contains the sample ID and the path to the raw data.
@@ -135,7 +139,7 @@ ana="${mtb}/Analysis" # subfolder containing PDF Report, annotated copy number v
 ```
 
 ### Adjusting **make\_alignment\_VC\_CNV.sh**
-The script **make\_alignment\_VC\_CNV.sh** contains the actual function calls to perfom quality control, alignemnt, variant calling, copy number calling, annotation and report generation. It has to be adjusted to the local conditions as well in line 14ff.  Our set of parametes is extensivley tested on various patients with different cancer entities and raw qualities and delivers reliable and consitent results. But nervertheless it might need adjustments from time to time which can be easily achieved in this script starting at line 100ff. Here all parameters can be adjusted, e.g. VAF cutoff.
+The script **make\_alignment\_VC\_CNV.sh** contains the actual function calls to perfom quality control, alignemnt, variant calling, copy number calling, annotation and report generation. It has to be adjusted to the local conditions starting in line 14ff.  Our set of parametes is extensivley tested on various patients with different cancer entities and raw qualities and delivers reliable and consitent results. But nervertheless it might need adjustments from time to time which can be easily achieved in this script starting at line 100ff. Here all parameters can be adjusted, e.g. VAF cutoff.
 
 ```
 ##################################################################################################################
@@ -143,10 +147,13 @@ The script **make\_alignment\_VC\_CNV.sh** contains the actual function calls to
 
 ## General
 homedata="/path/to/data" # folder contatining the raw data (.fastq files)
-annot="/path/to/annotation" # fodler containing annotation files like captureRegions.bed
-mtb="/path/to/output/${case}_${num}" # folder containing output
+annot="/path/to/annotation" # folder containing annotation files like captureRegions.bed
+motherpath="/path/to/output"
+mtb="${motherpath}/${case}_${num}" # folder containing output
 wes="${mtb}/WES"
 ana="${mtb}/Analysis"
+RscriptPath="${motherpath}/RScripts"
+DatabasePath="${motherpath}/Databases"
 tempdir="/scratch" # temporary folder
 
 
@@ -187,8 +194,8 @@ STATS="${SAMTOOLS} stats "
 # GATK
 GATK="${soft}/bin/gatk"
 RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${nCore} "
-IndelRealigner="${GATK} -T IndelRealigner -R ${GENOME} "
-BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${dbSNPvvcf} -nct ${nCore} "
+IndelRealigner="${GATK} -R ${GENOME} -T IndelRealigner "
+BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${dbSNPvcf} -nct ${nCore} "
 PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${nCore} "
 
 # PICARD
@@ -214,32 +221,26 @@ SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snp
 
 # ControlFREEC
 freec="${soft}/bin/freec "
-gemMappabilityFile = "${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
+gemMappabilityFile="${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
 
-# R 
+# R
 Rscript="${soft}/bin/Rscript"
-RscriptPath="./RScripts"
-DatabasePath="./Databases" 
-
-# Latex
-pdflatex="${soft}/bin/pdflatex"
-
 
 ### Software Parameters
 # VarScan somatic
-min-coverage-normal=8 #
-min-coverage-tumor=8 #
-tumor-purity=0.5 # 
-min-var-freq=0.10 # VAF
-min-freq-for-hom=0.75 # VAF to call homozygote
+minCoverageNormal="8" 
+minCoverageTumor="8" 
+TumorPurity="0.5" 
+minVarFreq="0.10" # VAF
+minFreqForHom="0.75" # VAF to call homozygote
 
 # VarScan processSomatic
-min-tumor-freq=0.10 # 
+minTumorFreq="0.10" 
 
 # VarScan fpfilter
-min-ref-basequal=28
-min-var-basequal=28
-min-var-count=4 #default
+minRefBasequal="28"
+minVarBasequal="28"
+minVarCount="4" 
 
 # ANNOVAR Databases
 protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,1000g2015aug_eur,avsnp150,clinvar_20170905,cadd13,intervar_20170202,dbnsfp33a,cosmic84_coding,cosmic84_noncoding'
@@ -261,16 +262,14 @@ cd somaticGermline_ID
 ```
 
 ### Adding new databases respectively update current databases
-For the databases contained in ANNOVAR updating or installing new databases is very simple following the descriptions on the homepage of ANNOVAR. If the additional database is installed it has the be added in line 117 and 118 in the **make\_alignment\_VC\_CNV.sh** script. Adding a database currently not supported by ANNOVAR is also possible but one has to add a few lines and the actual database to the corresponding part in the **filtering.R** script. See the documentation of the R scripts.
+For the databases contained in ANNOVAR updating or installing new databases is very simple following the descriptions on the homepage of ANNOVAR. If the additional database is installed it has to be added in line 117 and 118 in the **make\_alignment\_VC\_CNV.sh** script. Adding a database currently not supported by ANNOVAR is also possible but one has to add a few lines and the actual database to the corresponding part in the **filtering.R** script. See the documentation of the R scripts.
 
 ### Information about the included R-scripts
 All neccessary informations about the included R-scripts can be found with the *?functionName* function in R.
 The predefined report in Report.rnw contains in line 45 the author name which should be adjusted to the person generating the report.
 
-
-## Contributing
-
-?
+## Example
+For testing MIRACUM-Pipe the public available dataset from Texas (http://txcrb.org/data.html and https://www.nature.com/articles/sdata201610). We provide the PDF reports for samples TCRBOA6 and TCRBOA7. Both samples are run with the default parameters.
 
 ## Authors
 
@@ -284,9 +283,7 @@ The predefined report in Report.rnw contains in line 45 the author name which sh
 * Melanie Börries
 
 ## License
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
-
-or
+[comment]: <<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.>
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
 
@@ -296,15 +293,15 @@ or
 ## Acknowledgments
 We thank
 
-* The developers from Control-FREEC for the code on CNV significance
 * The Molecular Tumor Board Freburg Team
 * The whole MIRACUM consortia
 * The German Ministry of Education and Research (BMBF) for funding
+* The developers from Control-FREEC for the code on CNV significance
 
 
 ## Cite
 
-If you use this work please cite Metzger P. et al.,
+If you use this work please cite Metzger P. et al., (submitted)
 
 ## References
 

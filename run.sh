@@ -1,8 +1,8 @@
 # createSet.sh and make_alignment_VC_CNV.sh need to be in the base directory
 # first germline (GD), then tumor (TD)
 
-./createSet.sh somaticGermline CYDTY9 'P117/data/180713_ST-K00265_0163_BHWNKTBBXX/AS-253876-LR-37206' 'P117/data/180713_ST-K00265_0163_BHWNKTBBXX/AS-253877-LR-37206' AS-253876-LR-37206_R AS-253877-LR-37206_R XY
+./createSet.sh somaticGermline ID 'folder/containing/germline' 'folder/containing/tumor' filename_germline_without_file_extension filename_tumor_without_file_extension XY
 
-cd somaticGermline_CYDTY9
+cd somaticGermline_ID
 
 ./run_jobs.sh > out &

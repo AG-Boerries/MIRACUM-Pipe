@@ -1,6 +1,6 @@
 #!/bin/bash
 # script to create working directory and qsub job submissions for the WES samples
-# Version 05.09.2018
+# Version 08.10.2018
 
 ########################
 ## Example run script ##
