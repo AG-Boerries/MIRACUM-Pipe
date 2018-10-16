@@ -278,7 +278,7 @@ For testing MIRACUM-Pipe the public available dataset from Texas (http://txcrb.o
 
 * Patrick Metzger
 * Maria Hess
-* Victor Zahvarin
+* Victor Jaravine
 * Jochen Hochrein
 * Martin Boeker
 * Hauke Busch
