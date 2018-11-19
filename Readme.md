@@ -77,7 +77,6 @@ Requiered environment, tools and databases.
 	* TxDb.Hsapiens.UCSC.hg19.knownGene
 	* ReactomePA
 	* knitr
-	* foreach
 	* docstring
 
 5. Additional Files
