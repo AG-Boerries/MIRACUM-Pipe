@@ -50,8 +50,32 @@ class VarScanCaller (object):
             )
         self.tmpfiles = []
         
-    def varcall_parallel(self, max_depth=250, threads=64,
-                         verbose=False, quiet=True):       
+    def varcall_parallel(self, normal_purity=None, tumor_purity=None,
+                         min_coverage=None,
+                         min_coverage_normal=None, min_coverage_tumor=None,
+                         min_basequal=None,
+                         min_var_freq=None, min_hom_freq=None,
+                         p_value=None, somatic_p_value=None,
+                         max_depth=250, threads=64,
+                         verbose=False, quiet=True
+                         ):
+        # mapping of method parameters to varcall engine command line options
+        varcall_engine_option_mapping = [
+            ('--normal-purity', normal_purity),
+            ('--tumor-purity', tumor_purity),
+            ('--min-coverage', min_coverage),
+            ('--min-coverage-normal', min_coverage_normal),
+            ('--min-coverage-tumor', min_coverage_tumor),
+            ('--min-avg-qual', min_basequal),
+            ('--min-var-freq', min_var_freq),
+            ('--min-freq-for-hom', min_hom_freq),
+            ('--p-value', p_value),
+            ('--somatic-p-value', somatic_p_value),
+            ]
+        varcall_engine_options = []
+        for option, value in varcall_engine_option_mapping:
+            if value is not None:
+                varcall_engine_options += [option, str(value)]
         # Create a tuple of calls to samtools mpileup and varscan for
         # each contig. The contig name is stored as the third element of
         # that tuple.
@@ -64,8 +88,8 @@ class VarScanCaller (object):
                 '-f', self.ref_genome
                 ] + self.bam_input_files,
             self.varcall_engine + [
-                '-', '{out}',  '--output-vcf', '1', '--mpileup', '1'
-                ],
+                '-', '{out}', '--output-vcf', '1', '--mpileup', '1'
+                ] + varcall_engine_options,
             contig
             ) for contig in self.ref_contigs[::-1]]
 
@@ -706,6 +730,8 @@ class VarScanCaller (object):
                         pass
 
 def varscan_call(ref_genome, normal, tumor, output_path, **args):
+    """Preparse arguments and orchestrate calling and postprocessing."""
+
     if args.pop('split_output'):
         if '%T' in output_path:
             out = (
@@ -719,13 +745,31 @@ def varscan_call(ref_genome, normal, tumor, output_path, **args):
                 )
     else:
         out = (output_path, None)
+    varcall_parallel_args = {
+        k: args.pop(k) for k in [
+            'max_depth',
+            'threads',
+            'verbose',
+            'quiet'
+            ]
+        }
+    varscan_somatic_args = {
+        k: args.pop(k) for k in [
+            'normal_purity',
+            'tumor_purity',
+            'min_coverage',
+            'min_coverage_normal',
+            'min_coverage_tumor',
+            'min_basequal',
+            'min_var_freq',
+            'min_hom_freq',
+            'somatic_p_value',
+            'p_value'
+            ]
+        }
+
     v = VarScanCaller(ref_genome, [normal, tumor])
-    v.varcall_parallel(
-        args.pop('max_pileup_depth'),
-        args.pop('threads'),
-        args.pop('verbose'),
-        args.pop('quiet')
-        )
+    v.varcall_parallel(**varcall_parallel_args, **varscan_somatic_args)
     v.merge_and_postprocess(*out, **args)
 
 
@@ -768,7 +812,7 @@ if __name__ == '__main__':
         )
     p.add_argument(
         '--max-pileup-depth',
-        dest='max_pileup_depth', type=int, default=8000,
+        dest='max_depth', type=int, default=8000,
         help='Maximum depth of generated pileups (samtools mpileup -d option; '
              'default: 8000)'
         )
