@@ -56,8 +56,8 @@ class VarScanCaller (object):
                          min_basequal=None,
                          min_var_freq=None, min_hom_freq=None,
                          p_value=None, somatic_p_value=None,
-                         max_depth=250, threads=64,
-                         verbose=False, quiet=True
+                         no_BAQ=False, adjust_MQ=None, max_depth=None,
+                         threads=1, verbose=False, quiet=True
                          ):
         # mapping of method parameters to varcall engine command line options
         varcall_engine_option_mapping = [
@@ -76,15 +76,22 @@ class VarScanCaller (object):
         for option, value in varcall_engine_option_mapping:
             if value is not None:
                 varcall_engine_options += [option, str(value)]
+        pileup_engine_options = []
+        if no_BAQ:
+            pileup_engine_options.append('-B')
+        if adjust_MQ is not None:
+            pileup_engine_options += ['-C', str(adjust_MQ)]
+        if max_depth is not None:
+            pileup_engine_options += ['-d', str(max_depth)]
         # Create a tuple of calls to samtools mpileup and varscan for
         # each contig. The contig name is stored as the third element of
         # that tuple.
         # The calls are stored in the reverse order of the contig list so
         # that they can be popped off later in the original order                        
         calls = [(
-            self.pileup_engine + [
-                '-d', str(max_depth),
-                '-r', contig + ':', '-B', '-C', '50', '-q', '1',
+            self.pileup_engine + pileup_engine_options + [
+                '-q', '1',
+                '-r', contig + ':',
                 '-f', self.ref_genome
                 ] + self.bam_input_files,
             self.varcall_engine + [
@@ -747,6 +754,8 @@ def varscan_call(ref_genome, normal, tumor, output_path, **args):
         out = (output_path, None)
     varcall_parallel_args = {
         k: args.pop(k) for k in [
+            'no_BAQ',
+            'adjust_MQ',
             'max_depth',
             'threads',
             'verbose',
@@ -809,6 +818,19 @@ if __name__ == '__main__':
              'files, respectively. If %%T is not found in the file name, it '
              'will get interpreted as a basename to which ".snp"/".indel" will '
              'be appended.'
+        )
+    p.add_argument(
+        '-B', '--no-BAQ',
+        action='store_true',
+        help='Disable base quality recalibration '
+             '(samtools mpileup -B/--no-BAQ option)'
+        )
+    p.add_argument(
+        '-C', '--adjust-MQ',
+        metavar='COEFF', type=int, default=0,
+        help='Coefficient for downgrading the mapping quality of reads with '
+             'excessive mismatches (samtools mpileup -C option; default: 0 '
+             '-> no downgrade)'
         )
     p.add_argument(
         '--max-pileup-depth',
