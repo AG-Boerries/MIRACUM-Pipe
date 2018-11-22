@@ -97,8 +97,7 @@ Rscript="${soft}/bin/Rscript"
 
 ### Software Parameters
 # VarScan somatic
-minCoverageNormal="8" 
-minCoverageTumor="8" 
+minCoverage="8"
 TumorPurity="0.5" 
 minVarFreq="0.10" # VAF
 minFreqForHom="0.75" # VAF to call homozygote
@@ -231,7 +230,7 @@ recalbamTD=${wes}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 snpvcf=${wes}/${NameD}.output.snp.vcf 
 indelvcf=${wes}/${NameD}.output.indel.vcf 
 
-   ${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage-normal ${minCoverageNormal} --min-coverage-tumor ${minCoverageTumor} --tumor-purity ${TumorPurity} --min-var-freq ${minVarFreq} --min-freq-for-hom ${minFreqForHom} --output-vcf 1 --mpileup 1 
+   ${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage ${minCoverage} --tumor-purity ${TumorPurity} --min-var-freq ${minVarFreq} --min-freq-for-hom ${minFreqForHom} --output-vcf 1 --mpileup 1
 
 # Processing of somatic mutations
 
