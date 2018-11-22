@@ -52,9 +52,9 @@ class VarScanCaller (object):
         
     def varcall_parallel(self, normal_purity=None, tumor_purity=None,
                          min_coverage=None,
-                         min_coverage_normal=None, min_coverage_tumor=None,
-                         min_basequal=None,
+                         min_var_count=None,
                          min_var_freq=None, min_hom_freq=None,
+                         min_basequal=None,
                          p_value=None, somatic_p_value=None,
                          no_BAQ=False, adjust_MQ=None, max_depth=None,
                          threads=1, verbose=False, quiet=True
@@ -64,11 +64,10 @@ class VarScanCaller (object):
             ('--normal-purity', normal_purity),
             ('--tumor-purity', tumor_purity),
             ('--min-coverage', min_coverage),
-            ('--min-coverage-normal', min_coverage_normal),
-            ('--min-coverage-tumor', min_coverage_tumor),
-            ('--min-avg-qual', min_basequal),
+            ('--min-reads2', min_var_count),
             ('--min-var-freq', min_var_freq),
             ('--min-freq-for-hom', min_hom_freq),
+            ('--min-avg-qual', min_basequal),
             ('--p-value', p_value),
             ('--somatic-p-value', somatic_p_value),
             ]
@@ -306,7 +305,7 @@ class VarScanCaller (object):
             
     def _add_filters_to_header(self, header):
         varscan_fpfilters = {
-            'VarCount': 'Fewer than {min_var_count} variant-supporting reads',
+            'VarCount': 'Fewer than {min_var_count2} variant-supporting reads',
             'VarFreq':  'Variant allele frequency below {min_var_freq2}',
             'VarAvgRL': 'Average clipped length of variant-supporting reads < {min_var_len}',
             'VarReadPos': 'Relative average read position < {min_var_readpos}',
@@ -449,7 +448,7 @@ class VarScanCaller (object):
             )
     
     def _postprocess_variant_records(self, invcf, *,
-                                     min_var_count, min_var_count_lc,
+                                     min_var_count2, min_var_count2_lc,
                                      min_var_freq2, max_somatic_p,
                                      max_somatic_p_depth,
                                      min_ref_readpos, min_var_readpos,
@@ -553,10 +552,10 @@ class VarScanCaller (object):
                             record.filter.add('RefDist3')
                 alt_count = alt_stats[2] + alt_stats[3]
                 if (
-                    alt_count < min_var_count_lc
+                    alt_count < min_var_count2_lc
                     ) or (
                     read_depth >= max_somatic_p_depth and
-                    alt_count < min_var_count
+                    alt_count < min_var_count2
                 ):
                     record.filter.add('VarCount')
                 if alt_count/read_depth < min_var_freq2:
@@ -767,11 +766,10 @@ def varscan_call(ref_genome, normal, tumor, output_path, **args):
             'normal_purity',
             'tumor_purity',
             'min_coverage',
-            'min_coverage_normal',
-            'min_coverage_tumor',
-            'min_basequal',
+            'min_var_count',
             'min_var_freq',
             'min_hom_freq',
+            'min_basequal',
             'somatic_p_value',
             'p_value'
             ]
@@ -874,23 +872,11 @@ if __name__ == '__main__':
              'sample to call a variant (default: 8)'
         )
     call_group.add_argument(
-        '--min-coverage-normal',
-        dest='min_coverage_normal', type=int,
-        default=8,
-        help='Minimum coverage in normal sample for somatic call (default: 8)'
-        )
-    call_group.add_argument(
-        '--min-coverage-tumor',
-        dest='min_coverage_tumor', type=int,
-        default=6,
-        help='Minimum coverage in tumor sample for somatic call (default: 6)'
-        )
-    call_group.add_argument(
-        '--min-basequal',
-        dest='min_basequal', type=int,
-        default=15,
-        help='Minimum base quality at the variant position to use a read '
-             '(default: 15)'
+        '--min-var-count',
+        dest='min_var_count', type=int,
+        default=2,
+        help='Minimum number of variant-supporting reads required to call a '
+             'variant (default: 2)'
         )
     call_group.add_argument(
         '--min-var-freq',
@@ -904,6 +890,13 @@ if __name__ == '__main__':
         default=0.75,
         help='Minimum variant allele frequency for homozygous call '
              '(default: 0.75)'
+        )
+    call_group.add_argument(
+        '--min-basequal',
+        dest='min_basequal', type=int,
+        default=15,
+        help='Minimum base quality at the variant position to use a read '
+             '(default: 15)'
         )
     call_group.add_argument(
         '--p-value',
@@ -925,14 +918,14 @@ if __name__ == '__main__':
              'If specified, all following options will be ignored'
         )
     filter_group.add_argument(
-        '--min-var-count',
-        dest='min_var_count', type=int,
+        '--min-var-count2',
+        dest='min_var_count2', type=int,
         default=4,
         help='Minimum number of variant-supporting reads (default: 4)'
         )
     filter_group.add_argument(
-        '--min-var-count-lc',
-        dest='min_var_count_lc', type=int,
+        '--min-var-count2-lc',
+        dest='min_var_count2_lc', type=int,
         default=2,
         help='Minimum number of variant-supporting reads when depth below '
              '--somatic-p-depth (default: 2)'
