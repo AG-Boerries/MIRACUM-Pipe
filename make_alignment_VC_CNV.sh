@@ -108,7 +108,7 @@ minTumorFreq="0.10"
 # VarScan fpfilter
 minRefBasequal="28"
 minVarBasequal="28"
-minVarCount="4" 
+minVarCount="4"
 
 # ANNOVAR Databases
 protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
@@ -266,7 +266,7 @@ do
    ${CONVERT2ANNOVAR2} ${hc_avi}   ${hc_vcf}
    ${CUT}              ${hc_avi} > ${hc_rci}
    ${BamReadcount}  -l ${hc_rci}   ${recalbam} > ${hc_rcs}
-   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minRefBasequal} --min-var-basequal ${minVarBasequal} --min-var-count ${minVarCount}
+   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minRefBasequal} --min-var-basequal ${minVarBasequal} --min-var-count ${minVarCount} --min-var-freq ${minVarFreq}
    done
 done
 
