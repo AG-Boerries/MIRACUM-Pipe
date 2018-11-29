@@ -83,7 +83,7 @@ CONVERT2ANNOVAR="${soft}/annovar/convert2annovar.pl --format vcf4 --includeinfo 
 TABLEANNOVAR="${soft}/annovar/table_annovar.pl"
 
 # COVERAGE
-COVERAGE="${soft}/bin/bedtools coverage -hist "
+COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
 # SNPEFF
 SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snpEff/snpEff.config -canon -v"
