@@ -2,16 +2,25 @@ GEMINI 0.20.1 databases
 =======================
 
 clinvar 30.1.2017   bash pipeline uses 5.9.2017
+
 cosmic  v68         bash pipeline uses v84?
+
 dbsnp   b147
+
 ExAC    r0.3
+
 gnomad_exome  r2.0.1    bash pipeline version ?
+
 ESP6500si   v2
+
 1000g   phase3
+
 fitcons v1.01
+
 cadd13  as add-on
 
 vista enhancers db  8.11.2013
+
 HPRD interactions   ??
 
 
