@@ -42,7 +42,7 @@ dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
 nCore=12
 
 soft="/path/to/tools/software" # folder containing all used tools
-java="${soft}/bin/java" # path to java
+java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
 TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic-0.36/trimmomatic-0.36.jar PE -threads ${nCore} -phred33 "
