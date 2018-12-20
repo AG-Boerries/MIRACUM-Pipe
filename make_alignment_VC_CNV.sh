@@ -3,7 +3,7 @@
 ## WES Pipeline for somatic and germline ##
 ###########################################
 # script to run the actual analysis
-# Version 08.10.2018
+# Version 20.12.2018
 
 
 case=$1;  # somatic or somaticGermline
@@ -38,17 +38,41 @@ CaptureRegions="${annot}/Agilent/SureSelectV5UTR/V5UTR.bed"
 dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
 
 ### Software
-## Cores to use
+## Parameters
+## General
+# Cores to use
 nCore=12
+minBaseQual="28"
+minVAF="0.10"
 
+# VarScan somatic
+minCoverage="8"
+TumorPurity="0.5"
+minFreqForHom="0.75" # VAF to call homozygote
+minAvgQual="28"
+
+# VarScan fpfilter
+minVarCount="4"
+
+# ANNOVAR Databases
+protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
+argop='g,f,f,f,f,f,f,f,f,f,f'
+
+
+## Tools and paths
+# Paths
 soft="/path/to/tools/software" # folder containing all used tools
 java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 
+# Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
 TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic-0.36/trimmomatic-0.36.jar PE -threads ${nCore} -phred33 "
 CUT="cut -f1,2,3"
 
+# Alignment
 BWAMEM="${soft}/bin/bwa mem -M "
+
+# BAM-Readcount
 BamReadcount="${soft}/bin/bam-readcount -q 1 -b 20 -w 1 -f ${GENOME} "
 
 # SAMTOOLS
@@ -57,7 +81,7 @@ SAMVIEW="${SAMTOOLS} view -@ ${nCore} "
 SAMSORT="${SAMTOOLS} sort -@ ${nCore} "
 SAMRMDUP="${SAMTOOLS} rmdup "
 SAMINDEX="${SAMTOOLS} index "
-MPILEUP="${SAMTOOLS} mpileup -B -C50 -f ${GENOME} -q 1 "
+MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
 STATS="${SAMTOOLS} stats "
 
 # GATK
@@ -74,7 +98,6 @@ FixMate="${soft}/bin/picard FixMateInformation "
 VarScan="${soft}/anaconda2/bin/varscan"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
-
 
 # ANNOVAR
 CONVERT2ANNOVAR2="${soft}/annovar/convert2annovar.pl --format vcf4old --outfile "
@@ -95,26 +118,6 @@ gemMappabilityFile="${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
 # R
 Rscript="${soft}/bin/Rscript"
 
-### Software Parameters
-# VarScan somatic
-minCoverage="8"
-TumorPurity="0.5" 
-minVarFreq="0.10" # VAF
-minFreqForHom="0.75" # VAF to call homozygote
-
-# VarScan processSomatic
-minTumorFreq="0.10" 
-
-# VarScan fpfilter
-minRefBasequal="28"
-minVarBasequal="28"
-minVarCount="4"
-
-# ANNOVAR Databases
-protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
-argop='g,f,f,f,f,f,f,f,f,f,f'
-
- 
 ##################################################################################################################
 
 ##########
@@ -230,12 +233,12 @@ recalbamTD=${wes}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 snpvcf=${wes}/${NameD}.output.snp.vcf 
 indelvcf=${wes}/${NameD}.output.indel.vcf 
 
-   ${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage ${minCoverage} --tumor-purity ${TumorPurity} --min-var-freq ${minVarFreq} --min-freq-for-hom ${minFreqForHom} --output-vcf 1 --mpileup 1
+${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage ${minCoverage} --tumor-purity ${TumorPurity} --min-var-freq ${minVAF} --min-freq-for-hom ${minFreqForHom} --min-avg-qual ${minBaseQual} --output-vcf 1 --mpileup 1
 
 # Processing of somatic mutations
 
-   ${PROCESSSOMATIC} ${snpvcf} --min-tumor-freq ${minTumorFreq}
-   ${PROCESSSOMATIC} ${indelvcf} --min-tumor-freq ${minTumorFreq}
+   ${PROCESSSOMATIC} ${snpvcf} --min-tumor-freq ${minVAF}
+   ${PROCESSSOMATIC} ${indelvcf} --min-tumor-freq ${minVAF}
 
 # FP Filter:  snp.Somatic.hc snp.LOH.hc snp.Germline.hc
 # FP Filter:  indel.Somatic.hc indel.LOH.hc indel.Germline.hc
@@ -266,7 +269,7 @@ do
    ${CONVERT2ANNOVAR2} ${hc_avi}   ${hc_vcf}
    ${CUT}              ${hc_avi} > ${hc_rci}
    ${BamReadcount}  -l ${hc_rci}   ${recalbam} > ${hc_rcs}
-   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minRefBasequal} --min-var-basequal ${minVarBasequal} --min-var-count ${minVarCount} --min-var-freq ${minVarFreq}
+   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minBaseQual} --min-var-basequal ${minBaseQual} --min-var-count ${minVarCount} --min-var-freq ${minVarFreq}
    done
 done
 
