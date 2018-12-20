@@ -49,7 +49,6 @@ minVAF="0.10"
 minCoverage="8"
 TumorPurity="0.5"
 minFreqForHom="0.75" # VAF to call homozygote
-minAvgQual="28"
 
 # VarScan fpfilter
 minVarCount="4"
