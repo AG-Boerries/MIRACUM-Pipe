@@ -179,7 +179,7 @@ done
 	 echo "Waiting for Report"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-	if [ -e ${mtb}/.STARTING_MARKER_Report]; then
+	if [ -e ${mtb}/.STARTING_MARKER_Report ]; then
      sleep 1h
      date
      (( count++ ))
