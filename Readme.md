@@ -114,7 +114,9 @@ dbSNP from https://www.ncbi.nlm.nih.gov/projects/SNP/
 
 #### Needed during annotation steps in R
 Actionable Alterations (OncoKB) from http://oncokb.org/#/dataAccess -> allActionableVariants.txt
-CancerGenes (OncoKB) from http://oncokb.org/#/cancerGenes -> CancerGenesList.txt
+
+[//]: # CancerGenes (OncoKB) from http://oncokb.org/#/cancerGenes -> CancerGenesList.txt
+CancerGenes (OncoKB) from https://github.com/oncokb/oncokb-public/blob/master/data/v1.15/CancerGenesList.txt -> CancerGenesList.txt
 Cancer Hotspots from http://www.cancerhotspots.org/#/download (hotspots_v2.xls) -> save the two excel sheets into separate tab-separated text files -> hotspots_v2.txt and hotspots_v2_indel.txt
 DGIdb from http://www.dgidb.org/downloads (Interactions TSV) -> DGIdb_interactions.tsv
 Condel from http://bbglab.irbbarcelona.org/fannsdb/home (fannsdb.tsv.gz + fannsdb.tsv.gz.tbi)
