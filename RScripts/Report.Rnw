@@ -422,7 +422,7 @@ kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse", booktabs = T, row.n
 \item refGene GRCh37
 \item esp6500siv2\_ea (ESP3500, European)
 \item avsnp150 (dbSNP)
-\item EU.sites.2015_08 (1000Genome, European)
+\item EU.sites.2015\_08 (1000Genome, European)
 \item cosmic86
 \item exac03 (ExAC)
 \item gnomad\_exome
