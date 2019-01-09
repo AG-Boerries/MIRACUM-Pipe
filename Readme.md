@@ -12,7 +12,7 @@ taken from Metzger P. et al. (submitted)
 
 **Analysis, Annotation and Interpretation:** For somatic variant calling, VarScan2 (Koboldt et al. 2013) is used. In parallel to the variant calling, the coverage is calculated with bedtools (Quinlan & Hall 2010) and the copy number variations are identified with Control-FREEC (Boeva et al. 2012). The identified variants are processed with ANNOVAR (Wang et al. 2010) and therefore annotated with the minor allele frequency (MAF) from gnomAD (Lek et al. 2016), SNP identifiers (dbSNP) (Sherry et al. 2001; Sherry et al. 1999), COSMIC IDs (Forbes et al. 2015), clinically interpreted from ClinVar (Landrum et al. 2014) and InterVar (Li & Wang 2017) and functionally annotated with dbNSFP (Liu et al. 2016). Additionally to the annotation with ANNOVAR, the variants are further annotated with the help of R scripts. First of all, the genes carrying a variant are classified in tumor suppressors or oncogenes according to OncoKB (Chakravarty et al. 2017). Cancer hotspot mutations are marked based on cancer-hotspots.org (Chang et al. 2016; Chang et al. 2017) and possible therapy options are identified from OncoKB (Chakravarty et al. 2017), TARGET (http://archive.broadinstitute.org/cancer/cga/target) and the drug-gene-interaction database (DGIdb) (Cotto et al. 2017).
 
-**Composing of Results:** All identified and annotated variants and copy number variations are automatically composed to a PDF report. The report contains a general overview about the patient’s mutational burden, an overview about the number of SNVs and InDels, both separated for homozygous and heterozygous variants, and LoH. For the PDF report only exonic and variants leading to a protein change with a MAF < 0.001 and a variant allele frequency (VAF) > 10% are considered. The respected thresholds can be adjusted within the pipeline. The variants are further categorized in tumor suppressors, oncogenes and cancer hotspots. The latter are all listed in a table together with the top somatic variants according to VAF. For better understanding of the biological processes affected by the variants, a functional enrichment is calculated on Gene Ontology (GO) terms (Ashburner et al. 2000; Blake et al. 2015), ConsensusPathDB (Kamburov et al. 2012; Kamburov et al. 2013) and Reactome (Fabregat et al. 2018). The signaling pathways with the highest significance are reported. Additionally, the variants are checked against five cancers associated signaling pathways, namely PI3K-AKT-mTOR, RAF-MEK-ERK, DNA Damage Response, Cell Cycle and Tyrosine Kinases that play a role for cancer processes. The pathways were taken from Qiagen (https://www.qiagen.com/). Further, the COSMIC mutational signatures, e.g. BRCAness signature (AC3, DNA damage) that gives insight for therapeutical options like PARP-Inhibitors, according to (Alexandrov et al. 2013) are calculated.
+**Composing of Results:** All identified and annotated variants and copy number variations are automatically composed to a PDF report. The report contains a general overview about the patient’s mutational burden, an overview about the number of SNVs and InDels, both separated for homozygous and heterozygous variants, and LoH. For the PDF report only exonic and variants leading to a protein change with a MAF < 0.1% and a variant allele frequency (VAF) > 10% are considered. The respected thresholds can be adjusted within the pipeline. The variants are further categorized in tumor suppressors, oncogenes and cancer hotspots. The latter are all listed in a table together with the top somatic variants according to VAF. For better understanding of the biological processes affected by the variants, a functional enrichment is calculated on Gene Ontology (GO) terms (Ashburner et al. 2000; Blake et al. 2015), ConsensusPathDB (Kamburov et al. 2012; Kamburov et al. 2013) and Reactome (Fabregat et al. 2018). The signaling pathways with the highest significance are reported. Additionally, the variants are checked against five cancers associated signaling pathways, namely PI3K-AKT-mTOR, RAF-MEK-ERK, DNA Damage Response, Cell Cycle and Tyrosine Kinases that play a role for cancer processes. The pathways were taken from Qiagen (https://www.qiagen.com/). Further, the COSMIC mutational signatures, e.g. BRCAness signature (AC3, DNA damage) that gives insight for therapeutical options like PARP-Inhibitors, according to (Alexandrov et al. 2013) are calculated.
 The copy number variations are visualized and explicitly reported for tumor suppressors and oncogenes. For better insight in the altered processes by the chromosomal instabilities a functional enrichment based on GO terms, ConsensusPathDB and Reactome is performed.
 Last but not least, all used tools and databases, including version informations, are reported.
 
@@ -25,15 +25,15 @@ Requiered environment, tools and databases.
 	* Reference genome hg19 inclunding index files for bwa
 
 2. Software
-	* java (1.8.0_121)
+	* java (1.8.0_152)
 	* FASTQC (v0.11.5)
-	* Trimmomatic (0.36)
-	* bwa (0.7.15-r1140)
-	* bam-readcount (0.8.0-unstable-5-1b9c52c-dirty)
-	* samtools (1.7)
+	* Trimmomatic (0.38)
+	* bwa (0.7.17)
+	* bam-readcount (0.8.0-unstable-6-963acab)
+	* samtools (1.9)
 	* GATK (version 3.8-1-0-gf15c1c3ef)
-	* picard-tools (2.17.11)
-	* bedtools (v2.25.0)
+	* picard-tools (2.18.15)
+	* bedtools (v2.27.1)
 	* VarScan2 (2.4.3)
 	* ANNOVAR ($Date: 2018-04-16 00:47:49 -0400)
 	* snpEff (4.3t)
@@ -46,13 +46,13 @@ Requiered environment, tools and databases.
 	* gnomAD_exome
 	* exac03
 	* esp6500siv2_ea
-	* 1000g2015aug_eur
+	* EUR.sites.2015_08
 	* avsnp150
-	* clinvar_20170905
+	* clinvar_20180603
 	* cadd13
-	* intervar_20170202
-	* dbnsfp33a
-	* cosmic84
+	* intervar_20180118
+	* dbnsfp35a
+	* cosmic86
 
 4. R package
 	* OmicCircos

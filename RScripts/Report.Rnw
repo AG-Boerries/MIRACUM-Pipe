@@ -403,30 +403,33 @@ kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse", booktabs = T, row.n
 \subsection{Programmversionen}
 \begin{itemize}
 \item FastQC: 0.11.5
-\item Trimmomatic: 0.36
-\item BWA: 0.7.15
+\item Trimmomatic: 0.38
+\item BWA: 0.7.17
 \item bam-readcount: 0.8.0
-\item samtools 1.4.1
-\item GATK: 3.6
-\item picard-tools: 2.9.2
+\item samtools 1.9
+\item GATK: 3.8.1.0
+\item picard-tools: 2.18.15
 \item VarScan: 2.4.3
-\item annovar 2017-07-17
-\item bedtools: 2.26.0
+\item annovar 2018-04-16
+\item bedtools: 2.27.1
 \item Control-FREEC: 11.0
-\item Java: 1.8.0\_121
+\item Java: 1.8.0\_152
+\item R: 3.4.1
 \end{itemize}
 
 \subsection{Annovar Datenbanken}
 \begin{itemize}
-\item refGene GRCh37 (20170601)
-\item esp6500siv2\_all (20141222)
-\item avsnp150 (dbSNP) (20170929)
-\item clinvar\_20170905 (20171003)
-\item 1000g2015aug\_all (20150824)
-\item cosmic84 (20180213)
-\item exac03 (20151129)
-\item gnomad\_exome (20170311)
-\item cadd13 (20170123)
+\item refGene GRCh37
+\item esp6500siv2\_ea (ESP3500, European)
+\item avsnp150 (dbSNP)
+\item EU.sites.2015_08 (1000Genome, European)
+\item cosmic86
+\item exac03 (ExAC)
+\item gnomad\_exome
+\item clinvar\_20180603
+\item intervar\_20180118
+\item dbnsfp35a
+\item cadd13
 \end{itemize}
 
 \end{document}
