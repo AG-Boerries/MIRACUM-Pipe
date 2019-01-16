@@ -1,0 +1,7 @@
+Mutationtype	Number of exonic	Zygosity	Tumorsuppressor	Oncogene	Hotspot
+somatic SNV	1	homozygous	0	0	0
+somatic SNV	16	heterozygous	0	0	0
+LoH SNV	15	-	0	0	0
+somatic InDel	0	homozygous	0	0	0
+somatic InDel	3	heterozygous	2	0	0
+LoH InDel	1	-	0	0	0

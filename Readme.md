@@ -143,7 +143,7 @@ ana="${mtb}/Analysis" # subfolder containing PDF Report, annotated copy number v
 ```
 
 ### Adjusting **make\_alignment\_VC\_CNV.sh**
-The script **make\_alignment\_VC\_CNV.sh** contains the actual function calls to perfom quality control, alignemnt, variant calling, copy number calling, annotation and report generation. It has to be adjusted to the local conditions starting in line 14ff.  Our set of parametes is extensivley tested on various patients with different cancer entities and raw qualities and delivers reliable and consitent results. But nervertheless it might need adjustments from time to time which can be easily achieved in this script starting at line 100ff. Here all parameters can be adjusted, e.g. VAF cutoff.
+The script **make\_alignment\_VC\_CNV.sh** contains the actual function calls to perfom quality control, alignemnt, variant calling, copy number calling, annotation and report generation. It has to be adjusted to the local conditions starting in line 14ff.  Our set of parametes is extensivley tested on various patients with different cancer entities and raw qualities and delivers reliable and consitent results. But nervertheless it might need adjustments from time to time which can be easily achieved in this script starting at line 176ff. Here all parameters can be adjusted, e.g. VAF cutoff.
 
 ```
 ##################################################################################################################
@@ -173,17 +173,40 @@ CaptureRegions="${annot}/Agilent/SureSelectV5UTR/V5UTR.bed"
 dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
 
 ### Software
-## Cores to use
+## Parameters
+## General
+# Cores to use
 nCore=12
+minBaseQual="28"
+minVAF="0.10"
 
+# VarScan somatic
+minCoverage="8"
+TumorPurity="0.5"
+minFreqForHom="0.75" # VAF to call homozygote
+
+# VarScan fpfilter
+minVarCount="4"
+
+# ANNOVAR Databases
+protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
+argop='g,f,f,f,f,f,f,f,f,f,f'
+
+
+## Tools and paths
+# Paths
 soft="/path/to/tools/software" # folder containing all used tools
-java="${soft}/bin/java" # path to java
+java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 
+# Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
 TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic-0.36/trimmomatic-0.36.jar PE -threads ${nCore} -phred33 "
 CUT="cut -f1,2,3"
 
+# Alignment
 BWAMEM="${soft}/bin/bwa mem -M "
+
+# BAM-Readcount
 BamReadcount="${soft}/bin/bam-readcount -q 1 -b 20 -w 1 -f ${GENOME} "
 
 # SAMTOOLS
@@ -192,7 +215,7 @@ SAMVIEW="${SAMTOOLS} view -@ ${nCore} "
 SAMSORT="${SAMTOOLS} sort -@ ${nCore} "
 SAMRMDUP="${SAMTOOLS} rmdup "
 SAMINDEX="${SAMTOOLS} index "
-MPILEUP="${SAMTOOLS} mpileup -B -C50 -f ${GENOME} -q 1 "
+MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
 STATS="${SAMTOOLS} stats "
 
 # GATK
@@ -210,7 +233,6 @@ VarScan="${soft}/anaconda2/bin/varscan"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
-
 # ANNOVAR
 CONVERT2ANNOVAR2="${soft}/annovar/convert2annovar.pl --format vcf4old --outfile "
 CONVERT2ANNOVAR3="${soft}/annovar/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
@@ -218,7 +240,7 @@ CONVERT2ANNOVAR="${soft}/annovar/convert2annovar.pl --format vcf4 --includeinfo 
 TABLEANNOVAR="${soft}/annovar/table_annovar.pl"
 
 # COVERAGE
-COVERAGE="${soft}/bin/bedtools coverage -hist "
+COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
 # SNPEFF
 SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snpEff/snpEff.config -canon -v"
@@ -229,26 +251,6 @@ gemMappabilityFile="${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
 
 # R
 Rscript="${soft}/bin/Rscript"
-
-### Software Parameters
-# VarScan somatic
-minCoverageNormal="8" 
-minCoverageTumor="8" 
-TumorPurity="0.5" 
-minVarFreq="0.10" # VAF
-minFreqForHom="0.75" # VAF to call homozygote
-
-# VarScan processSomatic
-minTumorFreq="0.10" 
-
-# VarScan fpfilter
-minRefBasequal="28"
-minVarBasequal="28"
-minVarCount="4" 
-
-# ANNOVAR Databases
-protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,1000g2015aug_eur,avsnp150,clinvar_20170905,cadd13,intervar_20170202,dbnsfp33a,cosmic84_coding,cosmic84_noncoding'
-argop='g,f,f,f,f,f,f,f,f,f,f,f' 
 ```
 
 ### Adjusting **run.sh**

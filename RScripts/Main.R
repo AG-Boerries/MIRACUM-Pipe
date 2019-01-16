@@ -164,7 +164,7 @@ outfile_onco <- paste0(sample, "_CNV_Oncogene_", date, ".xlsx")
 outfile_ts <- paste0(sample, "_CNV_TumorSuppressors_", date, ".xlsx")
 outfile_loss <- paste0(sample, "_CNV_loss_GO_", date, ".xlsx")
 outfile_gain <- paste0(sample, "_CNV_gain3_GO_", date, ".xlsx")
-outfile_dna_damage <- paste0(sample, "_CNV_dna_damage_", date , "xlsx")
+outfile_dna_damage <- paste0(sample, "_CNV_dna_damage_", date , ".xlsx")
 
 cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file
                                      = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
