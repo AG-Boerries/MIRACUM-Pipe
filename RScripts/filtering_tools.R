@@ -21,6 +21,9 @@ tumbu <- function(x, sureselect){
   } else if (sureselect == "V5UTR"){
     tmb <- nrow(x) / 75
   }
+  else if (sureselect == "VCRome"){
+      tmb <- nrow(x) / 45.1
+    }
   tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
   return(tmb)
 }
@@ -577,13 +580,13 @@ rare <- function(x){
         keep <- c(keep, n)
         next
       }
-      if (as.numeric(as.character(x[n, "X1000g2015aug_eur"])) < 0.01
-          & !is.na(as.numeric(as.character(x[n, "X1000g2015aug_eur"])))) {
+      if (as.numeric(as.character(x[n, "EUR.sites.2015_08"])) < 0.01
+          & !is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
         keep <- c(keep, n)
         next
       }
       if (is.na(as.numeric(as.character(x[n, "esp6500siv2_ea"])))
-          & is.na(as.numeric(as.character(x[n, "X1000g2015aug_eur"])))) {
+          & is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
         keep <- c(keep, n)
         next
       }

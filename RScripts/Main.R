@@ -153,7 +153,7 @@ stats <- stats(path = path2coverage, outfile_pdf = coverage_out,
 ## Input/Output Files
 ratio_file <- paste0("../WES/", "CNV/", sample, "_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
 cnvs_file <- paste0("../WES/", "CNV/", sample, "_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
-ratio_file_plot <- paste0("../WES/", "CNV/", sample, "_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
+
 # Results
 cnv_pvalue_txt <- paste(sample, "_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs",
                       ".p.value.txt", sep = "")

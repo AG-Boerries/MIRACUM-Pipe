@@ -34,7 +34,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
   assess_significance(ratio_file = ratio_file, cnvs_file = cnvs_file,
                       outfile = cnv_pvalue_txt)
   
-  make_cnv_graph(ratio_file = ratio_file_plot, ploidity = "2", outfile_plot = cnv_plot,
+  make_cnv_graph(ratio_file = ratio_file, ploidity = "2", outfile_plot = cnv_plot,
                 outfile_ideogram = cnv_ideogram_plot)
   
   cnvs_annotated <- cnv_annotation(cnv_pvalue_txt = cnv_pvalue_txt,
