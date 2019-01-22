@@ -164,7 +164,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
   gtrellis_layout(n_track = 1, ncol = 1, track_axis = FALSE,
                   xpadding = c(0.1, 0), gap = unit(4, "mm"), border = FALSE,
                   asist_ticks = FALSE, add_ideogram_track = TRUE, 
-                  ideogram_track_height = unit(3, "mm"),legend = lgd)
+                  ideogram_track_height = unit(3, "mm"))
   
   tt <- which(ratio_new$CopyNumber>ploidy
               | (ratio_new$CopyNumber<ploidy & ratio_new$CopyNumber != -1))
@@ -173,7 +173,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
   add_track(track = 1, tmp, panel_fun = function(gr) {
     grid.rect(gr$Start, unit(0.2, "npc"), unit(1, "mm"), unit(0.8, "npc"),
               hjust = 0, vjust = 0, default.units = "native",
-              gp = gpar(fill = col_fun(gr$Value), col = NA))
+              gp = gpar(fill = col_fun(gr$CopyNumber), col = NA))
   })
   add_track(track = 2, clip = FALSE, panel_fun = function(gr) {
     chr = get_cell_meta_data("name")
