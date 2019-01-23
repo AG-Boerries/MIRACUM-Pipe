@@ -95,12 +95,12 @@ PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${nCore} "
 FixMate="${soft}/bin/picard FixMateInformation "
 
 # VARSCAN
-VarScan="${soft}/anaconda2/bin/varscan"
+VarScan="${soft}/bin/varscan"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
 # ANNOVAR
-ANNOVAR="/home/miracum/annovar"
+ANNOVAR="${soft}/bin/annovar"
 CONVERT2ANNOVAR2="${ANNOVAR}/convert2annovar.pl --format vcf4old --outfile "
 CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
 CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
