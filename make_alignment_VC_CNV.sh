@@ -268,7 +268,7 @@ do
    ${CONVERT2ANNOVAR2} ${hc_avi}   ${hc_vcf}
    ${CUT}              ${hc_avi} > ${hc_rci}
    ${BamReadcount}  -l ${hc_rci}   ${recalbam} > ${hc_rcs}
-   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minBaseQual} --min-var-basequal ${minBaseQual} --min-var-count ${minVarCount} --min-var-freq ${minVarFreq}
+   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minBaseQual} --min-var-basequal ${minBaseQual} --min-var-count ${minVarCount} --min-var-freq ${minVAF}
    done
 done
 
