@@ -66,6 +66,7 @@ java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 # Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
 TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic-0.36/trimmomatic-0.36.jar PE -threads ${nCore} -phred33 "
+TrimmomaticAdapter="/home/miracum/Trimmomatic-0.38/adapters"
 CUT="cut -f1,2,3"
 
 # Alignment
@@ -99,10 +100,11 @@ SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
 # ANNOVAR
-CONVERT2ANNOVAR2="${soft}/annovar/convert2annovar.pl --format vcf4old --outfile "
-CONVERT2ANNOVAR3="${soft}/annovar/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
-CONVERT2ANNOVAR="${soft}/annovar/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
-TABLEANNOVAR="${soft}/annovar/table_annovar.pl"
+ANNOVAR="/home/miracum/annovar"
+CONVERT2ANNOVAR2="${ANNOVAR}/convert2annovar.pl --format vcf4old --outfile "
+CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
+CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
+TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 
 # COVERAGE
 COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
@@ -167,7 +169,7 @@ then
      ${FASTQC} ${fastq2} -o ${wes}
 
 # trim fastq
-     ${TRIM} ${fastq1} ${fastq2} ${fastq_o1_p_t} ${fastq_o1_u_t}  ${fastq_o2_p_t} ${fastq_o2_u_t} ILLUMINACLIP:${soft}/Trimmomatic-0.36/adapters/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
+     ${TRIM} ${fastq1} ${fastq2} ${fastq_o1_p_t} ${fastq_o1_u_t}  ${fastq_o2_p_t} ${fastq_o2_u_t} ILLUMINACLIP:${TrimmomaticAdapter}/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
      ${FASTQC}  ${fastq_o1_p_t} -o ${wes}
      ${FASTQC}  ${fastq_o2_p_t} -o ${wes}
 
@@ -268,7 +270,7 @@ do
    ${CONVERT2ANNOVAR2} ${hc_avi}   ${hc_vcf}
    ${CUT}              ${hc_avi} > ${hc_rci}
    ${BamReadcount}  -l ${hc_rci}   ${recalbam} > ${hc_rcs}
-   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minBaseQual} --min-var-basequal ${minBaseQual} --min-var-count ${minVarCount} --min-var-freq ${minVarFreq}
+   ${VarScan} fpfilter ${hc_vcf}   ${hc_rcs} --output-file ${hc_fpf} --keep-failures 1 --min-ref-basequal ${minBaseQual} --min-var-basequal ${minBaseQual} --min-var-count ${minVarCount} --min-var-freq ${minVAF}
    done
 done
 
