@@ -3,7 +3,7 @@
 ## WES Pipeline for somatic and germline ##
 ###########################################
 # script to run the actual analysis
-# Version 20.12.2018
+# Version 05.02.2019
 
 
 case=$1;  # somatic or somaticGermline
@@ -23,8 +23,7 @@ wes="${mtb}/WES"
 ana="${mtb}/Analysis"
 RscriptPath="${motherpath}/RScripts"
 DatabasePath="${motherpath}/Databases"
-tempdir="/scratch" # temporary folder
-
+tempdir="${mtb}/tmp" # temporary folder
 
 ## Genome
 GENOME="/path/to/ref/genome/including/index/hg19.fa"
@@ -32,7 +31,7 @@ Chromosomes="/path/to/ref/genome/chromosomes"
 ChromoLength="/path/to/ref/chromosomes/length/hg19_chr.len"
 
 ## SureSelect (Capture Kit)
-CaptureRegions="${annot}/Agilent/SureSelectV5UTR/V5UTR.bed"
+CaptureRegions="${annot}/CaptureRegions.bed"
 
 ## dbSNP vcf File
 dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
@@ -41,7 +40,7 @@ dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
 ## Parameters
 ## General
 # Cores to use
-nCore=12
+nCore="12"
 minBaseQual="28"
 minVAF="0.10"
 
@@ -101,6 +100,7 @@ PROCESSSOMATIC="${VarScan} processSomatic"
 
 # ANNOVAR
 ANNOVAR="${soft}/bin/annovar"
+ANNOVARData="${ANNOVAR}/humandb"
 CONVERT2ANNOVAR2="${ANNOVAR}/convert2annovar.pl --format vcf4old --outfile "
 CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
 CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
@@ -163,6 +163,10 @@ coveragetxt=${wes}/${NameD}_coverage.all.txt
 
 if [ ${task} = GD ] || [ ${task} = TD ] 
 then
+	
+if [ ! -d ${tempdir} ]; then
+   mkdir ${tempdir}
+fi
 
 # fastqc zip to WES
      ${FASTQC} ${fastq1} -o ${wes}
@@ -175,47 +179,39 @@ then
 
 # make bam
      ${BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t 12 ${GENOME}  ${fastq_o1_p_t}  ${fastq_o2_p_t} | ${SAMVIEW} -bS - > ${bam}
-     rm ${fastq_o1_p_t} ${fastq_o1_u_t} 
-     rm ${fastq_o2_p_t} ${fastq_o2_u_t} 
 
 # stats
      ${STATS} ${bam} > ${statstxt}
 
 # sort bam
      ${SAMSORT} ${bam} -T ${prefixsort} -o ${sortbam}
-     rm ${bam}
+
 # rmdup bam
      ${SAMVIEW} -b -f 0x2 -q1 ${sortbam} | ${SAMRMDUP} - ${rmdupbam}
-     rm ${sortbam}
 
 # make bai
      ${SAMINDEX} ${rmdupbam} ${bai}
+	 
 # make bam list
      ${RealignerTargetCreator} -o ${bamlist} -I ${rmdupbam}
 
 # realign bam
      ${IndelRealigner} -I ${rmdupbam} -targetIntervals ${bamlist} -o ${realignedbam}
-     rm ${bamlist} ${bai} ${rmdupbam}
-     rm -r ${tempdir}
 
 # fix bam
      ${FixMate} INPUT=${realignedbam} OUTPUT=${fixedbam} SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-     rm ${realignedbam} ${realignedbai}
-     rm -r ${tempdir}
 
 # make csv
      ${BaseRecalibrator} -I ${fixedbam} -cov ReadGroupCovariate -cov QualityScoreCovariate -cov CycleCovariate -cov ContextCovariate -o ${csv}
 
 # recal bam
      ${PrintReads} -I ${fixedbam} -BQSR ${csv} -o ${recalbam}
-     rm ${csv} ${fixedbam} ${fixedbai}
-     rm -r ${tempdir}
 
 # coverage
      ${COVERAGE} -b ${recalbam} -a ${CaptureRegions} | grep '^all' > ${coveragetxt}
+	 
 # zip
      ${FASTQC} ${recalbam} -o ${wes}
-
 
 fi
 # eo alignment 
@@ -225,6 +221,10 @@ fi
 ## variantCalling ------------------------------------------------------------------------------------------------
 if [ $task = VC ]
 then
+
+if [ ! -d ${tempdir} ]; then
+   mkdir ${tempdir}
+fi
 
 NameD=${case}_${num}_${task} 
 NameGD=${case}_${num}_GD 
@@ -285,7 +285,7 @@ hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
 hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput 
 hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv 
    ${CONVERT2ANNOVAR} ${hc_} ${hc_fpf} -allsample
-   ${TABLEANNOVAR}    ${hc_T_avi} ${soft}/annovar/humandb/ -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
+   ${TABLEANNOVAR}    ${hc_T_avi} ${ANNOVARData} -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
 hc_snpeff=$data/${NameD}.output.$name1.Somatic.SnpEff.vcf
    ${SNPEFF} ${hc_fpf} > ${hc_snpeff}
 
@@ -297,7 +297,7 @@ hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
 hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput 
 hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv 
    ${CONVERT2ANNOVAR} ${hc_} ${hc_fpf} -allsample
-   ${TABLEANNOVAR}    ${hc_N_avi} ${soft}/annovar/humandb/ -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
+   ${TABLEANNOVAR}    ${hc_N_avi} ${ANNOVARData} -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
 hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
       ${SNPEFF} ${hc_fpf} > ${hc_N_snpeff}
 fi
@@ -309,12 +309,12 @@ hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
 hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput 
 hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv 
    ${CONVERT2ANNOVAR3} ${hc_avi} ${hc_fpf} 
-   ${TABLEANNOVAR}     ${hc_avi} ${soft}/annovar/humandb/ -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
+   ${TABLEANNOVAR}     ${hc_avi} ${ANNOVARData} -protocol ${protocol} -buildver hg19 -operation ${argop} -csvout -otherinfo -remove -nastring NA
 hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
    ${SNPEFF} ${hc_fpf} > ${hc_L_snpeff}
 done
 
-
+rm -r ${tempdir}
 fi
 # eo VC 
 

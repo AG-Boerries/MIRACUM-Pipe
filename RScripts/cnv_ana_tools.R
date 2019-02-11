@@ -313,7 +313,7 @@ cnv_processing <- function(cnv_file, targets,
   cnv.genes <- unique(cnv.genes)
   cnv.genes <- cnv.genes[!is.na(cnv.genes)]
   prep <- prep_pwa(targets, cnv.genes)
-  loss_go <- get_terms(go.bp, outfile_gain, prep$de_genes, prep$universe)
+  loss_go <- get_terms(go.bp, outfile_loss, prep$de_genes, prep$universe)
   ########
   # GAIN #
   cnv.genes <- c()

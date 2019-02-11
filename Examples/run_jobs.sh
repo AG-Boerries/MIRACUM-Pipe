@@ -1,6 +1,6 @@
 #!/bin/bash
 
-maxhours=12
+maxhours=48
 # -------------------------------------------
     date
     echo "Submitting  GD TD"

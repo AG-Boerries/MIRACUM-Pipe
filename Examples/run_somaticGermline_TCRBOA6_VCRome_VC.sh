@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -S /bin/bash
 #PBS -k o
-#PBS -l nodes=1:ppn=12,walltime=12:00:00
+#PBS -l nodes=1:ppn=12,walltime=48:00:00
 #PBS -m a
 #PBS -N TCRBOA6_VCRome_VC
 #PBS -e /home/miracum/Analysis/somaticGermline_TCRBOA6_VCRome/err.somaticGermline_TCRBOA6_VCRome_VC.log

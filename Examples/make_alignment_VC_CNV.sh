@@ -3,7 +3,7 @@
 ## WES Pipeline for somatic and germline ##
 ###########################################
 # script to run the actual analysis
-# Version 08.10.2018
+# Version 05.02.2019
 
 
 case=$1;  # somatic or somaticGermline
@@ -15,7 +15,7 @@ sex=$4;
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
 ## General
-homedata="/home/miracum/Data" # folder contatining the raw data (.fastq files)
+homedata="/storage01/data/ngs" # folder contatining the raw data (.fastq files)
 annot="/home/miracum/Agilent" # folder containing annotation files like captureRegions.bed
 motherpath="/home/miracum/Analysis"
 mtb="${motherpath}/${case}_${num}" # folder containing output
@@ -23,8 +23,7 @@ wes="${mtb}/WES"
 ana="${mtb}/Analysis"
 RscriptPath="/home/miracum/Analysis/RScripts"
 DatabasePath="/home/miracum/Databases"
-#tempdir="/home/miracum/Analysis/tmp" # temporary folder
-tempdir="/scratch"
+tempdir="${mtb}/tmp" # temporary folder
 
 ## Genome
 GENOME="/home/miracum/Genome/Homo_sapiens/UCSC/hg19/Sequence/BWAIndex/genome.fa"
@@ -33,6 +32,7 @@ ChromoLength="/home/miracum/Genome/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/h
 
 ## SureSelect (Capture Kit)
 CaptureRegions="${annot}/VCRome_2/VCRome_2_1_hg19_capture_targets.bed"
+#CaptureRegions="${annot}/SureSelectV5UTR/V5UTR.bed"
 
 ## dbSNP vcf File
 dbSNPvcf="/home/miracum/Genome/Homo_sapiens/dbSNP/snp150hg19.vcf.gz "
@@ -41,7 +41,7 @@ dbSNPvcf="/home/miracum/Genome/Homo_sapiens/dbSNP/snp150hg19.vcf.gz "
 ## Parameters
 ## General
 # Cores to use
-nCore=12
+nCore="12"
 minBaseQual="28"
 minVAF="0.10"
 
@@ -57,11 +57,10 @@ minVarCount="4"
 protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
 argop='g,f,f,f,f,f,f,f,f,f,f'
 
-
 ## Tools and paths
 # Paths
 soft="/home/miracum/miniconda3" # folder containing all used tools
-java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
+java="${soft}/bin/java -Djava.io.tmpdir=${tempdir}" # path to java
 
 # Pre-Processing
 FASTQC="/home/miracum/FastQC/fastqc -t ${nCore} --extract "
@@ -81,7 +80,7 @@ SAMVIEW="${SAMTOOLS} view -@ ${nCore} "
 SAMSORT="${SAMTOOLS} sort -@ ${nCore} "
 SAMRMDUP="${SAMTOOLS} rmdup "
 SAMINDEX="${SAMTOOLS} index "
-MPILEUP="${SAMTOOLS} mpileup -B -C50 -f ${GENOME} -q 1 "
+MPILEUP="${SAMTOOLS} mpileup -B -C50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
 STATS="${SAMTOOLS} stats "
 
 # GATK
@@ -99,15 +98,17 @@ VarScan="${soft}/bin/varscan"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
+
 # ANNOVAR
 ANNOVAR="/home/miracum/annovar"
+ANNOVARData="${ANNOVAR}/humandb"
 CONVERT2ANNOVAR2="${ANNOVAR}/convert2annovar.pl --format vcf4old --outfile "
 CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
 CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
 TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 
 # COVERAGE
-COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
+COVERAGE="/home/miracum/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
 # SNPEFF
 SNPEFF="${java} -Xmx150g -jar /home/miracum/snpEff/snpEff.jar GRCh37.75 -c /home/miracum/snpEff/snpEff.config -canon -v"
@@ -164,6 +165,10 @@ coveragetxt=${wes}/${NameD}_coverage.all.txt
 if [ ${task} = GD ] || [ ${task} = TD ] 
 then
 
+if [ ! -d ${tempdir} ]; then
+   mkdir ${tempdir}
+fi
+
 # fastqc zip to WES
      ${FASTQC} ${fastq1} -o ${wes}
      ${FASTQC} ${fastq2} -o ${wes}
@@ -172,50 +177,41 @@ then
      ${TRIM} ${fastq1} ${fastq2} ${fastq_o1_p_t} ${fastq_o1_u_t}  ${fastq_o2_p_t} ${fastq_o2_u_t} ILLUMINACLIP:${TrimmomaticAdapter}/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
      ${FASTQC}  ${fastq_o1_p_t} -o ${wes}
      ${FASTQC}  ${fastq_o2_p_t} -o ${wes}
-
+	 
 # make bam
      ${BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t 12 ${GENOME}  ${fastq_o1_p_t}  ${fastq_o2_p_t} | ${SAMVIEW} -bS - > ${bam}
-     #rm ${fastq_o1_p_t} ${fastq_o1_u_t} 
-     #rm ${fastq_o2_p_t} ${fastq_o2_u_t} 
 
 # stats
      ${STATS} ${bam} > ${statstxt}
 
 # sort bam
      ${SAMSORT} ${bam} -T ${prefixsort} -o ${sortbam}
-     #rm ${bam}
+
 # rmdup bam
      ${SAMVIEW} -b -f 0x2 -q1 ${sortbam} | ${SAMRMDUP} - ${rmdupbam}
-     #rm ${sortbam}
 
 # make bai
      ${SAMINDEX} ${rmdupbam} ${bai}
+
 # make bam list
      ${RealignerTargetCreator} -o ${bamlist} -I ${rmdupbam}
 
 # realign bam
      ${IndelRealigner} -I ${rmdupbam} -targetIntervals ${bamlist} -o ${realignedbam}
-     #rm ${bamlist} ${bai} ${rmdupbam}
-     #rm -r ${tempdir}
 
 # fix bam
      ${FixMate} INPUT=${realignedbam} OUTPUT=${fixedbam} SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
-     #rm ${realignedbam} ${realignedbai}
-     #rm -r ${tempdir}
 
 # make csv
      ${BaseRecalibrator} -I ${fixedbam} -cov ReadGroupCovariate -cov QualityScoreCovariate -cov CycleCovariate -cov ContextCovariate -o ${csv}
 
 # recal bam
      ${PrintReads} -I ${fixedbam} -BQSR ${csv} -o ${recalbam}
-     #rm ${csv} ${fixedbam} ${fixedbai}
-     #rm -r ${tempdir}
 
 # coverage
      ${COVERAGE} -b ${recalbam} -a ${CaptureRegions} | grep '^all' > ${coveragetxt}
 # zip
      ${FASTQC} ${recalbam} -o ${wes}
-
 
 fi
 # eo alignment 
@@ -226,6 +222,10 @@ fi
 if [ $task = VC ]
 then
 
+if [ ! -d ${tempdir} ]; then
+   mkdir ${tempdir}
+fi
+
 NameD=${case}_${num}_${task} 
 NameGD=${case}_${num}_GD 
 NameTD=${case}_${num}_TD 
@@ -234,12 +234,12 @@ recalbamTD=${wes}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 snpvcf=${wes}/${NameD}.output.snp.vcf 
 indelvcf=${wes}/${NameD}.output.indel.vcf 
 
-${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage ${minCoverage} --tumor-purity ${TumorPurity} --min-var-freq ${minVAF} --min-freq-for-hom ${minFreqForHom} --min-avg-qual ${minBaseQual} --output-vcf 1 --mpileup 1
+   ${MPILEUP} ${recalbamGD} ${recalbamTD} | ${SOMATIC} --output-snp ${snpvcf} --output-indel ${indelvcf} --min-coverage ${minCoverage} --tumor-purity ${TumorPurity} --min-var-freq ${minVAF} --min-freq-for-hom ${minFreqForHom} --min-avg-qual ${minBaseQual} --output-vcf 1 --mpileup 1
 
 # Processing of somatic mutations
 
-   ${PROCESSSOMATIC} ${snpvcf} --min-tumor-freq ${minTumorFreq}
-   ${PROCESSSOMATIC} ${indelvcf} --min-tumor-freq ${minTumorFreq}
+   ${PROCESSSOMATIC} ${snpvcf} --min-tumor-freq ${minVAF}
+   ${PROCESSSOMATIC} ${indelvcf} --min-tumor-freq ${minVAF}
 
 # FP Filter:  snp.Somatic.hc snp.LOH.hc snp.Germline.hc
 # FP Filter:  indel.Somatic.hc indel.LOH.hc indel.Germline.hc
@@ -314,7 +314,7 @@ hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
    ${SNPEFF} ${hc_fpf} > ${hc_L_snpeff}
 done
 
-
+rm -r ${tempdir}
 fi
 # eo VC 
 

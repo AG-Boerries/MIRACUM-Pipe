@@ -1,6 +1,6 @@
 #!/bin/bash
 # script to create working directory and qsub job submissions for the WES samples
-# Version 08.10.2018
+# Version 05.02.2019
 
 ########################
 ## Example run script ##
@@ -52,15 +52,16 @@ do
 
 # create sh scripts
 dname=${case}_${num}_${d}
+jobname=${num}_${d}
 runname=${mtb}/run_${dname}.sh
 
 cat > ${runname} <<EOI
 #!/bin/bash
 #PBS -S /bin/bash
 #PBS -k o
-#PBS -l nodes=1:ppn=12,walltime=400:00:00
+#PBS -l nodes=1:ppn=12,walltime=48:00:00
 #PBS -m a
-#PBS -N $dname
+#PBS -N $jobname
 #PBS -e ${mtb}/err.${dname}.log
 #PBS -o ${mtb}/out.${dname}.log
 #PBS -d ${mtb}/
@@ -93,7 +94,7 @@ done
 cat > ${mtb}/run_jobs.sh <<EOI2
 #!/bin/bash
 
-maxhours=400
+maxhours=48
 # -------------------------------------------
     date
     echo "Submitting  GD TD"
@@ -179,7 +180,7 @@ done
 	 echo "Waiting for Report"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-	if [ -e ${mtb}/.STARTING_MARKER_Report ]; then
+	if [ -e ${mtb}/.STARTING_MARKER_Report]; then
      sleep 1h
      date
      (( count++ ))
