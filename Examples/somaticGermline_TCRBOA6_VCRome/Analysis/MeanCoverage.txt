@@ -1,0 +1,2 @@
+[1] "Mean Coverage somaticGermline_TCRBOA6_VCRome_GD : 135.2431552"
+[1] "Mean Coverage somaticGermline_TCRBOA6_VCRome_TD : 128.9476502"

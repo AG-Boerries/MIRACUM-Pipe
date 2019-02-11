@@ -1,0 +1,2371 @@
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2018.7.23)  8 FEB 2019 17:01
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**Report.tex
+(./Report.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, et
+hiopic, farsi, arabic, pinyin, croatian, bulgarian, ukrainian, russian, slovak,
+ czech, danish, dutch, usenglishmax, ukenglish, finnish, french, basque, ngerma
+n, german, swissgerman, ngerman-x-2012-05-30, german-x-2012-05-30, monogreek, g
+reek, ibycus, ancientgreek, hungarian, bengali, tamil, hindi, telugu, gujarati,
+ sanskrit, malayalam, kannada, assamese, marathi, oriya, panjabi, italian, lati
+n, latvian, lithuanian, mongolian, mongolianlmc, nynorsk, bokmal, indonesian, e
+speranto, coptic, welsh, irish, interlingua, serbian, serbianc, slovenian, friu
+lan, romansh, estonian, romanian, armenian, uppersorbian, turkish, afrikaans, i
+celandic, kurmanji, polish, portuguese, galician, catalan, spanish, swedish, th
+ai, loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip43
+\fb@frw=\dimen105
+\fb@frh=\dimen106
+\FrameRule=\dimen107
+\FrameSep=\dimen108
+)
+(/usr/share/texlive/texmf-dist/tex/latex/base/alltt.sty
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathpazo.sty
+Package: mathpazo 2005/04/12 PSNFSS-v9.2a Palatino w/ Pazo Math (D.Puga, WaS) 
+\symupright=\mathgroup4
+)
+(/var/lib/texmf/tex/generic/babel/babel.sty
+Package: babel 2008/07/08 v3.8m The Babel package
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/germanb.ldf
+Language: germanb 2008/06/01 v2.6m German support from the babel system
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2008/07/08 v3.8m Babel common definitions
+\babel@savecnt=\count88
+\U@D=\dimen109
+)
+\l@austrian = a dialect from \language\l@german 
+Package babel Info: Making " an active character on input line 102.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks15
+\inpenc@posthook=\toks16
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+Now handling font encoding OML ...
+... no UTF-8 mapping file for font encoding OML
+Now handling font encoding T1 ...
+... processing UTF-8 mapping file for font encoding T1
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.dfu
+File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A1 (decimal 161)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00AB (decimal 171)
+   defining Unicode char U+00BB (decimal 187)
+   defining Unicode char U+00BF (decimal 191)
+   defining Unicode char U+00C0 (decimal 192)
+   defining Unicode char U+00C1 (decimal 193)
+   defining Unicode char U+00C2 (decimal 194)
+   defining Unicode char U+00C3 (decimal 195)
+   defining Unicode char U+00C4 (decimal 196)
+   defining Unicode char U+00C5 (decimal 197)
+   defining Unicode char U+00C6 (decimal 198)
+   defining Unicode char U+00C7 (decimal 199)
+   defining Unicode char U+00C8 (decimal 200)
+   defining Unicode char U+00C9 (decimal 201)
+   defining Unicode char U+00CA (decimal 202)
+   defining Unicode char U+00CB (decimal 203)
+   defining Unicode char U+00CC (decimal 204)
+   defining Unicode char U+00CD (decimal 205)
+   defining Unicode char U+00CE (decimal 206)
+   defining Unicode char U+00CF (decimal 207)
+   defining Unicode char U+00D0 (decimal 208)
+   defining Unicode char U+00D1 (decimal 209)
+   defining Unicode char U+00D2 (decimal 210)
+   defining Unicode char U+00D3 (decimal 211)
+   defining Unicode char U+00D4 (decimal 212)
+   defining Unicode char U+00D5 (decimal 213)
+   defining Unicode char U+00D6 (decimal 214)
+   defining Unicode char U+00D8 (decimal 216)
+   defining Unicode char U+00D9 (decimal 217)
+   defining Unicode char U+00DA (decimal 218)
+   defining Unicode char U+00DB (decimal 219)
+   defining Unicode char U+00DC (decimal 220)
+   defining Unicode char U+00DD (decimal 221)
+   defining Unicode char U+00DE (decimal 222)
+   defining Unicode char U+00DF (decimal 223)
+   defining Unicode char U+00E0 (decimal 224)
+   defining Unicode char U+00E1 (decimal 225)
+   defining Unicode char U+00E2 (decimal 226)
+   defining Unicode char U+00E3 (decimal 227)
+   defining Unicode char U+00E4 (decimal 228)
+   defining Unicode char U+00E5 (decimal 229)
+   defining Unicode char U+00E6 (decimal 230)
+   defining Unicode char U+00E7 (decimal 231)
+   defining Unicode char U+00E8 (decimal 232)
+   defining Unicode char U+00E9 (decimal 233)
+   defining Unicode char U+00EA (decimal 234)
+   defining Unicode char U+00EB (decimal 235)
+   defining Unicode char U+00EC (decimal 236)
+   defining Unicode char U+00ED (decimal 237)
+   defining Unicode char U+00EE (decimal 238)
+   defining Unicode char U+00EF (decimal 239)
+   defining Unicode char U+00F0 (decimal 240)
+   defining Unicode char U+00F1 (decimal 241)
+   defining Unicode char U+00F2 (decimal 242)
+   defining Unicode char U+00F3 (decimal 243)
+   defining Unicode char U+00F4 (decimal 244)
+   defining Unicode char U+00F5 (decimal 245)
+   defining Unicode char U+00F6 (decimal 246)
+   defining Unicode char U+00F8 (decimal 248)
+   defining Unicode char U+00F9 (decimal 249)
+   defining Unicode char U+00FA (decimal 250)
+   defining Unicode char U+00FB (decimal 251)
+   defining Unicode char U+00FC (decimal 252)
+   defining Unicode char U+00FD (decimal 253)
+   defining Unicode char U+00FE (decimal 254)
+   defining Unicode char U+00FF (decimal 255)
+   defining Unicode char U+0102 (decimal 258)
+   defining Unicode char U+0103 (decimal 259)
+   defining Unicode char U+0104 (decimal 260)
+   defining Unicode char U+0105 (decimal 261)
+   defining Unicode char U+0106 (decimal 262)
+   defining Unicode char U+0107 (decimal 263)
+   defining Unicode char U+010C (decimal 268)
+   defining Unicode char U+010D (decimal 269)
+   defining Unicode char U+010E (decimal 270)
+   defining Unicode char U+010F (decimal 271)
+   defining Unicode char U+0110 (decimal 272)
+   defining Unicode char U+0111 (decimal 273)
+   defining Unicode char U+0118 (decimal 280)
+   defining Unicode char U+0119 (decimal 281)
+   defining Unicode char U+011A (decimal 282)
+   defining Unicode char U+011B (decimal 283)
+   defining Unicode char U+011E (decimal 286)
+   defining Unicode char U+011F (decimal 287)
+   defining Unicode char U+0130 (decimal 304)
+   defining Unicode char U+0131 (decimal 305)
+   defining Unicode char U+0132 (decimal 306)
+   defining Unicode char U+0133 (decimal 307)
+   defining Unicode char U+0139 (decimal 313)
+   defining Unicode char U+013A (decimal 314)
+   defining Unicode char U+013D (decimal 317)
+   defining Unicode char U+013E (decimal 318)
+   defining Unicode char U+0141 (decimal 321)
+   defining Unicode char U+0142 (decimal 322)
+   defining Unicode char U+0143 (decimal 323)
+   defining Unicode char U+0144 (decimal 324)
+   defining Unicode char U+0147 (decimal 327)
+   defining Unicode char U+0148 (decimal 328)
+   defining Unicode char U+014A (decimal 330)
+   defining Unicode char U+014B (decimal 331)
+   defining Unicode char U+0150 (decimal 336)
+   defining Unicode char U+0151 (decimal 337)
+   defining Unicode char U+0152 (decimal 338)
+   defining Unicode char U+0153 (decimal 339)
+   defining Unicode char U+0154 (decimal 340)
+   defining Unicode char U+0155 (decimal 341)
+   defining Unicode char U+0158 (decimal 344)
+   defining Unicode char U+0159 (decimal 345)
+   defining Unicode char U+015A (decimal 346)
+   defining Unicode char U+015B (decimal 347)
+   defining Unicode char U+015E (decimal 350)
+   defining Unicode char U+015F (decimal 351)
+   defining Unicode char U+0160 (decimal 352)
+   defining Unicode char U+0161 (decimal 353)
+   defining Unicode char U+0162 (decimal 354)
+   defining Unicode char U+0163 (decimal 355)
+   defining Unicode char U+0164 (decimal 356)
+   defining Unicode char U+0165 (decimal 357)
+   defining Unicode char U+016E (decimal 366)
+   defining Unicode char U+016F (decimal 367)
+   defining Unicode char U+0170 (decimal 368)
+   defining Unicode char U+0171 (decimal 369)
+   defining Unicode char U+0178 (decimal 376)
+   defining Unicode char U+0179 (decimal 377)
+   defining Unicode char U+017A (decimal 378)
+   defining Unicode char U+017B (decimal 379)
+   defining Unicode char U+017C (decimal 380)
+   defining Unicode char U+017D (decimal 381)
+   defining Unicode char U+017E (decimal 382)
+   defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2013 (decimal 8211)
+   defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2018 (decimal 8216)
+   defining Unicode char U+2019 (decimal 8217)
+   defining Unicode char U+201A (decimal 8218)
+   defining Unicode char U+201C (decimal 8220)
+   defining Unicode char U+201D (decimal 8221)
+   defining Unicode char U+201E (decimal 8222)
+   defining Unicode char U+2030 (decimal 8240)
+   defining Unicode char U+2031 (decimal 8241)
+   defining Unicode char U+2039 (decimal 8249)
+   defining Unicode char U+203A (decimal 8250)
+   defining Unicode char U+2423 (decimal 9251)
+)
+Now handling font encoding OT1 ...
+... processing UTF-8 mapping file for font encoding OT1
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ot1enc.dfu
+File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A1 (decimal 161)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00B8 (decimal 184)
+   defining Unicode char U+00BF (decimal 191)
+   defining Unicode char U+00C5 (decimal 197)
+   defining Unicode char U+00C6 (decimal 198)
+   defining Unicode char U+00D8 (decimal 216)
+   defining Unicode char U+00DF (decimal 223)
+   defining Unicode char U+00E6 (decimal 230)
+   defining Unicode char U+00EC (decimal 236)
+   defining Unicode char U+00ED (decimal 237)
+   defining Unicode char U+00EE (decimal 238)
+   defining Unicode char U+00EF (decimal 239)
+   defining Unicode char U+00F8 (decimal 248)
+   defining Unicode char U+0131 (decimal 305)
+   defining Unicode char U+0141 (decimal 321)
+   defining Unicode char U+0142 (decimal 322)
+   defining Unicode char U+0152 (decimal 338)
+   defining Unicode char U+0153 (decimal 339)
+   defining Unicode char U+2013 (decimal 8211)
+   defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2018 (decimal 8216)
+   defining Unicode char U+2019 (decimal 8217)
+   defining Unicode char U+201C (decimal 8220)
+   defining Unicode char U+201D (decimal 8221)
+)
+Now handling font encoding OMS ...
+... processing UTF-8 mapping file for font encoding OMS
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/omsenc.dfu
+File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A7 (decimal 167)
+   defining Unicode char U+00B6 (decimal 182)
+   defining Unicode char U+00B7 (decimal 183)
+   defining Unicode char U+2020 (decimal 8224)
+   defining Unicode char U+2021 (decimal 8225)
+   defining Unicode char U+2022 (decimal 8226)
+)
+Now handling font encoding OMX ...
+... no UTF-8 mapping file for font encoding OMX
+Now handling font encoding U ...
+... no UTF-8 mapping file for font encoding U
+   defining Unicode char U+00A9 (decimal 169)
+   defining Unicode char U+00AA (decimal 170)
+   defining Unicode char U+00AE (decimal 174)
+   defining Unicode char U+00BA (decimal 186)
+   defining Unicode char U+02C6 (decimal 710)
+   defining Unicode char U+02DC (decimal 732)
+   defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2026 (decimal 8230)
+   defining Unicode char U+2122 (decimal 8482)
+   defining Unicode char U+2423 (decimal 9251)
+))
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count89
+\float@exts=\toks17
+\float@box=\box26
+\@float@everytoks=\toks18
+\@floatcapt=\box27
+)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2012/01/12 v1.1d Sub-captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2012/02/19 v3.2f Customizing captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2012/01/12 v1.4b caption3 kernel (AR)
+\captionmargin=\dimen110
+\captionmargin@=\dimen111
+\captionwidth=\dimen112
+\caption@indent=\dimen113
+\caption@parindent=\dimen114
+\caption@hangindent=\dimen115
+)
+\c@ContinuedFloat=\count90
+Package caption Info: float package is loaded.
+)
+\c@subfigure=\count91
+\c@subtable=\count92
+)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count93
+\Gm@cntv=\count94
+\c@Gm@tempcnt=\count95
+\Gm@bindingoffset=\dimen116
+\Gm@wd@mp=\dimen117
+\Gm@odd@mp=\dimen118
+\Gm@even@mp=\dimen119
+\Gm@layoutwidth=\dimen120
+\Gm@layoutheight=\dimen121
+\Gm@layouthoffset=\dimen122
+\Gm@layoutvoffset=\dimen123
+\Gm@dimlist=\toks19
+)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2012/05/13 v6.82q Hypertext links for LaTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+Package: hobsub-hyperref 2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)
+
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
+Package: hobsub-generic 2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)
+Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)
+Package hobsub Info: Skipping package `infwarerr' (already loaded).
+Package hobsub Info: Skipping package `ltxcmds' (already loaded).
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+Package hobsub Info: Skipping package `ifvtex' (already loaded).
+Package: intcalc 2007/09/27 v1.1 Expandable calculations with integers (HO)
+Package hobsub Info: Skipping package `ifpdf' (already loaded).
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+Package: pdfescape 2011/11/25 v1.13 Implements pdfTeX's escape features (HO)
+Package: bigintcalc 2012/04/08 v1.3 Expandable calculations on big integers (HO
+)
+Package: bitset 2011/01/30 v1.1 Handle bit-vector datatype (HO)
+Package: uniquecounter 2011/01/30 v1.2 Provide unlimited unique counter (HO)
+)
+Package hobsub Info: Skipping package `hobsub' (already loaded).
+Package: letltxmacro 2010/09/02 v1.4 Let assignment for LaTeX macros (HO)
+Package: hopatch 2012/05/28 v1.2 Wrapper for package hooks (HO)
+Package: xcolor-patch 2011/01/30 xcolor patch
+Package: atveryend 2011/06/30 v1.8 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)
+Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
+Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+)
+\@linkdim=\dimen124
+\Hy@linkcounter=\count96
+\Hy@pagecounter=\count97
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2012/05/13 v6.82q Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+\Hy@SavedSpaceFactor=\count98
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+Package hyperref Info: Option `unicode' set `true' on input line 3941.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2012/05/13 v6.82q Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Option `pdfusetitle' set `true' on input line 3941.
+Package hyperref Info: Option `bookmarks' set `true' on input line 3941.
+Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 3941
+.
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 3941.
+Package hyperref Info: Option `breaklinks' set `false' on input line 3941.
+Package hyperref Info: Option `colorlinks' set `false' on input line 3941.
+Package hyperref Info: Hyper figures OFF on input line 4062.
+Package hyperref Info: Link nesting OFF on input line 4067.
+Package hyperref Info: Hyper index ON on input line 4070.
+Package hyperref Info: Plain pages OFF on input line 4077.
+Package hyperref Info: Backreferencing OFF on input line 4082.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4300.
+\c@Hy@tempcnt=\count99
+LaTeX Info: Redefining \url on input line 4653.
+\Fld@menulength=\count100
+\Field@Width=\dimen125
+\Fld@charsize=\dimen126
+Package hyperref Info: Hyper figures OFF on input line 5773.
+Package hyperref Info: Link nesting OFF on input line 5778.
+Package hyperref Info: Hyper index ON on input line 5781.
+Package hyperref Info: backreferencing OFF on input line 5788.
+Package hyperref Info: Link coloring OFF on input line 5793.
+Package hyperref Info: Link coloring with OCG OFF on input line 5798.
+Package hyperref Info: PDF/A mode OFF on input line 5803.
+LaTeX Info: Redefining \ref on input line 5843.
+LaTeX Info: Redefining \pageref on input line 5847.
+\Hy@abspage=\count101
+\c@Item=\count102
+\c@Hfootnote=\count103
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2012/05/13 v6.82q Hyperref driver for pdfTeX
+\Fld@listcount=\count104
+\c@bookmark@seq@number=\count105
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
+Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+82.
+)
+\Hy@SectionHShift=\skip44
+)
+(/usr/share/texlive/texmf-dist/tex/latex/breakurl/breakurl.sty
+Package: breakurl 2009/01/24 v1.30 Breakable hyperref URLs
+
+(/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2008/08/13 v2.6a package option processing (HA)
+
+(/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+\XKV@toks=\toks20
+\XKV@tempa@toks=\toks21
+\XKV@depth=\count106
+File: xkeyval.tex 2008/08/13 v2.6a key=value parser (HA)
+))
+
+Package breakurl Warning: You are using breakurl while processing via pdflatex.
+
+(breakurl)                \burl will be just a synonym of \url.
+(breakurl)                 on input line 47.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen127
+\lightrulewidth=\dimen128
+\cmidrulewidth=\dimen129
+\belowrulesep=\dimen130
+\belowbottomsep=\dimen131
+\aboverulesep=\dimen132
+\abovetopsep=\dimen133
+\cmidrulesep=\dimen134
+\cmidrulekern=\dimen135
+\defaultaddspace=\dimen136
+\@cmidla=\count107
+\@cmidlb=\count108
+\@aboverulesep=\dimen137
+\@belowrulesep=\dimen138
+\@thisruleclass=\count109
+\@lastruleclass=\count110
+\@thisrulewidth=\dimen139
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2004/02/01 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip45
+\LTright=\skip46
+\LTpre=\skip47
+\LTpost=\skip48
+\LTchunksize=\count111
+\LTcapwidth=\dimen140
+\LT@head=\box28
+\LT@firsthead=\box29
+\LT@foot=\box30
+\LT@lastfoot=\box31
+\LT@cols=\count112
+\LT@rows=\count113
+\c@LT@tables=\count114
+\c@LT@chunks=\count115
+\LT@p@ftn=\toks22
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
+Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen141
+\extrarowheight=\dimen142
+\NC@list=\toks23
+\extratabsurround=\skip49
+\backup@length=\skip50
+)
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen143
+)
+(/usr/share/texmf/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+
+(/usr/share/texlive/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
+\everycr=\toks24
+\minrowclearance=\skip51
+)
+LaTeX Info: Redefining \color on input line 702.
+\rownum=\count116
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen144
+\WF@size=\dimen145
+\c@WF@wrappedlines=\count117
+\WF@box=\box32
+\WF@everypar=\toks25
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty
+Package: pdflscape 2008/08/11 v0.10 Display of landscape pages in PDF (HO)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 80.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tabu/tabu.sty
+Package: tabu 2011/02/26 v2.8 - flexible LaTeX tabulars (FC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box33
+\sift@deathcycles=\count118
+\@vwid@loff=\dimen146
+\@vwid@roff=\dimen147
+)
+\c@taburow=\count119
+\tabu@nbcols=\count120
+\tabu@cnt=\count121
+\tabu@Xcol=\count122
+\tabu@alloc=\count123
+\tabu@nested=\count124
+\tabu@target=\dimen148
+\tabu@spreadtarget=\dimen149
+\tabu@naturalX=\dimen150
+\tabucolX=\dimen151
+\tabu@Xsum=\dimen152
+\extrarowdepth=\dimen153
+\abovetabulinesep=\dimen154
+\belowtabulinesep=\dimen155
+\tabustrutrule=\dimen156
+\tabu@thebody=\toks26
+\tabu@footnotes=\toks27
+\tabu@box=\box34
+\tabu@arstrutbox=\box35
+\tabu@hleads=\box36
+\tabu@vleads=\box37
+\tabu@cellskip=\skip52
+)
+(/usr/share/texlive/texmf-dist/tex/latex/threeparttable/threeparttable.sty
+Package: threeparttable 2003/06/13  v 3.0
+\@tempboxb=\box38
+)
+(/usr/share/texlive/texmf-dist/tex/latex/preprint/fullpage.sty
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip53
+)
+(/usr/share/texmf/tex/latex/R/tex/latex/upquote.sty
+Package: upquote 2003/08/11 v1.1 Covington's upright-quote modification to verb
+atim and verb
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+Now handling font encoding TS1 ...
+... processing UTF-8 mapping file for font encoding TS1
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1enc.dfu
+File: ts1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A2 (decimal 162)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00A4 (decimal 164)
+   defining Unicode char U+00A5 (decimal 165)
+   defining Unicode char U+00A6 (decimal 166)
+   defining Unicode char U+00A7 (decimal 167)
+   defining Unicode char U+00A8 (decimal 168)
+   defining Unicode char U+00A9 (decimal 169)
+   defining Unicode char U+00AA (decimal 170)
+   defining Unicode char U+00AC (decimal 172)
+   defining Unicode char U+00AE (decimal 174)
+   defining Unicode char U+00AF (decimal 175)
+   defining Unicode char U+00B0 (decimal 176)
+   defining Unicode char U+00B1 (decimal 177)
+   defining Unicode char U+00B2 (decimal 178)
+   defining Unicode char U+00B3 (decimal 179)
+   defining Unicode char U+00B4 (decimal 180)
+   defining Unicode char U+00B5 (decimal 181)
+   defining Unicode char U+00B6 (decimal 182)
+   defining Unicode char U+00B7 (decimal 183)
+   defining Unicode char U+00B9 (decimal 185)
+   defining Unicode char U+00BA (decimal 186)
+   defining Unicode char U+00BC (decimal 188)
+   defining Unicode char U+00BD (decimal 189)
+   defining Unicode char U+00BE (decimal 190)
+   defining Unicode char U+00D7 (decimal 215)
+   defining Unicode char U+00F7 (decimal 247)
+   defining Unicode char U+0192 (decimal 402)
+   defining Unicode char U+02C7 (decimal 711)
+   defining Unicode char U+02D8 (decimal 728)
+   defining Unicode char U+02DD (decimal 733)
+   defining Unicode char U+0E3F (decimal 3647)
+   defining Unicode char U+2016 (decimal 8214)
+   defining Unicode char U+2020 (decimal 8224)
+   defining Unicode char U+2021 (decimal 8225)
+   defining Unicode char U+2022 (decimal 8226)
+   defining Unicode char U+2030 (decimal 8240)
+   defining Unicode char U+2031 (decimal 8241)
+   defining Unicode char U+203B (decimal 8251)
+   defining Unicode char U+203D (decimal 8253)
+   defining Unicode char U+2044 (decimal 8260)
+   defining Unicode char U+204E (decimal 8270)
+   defining Unicode char U+2052 (decimal 8274)
+   defining Unicode char U+20A1 (decimal 8353)
+   defining Unicode char U+20A4 (decimal 8356)
+   defining Unicode char U+20A6 (decimal 8358)
+   defining Unicode char U+20A9 (decimal 8361)
+   defining Unicode char U+20AB (decimal 8363)
+   defining Unicode char U+20AC (decimal 8364)
+   defining Unicode char U+20B1 (decimal 8369)
+   defining Unicode char U+2103 (decimal 8451)
+   defining Unicode char U+2116 (decimal 8470)
+   defining Unicode char U+2117 (decimal 8471)
+   defining Unicode char U+211E (decimal 8478)
+   defining Unicode char U+2120 (decimal 8480)
+   defining Unicode char U+2122 (decimal 8482)
+   defining Unicode char U+2126 (decimal 8486)
+   defining Unicode char U+2127 (decimal 8487)
+   defining Unicode char U+212E (decimal 8494)
+   defining Unicode char U+2190 (decimal 8592)
+   defining Unicode char U+2191 (decimal 8593)
+   defining Unicode char U+2192 (decimal 8594)
+   defining Unicode char U+2193 (decimal 8595)
+   defining Unicode char U+2329 (decimal 9001)
+   defining Unicode char U+232A (decimal 9002)
+   defining Unicode char U+2422 (decimal 9250)
+   defining Unicode char U+25E6 (decimal 9702)
+   defining Unicode char U+25EF (decimal 9711)
+   defining Unicode char U+266A (decimal 9834)
+))
+LaTeX Info: Redefining \oldstylenums on input line 266.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 281.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 282.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 283.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 284.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 285.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 286.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 287.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 288.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 289.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 290.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 291.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 292.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 293.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 294.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 295.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 296.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 297.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 298.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 299.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 300.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 301.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 302.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 303.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 304.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 305.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 306.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 307.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 308.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 309.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 310.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 311.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 312.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 313.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 314.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 315.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 316.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 317.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 318.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 319.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 320.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 321.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 322.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 323.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 324.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 325.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 326.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 327.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 328.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 329.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 330.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 331.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 332.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 333.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 334.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 335.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 336.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 337.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 338.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 339.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 340.
+))
+
+LaTeX Warning: Unused global option(s):
+    [woside].
+
+(./Report.aux)
+\openout1 = `Report.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 84.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 84.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Try loading font information for T1+pplx on input line 84.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pplx.fd
+File: t1pplx.fd 2004/09/06 font definitions for T1/pplx.
+)
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count125
+\scratchdimen=\dimen157
+\scratchbox=\box39
+\nofMPsegments=\count126
+\nofMParguments=\count127
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count128
+\MPscratchDim=\dimen158
+\MPnumerator=\count129
+\makeMPintoPDFobject=\count130
+\everyMPtoPDFconversion=\toks29
+) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+)
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+\big@size=\dimen159
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: longtable package is loaded.
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2011/09/12 v1.3 longtable captions (AR)
+)
+Package caption Info: threeparttable package is loaded.
+Package caption Info: wrapfig package is loaded.
+Package caption Info: End \AtBeginDocument code.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=452.9679pt
+* \textheight=670.50687pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=0.0pt
+* \headheight=0.0pt
+* \headsep=0.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=35.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\AtBeginShipoutBox=\box40
+Package hyperref Info: Link coloring OFF on input line 84.
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2010/04/30 v2.40 Cross-referencing by name of section
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
+)
+\c@section@level=\count131
+)
+LaTeX Info: Redefining \ref on input line 84.
+LaTeX Info: Redefining \pageref on input line 84.
+LaTeX Info: Redefining \nameref on input line 84.
+
+(./Report.out) (./Report.out)
+\@outlinefile=\write3
+\openout3 = `Report.out'.
+
+LaTeX Font Info:    Try loading font information for OT1+pplx on input line 93.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pplx.fd
+File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
+)
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 93.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlzplm.fd
+File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 93.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omszplm.fd
+File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 93.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxzplm.fd
+File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+)
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 93.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1zplm.fd
+File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
+)
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <17.28> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 93.
+ (./Report.toc
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <12> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 2.
+)
+\tf@toc=\write4
+\openout4 = `Report.toc'.
+
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 97.
+
+<../WES/TCRBOA6-N-WEX.read1_fastqc/Images/per_base_quality.png, id=137, 828.093
+75pt x 602.25pt>
+File: ../WES/TCRBOA6-N-WEX.read1_fastqc/Images/per_base_quality.png Graphic fil
+e (type png)
+
+<use ../WES/TCRBOA6-N-WEX.read1_fastqc/Images/per_base_quality.png>
+Package pdftex.def Info: ../WES/TCRBOA6-N-WEX.read1_fastqc/Images/per_base_qual
+ity.png used on input line 102.
+(pdftex.def)             Requested size: 203.83417pt x 148.23715pt.
+
+<../WES/TCRBOA6-T-WEX.read1_fastqc/Images/per_base_quality.png, id=138, 828.093
+75pt x 602.25pt>
+File: ../WES/TCRBOA6-T-WEX.read1_fastqc/Images/per_base_quality.png Graphic fil
+e (type png)
+
+<use ../WES/TCRBOA6-T-WEX.read1_fastqc/Images/per_base_quality.png>
+Package pdftex.def Info: ../WES/TCRBOA6-T-WEX.read1_fastqc/Images/per_base_qual
+ity.png used on input line 107.
+(pdftex.def)             Requested size: 203.83417pt x 148.23715pt.
+
+<../WES/somaticGermline_TCRBOA6_VCRome_TD_output.sort.filtered.rmdup.realigned.
+fixed.recal_fastqc/Images/per_base_quality.png, id=139, 813.0375pt x 602.25pt>
+File: ../WES/somaticGermline_TCRBOA6_VCRome_TD_output.sort.filtered.rmdup.reali
+gned.fixed.recal_fastqc/Images/per_base_quality.png Graphic file (type png)
+
+<use ../WES/somaticGermline_TCRBOA6_VCRome_TD_output.sort.filtered.rmdup.realig
+ned.fixed.recal_fastqc/Images/per_base_quality.png>
+Package pdftex.def Info: ../WES/somaticGermline_TCRBOA6_VCRome_TD_output.sort.f
+iltered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png used on 
+input line 118.
+(pdftex.def)             Requested size: 203.83417pt x 150.98485pt.
+
+<../WES/somaticGermline_TCRBOA6_VCRome_GD_output.sort.filtered.rmdup.realigned.
+fixed.recal_fastqc/Images/per_base_quality.png, id=140, 813.0375pt x 602.25pt>
+File: ../WES/somaticGermline_TCRBOA6_VCRome_GD_output.sort.filtered.rmdup.reali
+gned.fixed.recal_fastqc/Images/per_base_quality.png Graphic file (type png)
+
+<use ../WES/somaticGermline_TCRBOA6_VCRome_GD_output.sort.filtered.rmdup.realig
+ned.fixed.recal_fastqc/Images/per_base_quality.png>
+Package pdftex.def Info: ../WES/somaticGermline_TCRBOA6_VCRome_GD_output.sort.f
+iltered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png used on 
+input line 123.
+(pdftex.def)             Requested size: 203.83417pt x 150.98485pt.
+LaTeX Font Info:    Try loading font information for TS1+pplx on input line 132
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1pplx.fd
+File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
+)
+<somaticGermline_TCRBOA6_VCRome_coverage_2019-02-08.pdf, id=141, 867.24pt x 867
+.24pt>
+File: somaticGermline_TCRBOA6_VCRome_coverage_2019-02-08.pdf Graphic file (type
+ pdf)
+ <use somaticGermline_TCRBOA6_VCRome_coverage_2019-02-08.pdf>
+Package pdftex.def Info: somaticGermline_TCRBOA6_VCRome_coverage_2019-02-08.pdf
+ used on input line 143.
+(pdftex.def)             Requested size: 452.9679pt x 452.96559pt.
+ [2
+
+ <../WES/TCRBOA6-N-WEX.read1_fastqc/Images/per_base_quality.png (PNG copy)> <..
+/WES/TCRBOA6-T-WEX.read1_fastqc/Images/per_base_quality.png (PNG copy)> <../WES
+/somaticGermline_TCRBOA6_VCRome_TD_output.sort.filtered.rmdup.realigned.fixed.r
+ecal_fastqc/Images/per_base_quality.png (PNG copy)> <../WES/somaticGermline_TCR
+BOA6_VCRome_GD_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/p
+er_base_quality.png (PNG copy)>]
+
+Package xcolor Warning: Incompatible color definition on input line 150.
+
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 151.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+) [3 <./somaticGermline_TCRBOA6_VCRome_coverage_2019-02-08.pdf>]
+<somaticGermline_TCRBOA6_VCRome_TD_circos_2019-02-08.pdf, id=162, 505.89pt x 50
+5.89pt>
+File: somaticGermline_TCRBOA6_VCRome_TD_circos_2019-02-08.pdf Graphic file (typ
+e pdf)
+ <use somaticGermline_TCRBOA6_VCRome_TD_circos_2019-02-08.pdf>
+Package pdftex.def Info: somaticGermline_TCRBOA6_VCRome_TD_circos_2019-02-08.pd
+f used on input line 182.
+(pdftex.def)             Requested size: 452.9679pt x 452.97328pt.
+ [4
+
+]
+[5 <./somaticGermline_TCRBOA6_VCRome_TD_circos_2019-02-08.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 190.
+
+
+Package xcolor Warning: Incompatible color definition on input line 223.
+
+[6
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 247.
+
+
+Overfull \hbox (8.66617pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (6.48282pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.51433pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (3.3856pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (0.83441pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (5.20992pt too wide) in paragraph at lines 256--256
+ []|[]|
+ []
+
+
+Overfull \hbox (6.41762pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.30786pt too wide) in paragraph at lines 256--256
+[]|[]|  
+ []
+
+
+Overfull \hbox (1.31999pt too wide) in paragraph at lines 259--259
+[]|\T1/pplx/m/n/8 VHL|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 259--259
+[]|\T1/pplx/m/n/8 51|100|  
+ []
+
+
+Overfull \hbox (7.10399pt too wide) in paragraph at lines 260--260
+[]|\T1/pplx/m/n/8 MEN1|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 260--260
+[]|\T1/pplx/m/n/8 56.07%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 260--260
+[]|\T1/pplx/m/n/8 60|107|  
+ []
+
+[7
+
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 272.
+
+
+Overfull \hbox (6.48282pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.51433pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (3.3856pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (0.83441pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (5.20992pt too wide) in paragraph at lines 279--279
+ []|[]|
+ []
+
+
+Overfull \hbox (6.41762pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.30786pt too wide) in paragraph at lines 279--279
+[]|[]|  
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 275--281
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (15.10399pt too wide) in paragraph at lines 284--284
+[]|\T1/pplx/m/n/8 Zygosity|  
+ []
+
+
+Overfull \hbox (5.456pt too wide) in paragraph at lines 284--284
+[]|\T1/pplx/m/n/8 Reads|  
+ []
+
+
+Overfull \hbox (2.23999pt too wide) in paragraph at lines 284--284
+[]|\T1/pplx/m/n/8 MAF|  
+ []
+
+
+Overfull \hbox (8.28pt too wide) in paragraph at lines 284--284
+ []|\T1/pplx/m/n/8 CADD|
+ []
+
+
+Overfull \hbox (9.74399pt too wide) in paragraph at lines 284--284
+[]|\T1/pplx/m/n/8 Condel|  
+ []
+
+
+Overfull \hbox (16.90398pt too wide) in paragraph at lines 284--284
+[]|\T1/pplx/m/n/8 CLINSIG|  
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 281--286
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 286--288
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 288--290
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 292--292
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 292--292
+[]|\T1/pplx/m/n/8 73.33%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 292--292
+[]|\T1/pplx/m/n/8 22|30|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 292--292
+ []|\T1/pplx/m/n/8 20.900|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 293--293
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (1.67198pt too wide) in paragraph at lines 293--293
+[]|\T1/pplx/m/n/8 p.Leu1633Phe|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 293--293
+[]|\T1/pplx/m/n/8 62.16%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 293--293
+[]|\T1/pplx/m/n/8 23|37|  
+ []
+
+
+Overfull \hbox (14.68pt too wide) in paragraph at lines 293--293
+[]|\T1/pplx/m/n/8 0.00e+00|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 293--293
+ []|\T1/pplx/m/n/8 19.080|
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 294--294
+[]|\T1/pplx/m/n/8 56.07%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 294--294
+[]|\T1/pplx/m/n/8 60|107|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 295--295
+[]|\T1/pplx/m/n/8 51|100|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 296--296
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 296--296
+[]|\T1/pplx/m/n/8 40.68%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 296--296
+[]|\T1/pplx/m/n/8 24|59|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 296--296
+ []|\T1/pplx/m/n/8 11.510|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 298--298
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 298--298
+[]|\T1/pplx/m/n/8 40.38%|  
+ []
+
+
+Overfull \hbox (12.84799pt too wide) in paragraph at lines 298--298
+[]|\T1/pplx/m/n/8 126|312|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 298--298
+[]|\T1/pplx/m/n/8 9.31e- 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 298--298
+ []|\T1/pplx/m/n/8 34.000|
+ []
+
+
+Overfull \hbox (3.46397pt too wide) in paragraph at lines 298--299
+[]|\T1/pplx/m/n/8 ID=COSM6749990, 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 299--299
+[]|\T1/pplx/m/n/8 40.35%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 299--299
+[]|\T1/pplx/m/n/8 23|57|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 299--299
+ []|\T1/pplx/m/n/8 35.000|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 300--300
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 300--300
+[]|\T1/pplx/m/n/8 40.12%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 300--300
+[]|\T1/pplx/m/n/8 67|167|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 300--300
+ []|\T1/pplx/m/n/8 10.670|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 301--301
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 301--301
+[]|\T1/pplx/m/n/8 37.41%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 301--301
+[]|\T1/pplx/m/n/8 55|147|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 301--301
+ []|\T1/pplx/m/n/8 23.800|
+ []
+
+
+Overfull \hbox (1.46397pt too wide) in paragraph at lines 301--302
+[]|\T1/pplx/m/n/8 ID=COSM2989103|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 302--302
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (4.72pt too wide) in paragraph at lines 302--302
+[]|\T1/pplx/m/n/8 35.8%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 302--302
+[]|\T1/pplx/m/n/8 63|176|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 302--302
+ []|\T1/pplx/m/n/8 32.000|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 304--304
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 304--304
+[]|\T1/pplx/m/n/8 33.94%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 304--304
+[]|\T1/pplx/m/n/8 37|109|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 304--304
+ []|\T1/pplx/m/n/8 9.774|
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 305--305
+[]|\T1/pplx/m/n/8 33.86%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 305--305
+[]|\T1/pplx/m/n/8 64|189|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 305--305
+ []|\T1/pplx/m/n/8 3.844|
+ []
+
+
+Overfull \hbox (15.22397pt too wide) in paragraph at lines 306--306
+[]|\T1/pplx/m/n/8 carcinoembryonic 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 306--306
+[]|\T1/pplx/m/n/8 33.33%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 306--306
+[]|\T1/pplx/m/n/8 15|45|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 307--307
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 307--307
+[]|\T1/pplx/m/n/8 32.39%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 307--307
+[]|\T1/pplx/m/n/8 23|71|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 307--307
+ []|\T1/pplx/m/n/8 1.999|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 308--308
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (4.72pt too wide) in paragraph at lines 308--308
+[]|\T1/pplx/m/n/8 31.5%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 308--308
+[]|\T1/pplx/m/n/8 40|127|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 308--308
+ []|\T1/pplx/m/n/8 24.800|
+ []
+
+
+Overfull \hbox (11.32802pt too wide) in paragraph at lines 310--310
+[]|\T1/pplx/m/n/8 tetratricopeptide 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 310--310
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 310--310
+[]|\T1/pplx/m/n/8 29.55%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 310--310
+[]|\T1/pplx/m/n/8 39|132|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 310--310
+ []|\T1/pplx/m/n/8 23.100|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 311--311
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 311--311
+[]|\T1/pplx/m/n/8 28.12%|  
+ []
+
+
+Overfull \hbox (0.84799pt too wide) in paragraph at lines 311--311
+[]|\T1/pplx/m/n/8 9|32|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 311--311
+ []|\T1/pplx/m/n/8 6.906|
+ []
+
+
+Overfull \hbox (7.84798pt too wide) in paragraph at lines 312--312
+[]|\T1/pplx/m/n/8 transmembrane 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 312--312
+[]|\T1/pplx/m/n/8 27.88%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 312--312
+[]|\T1/pplx/m/n/8 46|165|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 312--312
+ []|\T1/pplx/m/n/8 37.000|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 313--313
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 313--313
+[]|\T1/pplx/m/n/8 26.62%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 313--313
+[]|\T1/pplx/m/n/8 37|139|  
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 313--313
+ []|\T1/pplx/m/n/8 23.700|
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 314--314
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 314--314
+[]|\T1/pplx/m/n/8 10.48%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 314--314
+[]|\T1/pplx/m/n/8 26|248|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 314--314
+ []|\T1/pplx/m/n/8 0.001|
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 290--315
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (17.49313pt too wide) in alignment at lines 315--315
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+[8
+
+] [9]
+
+Package xcolor Warning: Incompatible color definition on input line 324.
+
+
+Overfull \hbox (6.48282pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (22.19426pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (19.11981pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (26.36327pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (23.46135pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (0.83441pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (5.20992pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (6.41762pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.30786pt too wide) in paragraph at lines 331--331
+[]|[]|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 53.66%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 78.38%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 66|124|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 58|74|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 334--334
+[]|\T1/pplx/m/n/8 8.96e- 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 41.73%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 76.54%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 58|139|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 62|81|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 8.06e- 
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 335--335
+[]|\T1/pplx/m/n/8 3.410|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 51.67%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 82.05%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 31|60|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 32|39|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 2.70e- 
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 336--336
+[]|\T1/pplx/m/n/8 13.20|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 58.33%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 85.45%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 42|72|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 47|55|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 8.00e- 
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 337--337
+[]|\T1/pplx/m/n/8 10.25|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 338--338
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 338--338
+[]|\T1/pplx/m/n/8 77.78%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 338--338
+[]|\T1/pplx/m/n/8 12|30|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 338--338
+[]|\T1/pplx/m/n/8 14|18|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 338--338
+[]|\T1/pplx/m/n/8 9.00e- 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 49.23%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 78.31%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 64|130|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 65|83|  
+ []
+
+
+Overfull \hbox (14.68pt too wide) in paragraph at lines 340--340
+[]|\T1/pplx/m/n/8 0.00e+00|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 341--341
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 341--341
+[]|\T1/pplx/m/n/8 81.03%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 341--341
+[]|\T1/pplx/m/n/8 53|100|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 341--341
+[]|\T1/pplx/m/n/8 47|58|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 341--341
+[]|\T1/pplx/m/n/8 2.00e- 
+ []
+
+
+Overfull \hbox (1.46397pt too wide) in paragraph at lines 341--342
+[]|\T1/pplx/m/n/8 ID=COSM1229944|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 51.52%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 82.09%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 68|132|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 55|67|  
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 342--342
+[]|\T1/pplx/m/n/8 12.94|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 343--343
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 343--343
+[]|\T1/pplx/m/n/8 42.36%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 343--343
+[]|\T1/pplx/m/n/8 76.61%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 343--343
+[]|\T1/pplx/m/n/8 61|144|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 343--343
+[]|\T1/pplx/m/n/8 95|124|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 344--344
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 344--344
+[]|\T1/pplx/m/n/8 46.31%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 344--344
+[]|\T1/pplx/m/n/8 69|149|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 344--344
+[]|\T1/pplx/m/n/8 72|96|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 53.33%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 88.24%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 24|45|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 45|51|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 346--346
+[]|\T1/pplx/m/n/8 1.80e- 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 51.52%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 80.49%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 34|66|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 33|41|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 8.96e- 
+ []
+
+
+Overfull \hbox (2.0pt too wide) in paragraph at lines 347--347
+[]|\T1/pplx/m/n/8 14.80|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 348--348
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 348--348
+[]|\T1/pplx/m/n/8 55.17%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 348--348
+[]|\T1/pplx/m/n/8 83.05%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 348--348
+[]|\T1/pplx/m/n/8 64|116|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 348--348
+[]|\T1/pplx/m/n/8 49|59|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 57.66%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 87.83%|  
+ []
+
+
+Overfull \hbox (8.84799pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 64|111|  
+ []
+
+
+Overfull \hbox (12.84799pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 101|115|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 349--349
+[]|\T1/pplx/m/n/8 1.80e- 
+ []
+
+
+Overfull \hbox (1.46397pt too wide) in paragraph at lines 349--350
+[]|\T1/pplx/m/n/8 ID=COSM6830919|  
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 50.91%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 80.56%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 28|55|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 29|36|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 350--350
+[]|\T1/pplx/m/n/8 3.59e- 
+ []
+
+
+Overfull \hbox (11.29593pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 nonsynonymous 
+ []
+
+
+Overfull \hbox (4.72pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 47.5%|  
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 88.24%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 19|40|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 30|34|  
+ []
+
+
+Overfull \hbox (4.496pt too wide) in paragraph at lines 352--352
+[]|\T1/pplx/m/n/8 2.70e- 
+ []
+
+
+Overfull \hbox (8.72pt too wide) in paragraph at lines 353--353
+[]|\T1/pplx/m/n/8 66.67%|  
+ []
+
+
+Overfull \hbox (2.72pt too wide) in paragraph at lines 353--353
+[]|\T1/pplx/m/n/8 100%|  
+ []
+
+
+Overfull \hbox (4.84799pt too wide) in paragraph at lines 353--353
+[]|\T1/pplx/m/n/8 16|16|  
+ []
+
+
+Overfull \hbox (29.49313pt too wide) in alignment at lines 327--355
+ [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+[10
+
+] [11]
+
+Package xcolor Warning: Incompatible color definition on input line 367.
+
+[12
+
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 401.
+
+[13
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 426.
+
+[14
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 450.
+
+[15
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 473.
+
+[16
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 485.
+
+
+<somaticGermline_TCRBOA6_VCRome_CNV_Plot_2019-02-08.pdf, id=242, 1084.05pt x 10
+84.05pt>
+File: somaticGermline_TCRBOA6_VCRome_CNV_Plot_2019-02-08.pdf Graphic file (type
+ pdf)
+ <use somaticGermline_TCRBOA6_VCRome_CNV_Plot_2019-02-08.pdf>
+Package pdftex.def Info: somaticGermline_TCRBOA6_VCRome_CNV_Plot_2019-02-08.pdf
+ used on input line 494.
+(pdftex.def)             Requested size: 452.9679pt x 452.96558pt.
+
+<somaticGermline_TCRBOA6_VCRome_CNV_Plot_Ideogram_2019-02-08.pdf, id=243, 867.2
+4pt x 867.24pt>
+File: somaticGermline_TCRBOA6_VCRome_CNV_Plot_Ideogram_2019-02-08.pdf Graphic f
+ile (type pdf)
+
+<use somaticGermline_TCRBOA6_VCRome_CNV_Plot_Ideogram_2019-02-08.pdf>
+Package pdftex.def Info: somaticGermline_TCRBOA6_VCRome_CNV_Plot_Ideogram_2019-
+02-08.pdf used on input line 501.
+(pdftex.def)             Requested size: 452.9679pt x 452.96559pt.
+ [17
+
+
+ <./somaticGermline_TCRBOA6_VCRome_CNV_Plot_2019-02-08.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 508.
+
+
+Overfull \hbox (4.85591pt too wide) in paragraph at lines 513--535
+ [][] 
+ []
+
+[18 <./somaticGermline_TCRBOA6_VCRome_CNV_Plot_Ideogram_2019-02-08.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 543.
+
+[19]
+
+Package xcolor Warning: Incompatible color definition on input line 587.
+
+
+Overfull \hbox (8.892pt too wide) in paragraph at lines 593--594
+[]|\T1/pplx/m/n/12 adj.P.Val|  
+ []
+
+[20
+
+
+]
+
+Package xcolor Warning: Incompatible color definition on input line 629.
+
+
+Overfull \hbox (8.892pt too wide) in paragraph at lines 635--636
+[]|\T1/pplx/m/n/12 adj.P.Val|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 651--652
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 652--653
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 653--654
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 654--655
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 656--657
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 657--658
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 658--659
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 659--660
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+
+Overfull \hbox (10.01999pt too wide) in paragraph at lines 660--661
+[]|\T1/pplx/m/n/12 1.00e+00|  
+ []
+
+[21
+
+] [22]
+
+Package xcolor Warning: Incompatible color definition on input line 680.
+
+[23
+
+
+] [24
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 752.
+ [25]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 752.
+ (./Report.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 752.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 752.
+Package rerunfilecheck Info: File `Report.out' has not changed.
+(rerunfilecheck)             Checksum: FD7EA3C81012D8695B500DC5C56FB4F9;4504.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 752.
+ ) 
+Here is how much of TeX's memory you used:
+ 11090 strings out of 493485
+ 160690 string characters out of 3143526
+ 338243 words of memory out of 3000000
+ 14100 multiletter control sequences out of 15000+200000
+ 51111 words of font info for 96 fonts, out of 3000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 42i,12n,84p,665b,595s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/
+fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf/fonts/type1/public/cm-supe
+r/sftt1200.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on Report.pdf (25 pages, 1474224 bytes).
+PDF statistics:
+ 343 PDF objects out of 1000 (max. 8388607)
+ 296 compressed objects within 3 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 241 words of extra memory for PDF output out of 10000 (max. 10000000)
+
