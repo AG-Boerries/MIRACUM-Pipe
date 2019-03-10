@@ -1,0 +1,471 @@
+{
+    "uuid": "ad0f14b9-59ac-4cc7-bf74-d760a287a979",
+    "tags": [],
+    "format-version": "0.1",
+    "name": "MIRACUM - Quality control (beta1)",
+    "version": 4,
+    "steps": {
+        "0": {
+            "tool_id": null,
+            "tool_version": null,
+            "outputs": [],
+            "workflow_outputs": [
+                {
+                    "output_name": "output",
+                    "uuid": "7351147f-8b54-41d4-852b-c7382318ad52",
+                    "label": null
+                }
+            ],
+            "input_connections": {},
+            "tool_state": "{}",
+            "id": 0,
+            "uuid": "64c465ee-4e7c-4991-a9ec-a9286d637935",
+            "errors": null,
+            "name": "Input dataset",
+            "label": "Normal sample forward reads",
+            "inputs": [],
+            "position": {
+                "top": 254.60000610351562,
+                "left": 235
+            },
+            "annotation": "",
+            "content_id": null,
+            "type": "data_input"
+        },
+        "1": {
+            "tool_id": null,
+            "tool_version": null,
+            "outputs": [],
+            "workflow_outputs": [
+                {
+                    "output_name": "output",
+                    "uuid": "d905a668-7c62-4492-baef-f1c6964c12a7",
+                    "label": null
+                }
+            ],
+            "input_connections": {},
+            "tool_state": "{}",
+            "id": 1,
+            "uuid": "24e2a788-0171-49ed-a40c-18b118d3cf7b",
+            "errors": null,
+            "name": "Input dataset",
+            "label": "Normal sample reverse reads",
+            "inputs": [],
+            "position": {
+                "top": 343.6166687011719,
+                "left": 235.64999389648438
+            },
+            "annotation": "",
+            "content_id": null,
+            "type": "data_input"
+        },
+        "2": {
+            "tool_id": null,
+            "tool_version": null,
+            "outputs": [],
+            "workflow_outputs": [
+                {
+                    "output_name": "output",
+                    "uuid": "a4deb57e-539c-4798-a0a2-19cf085bb46c",
+                    "label": null
+                }
+            ],
+            "input_connections": {},
+            "tool_state": "{}",
+            "id": 2,
+            "uuid": "cdb6149c-2b74-49fe-91d4-3f44e7bcc247",
+            "errors": null,
+            "name": "Input dataset",
+            "label": "Tumor sample forward reads",
+            "inputs": [],
+            "position": {
+                "top": 503.6000061035156,
+                "left": 239
+            },
+            "annotation": "",
+            "content_id": null,
+            "type": "data_input"
+        },
+        "3": {
+            "tool_id": null,
+            "tool_version": null,
+            "outputs": [],
+            "workflow_outputs": [
+                {
+                    "output_name": "output",
+                    "uuid": "ac87e2de-b887-490f-aecd-a8d7243c4b03",
+                    "label": null
+                }
+            ],
+            "input_connections": {},
+            "tool_state": "{}",
+            "id": 3,
+            "uuid": "76ba2a49-48d1-429a-acf8-333dc9d21a1f",
+            "errors": null,
+            "name": "Input dataset",
+            "label": "Tumor sample reverse reads",
+            "inputs": [],
+            "position": {
+                "top": 594.5999755859375,
+                "left": 240
+            },
+            "annotation": "",
+            "content_id": null,
+            "type": "data_input"
+        },
+        "4": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "tool_version": "0.72",
+            "outputs": [
+                {
+                    "type": "html",
+                    "name": "html_file"
+                },
+                {
+                    "type": "txt",
+                    "name": "text_file"
+                }
+            ],
+            "workflow_outputs": [
+                {
+                    "output_name": "text_file",
+                    "uuid": "a7ee651b-5c0f-4fb3-b256-87e4e90cc9cd",
+                    "label": null
+                }
+            ],
+            "input_connections": {
+                "input_file": {
+                    "output_name": "output",
+                    "id": 0
+                }
+            },
+            "tool_state": "{\"__page__\": null, \"contaminants\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"limits\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 4,
+            "tool_shed_repository": {
+                "owner": "devteam",
+                "changeset_revision": "c15237684a01",
+                "name": "fastqc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "aa0e22cd-dadb-4577-9a8a-6a3c8af17e5c",
+            "errors": null,
+            "name": "FastQC",
+            "post_job_actions": {
+                "HideDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (html) for #{input_file|basename}"
+                    }
+                },
+                "TagDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "TagDatasetAction",
+                    "action_arguments": {
+                        "tags": "#NORMAL"
+                    }
+                },
+                "RenameDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (txt) for #{input_file|basename}"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "contaminants",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "limits",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "input_file",
+                    "description": "runtime parameter for tool FastQC"
+                }
+            ],
+            "position": {
+                "top": 124.60000610351562,
+                "left": 429
+            },
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "type": "tool"
+        },
+        "5": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "tool_version": "0.72",
+            "outputs": [
+                {
+                    "type": "html",
+                    "name": "html_file"
+                },
+                {
+                    "type": "txt",
+                    "name": "text_file"
+                }
+            ],
+            "workflow_outputs": [
+                {
+                    "output_name": "text_file",
+                    "uuid": "625a5cc1-374c-4ba1-9900-77fce6916ae4",
+                    "label": null
+                }
+            ],
+            "input_connections": {
+                "input_file": {
+                    "output_name": "output",
+                    "id": 1
+                }
+            },
+            "tool_state": "{\"__page__\": null, \"contaminants\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"limits\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 5,
+            "tool_shed_repository": {
+                "owner": "devteam",
+                "changeset_revision": "c15237684a01",
+                "name": "fastqc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "24d41e62-502a-4594-aeb9-27513fa8cda1",
+            "errors": null,
+            "name": "FastQC",
+            "post_job_actions": {
+                "HideDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (html) for #{input_file|basename}"
+                    }
+                },
+                "TagDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "TagDatasetAction",
+                    "action_arguments": {
+                        "tags": "#NORMAL"
+                    }
+                },
+                "RenameDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (txt) for #{input_file|basename}"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "contaminants",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "limits",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "input_file",
+                    "description": "runtime parameter for tool FastQC"
+                }
+            ],
+            "position": {
+                "top": 333.6000061035156,
+                "left": 432
+            },
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "type": "tool"
+        },
+        "6": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "tool_version": "0.72",
+            "outputs": [
+                {
+                    "type": "html",
+                    "name": "html_file"
+                },
+                {
+                    "type": "txt",
+                    "name": "text_file"
+                }
+            ],
+            "workflow_outputs": [
+                {
+                    "output_name": "text_file",
+                    "uuid": "f8dacdf0-288f-4b20-ad1e-115f6aeff92d",
+                    "label": null
+                }
+            ],
+            "input_connections": {
+                "input_file": {
+                    "output_name": "output",
+                    "id": 2
+                }
+            },
+            "tool_state": "{\"__page__\": null, \"contaminants\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"limits\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 6,
+            "tool_shed_repository": {
+                "owner": "devteam",
+                "changeset_revision": "c15237684a01",
+                "name": "fastqc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "7cc38319-7d56-4c73-9139-ed2299514ad8",
+            "errors": null,
+            "name": "FastQC",
+            "post_job_actions": {
+                "HideDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (html) for #{input_file|basename}"
+                    }
+                },
+                "TagDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "TagDatasetAction",
+                    "action_arguments": {
+                        "tags": "#TUMOR"
+                    }
+                },
+                "RenameDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (txt) for #{input_file|basename}"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "contaminants",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "limits",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "input_file",
+                    "description": "runtime parameter for tool FastQC"
+                }
+            ],
+            "position": {
+                "top": 532.6000061035156,
+                "left": 436
+            },
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "type": "tool"
+        },
+        "7": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "tool_version": "0.72",
+            "outputs": [
+                {
+                    "type": "html",
+                    "name": "html_file"
+                },
+                {
+                    "type": "txt",
+                    "name": "text_file"
+                }
+            ],
+            "workflow_outputs": [
+                {
+                    "output_name": "text_file",
+                    "uuid": "012c711f-e8d7-4e5f-826e-4210c2de7e0d",
+                    "label": null
+                }
+            ],
+            "input_connections": {
+                "input_file": {
+                    "output_name": "output",
+                    "id": 3
+                }
+            },
+            "tool_state": "{\"__page__\": null, \"contaminants\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"limits\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 7,
+            "tool_shed_repository": {
+                "owner": "devteam",
+                "changeset_revision": "c15237684a01",
+                "name": "fastqc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "4c6559a7-e4ea-4aea-af0a-27d07cf0053f",
+            "errors": null,
+            "name": "FastQC",
+            "post_job_actions": {
+                "HideDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionhtml_file": {
+                    "output_name": "html_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (html) for #{input_file|basename}"
+                    }
+                },
+                "TagDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "TagDatasetAction",
+                    "action_arguments": {
+                        "tags": "#TUMOR"
+                    }
+                },
+                "RenameDatasetActiontext_file": {
+                    "output_name": "text_file",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "QC report (txt) for #{input_file|basename}"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "contaminants",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "limits",
+                    "description": "runtime parameter for tool FastQC"
+                },
+                {
+                    "name": "input_file",
+                    "description": "runtime parameter for tool FastQC"
+                }
+            ],
+            "position": {
+                "top": 733.5999755859375,
+                "left": 437
+            },
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/fastqc/fastqc/0.72",
+            "type": "tool"
+        }
+    },
+    "annotation": "",
+    "a_galaxy_workflow": "true"
+}

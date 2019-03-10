@@ -1,9 +1,9 @@
 {
-    "uuid": "5867fb48-1fd0-418a-8631-0ca1d0939d93",
+    "uuid": "aec7eabc-e313-411e-b004-081dfcd822e0",
     "tags": [],
     "format-version": "0.1",
-    "name": "MIRACUM - mapped reads postprocessing",
-    "version": 4,
+    "name": "MIRACUM - mapped reads postprocessing (beta1)",
+    "version": 8,
     "steps": {
         "0": {
             "tool_id": null,
@@ -12,54 +12,27 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "14986a84-c417-4365-86f8-c7c325e4f93a",
+                    "uuid": "8bde3c65-e49b-4017-8714-27a9af3d0fb4",
                     "label": null
                 }
             ],
             "input_connections": {},
             "tool_state": "{}",
             "id": 0,
-            "uuid": "a3b616dc-3f63-4235-9028-f1144004d09c",
+            "uuid": "49a1a05a-07fd-4d85-85fc-64f68a0c392a",
             "errors": null,
             "name": "Input dataset",
             "label": null,
             "inputs": [],
             "position": {
-                "top": 453.8636169433594,
-                "left": 227.31536865234375
+                "top": 453.8666687011719,
+                "left": 227.316650390625
             },
             "annotation": "",
             "content_id": null,
             "type": "data_input"
         },
         "1": {
-            "tool_id": null,
-            "tool_version": null,
-            "outputs": [],
-            "workflow_outputs": [
-                {
-                    "output_name": "output",
-                    "uuid": "ce6952be-57a6-4ac7-ace5-db226000cb79",
-                    "label": null
-                }
-            ],
-            "input_connections": {},
-            "tool_state": "{}",
-            "id": 1,
-            "uuid": "3af8a27e-db18-4143-ac8d-cb398781a316",
-            "errors": null,
-            "name": "Input dataset",
-            "label": "2. Capture regions bed file",
-            "inputs": [],
-            "position": {
-                "top": 583.3806457519531,
-                "left": 1867.8408813476562
-            },
-            "annotation": "",
-            "content_id": null,
-            "type": "data_input"
-        },
-        "2": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_stats/samtools_stats/2.0.2+galaxy1",
             "tool_version": "2.0.2+galaxy1",
             "outputs": [
@@ -79,7 +52,7 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "bdc3949b-0c04-4ef1-a0b9-154101b764a4",
+                    "uuid": "f1016bc6-ed60-4540-9793-17c7675506aa",
                     "label": null
                 }
             ],
@@ -90,14 +63,14 @@
                 }
             },
             "tool_state": "{\"__page__\": null, \"coverage_cond\": \"{\\\"__current_case__\\\": 0, \\\"coverage_select\\\": \\\"no\\\"}\", \"cond_plot\": \"{\\\"__current_case__\\\": 0, \\\"select_plot\\\": \\\"no\\\"}\", \"gc_depth\": \"\\\"20000.0\\\"\", \"cov_threshold\": \"\\\"\\\"\", \"most_inserts\": \"\\\"0.99\\\"\", \"cond_region\": \"{\\\"__current_case__\\\": 0, \\\"select_region\\\": \\\"no\\\"}\", \"split_output_cond\": \"{\\\"__current_case__\\\": 0, \\\"split_output_selector\\\": \\\"no\\\"}\", \"read_length\": \"\\\"\\\"\", \"trim_quality\": \"\\\"0\\\"\", \"remove_overlaps\": \"\\\"true\\\"\", \"filter_by_flags\": \"{\\\"__current_case__\\\": 1, \\\"filter_flags\\\": \\\"nofilter\\\"}\", \"sparse\": \"\\\"false\\\"\", \"addref_cond\": \"{\\\"__current_case__\\\": 0, \\\"addref_select\\\": \\\"no\\\"}\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"insert_size\": \"\\\"8000\\\"\", \"__rerun_remap_job_id__\": null, \"remove_dups\": \"\\\"false\\\"\"}",
-            "id": 2,
+            "id": 1,
             "tool_shed_repository": {
                 "owner": "devteam",
                 "changeset_revision": "793ad847121d",
                 "name": "samtools_stats",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "a35fc4bf-8dec-4b74-ad7a-002db3575ba6",
+            "uuid": "6cd9a430-2159-4f39-8199-9af0f72750c2",
             "errors": null,
             "name": "Samtools stats",
             "post_job_actions": {
@@ -134,19 +107,19 @@
                 }
             ],
             "position": {
-                "top": 230.55396270751953,
-                "left": 452.897705078125
+                "top": 230.5500030517578,
+                "left": 452.9000244140625
             },
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_stats/samtools_stats/2.0.2+galaxy1",
             "type": "tool"
         },
-        "3": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/jjohnson/samtools_filter/samtools_filter/1.1.1",
-            "tool_version": "1.1.1",
+        "2": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtool_filter2/samtool_filter2/1.8",
+            "tool_version": "1.8",
             "outputs": [
                 {
-                    "type": "input",
+                    "type": "sam",
                     "name": "output1"
                 }
             ],
@@ -157,17 +130,17 @@
                     "id": 0
                 }
             },
-            "tool_state": "{\"__page__\": null, \"read_group\": \"\\\"\\\"\", \"input1\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"bed_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"library\": \"\\\"\\\"\", \"regions\": \"\\\"\\\"\", \"header\": \"\\\"-h\\\"\", \"flag\": \"{\\\"__current_case__\\\": 1, \\\"filter\\\": \\\"yes\\\", \\\"reqBits\\\": [\\\"0x0002\\\"], \\\"skipBits\\\": null}\", \"mapq\": \"\\\"1\\\"\"}",
-            "id": 3,
+            "tool_state": "{\"__page__\": null, \"bed_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"input1\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"possibly_select_inverse\": \"\\\"false\\\"\", \"outputtype\": \"\\\"bam\\\"\", \"library\": \"\\\"\\\"\", \"regions\": \"\\\"\\\"\", \"header\": \"\\\"-h\\\"\", \"flag\": \"{\\\"__current_case__\\\": 1, \\\"filter\\\": \\\"yes\\\", \\\"reqBits\\\": [\\\"0x0002\\\"], \\\"skipBits\\\": null}\", \"mapq\": \"\\\"1\\\"\", \"read_group\": \"\\\"\\\"\", \"__rerun_remap_job_id__\": null}",
+            "id": 2,
             "tool_shed_repository": {
-                "owner": "jjohnson",
-                "changeset_revision": "9710e9bcc5f3",
-                "name": "samtools_filter",
+                "owner": "devteam",
+                "changeset_revision": "56c31114ad4a",
+                "name": "samtool_filter2",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "daead654-05f2-4bb3-be33-13eb29f641f3",
+            "uuid": "29d76ebb-7dae-4bca-a598-3ddba6c64c82",
             "errors": null,
-            "name": "Filter SAM or BAM",
+            "name": "Filter SAM or BAM, output SAM or BAM",
             "post_job_actions": {
                 "HideDatasetActionoutput1": {
                     "output_name": "output1",
@@ -185,23 +158,23 @@
             "label": null,
             "inputs": [
                 {
-                    "name": "input1",
-                    "description": "runtime parameter for tool Filter SAM or BAM"
+                    "name": "bed_file",
+                    "description": "runtime parameter for tool Filter SAM or BAM, output SAM or BAM"
                 },
                 {
-                    "name": "bed_file",
-                    "description": "runtime parameter for tool Filter SAM or BAM"
+                    "name": "input1",
+                    "description": "runtime parameter for tool Filter SAM or BAM, output SAM or BAM"
                 }
             ],
             "position": {
-                "top": 392.62782287597656,
-                "left": 618.7073974609375
+                "top": 435.25,
+                "left": 446.95001220703125
             },
-            "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/jjohnson/samtools_filter/samtools_filter/1.1.1",
+            "annotation": "retain only properly mapping reads with MAPQ &gt;= 1",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtool_filter2/samtool_filter2/1.8",
             "type": "tool"
         },
-        "4": {
+        "3": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_rmdup/samtools_rmdup/2.0.1",
             "tool_version": "2.0.1",
             "outputs": [
@@ -214,18 +187,18 @@
             "input_connections": {
                 "input1": {
                     "output_name": "output1",
-                    "id": 3
+                    "id": 2
                 }
             },
             "tool_state": "{\"__page__\": null, \"__rerun_remap_job_id__\": null, \"input1\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"bam_paired_end_type\": \"{\\\"__current_case__\\\": 0, \\\"bam_paired_end_type_selector\\\": \\\"PE\\\", \\\"force_se\\\": \\\"false\\\"}\"}",
-            "id": 4,
+            "id": 3,
             "tool_shed_repository": {
                 "owner": "devteam",
                 "changeset_revision": "9129584416e2",
                 "name": "samtools_rmdup",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "6232d9b7-cd45-4a77-a72b-64c599b879bd",
+            "uuid": "a90f8da2-fbde-4f17-8d21-a9c6e784b2d3",
             "errors": null,
             "name": "RmDup",
             "post_job_actions": {
@@ -250,70 +223,14 @@
                 }
             ],
             "position": {
-                "top": 425.5681610107422,
-                "left": 889.4033813476562
+                "top": 438.566650390625,
+                "left": 737.4000244140625
             },
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_rmdup/samtools_rmdup/2.0.1",
             "type": "tool"
         },
-        "5": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_sort/samtools_sort/2.0.2",
-            "tool_version": "2.0.2",
-            "outputs": [
-                {
-                    "type": "bam",
-                    "name": "output1"
-                }
-            ],
-            "workflow_outputs": [],
-            "input_connections": {
-                "input1": {
-                    "output_name": "output1",
-                    "id": 4
-                }
-            },
-            "tool_state": "{\"__page__\": null, \"__rerun_remap_job_id__\": null, \"input1\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"prim_key_cond\": \"{\\\"__current_case__\\\": 0, \\\"prim_key_select\\\": \\\"\\\"}\"}",
-            "id": 5,
-            "tool_shed_repository": {
-                "owner": "devteam",
-                "changeset_revision": "f56bdb93ae58",
-                "name": "samtools_sort",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "uuid": "722ddbbe-5d08-4309-b71f-ad949a151cdd",
-            "errors": null,
-            "name": "Samtools sort",
-            "post_job_actions": {
-                "HideDatasetActionoutput1": {
-                    "output_name": "output1",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "RenameDatasetActionoutput1": {
-                    "output_name": "output1",
-                    "action_type": "RenameDatasetAction",
-                    "action_arguments": {
-                        "newname": "Sorted #{input1|basename}"
-                    }
-                }
-            },
-            "label": null,
-            "inputs": [
-                {
-                    "name": "input1",
-                    "description": "runtime parameter for tool Samtools sort"
-                }
-            ],
-            "position": {
-                "top": 410.4119110107422,
-                "left": 1095.7812194824219
-            },
-            "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_sort/samtools_sort/2.0.2",
-            "type": "tool"
-        },
-        "6": {
+        "4": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/freebayes/bamleftalign/1.1.0.46-0",
             "tool_version": "1.1.0.46-0",
             "outputs": [
@@ -326,32 +243,32 @@
             "input_connections": {
                 "reference_source|input_bam": {
                     "output_name": "output1",
-                    "id": 5
+                    "id": 3
                 }
             },
             "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}, \\\"ref_file\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
-            "id": 6,
+            "id": 4,
             "tool_shed_repository": {
                 "owner": "devteam",
                 "changeset_revision": "156b60c1530f",
                 "name": "freebayes",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "652c2b8a-43f4-45e3-badb-043abec16e93",
+            "uuid": "ba0e1263-09ef-4a3f-aab2-3e9ed0271b77",
             "errors": null,
             "name": "BamLeftAlign",
             "post_job_actions": {
+                "HideDatasetActionoutput_bam": {
+                    "output_name": "output_bam",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
                 "RenameDatasetActionoutput_bam": {
                     "output_name": "output_bam",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
                         "newname": "Leftaligned #{input_bam|basename}"
                     }
-                },
-                "HideDatasetActionoutput_bam": {
-                    "output_name": "output_bam",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
                 }
             },
             "label": null,
@@ -362,70 +279,14 @@
                 }
             ],
             "position": {
-                "top": 394.03407287597656,
-                "left": 1393.678939819336
+                "top": 444.0333251953125,
+                "left": 938.683349609375
             },
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/freebayes/bamleftalign/1.1.0.46-0",
             "type": "tool"
         },
-        "7": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/picard/rgPicFixMate/1.56.0",
-            "tool_version": "1.56.0",
-            "outputs": [
-                {
-                    "type": "bam",
-                    "name": "out_file"
-                }
-            ],
-            "workflow_outputs": [],
-            "input_connections": {
-                "input_file": {
-                    "output_name": "output_bam",
-                    "id": 6
-                }
-            },
-            "tool_state": "{\"__page__\": null, \"outputFormat\": \"\\\"true\\\"\", \"input_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"out_prefix\": \"\\\"Fix Mate\\\"\", \"sortOrder\": \"\\\"coordinate\\\"\"}",
-            "id": 7,
-            "tool_shed_repository": {
-                "owner": "devteam",
-                "changeset_revision": "ab1f60c26526",
-                "name": "picard",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "uuid": "9577d198-945f-4278-a10f-f47bc22d08d7",
-            "errors": null,
-            "name": "Paired Read Mate Fixer",
-            "post_job_actions": {
-                "RenameDatasetActionout_file": {
-                    "output_name": "out_file",
-                    "action_type": "RenameDatasetAction",
-                    "action_arguments": {
-                        "newname": "Mate-fixed #{input_file|basename}"
-                    }
-                },
-                "HideDatasetActionout_file": {
-                    "output_name": "out_file",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                }
-            },
-            "label": null,
-            "inputs": [
-                {
-                    "name": "input_file",
-                    "description": "runtime parameter for tool Paired Read Mate Fixer"
-                }
-            ],
-            "position": {
-                "top": 412.2158966064453,
-                "left": 1629.1050720214844
-            },
-            "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/picard/rgPicFixMate/1.56.0",
-            "type": "tool"
-        },
-        "8": {
+        "5": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_calmd/samtools_calmd/2.0.2",
             "tool_version": "2.0.2",
             "outputs": [
@@ -437,25 +298,25 @@
             "workflow_outputs": [
                 {
                     "output_name": "calmd_output",
-                    "uuid": "14c14ee7-d803-4f4f-a9ec-aba8f40792c7",
+                    "uuid": "f5a222bb-fe09-4b63-a9e9-73e31f808b94",
                     "label": null
                 }
             ],
             "input_connections": {
                 "input_bam": {
-                    "output_name": "out_file",
-                    "id": 7
+                    "output_name": "output_bam",
+                    "id": 4
                 }
             },
-            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 1, \\\"extended_baq\\\": \\\"false\\\", \\\"modify_quality\\\": \\\"true\\\", \\\"use_baq\\\": \\\"-r\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
-            "id": 8,
+            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 5,
             "tool_shed_repository": {
                 "owner": "devteam",
                 "changeset_revision": "e65c2cd0964c",
                 "name": "samtools_calmd",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "a5ad482e-b078-4aaa-8afd-03ad212efa0b",
+            "uuid": "42b630ff-6f4a-4f64-a218-3ba9809c5a65",
             "errors": null,
             "name": "CalMD",
             "post_job_actions": {
@@ -463,7 +324,7 @@
                     "output_name": "calmd_output",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Recalibrated #{input_file|basename}"
+                        "newname": "Recalibrated #{input_bam|basename}"
                     }
                 },
                 "DeleteIntermediatesActioncalmd_output": {
@@ -480,14 +341,14 @@
                 }
             ],
             "position": {
-                "top": 404.4744110107422,
-                "left": 1858.5226440429688
+                "top": 447.4666748046875,
+                "left": 1183.5166015625
             },
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_calmd/samtools_calmd/2.0.2",
             "type": "tool"
         },
-        "9": {
+        "6": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_stats/samtools_stats/2.0.2+galaxy1",
             "tool_version": "2.0.2+galaxy1",
             "outputs": [
@@ -507,25 +368,25 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "d8ae5163-fab6-4b3c-b502-8946f06dff66",
+                    "uuid": "db7c59a3-876b-4855-ae9f-168f2c3d0014",
                     "label": null
                 }
             ],
             "input_connections": {
                 "input": {
                     "output_name": "calmd_output",
-                    "id": 8
+                    "id": 5
                 }
             },
             "tool_state": "{\"__page__\": null, \"coverage_cond\": \"{\\\"__current_case__\\\": 0, \\\"coverage_select\\\": \\\"no\\\"}\", \"cond_plot\": \"{\\\"__current_case__\\\": 0, \\\"select_plot\\\": \\\"no\\\"}\", \"gc_depth\": \"\\\"20000.0\\\"\", \"cov_threshold\": \"\\\"\\\"\", \"most_inserts\": \"\\\"0.99\\\"\", \"cond_region\": \"{\\\"__current_case__\\\": 0, \\\"select_region\\\": \\\"no\\\"}\", \"split_output_cond\": \"{\\\"__current_case__\\\": 0, \\\"split_output_selector\\\": \\\"no\\\"}\", \"read_length\": \"\\\"\\\"\", \"trim_quality\": \"\\\"0\\\"\", \"remove_overlaps\": \"\\\"true\\\"\", \"filter_by_flags\": \"{\\\"__current_case__\\\": 1, \\\"filter_flags\\\": \\\"nofilter\\\"}\", \"sparse\": \"\\\"false\\\"\", \"addref_cond\": \"{\\\"__current_case__\\\": 0, \\\"addref_select\\\": \\\"no\\\"}\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"insert_size\": \"\\\"8000\\\"\", \"__rerun_remap_job_id__\": null, \"remove_dups\": \"\\\"false\\\"\"}",
-            "id": 9,
+            "id": 6,
             "tool_shed_repository": {
                 "owner": "devteam",
                 "changeset_revision": "793ad847121d",
                 "name": "samtools_stats",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "d88069ef-8ecb-4355-b6dc-7a2c165e8bf1",
+            "uuid": "040f1a7e-2d6b-47ca-8475-6ba28881e625",
             "errors": null,
             "name": "Samtools stats",
             "post_job_actions": {
@@ -562,76 +423,11 @@
                 }
             ],
             "position": {
-                "top": 199.91476154327393,
-                "left": 2054.9147338867188
+                "top": 251.91668701171875,
+                "left": 1243.9166259765625
             },
             "annotation": "",
             "content_id": "toolshed.g2.bx.psu.edu/repos/devteam/samtools_stats/samtools_stats/2.0.2+galaxy1",
-            "type": "tool"
-        },
-        "10": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/bedtools/bedtools_multicovtbed/2.27.1",
-            "tool_version": "2.27.1",
-            "outputs": [
-                {
-                    "type": "input",
-                    "name": "output"
-                }
-            ],
-            "workflow_outputs": [
-                {
-                    "output_name": "output",
-                    "uuid": "8f371ab8-5f98-49ad-b753-7a19306a29ee",
-                    "label": null
-                }
-            ],
-            "input_connections": {
-                "input": {
-                    "output_name": "output",
-                    "id": 1
-                },
-                "bams": {
-                    "output_name": "calmd_output",
-                    "id": 8
-                }
-            },
-            "tool_state": "{\"__page__\": null, \"reciprocal\": \"\\\"\\\"\", \"__rerun_remap_job_id__\": null, \"overlap\": \"\\\"1e-09\\\"\", \"q\": \"\\\"0\\\"\", \"failed\": \"\\\"false\\\"\", \"duplicate\": \"\\\"false\\\"\", \"split\": \"\\\"false\\\"\", \"proper\": \"\\\"true\\\"\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"strand\": \"\\\"\\\"\", \"bams\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
-            "id": 10,
-            "tool_shed_repository": {
-                "owner": "iuc",
-                "changeset_revision": "4f7a5ccd2ae9",
-                "name": "bedtools",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "uuid": "2ea052c0-6aca-4d88-bf9a-5989a1688754",
-            "errors": null,
-            "name": "bedtools MultiCovBed",
-            "post_job_actions": {
-                "RenameDatasetActionoutput": {
-                    "output_name": "output",
-                    "action_type": "RenameDatasetAction",
-                    "action_arguments": {
-                        "newname": "#{input|basename} - Coverage in bam on regions"
-                    }
-                }
-            },
-            "label": null,
-            "inputs": [
-                {
-                    "name": "input",
-                    "description": "runtime parameter for tool bedtools MultiCovBed"
-                },
-                {
-                    "name": "bams",
-                    "description": "runtime parameter for tool bedtools MultiCovBed"
-                }
-            ],
-            "position": {
-                "top": 485.4261169433594,
-                "left": 2110.4260864257812
-            },
-            "annotation": "Count coverage in bam at given interval bed file",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/bedtools/bedtools_multicovtbed/2.27.1",
             "type": "tool"
         }
     },

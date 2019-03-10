@@ -1,9 +1,9 @@
 {
-    "uuid": "25c98981-6b38-4e21-b705-8f88fc93cfa8",
+    "uuid": "02e2b36a-131e-4958-bbf4-245279e5d287",
     "tags": [],
     "format-version": "0.1",
     "name": "MIRACUM - variant annotation",
-    "version": 1,
+    "version": 32,
     "steps": {
         "0": {
             "tool_id": null,
@@ -12,23 +12,23 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "fc4b7bbe-40bf-4729-844a-d60e8e8dd746",
+                    "uuid": "386d61b8-5556-4675-8068-909afb4e0626",
                     "label": null
                 }
             ],
             "input_connections": {},
             "tool_state": "{}",
             "id": 0,
-            "uuid": "d3ed355c-387e-40b7-9f2f-1e87d447acbc",
+            "uuid": "b738bf96-6e83-41bb-99c2-13e01b862b49",
             "errors": null,
             "name": "Input dataset",
-            "label": "SnpEff Genome Data",
+            "label": "Variants input",
             "inputs": [],
             "position": {
-                "top": 200,
-                "left": 224
+                "top": 359,
+                "left": 154
             },
-            "annotation": "",
+            "annotation": "VCF dataset with called variants",
             "content_id": null,
             "type": "data_input"
         },
@@ -39,23 +39,23 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "5f7c81f9-60e6-419c-b6ce-794e51015569",
+                    "uuid": "c74fd973-e07b-4c0c-a8a5-db43e38bb322",
                     "label": null
                 }
             ],
             "input_connections": {},
             "tool_state": "{}",
             "id": 1,
-            "uuid": "5a89c529-78e6-499a-b6de-cb1b56c5b243",
+            "uuid": "22d28ed6-ac63-47e9-9394-991973444bcb",
             "errors": null,
             "name": "Input dataset",
-            "label": "Variants input",
+            "label": "dbSNP annotations",
             "inputs": [],
             "position": {
-                "top": 399,
-                "left": 222
+                "top": 498,
+                "left": 158
             },
-            "annotation": "",
+            "annotation": "dbSNP data in VCF format",
             "content_id": null,
             "type": "data_input"
         },
@@ -66,153 +66,83 @@
             "workflow_outputs": [
                 {
                     "output_name": "output",
-                    "uuid": "4ff5d4c0-4635-4a44-96e3-042ce6da7564",
+                    "uuid": "b284252a-1d44-42d7-bc8b-d29cc47c2751",
                     "label": null
                 }
             ],
             "input_connections": {},
             "tool_state": "{}",
             "id": 2,
-            "uuid": "8218f63c-d8ca-4cef-86f2-2738e6b13a6c",
+            "uuid": "b6ea9195-df41-4f8f-8b88-756b97c14233",
             "errors": null,
             "name": "Input dataset",
-            "label": "dbSNP annotations",
+            "label": "cancerhotspots data (bed)",
             "inputs": [],
             "position": {
-                "top": 605,
-                "left": 218
+                "top": 609,
+                "left": 159.5
             },
             "annotation": "",
             "content_id": null,
             "type": "data_input"
         },
         "3": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/vt_variant_tools/vt_normalize/0.1.0",
+            "tool_id": null,
             "tool_version": null,
-            "outputs": [
+            "outputs": [],
+            "workflow_outputs": [
                 {
-                    "type": "vcf",
-                    "name": "outfile"
-                }
-            ],
-            "workflow_outputs": [],
-            "input_connections": {
-                "infile": {
                     "output_name": "output",
-                    "id": 1
-                }
-            },
-            "tool_state": "{\"__page__\": null, \"intervals_file\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"output_format\": \"\\\"vcf\\\"\", \"window\": \"\\\"10000\\\"\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"reference_genome\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
-            "id": 3,
-            "tool_shed_repository": {
-                "owner": "iuc",
-                "changeset_revision": "6e073fc99d9c",
-                "name": "vt_variant_tools",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "uuid": "d0729128-4cc3-45df-aaf8-013d08bb7558",
-            "errors": null,
-            "name": "VT normalize",
-            "post_job_actions": {
-                "HideDatasetActionoutfile": {
-                    "output_name": "outfile",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "RenameDatasetActionoutfile": {
-                    "output_name": "outfile",
-                    "action_type": "RenameDatasetAction",
-                    "action_arguments": {
-                        "newname": "Normalized #{infile|basename}"
-                    }
-                }
-            },
-            "label": null,
-            "inputs": [
-                {
-                    "name": "intervals_file",
-                    "description": "runtime parameter for tool VT normalize"
-                },
-                {
-                    "name": "infile",
-                    "description": "runtime parameter for tool VT normalize"
+                    "uuid": "05b38416-e612-4895-b419-7d7f0f11230a",
+                    "label": null
                 }
             ],
+            "input_connections": {},
+            "tool_state": "{}",
+            "id": 3,
+            "uuid": "c48cd368-327b-4b17-85a2-d54b16590d5b",
+            "errors": null,
+            "name": "Input dataset",
+            "label": "CIViC data (bed)",
+            "inputs": [],
             "position": {
-                "top": 358.46875,
-                "left": 410.3125
+                "top": 702,
+                "left": 156.5
             },
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/vt_variant_tools/vt_normalize/0.1.0",
-            "type": "tool"
+            "content_id": null,
+            "type": "data_input"
         },
         "4": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpsift/snpSift_annotate/4.3+t.galaxy1",
+            "tool_id": null,
             "tool_version": null,
-            "outputs": [
+            "outputs": [],
+            "workflow_outputs": [
                 {
-                    "type": "vcf",
-                    "name": "output"
+                    "output_name": "output",
+                    "uuid": "3b2487b7-6e37-4ea7-b6ae-43cdb90f797b",
+                    "label": null
                 }
             ],
-            "workflow_outputs": [],
-            "input_connections": {
-                "input": {
-                    "output_name": "outfile",
-                    "id": 3
-                },
-                "dbSnp": {
-                    "output_name": "output",
-                    "id": 2
-                }
-            },
-            "tool_state": "{\"annotate\": \"{\\\"__current_case__\\\": 0, \\\"info_ids\\\": \\\"\\\", \\\"no_info\\\": \\\"-noInfo\\\"}\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"dbSnp\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": null}",
+            "input_connections": {},
+            "tool_state": "{}",
             "id": 4,
-            "tool_shed_repository": {
-                "owner": "iuc",
-                "changeset_revision": "2b3e65a4252f",
-                "name": "snpsift",
-                "tool_shed": "toolshed.g2.bx.psu.edu"
-            },
-            "uuid": "2d67d184-fea9-4322-8664-0578fcc51054",
+            "uuid": "af453d3e-d66c-44bc-97d3-779a7666dd18",
             "errors": null,
-            "name": "SnpSift Annotate",
-            "post_job_actions": {
-                "HideDatasetActionoutput": {
-                    "output_name": "output",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "RenameDatasetActionoutput": {
-                    "output_name": "output",
-                    "action_type": "RenameDatasetAction",
-                    "action_arguments": {
-                        "newname": "#{input|basename} with dbSNP IDs added"
-                    }
-                }
-            },
-            "label": null,
-            "inputs": [
-                {
-                    "name": "input",
-                    "description": "runtime parameter for tool SnpSift Annotate"
-                },
-                {
-                    "name": "dbSnp",
-                    "description": "runtime parameter for tool SnpSift Annotate"
-                }
-            ],
+            "name": "Input dataset",
+            "label": "CGI biomarkers (bed)",
+            "inputs": [],
             "position": {
-                "top": 426.34375,
-                "left": 600.28125
+                "top": 796,
+                "left": 153.5
             },
             "annotation": "",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpsift/snpSift_annotate/4.3+t.galaxy1",
-            "type": "tool"
+            "content_id": null,
+            "type": "data_input"
         },
         "5": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3r.1",
-            "tool_version": null,
+            "tool_version": "4.3r.1",
             "outputs": [
                 {
                     "type": "vcf",
@@ -226,26 +156,17 @@
             "workflow_outputs": [
                 {
                     "output_name": "snpeff_output",
-                    "uuid": "575b2942-4820-44de-be3b-a90e1e994050",
-                    "label": null
-                },
-                {
-                    "output_name": "statsFile",
-                    "uuid": "ed709a08-952f-4ea9-9421-228094a7cbe1",
+                    "uuid": "01541d15-49b4-4ed5-8fa2-d5b6161e5769",
                     "label": null
                 }
             ],
             "input_connections": {
                 "input": {
                     "output_name": "output",
-                    "id": 4
-                },
-                "snpDb|snpeff_db": {
-                    "output_name": "output",
                     "id": 0
                 }
             },
-            "tool_state": "{\"spliceSiteSize\": \"\\\"2\\\"\", \"filter\": \"{\\\"__current_case__\\\": 0, \\\"specificEffects\\\": \\\"no\\\"}\", \"filterOut\": \"null\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"inputFormat\": \"\\\"vcf\\\"\", \"__page__\": null, \"outputConditional\": \"{\\\"__current_case__\\\": 0, \\\"outputFormat\\\": \\\"vcf\\\"}\", \"__rerun_remap_job_id__\": null, \"udLength\": \"\\\"5000\\\"\", \"generate_stats\": \"\\\"true\\\"\", \"noLog\": \"\\\"true\\\"\", \"chr\": \"\\\"\\\"\", \"intervals\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"snpDb\": \"{\\\"__current_case__\\\": 1, \\\"genomeSrc\\\": \\\"history\\\", \\\"reg_section\\\": {\\\"regulation\\\": \\\"\\\"}, \\\"snpeff_db\\\": {\\\"__class__\\\": \\\"RuntimeValue\\\"}}\", \"offset\": \"\\\"default\\\"\", \"spliceRegion\": \"{\\\"__current_case__\\\": 0, \\\"setSpliceRegions\\\": \\\"no\\\"}\", \"transcripts\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"annotations\": \"null\"}",
+            "tool_state": "{\"spliceSiteSize\": \"\\\"2\\\"\", \"filter\": \"{\\\"__current_case__\\\": 0, \\\"specificEffects\\\": \\\"no\\\"}\", \"filterOut\": \"null\", \"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"inputFormat\": \"\\\"vcf\\\"\", \"__page__\": null, \"outputConditional\": \"{\\\"__current_case__\\\": 0, \\\"outputFormat\\\": \\\"vcf\\\"}\", \"__rerun_remap_job_id__\": null, \"udLength\": \"\\\"5000\\\"\", \"generate_stats\": \"\\\"false\\\"\", \"noLog\": \"\\\"true\\\"\", \"chr\": \"\\\"\\\"\", \"intervals\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"snpDb\": \"{\\\"__current_case__\\\": 0, \\\"genomeSrc\\\": \\\"cached\\\", \\\"genomeVersion\\\": \\\"hg19\\\", \\\"reg_section\\\": {\\\"regulation\\\": \\\"\\\"}}\", \"offset\": \"\\\"default\\\"\", \"spliceRegion\": \"{\\\"__current_case__\\\": 0, \\\"setSpliceRegions\\\": \\\"no\\\"}\", \"transcripts\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"annotations\": \"null\"}",
             "id": 5,
             "tool_shed_repository": {
                 "owner": "iuc",
@@ -253,7 +174,7 @@
                 "name": "snpeff",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "016618a3-5d8b-444c-8c2e-81919a9e1f62",
+            "uuid": "895c28b3-f1f6-4611-a5c4-56a33265ad1f",
             "errors": null,
             "name": "SnpEff",
             "post_job_actions": {
@@ -263,16 +184,17 @@
                     "action_arguments": {
                         "newname": "Functionally annotated #{input|basename}"
                     }
+                },
+                "HideDatasetActionstatsFile": {
+                    "output_name": "statsFile",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
                 }
             },
             "label": null,
             "inputs": [
                 {
                     "name": "intervals",
-                    "description": "runtime parameter for tool SnpEff"
-                },
-                {
-                    "name": "snpDb",
                     "description": "runtime parameter for tool SnpEff"
                 },
                 {
@@ -285,16 +207,16 @@
                 }
             ],
             "position": {
-                "top": 161.96875,
-                "left": 891.09375
+                "top": 178.96665954589844,
+                "left": 398.0999755859375
             },
-            "annotation": "",
+            "annotation": "Add effects on genes, transcripts and proteins to variant INFO field",
             "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3r.1",
             "type": "tool"
         },
         "6": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1",
-            "tool_version": null,
+            "tool_version": "0.20.1",
             "outputs": [
                 {
                     "type": "gemini.sqlite",
@@ -308,7 +230,7 @@
                     "id": 5
                 }
             },
-            "tool_state": "{\"__page__\": null, \"opt_content\": \"[\\\"gerp_bp\\\", \\\"cadd\\\", \\\"gene_tables\\\", \\\"genotypes\\\", \\\"gt_pl\\\", \\\"info_string\\\"]\", \"__rerun_remap_job_id__\": null, \"has_genotypes\": \"\\\"true\\\"\", \"annotation_databases\": \"\\\"2019-01-12\\\"\", \"annotation_type\": \"\\\"snpEff\\\"\", \"ped\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "tool_state": "{\"__page__\": null, \"opt_content\": \"[\\\"gerp_bp\\\", \\\"cadd\\\", \\\"gene_tables\\\", \\\"genotypes\\\", \\\"info_string\\\"]\", \"__rerun_remap_job_id__\": null, \"has_genotypes\": \"\\\"true\\\"\", \"annotation_databases\": \"\\\"2019-01-12\\\"\", \"annotation_type\": \"\\\"snpEff\\\"\", \"ped\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
             "id": 6,
             "tool_shed_repository": {
                 "owner": "iuc",
@@ -316,7 +238,7 @@
                 "name": "gemini_load",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "c5f3a76d-9475-4353-b56a-43aa8315c75a",
+            "uuid": "de8349be-4ff5-498a-906f-e1046b217164",
             "errors": null,
             "name": "GEMINI load",
             "post_job_actions": {
@@ -345,16 +267,16 @@
                 }
             ],
             "position": {
-                "top": 412.5625,
-                "left": 919.6875
+                "top": 183.56666564941406,
+                "left": 689.683349609375
             },
-            "annotation": "",
+            "annotation": "Build GEMINI database of all variants",
             "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1",
             "type": "tool"
         },
         "7": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
-            "tool_version": null,
+            "tool_version": "0.20.1+galaxy1",
             "outputs": [
                 {
                     "type": "gemini.sqlite",
@@ -369,7 +291,7 @@
                 },
                 "annotate_source": {
                     "output_name": "output",
-                    "id": 4
+                    "id": 0
                 }
             },
             "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"somatic_status\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"SS\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 1, \\\"column_name\\\": \\\"germline_p\\\", \\\"column_type\\\": \\\"float\\\", \\\"element_to_extract\\\": \\\"GPV\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 2, \\\"column_name\\\": \\\"somatic_p\\\", \\\"column_type\\\": \\\"float\\\", \\\"element_to_extract\\\": \\\"SPV\\\", \\\"operation\\\": \\\"first\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
@@ -380,7 +302,7 @@
                 "name": "gemini_annotate",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "a61969f4-8c4a-4ee1-8e4a-50841cbd78d6",
+            "uuid": "dc536453-187d-4dea-b595-be6ce048e011",
             "errors": null,
             "name": "GEMINI annotate",
             "post_job_actions": {
@@ -393,7 +315,7 @@
                     "output_name": "outfile",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "#{infile} with somatic call stats"
+                        "newname": "#{infile|basename} with somatic call stats"
                     }
                 }
             },
@@ -409,16 +331,208 @@
                 }
             ],
             "position": {
-                "top": 566.5,
-                "left": 924.5
+                "top": 391.5,
+                "left": 404.5
             },
-            "annotation": "",
+            "annotation": "Add somatic call stats",
             "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
             "type": "tool"
         },
         "8": {
             "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
-            "tool_version": null,
+            "tool_version": "0.20.1+galaxy1",
+            "outputs": [
+                {
+                    "type": "gemini.sqlite",
+                    "name": "outfile"
+                }
+            ],
+            "workflow_outputs": [],
+            "input_connections": {
+                "infile": {
+                    "output_name": "outfile",
+                    "id": 7
+                },
+                "annotate_source": {
+                    "output_name": "output",
+                    "id": 1
+                }
+            },
+            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"rs_ss\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"SAO\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 1, \\\"column_name\\\": \\\"rs_cfl\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"CFL\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 2, \\\"column_name\\\": \\\"rs_asp\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"ASP\\\", \\\"operation\\\": \\\"first\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 8,
+            "tool_shed_repository": {
+                "owner": "iuc",
+                "changeset_revision": "0c8f7322f8fc",
+                "name": "gemini_annotate",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "a1fe894a-fdc8-46d6-9755-add09119ec4f",
+            "errors": null,
+            "name": "GEMINI annotate",
+            "post_job_actions": {
+                "HideDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "#{infile|basename} and dbsnp info"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "infile",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                },
+                {
+                    "name": "annotate_source",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                }
+            ],
+            "position": {
+                "top": 466.5,
+                "left": 695.5
+            },
+            "annotation": "Add selected dbsnp info",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "type": "tool"
+        },
+        "9": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "tool_version": "0.20.1+galaxy1",
+            "outputs": [
+                {
+                    "type": "gemini.sqlite",
+                    "name": "outfile"
+                }
+            ],
+            "workflow_outputs": [],
+            "input_connections": {
+                "infile": {
+                    "output_name": "outfile",
+                    "id": 8
+                },
+                "annotate_source": {
+                    "output_name": "output",
+                    "id": 2
+                }
+            },
+            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"hs_qvalue\\\", \\\"column_type\\\": \\\"float\\\", \\\"element_to_extract\\\": \\\"5\\\", \\\"operation\\\": \\\"min\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 9,
+            "tool_shed_repository": {
+                "owner": "iuc",
+                "changeset_revision": "0c8f7322f8fc",
+                "name": "gemini_annotate",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "b805ac16-ccd3-4a95-91eb-46e9dcf185d5",
+            "errors": null,
+            "name": "GEMINI annotate",
+            "post_job_actions": {
+                "HideDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "#{infile|basename} and hotspots data"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "infile",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                },
+                {
+                    "name": "annotate_source",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                }
+            ],
+            "position": {
+                "top": 568,
+                "left": 409.5
+            },
+            "annotation": "Add cancerhotspots info",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "type": "tool"
+        },
+        "10": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "tool_version": "0.20.1+galaxy1",
+            "outputs": [
+                {
+                    "type": "gemini.sqlite",
+                    "name": "outfile"
+                }
+            ],
+            "workflow_outputs": [],
+            "input_connections": {
+                "infile": {
+                    "output_name": "outfile",
+                    "id": 9
+                },
+                "annotate_source": {
+                    "output_name": "output",
+                    "id": 3
+                }
+            },
+            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"overlapping_civic_url\\\", \\\"column_type\\\": \\\"text\\\", \\\"element_to_extract\\\": \\\"4\\\", \\\"operation\\\": \\\"uniq_list\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 10,
+            "tool_shed_repository": {
+                "owner": "iuc",
+                "changeset_revision": "0c8f7322f8fc",
+                "name": "gemini_annotate",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "uuid": "e6bdeaed-cf3e-4168-937f-5ca871b44d2c",
+            "errors": null,
+            "name": "GEMINI annotate",
+            "post_job_actions": {
+                "HideDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
+                },
+                "RenameDatasetActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "RenameDatasetAction",
+                    "action_arguments": {
+                        "newname": "#{infile|basename} and CIViC links"
+                    }
+                }
+            },
+            "label": null,
+            "inputs": [
+                {
+                    "name": "infile",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                },
+                {
+                    "name": "annotate_source",
+                    "description": "runtime parameter for tool GEMINI annotate"
+                }
+            ],
+            "position": {
+                "top": 643,
+                "left": 698.5
+            },
+            "annotation": "Add CIViC link",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "type": "tool"
+        },
+        "11": {
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
+            "tool_version": "0.20.1+galaxy1",
             "outputs": [
                 {
                     "type": "gemini.sqlite",
@@ -428,29 +542,29 @@
             "workflow_outputs": [
                 {
                     "output_name": "outfile",
-                    "uuid": "2e9485c3-ce58-4bf4-9d0f-92a3e6b75ab0",
+                    "uuid": "abcbaad8-0435-43e6-89df-407422a21fef",
                     "label": null
                 }
             ],
             "input_connections": {
                 "infile": {
                     "output_name": "outfile",
-                    "id": 7
+                    "id": 10
                 },
                 "annotate_source": {
                     "output_name": "output",
-                    "id": 2
+                    "id": 4
                 }
             },
-            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"is_validated\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"VLD\\\", \\\"operation\\\": \\\"first\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
-            "id": 8,
+            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 1, \\\"a_selector\\\": \\\"boolean\\\", \\\"column_name\\\": \\\"in_cgidb\\\"}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "id": 11,
             "tool_shed_repository": {
                 "owner": "iuc",
                 "changeset_revision": "0c8f7322f8fc",
                 "name": "gemini_annotate",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "uuid": "bec9d1eb-2100-4e1c-8a97-653ce92ca669",
+            "uuid": "3ce4a8a8-1139-4ff1-b691-55d136ee2d08",
             "errors": null,
             "name": "GEMINI annotate",
             "post_job_actions": {
@@ -458,8 +572,13 @@
                     "output_name": "outfile",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
-                        "newname": "Fully annotated GEMINI DB of variants found for ${normal_sample_name} and ${tumor_sample_name}"
+                        "newname": "Fully annotated GEMINI database"
                     }
+                },
+                "DeleteIntermediatesActionoutfile": {
+                    "output_name": "outfile",
+                    "action_type": "DeleteIntermediatesAction",
+                    "action_arguments": {}
                 }
             },
             "label": null,
@@ -474,10 +593,10 @@
                 }
             ],
             "position": {
-                "top": 718.5,
-                "left": 931.5
+                "top": 796,
+                "left": 699.5
             },
-            "annotation": "",
+            "annotation": "Add CGI Biomarkers info",
             "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_annotate/gemini_annotate/0.20.1+galaxy1",
             "type": "tool"
         }
