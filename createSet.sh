@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 # script to create working directory and qsub job submissions for the WES samples
 # Version 05.02.2019
 
@@ -23,7 +24,7 @@ sex=$7; # gender
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
-
+ # TODO: same volumes as in make_alignment
 mtb="/path/to/output/folder/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
 wes="${mtb}/WES" # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
 ana="${mtb}/Analysis" # subfolder containing PDF Report, annotated copy number variations and annotated variants

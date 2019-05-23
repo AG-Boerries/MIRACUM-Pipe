@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 ###########################################
 ## WES Pipeline for somatic and germline ##
 ###########################################
@@ -14,28 +15,41 @@ sex=$4;
 ##################################################################################################################
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
+
+## TODO: link as volumes
 ## General
 homedata="/path/to/data" # folder contatining the raw data (.fastq files)
 annot="/path/to/annotation" # folder containing annotation files like captureRegions.bed
+
+# output path
 motherpath="/path/to/output"
+
+
+
 mtb="${motherpath}/${case}_${num}" # folder containing output
 wes="${mtb}/WES"
 ana="${mtb}/Analysis"
 RscriptPath="${motherpath}/RScripts"
 DatabasePath="${motherpath}/Databases"
-tempdir="${mtb}/tmp" # temporary folder
+tempdir="/tmp" # temporary folder
+# end paths
 
+# TODO: als volume/variable
 ## Genome
 GENOME="/path/to/ref/genome/including/index/hg19.fa"
 Chromosomes="/path/to/ref/genome/chromosomes"
 ChromoLength="/path/to/ref/chromosomes/length/hg19_chr.len"
 
+# depending on measurement machine
 ## SureSelect (Capture Kit)
 CaptureRegions="${annot}/CaptureRegions.bed"
 
+# database for known variants
 ## dbSNP vcf File
 dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
+# END variables
 
+## TODO: as constants (.env)
 ### Software
 ## Parameters
 ## General
@@ -56,16 +70,21 @@ minVarCount="4"
 protocol='refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
 argop='g,f,f,f,f,f,f,f,f,f,f'
 
+# END PARAMS
 
 ## Tools and paths
 # Paths
-soft="/path/to/tools/software" # folder containing all used tools
+soft="/opt/tools" # folder containing all used tools
 java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 
 # Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
-TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic-0.36/trimmomatic-0.36.jar PE -threads ${nCore} -phred33 "
-TrimmomaticAdapter="/home/miracum/Trimmomatic-0.38/adapters"
+
+# TODO: install with wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
+# TODO: rename files, neglect version
+
+TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic/trimmomatic.jar PE -threads ${nCore} -phred33 "
+TrimmomaticAdapter="${soft}/Trimmomatic/adapters"
 CUT="cut -f1,2,3"
 
 # Alignment
@@ -83,6 +102,8 @@ SAMINDEX="${SAMTOOLS} index "
 MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
 STATS="${SAMTOOLS} stats "
 
+
+## TODO: install from zip via wget: https://github.com/broadinstitute/gatk/releases/download/4.1.2.0/gatk-4.1.2.0.zip
 # GATK
 GATK="${soft}/bin/gatk"
 RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${nCore} "
@@ -90,9 +111,11 @@ IndelRealigner="${GATK} -R ${GENOME} -T IndelRealigner "
 BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${dbSNPvcf} -nct ${nCore} "
 PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${nCore} "
 
+## TODO: install from zip via wget: https://github.com/broadinstitute/picard/releases/latest
 # PICARD
 FixMate="${soft}/bin/picard FixMateInformation "
 
+## TODO: install via wget: https://sourceforge.net/projects/varscan/files/VarScan.v2.3.9.jar/download
 # VARSCAN
 VarScan="${soft}/bin/varscan"
 SOMATIC="${VarScan} somatic"
@@ -106,17 +129,22 @@ CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo -
 CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
 TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 
+# TODO: https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
 # COVERAGE
 COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
+## TODO: http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download
 # SNPEFF
 SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snpEff/snpEff.config -canon -v"
 
 # ControlFREEC
 freec="${soft}/bin/freec "
+
+# TODO: needs to be downloaded: https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
 gemMappabilityFile="${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
 
 # R
+## TODO: install with apt-get
 Rscript="${soft}/bin/Rscript"
 
 ##################################################################################################################

@@ -1,0 +1,15 @@
+[submodule "tools/FastQC"]
+	path = tools/FastQC
+	url = https://github.com/s-andrews/FastQC
+[submodule "tools/bwa-src"]
+	path = tools/bwa-src
+	url = https://github.com/lh3/bwa.git
+[submodule "tools/src/bam-readcount"]
+	path = tools/src/bam-readcount
+	url = https://github.com/genome/bam-readcount
+[submodule "tools/src/samtools"]
+	path = tools/src/samtools
+	url = https://github.com/samtools/samtools
+[submodule "tools/src/FREEC"]
+	path = tools/src/FREEC
+	url = https://github.com/BoevaLab/FREEC
