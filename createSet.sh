@@ -67,7 +67,7 @@ EOI
    echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx1} ${file_germline_1} " >> ${runname} 
    ;;
     TD)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx2} ${f2} " >> $runname 
+   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx2} ${f2} " >> ${runname}
    ;;
     VC)
    echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} " >> ${runname} 

@@ -1,3 +1,0 @@
-[submodule "build-common"]
-	path = build-common
-	url = git://github.com/genome/build-common.git

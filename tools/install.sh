@@ -43,8 +43,8 @@ rm -f *.o depend.mk
 # copy binary
 cd ../
 mkdir bin
-mv src/freec bin
 chmod +x src/freec
+mv src/freec bin
 
 MY_PATH="$working_dir/FREEC/bin:$MY_PATH"
 
@@ -56,7 +56,11 @@ cd ${working_dir}/bam-readcount
 mkdir -p build && cd build
 cmake ../ && make
 
-MY_PATH="$working_dir/bam-readcount/build/bin:$MY_PATH"
+# move file
+mv ${working_dir}/bam-readcount/build/bin ${working_dir}/bam-readcount/bin
+rm -rf ${working_dir}/bam-readcount/build
+
+MY_PATH="$working_dir/bam-readcount/bin:$MY_PATH"
 
 #######
 # bwa #
@@ -89,6 +93,9 @@ MY_PATH="$working_dir/bwa:$MY_PATH"
 # htslib is built by samtools
 rm -f ${working_dir}/htslib/*.o
 MY_LD_LIBRARY_PATH="$working_dir/htslib:$MY_LD_LIBRARY_PATH"
+
+
+
 
 # write MY_PATH into file
 echo ${MY_PATH} > ${working_dir}/my_path
