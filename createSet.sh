@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# script to create working directory and qsub job submissions for the WES samples
+# script to create working directory and sh job submissions for the WES samples
 # Version 05.02.2019
 
 ########################
@@ -14,13 +14,13 @@
 # somatic: do not do call germline varaints only use germline for identifying somatic variants
 # somaticGermline: call somatic variants as well as germline variants
 
-case=$1; # somatic or somaticGermline
-num=$2; # Patient ID
-xx1=$3; # folder/containing/germline
-xx2=$4; # folder/containing/tumor
-f1=$5; # filename_germline_without_file_extension          ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
-f2=$6; # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
-sex=$7; # gender
+case=$1 # somatic or somaticGermline
+num=$2 # Patient ID
+xx1=$3 # folder/containing/germline
+xx2=$4 # folder/containing/tumor
+f1=$5 # filename_germline_without_file_extension          ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
+f2=$6 # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
+sex=$7 # gender
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
@@ -57,22 +57,14 @@ jobname=${num}_${d}
 runname=${mtb}/run_${dname}.sh
 
 cat > ${runname} <<EOI
-#!/bin/bash
-#PBS -S /bin/bash
-#PBS -k o
-#PBS -l nodes=1:ppn=12,walltime=48:00:00
-#PBS -m a
-#PBS -N $jobname
-#PBS -e ${mtb}/err.${dname}.log
-#PBS -o ${mtb}/out.${dname}.log
-#PBS -d ${mtb}/
+#!/usr/bin/env bash
 
 EOI
 
 # create sh run scripts
     case ${d} in
     GD)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx1} ${f1} " >> ${runname} 
+   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx1} ${file_germline_1} " >> ${runname} 
    ;;
     TD)
    echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx2} ${f2} " >> $runname 
@@ -84,7 +76,7 @@ EOI
    echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${sex}" >> ${runname} 
    ;;
 	 Report)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${f1} ${f2} ${mtb} " >> ${runname}
+   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${file_germline_1} ${f2} ${mtb} " >> ${runname}
    ;;
     esac
 chmod a+x ${runname}
@@ -93,7 +85,7 @@ done
 
 # create jobs submissions script
 cat > ${mtb}/run_jobs.sh <<EOI2
-#!/bin/bash
+#!/usr/bin/env bash
 
 maxhours=48
 # -------------------------------------------
@@ -102,12 +94,12 @@ maxhours=48
 
 for task in GD TD; do
    dname=${case}_${num}_\${task}
-   cd $mtb
+   cd ${mtb}
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
    else
        echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
-       qsub run_\${dname}.sh
+       sh run_\${dname}.sh
    fi
 done
 
@@ -144,7 +136,7 @@ for task in VC CNV; do
        exit "Previous job uncompleted. Aborting!"
    else
        echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
-       qsub run_\${dname}.sh
+       sh run_\${dname}.sh
    fi
 done
 
@@ -174,7 +166,7 @@ for task in Report; do
 	    exit "Previous job uncompleted. Aborting!"
 	else
 	    echo "STARTING \${dname}"; echo "\${dname}" > .STARTING_MARKER_\${task}
-	    qsub run_\${dname}.sh
+	    sh run_\${dname}.sh
 		fi
 done
 
@@ -192,7 +184,7 @@ done
 
     echo "Finished Report"
     date
-    echo "Finished all jobs for $num "
+    echo "Finished all jobs for ${num} "
 # -------------------------------------------
 exit
 EOI2

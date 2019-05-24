@@ -24,6 +24,7 @@ annot="/path/to/annotation" # folder containing annotation files like captureReg
 # output path
 motherpath="/path/to/output"
 
+raw_data="some/volume"
 
 
 mtb="${motherpath}/${case}_${num}" # folder containing output
@@ -79,9 +80,6 @@ java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
 
 # Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
-
-# TODO: install with wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
-# TODO: rename files, neglect version
 
 TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic/trimmomatic.jar PE -threads ${nCore} -phred33 "
 TrimmomaticAdapter="${soft}/Trimmomatic/adapters"
@@ -156,7 +154,7 @@ Rscript="${soft}/bin/Rscript"
 # SAMPLE
 NameD=${case}_${num}_${task}
 xx=${4};
-InputPath=${homedata}/ngs/$xx/fastq ## change later !!!
+InputPath=${homedata}/$xx ## change later !!!
 Input1File=${5}1; # filename without extension
 Input2File=${5}2; # filename without extension
 

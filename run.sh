@@ -11,7 +11,8 @@ filename_tumor_without_file_extension=$6
 method=$7 # somatic or somaticGermline
 ID=$8
 
-./createSet.sh ${method} ${ID} ${dir_tumor} ${dir_germline} ${filename_germline_without_file_extension} ${filename_tumor_without_file_extension} ${gender}
+/opt/miracum-pipe/createSet.sh ${method} ${ID} ${dir_tumor} ${dir_germline} \
+    ${filename_germline_without_file_extension} ${filename_tumor_without_file_extension} ${gender}
 
 cd ${method}_${ID}
 

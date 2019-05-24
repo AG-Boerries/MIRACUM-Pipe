@@ -21,3 +21,27 @@ rm -f trimmomatic.zip
 # rename folder and file (neglect version information)
 mv Trimmomatic* Trimmomatic
 mv Trimmomatic/trimmomatic-${version_trimmomatic}.jar Trimmomatic/trimmomatic.jar
+
+#########
+# FREEC #
+#########
+
+# compile FREEC
+cd src/FREEC/src && make
+
+# remove object files
+rm -f *.o
+
+# copy binary
+cd ../
+mkdir bin
+mv src/freec bin
+
+# go back into tools/
+cd ../../
+
+
+#################
+# bam-readcount #
+#################
+

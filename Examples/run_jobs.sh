@@ -12,7 +12,7 @@ for task in GD TD; do
        exit "Previous job uncompleted. Aborting!"
    else
        echo "STARTING $dname"; echo "$dname" > .STARTING_MARKER_${task}
-       qsub run_${dname}.sh
+       sh run_${dname}.sh
    fi
 done
 
