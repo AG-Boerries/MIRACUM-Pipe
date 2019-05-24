@@ -13,3 +13,6 @@
 [submodule "tools/FREEC"]
 	path = tools/FREEC
 	url = https://github.com/BoevaLab/FREEC
+[submodule "tools/htslib"]
+	path = tools/htslib
+	url = https://github.com/samtools/htslib
