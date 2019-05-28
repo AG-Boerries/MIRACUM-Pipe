@@ -7,8 +7,15 @@ version_trimmomatic=0.39
 ########
 working_dir="$( cd "$(dirname "$0")" ; pwd -P )"
 
-MY_PATH=${working_dir}/../
+MY_PATH=''
 MY_LD_LIBRARY_PATH=''
+
+
+# remove old object files
+# find ${working_dir} -type f -name '*.o' -delete
+
+# remove untracked files
+git clean -f
 
 ###############
 # Trimmomatic #
@@ -28,7 +35,7 @@ rm -f trimmomatic.zip
 mv Trimmomatic* Trimmomatic
 mv Trimmomatic/trimmomatic-${version_trimmomatic}.jar Trimmomatic/trimmomatic.jar
 
-MY_PATH="$working_dir/Trimmomatic/:$MY_PATH"
+MY_PATH="$working_dir/Trimmomatic/"
 
 
 #########
@@ -47,7 +54,6 @@ chmod +x src/freec
 mv src/freec bin
 
 MY_PATH="$working_dir/FREEC/bin:$MY_PATH"
-
 
 #################
 # bam-readcount #
@@ -92,11 +98,14 @@ MY_PATH="$working_dir/bwa:$MY_PATH"
 
 # htslib is built by samtools
 rm -f ${working_dir}/htslib/*.o
-MY_LD_LIBRARY_PATH="$working_dir/htslib:$MY_LD_LIBRARY_PATH"
 
+# MY_LD_LIBRARY_PATH="$working_dir/htslib:$MY_LD_LIBRARY_PATH"
+
+# add lib folder system wide
+echo "$working_dir/htslib" > /etc/ld.so.conf.d/htslib.conf
 
 
 
 # write MY_PATH into file
 echo ${MY_PATH} > ${working_dir}/my_path
-echo ${MY_LD_LIBRARY_PATH} > ${working_dir}/my_ld_library_path
+# echo ${MY_LD_LIBRARY_PATH} > ${working_dir}/my_ld_library_path
