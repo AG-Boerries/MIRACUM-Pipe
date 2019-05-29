@@ -101,7 +101,6 @@ MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
 STATS="${SAMTOOLS} stats "
 
 
-## TODO: install from zip via wget: https://github.com/broadinstitute/gatk/releases/download/4.1.2.0/gatk-4.1.2.0.zip
 # GATK
 GATK="${soft}/bin/gatk"
 RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${nCore} "
@@ -109,11 +108,9 @@ IndelRealigner="${GATK} -R ${GENOME} -T IndelRealigner "
 BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${dbSNPvcf} -nct ${nCore} "
 PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${nCore} "
 
-## TODO: install from zip via wget: https://github.com/broadinstitute/picard/releases/latest
 # PICARD
 FixMate="${soft}/bin/picard FixMateInformation "
 
-## TODO: install via wget: https://sourceforge.net/projects/varscan/files/VarScan.v2.3.9.jar/download
 # VARSCAN
 VarScan="${soft}/bin/varscan"
 SOMATIC="${VarScan} somatic"
@@ -127,18 +124,15 @@ CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo -
 CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --comment --withzyg --outfile "
 TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 
-# TODO: https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
 # COVERAGE
 COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
-## TODO: http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download
 # SNPEFF
 SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snpEff/snpEff.config -canon -v"
 
 # ControlFREEC
 freec="${soft}/bin/freec "
 
-# TODO: needs to be downloaded: https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
 gemMappabilityFile="${soft}/FREEC-11.0/mappability/out100m2_hg19.gem"
 
 # R

@@ -2,26 +2,97 @@
 
 # variables
 version_trimmomatic=0.39
+version_GATK=4.1.2.0
 
 
 ########
 working_dir="$( cd "$(dirname "$0")" ; pwd -P )"
 
-MY_PATH=''
+MY_PATH="$working_dir/../"
 MY_LD_LIBRARY_PATH=''
 
 
 # remove old object files
-# find ${working_dir} -type f -name '*.o' -delete
+find ${working_dir} -type f -name '*.o' -delete
 
-# remove untracked files
-git clean -f
+
+####### install from web #######
+
+
+########
+# GATK #
+########
+# remove old verion
+cd ${working_dir}
+
+# download new version
+wget https://github.com/broadinstitute/gatk/releases/download/${version_GATK}/gatk-${version_GATK}.zip \
+    -O gatk.zip
+
+# unzip
+unzip -o gatk.zip
+rm -f gatk.zip
+
+# rename folder and file (neglect version information)
+mv gatk* gatk
+
+MY_PATH="$MY_PATH:$working_dir/gatk/"
+
+
+##########
+# picard #
+##########
+mkdir ${working_dir}/picard
+cd ${working_dir}/picard
+
+wget https://github.com/broadinstitute/picard/releases/download/2.20.2/picard.jar \
+    -O picard/picard.jar
+
+MY_PATH="$MY_PATH:$working_dir/picard/"
+
+
+###########
+# VarScan #
+###########
+mkdir -p ${working_dir}/varscan
+cd ${working_dir}/varscan
+wget https://sourceforge.net/projects/varscan/files/VarScan.v2.3.9.jar \
+    -O varscan/VarScan.jar
+
+MY_PATH="$MY_PATH:$working_dir/varscan/"
+
+
+#############
+# bedtools2 #
+#############
+cd ${working_dir}
+
+wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz \
+    -O bedtools2.tar.gz
+
+tar -xzf bedtools2.tar.gz
+rm -f bedtools2.tar.gz
+
+cd bedtools2 && make
+
+MY_PATH="$MY_PATH:$working_dir/bedtools2/bin/"
+
+
+##########
+# SNPEFF #
+##########
+cd ${working_dir}
+wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip -O snpEff.zip
+
+unzip -o snpEff.zip
+rm -f snpEff.zip
+
+MY_PATH="$MY_PATH:$working_dir/snpEff/:$working_dir/clinEff/"
 
 ###############
 # Trimmomatic #
 ###############
-# remove old verion
-rm -rf Trimmomatic
+cd ${working_dir}
 
 # download new version
 wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-${version_trimmomatic}.zip \
@@ -35,7 +106,16 @@ rm -f trimmomatic.zip
 mv Trimmomatic* Trimmomatic
 mv Trimmomatic/trimmomatic-${version_trimmomatic}.jar Trimmomatic/trimmomatic.jar
 
-MY_PATH="$working_dir/Trimmomatic/"
+MY_PATH="$MY_PATH:$working_dir/Trimmomatic/"
+
+###############
+# Trimmomatic #
+###############
+cd ${working_dir}
+
+
+
+###### COMPILE SUBMODULES #######
 
 
 #########
@@ -54,6 +134,13 @@ chmod +x src/freec
 mv src/freec bin
 
 MY_PATH="$working_dir/FREEC/bin:$MY_PATH"
+
+# add module
+cd cd ${working_dir}/FREEC/mappability
+wget https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
+tar -xzf hg19_len100bp.tar.gz
+rm -f hg19_len100bp.tar.gz
+
 
 #################
 # bam-readcount #
@@ -77,6 +164,16 @@ rm -f *.o
 MY_PATH="$working_dir/bwa:$MY_PATH"
 
 
+##########
+# htslib #
+##########
+cd ${working_dir}/htslib
+autoheader     # If using configure, generate the header template...
+autoconf       # ...and configure script (or use autoreconf to do both)
+
+./configure    # Optional but recommended, for choosing extra functionality
+
+
 ############
 # samtools #
 ############
@@ -90,7 +187,7 @@ autoconf -Wno-syntax
 ./configure
 
 # build samtools and htslib
-make all all-htslib
+make
 
 rm -f ${working_dir}/samtools/*.o
 
@@ -104,8 +201,5 @@ rm -f ${working_dir}/htslib/*.o
 # add lib folder system wide
 echo "$working_dir/htslib" > /etc/ld.so.conf.d/htslib.conf
 
-
-
 # write MY_PATH into file
-echo ${MY_PATH} > ${working_dir}/my_path
-# echo ${MY_LD_LIBRARY_PATH} > ${working_dir}/my_ld_library_path
+echo "export PATH=$PATH:$MY_PATH" >> /etc/environment
