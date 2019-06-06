@@ -141,8 +141,8 @@
             "type": "data_input"
         },
         "5": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3r.1",
-            "tool_version": "4.3r.1",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3+T.galaxy1",
+            "tool_version": "4.3+T.galaxy1",
             "outputs": [
                 {
                     "type": "vcf",
@@ -170,7 +170,7 @@
             "id": 5,
             "tool_shed_repository": {
                 "owner": "iuc",
-                "changeset_revision": "68693743661e",
+                "changeset_revision": "8f92c2b26e6d",
                 "name": "snpeff",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
