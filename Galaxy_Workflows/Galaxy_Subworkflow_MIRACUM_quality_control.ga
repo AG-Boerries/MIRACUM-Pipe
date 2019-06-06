@@ -143,7 +143,7 @@
             "id": 4,
             "tool_shed_repository": {
                 "owner": "devteam",
-                "changeset_revision": "c15237684a01",
+                "changeset_revision": "9da02be9c6cc",
                 "name": "fastqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -231,7 +231,7 @@
             "id": 5,
             "tool_shed_repository": {
                 "owner": "devteam",
-                "changeset_revision": "c15237684a01",
+                "changeset_revision": "9da02be9c6cc",
                 "name": "fastqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -319,7 +319,7 @@
             "id": 6,
             "tool_shed_repository": {
                 "owner": "devteam",
-                "changeset_revision": "c15237684a01",
+                "changeset_revision": "9da02be9c6cc",
                 "name": "fastqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -407,7 +407,7 @@
             "id": 7,
             "tool_shed_repository": {
                 "owner": "devteam",
-                "changeset_revision": "c15237684a01",
+                "changeset_revision": "9da02be9c6cc",
                 "name": "fastqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },

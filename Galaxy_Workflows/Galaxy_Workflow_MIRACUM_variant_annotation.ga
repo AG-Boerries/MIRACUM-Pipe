@@ -211,12 +211,12 @@
                 "left": 398.0999755859375
             },
             "annotation": "Add effects on genes, transcripts and proteins to variant INFO field",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3r.1",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/snpeff/snpEff/4.3+T.galaxy1",
             "type": "tool"
         },
         "6": {
-            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1",
-            "tool_version": "0.20.1",
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1+galaxy1",
+            "tool_version": "0.20.1+galaxy1",
             "outputs": [
                 {
                     "type": "gemini.sqlite",
@@ -234,7 +234,7 @@
             "id": 6,
             "tool_shed_repository": {
                 "owner": "iuc",
-                "changeset_revision": "b5b53c27baca",
+                "changeset_revision": "b2c25142267e",
                 "name": "gemini_load",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -271,7 +271,7 @@
                 "left": 689.683349609375
             },
             "annotation": "Build GEMINI database of all variants",
-            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gemini_load/gemini_load/0.20.1+galaxy1",
             "type": "tool"
         },
         "7": {
