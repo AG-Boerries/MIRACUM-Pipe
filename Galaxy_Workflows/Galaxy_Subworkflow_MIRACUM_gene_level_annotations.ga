@@ -137,7 +137,7 @@
             "id": 4,
             "tool_shed_repository": {
                 "owner": "bgruening",
-                "changeset_revision": "a6f147a050a2",
+                "changeset_revision": "0a8c6b61f0f4",
                 "name": "text_processing",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -208,7 +208,7 @@
             "id": 5,
             "tool_shed_repository": {
                 "owner": "bgruening",
-                "changeset_revision": "a6f147a050a2",
+                "changeset_revision": "0a8c6b61f0f4",
                 "name": "text_processing",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -279,7 +279,7 @@
             "id": 6,
             "tool_shed_repository": {
                 "owner": "bgruening",
-                "changeset_revision": "a6f147a050a2",
+                "changeset_revision": "0a8c6b61f0f4",
                 "name": "text_processing",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },

@@ -1053,7 +1053,7 @@
             "id": 9,
             "tool_shed_repository": {
                 "owner": "iuc",
-                "changeset_revision": "161f4383df15",
+                "changeset_revision": "b2f1f75d49c4",
                 "name": "multiqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
@@ -2264,7 +2264,7 @@
             "id": 13,
             "tool_shed_repository": {
                 "owner": "iuc",
-                "changeset_revision": "161f4383df15",
+                "changeset_revision": "b2f1f75d49c4",
                 "name": "multiqc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
