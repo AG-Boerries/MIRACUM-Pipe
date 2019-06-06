@@ -48,7 +48,7 @@ tools:
 - name: fastqc
   owner: devteam
   revisions:
-  - c15237684a01
+  - 9da02be9c6cc
   tool_panel_section_label: Tools from workflows
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: multiqc
@@ -72,13 +72,7 @@ tools:
 - name: bwa
   owner: devteam
   revisions:
-  - dfd8b7f78c37
-  tool_panel_section_label: Tools from workflows
-  tool_shed_url: https://toolshed.g2.bx.psu.edu
-- name: gemini_query
-  owner: iuc
-  revisions:
-  - cd00221d67cb
+  - 01ac0a5fedc3
   tool_panel_section_label: Tools from workflows
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: gemini_query
@@ -96,7 +90,7 @@ tools:
 - name: gemini_load
   owner: iuc
   revisions:
-  - b5b53c27baca
+  - b2c25142267e
   tool_panel_section_label: Tools from workflows
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: gemini_annotate
