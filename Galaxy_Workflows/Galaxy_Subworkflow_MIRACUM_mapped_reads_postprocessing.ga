@@ -241,7 +241,7 @@
                     "id": 3
                 }
             },
-            "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
+            "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
             "id": 4,
             "tool_shed_repository": {
                 "owner": "devteam",
@@ -292,7 +292,7 @@
                     "id": 4
                 }
             },
-            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
+            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
             "id": 5,
             "tool_shed_repository": {
                 "owner": "devteam",

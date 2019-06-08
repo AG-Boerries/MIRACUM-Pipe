@@ -1940,7 +1940,7 @@
                                 "id": 3
                             }
                         },
-                        "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
+                        "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
                         "id": 4,
                         "tool_shed_repository": {
                             "owner": "devteam",
@@ -1991,7 +1991,7 @@
                                 "id": 4
                             }
                         },
-                        "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
+                        "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
                         "id": 5,
                         "tool_shed_repository": {
                             "owner": "devteam",
@@ -2546,7 +2546,7 @@
                                 "id": 3
                             }
                         },
-                        "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
+                        "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
                         "id": 4,
                         "tool_shed_repository": {
                             "owner": "devteam",
@@ -2597,7 +2597,7 @@
                                 "id": 4
                             }
                         },
-                        "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
+                        "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
                         "id": 5,
                         "tool_shed_repository": {
                             "owner": "devteam",
@@ -2858,7 +2858,7 @@
                     "id": 12
                 }
             },
-            "tool_state": "{\"__page__\": null, \"normal_purity\": \"\\\"${normal_purity_estimate}\\\"\", \"reference\": \"{\\\"__current_case__\\\": 0, \\\"genome\\\": \\\"hg19canon\\\", \\\"source\\\": \\\"cached\\\"}\", \"split_output\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"call_params\": \"{\\\"__current_case__\\\": 0, \\\"min_avg_qual\\\": \\\"28\\\", \\\"min_coverage\\\": \\\"8\\\", \\\"min_freq_for_hom\\\": \\\"0.75\\\", \\\"min_mapqual\\\": \\\"1\\\", \\\"min_reads2\\\": \\\"2\\\", \\\"min_var_freq\\\": \\\"0.1\\\", \\\"p_value\\\": \\\"0.99\\\", \\\"settings\\\": \\\"custom\\\", \\\"somatic_p_value\\\": \\\"0.05\\\"}\", \"normal_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"tumor_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter_params\": \"{\\\"__current_case__\\\": 0, \\\"settings\\\": \\\"varscan_defaults\\\"}\", \"tumor_purity\": \"\\\"${tumor_purity_estimate}\\\"\"}",
+            "tool_state": "{\"__page__\": null, \"normal_purity\": \"\\\"${normal_purity_estimate}\\\"\", \"reference\": \"{\\\"__current_case__\\\": 0, \\\"genome\\\": \\\"hg19\\\", \\\"source\\\": \\\"cached\\\"}\", \"split_output\": \"\\\"false\\\"\", \"__rerun_remap_job_id__\": null, \"call_params\": \"{\\\"__current_case__\\\": 0, \\\"min_avg_qual\\\": \\\"28\\\", \\\"min_coverage\\\": \\\"8\\\", \\\"min_freq_for_hom\\\": \\\"0.75\\\", \\\"min_mapqual\\\": \\\"1\\\", \\\"min_reads2\\\": \\\"2\\\", \\\"min_var_freq\\\": \\\"0.1\\\", \\\"p_value\\\": \\\"0.99\\\", \\\"settings\\\": \\\"custom\\\", \\\"somatic_p_value\\\": \\\"0.05\\\"}\", \"normal_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"tumor_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"filter_params\": \"{\\\"__current_case__\\\": 0, \\\"settings\\\": \\\"varscan_defaults\\\"}\", \"tumor_purity\": \"\\\"${tumor_purity_estimate}\\\"\"}",
             "id": 15,
             "tool_shed_repository": {
                 "owner": "iuc",
