@@ -75,8 +75,8 @@ argop='g,f,f,f,f,f,f,f,f,f,f'
 
 ## Tools and paths
 # Paths
-soft="/opt/tools" # folder containing all used tools
-java="${soft}/bin/java -Djava.io.tmpdir=${tempdir} " # path to java
+soft="/opt/MIRACUM-Pipe/tools" # folder containing all used tools
+java="java -Djava.io.tmpdir=${tempdir} " # path to java
 
 # Pre-Processing
 FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
