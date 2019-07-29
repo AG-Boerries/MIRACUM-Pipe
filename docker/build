@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+case "$1" in
+        base)
+            docker build -f ./Dockerfile_base -t miracumpipe_base:latest ../
+            ;;
+
+        R)
+            docker build -f ./Dockerfile_R -t miracumpipe_r:latest ../
+            ;;
+
+        tools)
+            docker build -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
+            ;;
+
+        interface)
+            docker build -f ./Dockerfile -t miracumpipe:latest ../
+            ;;
+
+        *)
+            echo $"Usage: $0 {base|R|tools|interface}"
+            exit 1
+
+esac

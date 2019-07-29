@@ -1,0 +1,3 @@
+FROM miracumpipe_base:latest
+
+RUN Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R

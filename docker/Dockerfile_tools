@@ -1,0 +1,3 @@
+FROM miracumpipe_r:latest
+
+RUN /opt/MIRACUM-Pipe/tools/install.sh
