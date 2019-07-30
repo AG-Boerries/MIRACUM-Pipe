@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
 
 # TODO: create commands with nice params
-#function usage {
-#    echo "usage: diz-setup_git_ssh [-ch]"
-#    echo "  -c      turn on config only"
-#    echo "  -h      show this help screen"
-#    exit 1
-#}
-#
-#config_only=false
-#
-#while getopts uh option
-#do
-#case "${option}"
-#in
-#    c) config_only='';;
-#    h) usage;;
-#esac
-#done
+function usage {
+    echo "usage: diz-setup_git_ssh [-ph]"
+    echo "  -p      some param"
+    echo "  -h      show this help screen"
+    exit 1
+}
 
-set -x
-while $1
+some_flag=false
+
+while getopts ph option
 do
- echo "Press [CTRL+C] to stop.."
- sleep 5
-    echo "My second and third argument is $2 & $3"
+case "${option}"
+in
+    p) some_flag=true;;
+    h) usage;;
+esac
 done
+
+echo ${some_flag}

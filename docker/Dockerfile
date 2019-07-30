@@ -1,4 +1,5 @@
 FROM miracumpipe_tools:latest
 
-ENTRYPOINT ["/opt/MIRACUM-Pipe/interface.sh"]
-CMD ["true", "batman", "superman"]
+COPY ./interface.sh /opt/MIRACUM-Pipe/
+
+# ENTRYPOINT ["/opt/MIRACUM-Pipe/interface.sh"]
