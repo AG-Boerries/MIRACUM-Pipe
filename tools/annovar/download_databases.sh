@@ -25,4 +25,4 @@ annotate_variation.pl -buildver hg19 -downdb -webfrom annovar intervar_20180118 
 # actual command to build the database for ANNOVAR
 	# prepare_annovar_user.pl -dbtype cosmic CosmicMutantExport.tsv -vcf CosmicCodingMuts.vcf > hg19_cosmic87_coding.txt
 	# prepare_annovar_user.pl -dbtype cosmic CosmicNCV.tsv -vcf CosmicNonCodingVariants.vcf > hg19_cosmic87_noncoding.txt
-# Move both created files to the ~/annovar/humandb folder.
+# Move both created files to the annovar/humandb folder.
