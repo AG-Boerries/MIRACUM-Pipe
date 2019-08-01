@@ -2,7 +2,7 @@
 
 # variables
 version_trimmomatic=0.39
-version_GATK=4.1.2.0
+#version_GATK=4.1.2.0
 
 
 ########
@@ -26,7 +26,7 @@ find ${working_dir} -type f -name '*.o' -delete
 cd ${working_dir}
 
 # download new version
-wget https://github.com/broadinstitute/gatk/releases/download/${version_GATK}/gatk-${version_GATK}.zip \
+wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=3.8-1-0-gf15c1c3ef" \
     -O gatk.zip
 
 # unzip
@@ -34,7 +34,7 @@ unzip -o gatk.zip
 rm -f gatk.zip
 
 # rename folder and file (neglect version information)
-mv gatk* gatk
+mv GenomeAnalysisTK* gatk
 
 MY_PATH="$MY_PATH:$working_dir/gatk/"
 
