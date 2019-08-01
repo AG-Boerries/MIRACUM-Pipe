@@ -3,7 +3,9 @@
 # variables
 version_trimmomatic=0.39
 version_GATK="3.8-1-0-gf15c1c3ef"
-
+version_picard="2.18.15"
+version_VarScan="v2.3.9"
+version_bedtools="2.28.0"
 
 ########
 working_dir="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -42,10 +44,10 @@ MY_PATH="$MY_PATH:$working_dir/gatk/"
 ##########
 # picard #
 ##########
-mkdir ${working_dir}/picard
+mkdir -p ${working_dir}/picard
 cd ${working_dir}/picard
 
-wget https://github.com/broadinstitute/picard/releases/download/2.20.2/picard.jar \
+wget https://github.com/broadinstitute/picard/releases/download/${version_picard}/picard.jar \
     -O picard/picard.jar
 
 MY_PATH="$MY_PATH:$working_dir/picard/"
@@ -56,7 +58,7 @@ MY_PATH="$MY_PATH:$working_dir/picard/"
 ###########
 mkdir -p ${working_dir}/varscan
 cd ${working_dir}/varscan
-wget https://sourceforge.net/projects/varscan/files/VarScan.v2.3.9.jar \
+wget https://sourceforge.net/projects/varscan/files/VarScan.${version_VarScan}.jar \
     -O varscan/VarScan.jar
 
 MY_PATH="$MY_PATH:$working_dir/varscan/"
@@ -67,7 +69,7 @@ MY_PATH="$MY_PATH:$working_dir/varscan/"
 #############
 cd ${working_dir}
 
-wget https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz \
+wget https://github.com/arq5x/bedtools2/releases/download/${version_bedtools}/bedtools-${version_bedtools}.tar.gz \
     -O bedtools2.tar.gz
 
 tar -xzf bedtools2.tar.gz
@@ -129,7 +131,7 @@ rm -f *.o depend.mk
 
 # copy binary
 cd ../
-mkdir bin
+mkdir -p bin
 chmod +x src/freec
 mv src/freec bin
 
