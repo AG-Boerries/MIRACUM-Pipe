@@ -2,7 +2,7 @@
 
 # variables
 version_trimmomatic=0.39
-#version_GATK=4.1.2.0
+version_GATK="3.8-1-0-gf15c1c3ef"
 
 
 ########
@@ -26,7 +26,7 @@ find ${working_dir} -type f -name '*.o' -delete
 cd ${working_dir}
 
 # download new version
-wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=3.8-1-0-gf15c1c3ef" \
+wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=${version_GATK}" \
     -O gatk.zip
 
 # unzip
