@@ -7,4 +7,5 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
  gfortran \
  default-jre \
  r-base-core r-recommended \
- texlive
+ texlive \
+ python3 python3-pysam
