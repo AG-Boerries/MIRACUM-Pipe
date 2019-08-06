@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 # script to create working directory and sh job submissions for the WES samples
-# Version 05.02.2019
+# Version 31.07.2019
+
+SCRIPT_PATH=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")"
+  pwd -P
+)
 
 ########################
 ## Example run script ##
@@ -14,23 +19,22 @@
 # somatic: do not do call germline varaints only use germline for identifying somatic variants
 # somaticGermline: call somatic variants as well as germline variants
 
-case=$1 # somatic or somaticGermline
-num=$2 # Patient ID
-xx1=$3 # folder/containing/germline
-xx2=$4 # folder/containing/tumor
-f1=$5 # filename_germline_without_file_extension          ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
-f2=$6 # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
-sex=$7 # gender
+case=$1                                     # somatic or somaticGermline
+num=$2                                      # Patient ID
+xx1=$3                                      # folder/containing/germline
+xx2=$4                                      # folder/containing/tumor
+f1=$5                                       # filename_germline_without_file_extension          ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
+f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
+sex=$7                                      # gender
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
- # TODO: same volumes as in make_alignment
-mtb="/path/to/output/folder/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
-wes="${mtb}/WES" # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
-ana="${mtb}/Analysis" # subfolder containing PDF Report, annotated copy number variations and annotated variants
- 
+# TODO: same volumes as in make_alignment
+mtb="${SCRIPT_PATH}/volumes/output/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
+wes="${mtb}/WES"                            # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
+ana="${mtb}/Analysis"                       # subfolder containing PDF Report, annotated copy number variations and annotated variants
+
 ##################################################################################################################
- 
 
 ##########
 ## MAIN ##
@@ -48,43 +52,42 @@ fi
 
 # cycle on tasks
 
-for d in GD TD VC CNV Report
-do
+for d in GD TD VC CNV Report; do
 
-# create sh scripts
-dname=${case}_${num}_${d}
-jobname=${num}_${d}
-runname=${mtb}/run_${dname}.sh
+  # create sh scripts
+  dname=${case}_${num}_${d}
+  jobname=${num}_${d}
+  runname=${mtb}/run_${dname}.sh
 
-cat > ${runname} <<EOI
+  cat >${runname} <<EOI
 #!/usr/bin/env bash
 
 EOI
 
 # create sh run scripts
-    case ${d} in
-    GD)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx1} ${file_germline_1} " >> ${runname} 
-   ;;
-    TD)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${xx2} ${f2} " >> ${runname}
-   ;;
-    VC)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} " >> ${runname} 
-   ;;
-    CNV)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${sex}" >> ${runname} 
-   ;;
-	 Report)
-   echo "bash ${mtb}/make_alignment_VC_CNV.sh ${case} ${d} ${num} ${file_germline_1} ${f2} ${mtb} " >> ${runname}
-   ;;
-    esac
-chmod a+x ${runname}
+case ${d} in
+  GD)
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx1} -fa ${f1} " >> "${runname}"
+    ;;
+  TD)
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx2} -fa ${f2} " >> "${runname}"
+    ;;
+  VC)
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} " >> "${runname}"
+    ;;
+  CNV)
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${sex}" >> "${runname}"
+    ;;
+  Report)
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -fa ${f1} -fb ${f2}" >> "${runname}"
+    ;;
+  esac
+  chmod a+x ${runname}
 done
 # cycle on d
 
 # create jobs submissions script
-cat > ${mtb}/run_jobs.sh <<EOI2
+cat >${mtb}/run_jobs.sh <<EOI2
 #!/usr/bin/env bash
 
 maxhours=48
@@ -118,7 +121,7 @@ while [ \${count} -lt \${maxhours} ]; do
 done
     if [ \${count} -ge \${maxhours} ]; then
     date
-    echo "Waited to long for job results for GD TD; exiting" 
+    echo "Waited to long for job results for GD TD; exiting"
     exit
     fi
 
@@ -153,7 +156,7 @@ while [ \${count} -lt \${maxhours} ]; do
 done
 
     echo "Finished VC CNV"
-	
+
 # -------------------------------------------
 
 	date
@@ -189,9 +192,6 @@ done
 exit
 EOI2
 chmod a+x ${mtb}/run_jobs.sh
-
-
-
 
 exit
 # --------------------------------------------------------------------------------------------------------
