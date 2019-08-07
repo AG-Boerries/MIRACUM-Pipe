@@ -81,9 +81,8 @@ fi
 ## TODO: link as volumes
 ## General
 DIR_DATA="${SCRIPT_PATH}/assets/data"             # folder contatining the raw data (.fastq files)
-DIR_ANNOTATION="${SCRIPT_PATH}/assets/annotation" # folder containing annotation files like captureRegions.bed
 DIR_OUTPUT="${SCRIPT_PATH}/assets/output"
-DIR_REF="${SCRIPT_PATH}/assets/ref" # <- TODO: ???
+DIR_REF="${SCRIPT_PATH}/assets/references"               # reference genome
 
 mtb="${DIR_OUTPUT}/${case}_${num}" # folder containing output
 wes="${mtb}/WES"
@@ -95,17 +94,17 @@ DIR_TMP="/tmp" # temporary folder
 
 # TODO: als volume/variable
 ## Genome
-GENOME="${DIR_REF}/genome/including/index/hg19.fa"
-Chromosomes="${DIR_REF}/genome/chromosomes"
-ChromoLength="${DIR_REF}/chromosomes/length/hg19_chr.len"
+GENOME="${DIR_REF}/Genome/hg19.fa"
+Chromosomes="${DIR_REF}/chromosomes"
+ChromoLength="${DIR_REF}/chromosomes/hg19_chr.len"
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
-CaptureRegions="${DIR_ANNOTATION}/CaptureRegions.bed"
+CaptureRegions="${DIR_REF}/CaptureRegions.bed"
 
 # database for known variants
 ## dbSNP vcf File
-dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
+dbSNPvcf="${DIR_REF}/dbSNP/snp150hg19.vcf.gz"
 # END variables
 
 ## load settings
@@ -186,6 +185,7 @@ Rscript=$(command -v Rscript)
 case ${task} in
 
 ## alignment -----------------------------------------------------------------------------------------------------
+# TODO: make_alignment.sh
 GD | TD)
   if [ ! -d ${DIR_TMP} ]; then
     mkdir ${DIR_TMP}
@@ -269,6 +269,7 @@ GD | TD)
 # eo alignment
 
 ## variantCalling ------------------------------------------------------------------------------------------------
+# TODO: make_vc.sh
 VC)
   if [ ! -d ${DIR_TMP} ]; then
     mkdir ${DIR_TMP}
@@ -362,6 +363,7 @@ VC)
 # eo VC
 
 ## CNV  ----------------------------------------------------------------------------------------------------------
+# TODO: make_cnv.sh
 CNV)
   output="${wes}/CNV"
 
@@ -416,6 +418,7 @@ EOI
   # eo CNV
 
 ## Report  -------------------------------------------------------------------------------------------------------
+# TODO: make_report.sh
 Report)
   cd ${ana}
 
@@ -429,6 +432,7 @@ Report)
 esac
 # eo program calls
 
+# TODO: required in all 4 files
 echo "task ${task} for ${num} finished"
 rm .STARTING_MARKER_${task}
 exit

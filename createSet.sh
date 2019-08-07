@@ -73,12 +73,15 @@ if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
 fi
 
 #case=$1                                     # somatic or somaticGermline
+#sex=$7                                      # gender
+
+# gets killed with
 #num=$2                                      # Patient ID
 #xx1=$3                                      # folder/containing/germline
 #xx2=$4                                      # folder/containing/tumor
 #f1=$5                                       # filename_germline_without_file_extension       ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
 #f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
-#sex=$7                                      # gender
+
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
@@ -97,10 +100,10 @@ ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated 
 
 pathtothis="."
 if [ ! -d ${mtb} ]; then
-  mkdir ${mtb}
-  cp ${pathtothis}/make_alignment_VC_CNV.sh ${mtb}
-  mkdir ${wes}
+  mkdir -p ${wes}
   mkdir ${ana}
+
+  cp ${pathtothis}/make_alignment_VC_CNV.sh ${mtb}
   cp ${pathtothis}/RScripts/Main.R ${ana}
   cp ${pathtothis}/RScripts/Report.Rnw ${ana}
 fi
@@ -117,7 +120,7 @@ for d in GD TD VC CNV Report; do
 #!/usr/bin/env bash
 
 EOI
-
+  # TODO: split make alignment to 4 filkes
   # create sh run scripts
   case ${d} in
   GD)

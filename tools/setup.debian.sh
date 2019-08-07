@@ -12,3 +12,5 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
  python3-pip && \
  pip install shyaml && \
  apt-get purge -y python3-pip
+
+# TODO: install perl

@@ -24,13 +24,13 @@ function usage() {
   exit 1
 }
 
-dir_tumor=$1
-dir_germline=$2
-sex=$3 # XX or XY
-filename_germline=$4
-filename_tumor=$5
-method=$6 # somatic or somaticGermline
-ID=$7
+#dir_tumor=$1
+#dir_germline=$2
+#sex=$3 # XX or XY
+#filename_germline=$4
+#filename_tumor=$5
+#method=$6 # somatic or somaticGermline
+#ID=$7
 
 while getopts h option; do
   case "${option}" in
@@ -59,7 +59,6 @@ while getopts h option; do
 done
 
 if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
-  # whatever you want to do when arr contains value
   echo "unknown sex: ${sex}"
   echo "use one of the following values: ${possible_sex}"
   exit 1
