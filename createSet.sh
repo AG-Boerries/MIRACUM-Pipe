@@ -19,20 +19,75 @@ SCRIPT_PATH=$(
 # somatic: do not do call germline varaints only use germline for identifying somatic variants
 # somaticGermline: call somatic variants as well as germline variants
 
-case=$1                                     # somatic or somaticGermline
-num=$2                                      # Patient ID
-xx1=$3                                      # folder/containing/germline
-xx2=$4                                      # folder/containing/tumor
-f1=$5                                       # filename_germline_without_file_extension          ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
-f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
-sex=$7                                      # gender
+possible_cases=("somatic somaticGermline")
+possible_sex=("XX XY")
+
+function usage() {
+  echo "usage: createSet.sh -s sex -c case -n num -fg filename -ft filename -g folder -t folder [-h]"
+  echo "  -s  sex              specify sex (${possible_sex})"
+  echo "  -c  case             specify case (${possible_cases})"
+  echo "  -n  num              specify num"
+  echo "  -fg filename         specify filename germline without file extension"
+  echo "  -ft filename         specify filename tumor without file extension"
+  echo "  -g folder            specify folder containing germline"
+  echo "  -t folder            specify folder containing tumor"
+  echo "  -h                   show this help screen"
+  exit 1
+}
+
+while getopts c:n:s:g:t:fa:fb:h option; do
+  case "${option}" in
+  c) case=$OPTARG ;;
+  n) num=$OPTARG ;;
+  s) sex=$OPTARG ;;
+  g) xx1=$OPTARG ;;
+  t) xx2=$OPTARG ;;
+  fa) f1=$OPTARG ;;
+  fb) f2=$OPTARG ;;
+  h) usage ;;
+  \?)
+    echo "Unknown option: -$OPTARG" >&2
+    exit 1
+    ;;
+  :)
+    echo "Missing option argument for -$OPTARG" >&2
+    exit 1
+    ;;
+  *)
+    echo "Unimplemented option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [[ ! " ${possible_cases[@]} " =~ " ${case} " ]]; then
+  echo "unknown case: ${case}"
+  echo "use one of the following values: ${possible_cases}"
+  exit 1
+fi
+
+if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
+  echo "unknown sex: ${sex}"
+  echo "use one of the following values: ${possible_sex}"
+  exit 1
+fi
+
+#case=$1                                     # somatic or somaticGermline
+#num=$2                                      # Patient ID
+#xx1=$3                                      # folder/containing/germline
+#xx2=$4                                      # folder/containing/tumor
+#f1=$5                                       # filename_germline_without_file_extension       ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
+#f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
+#sex=$7                                      # gender
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
-# TODO: same volumes as in make_alignment
-mtb="${SCRIPT_PATH}/volumes/output/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
-wes="${mtb}/WES"                            # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
-ana="${mtb}/Analysis"                       # subfolder containing PDF Report, annotated copy number variations and annotated variants
+
+DIR_OUTPUT="${SCRIPT_PATH}/assets/output"
+
+mtb="${DIR_OUTPUT}/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
+wes="${mtb}/WES"                   # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
+ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated copy number variations and annotated variants
 
 ##################################################################################################################
 
@@ -53,7 +108,6 @@ fi
 # cycle on tasks
 
 for d in GD TD VC CNV Report; do
-
   # create sh scripts
   dname=${case}_${num}_${d}
   jobname=${num}_${d}
@@ -64,27 +118,27 @@ for d in GD TD VC CNV Report; do
 
 EOI
 
-# create sh run scripts
-case ${d} in
+  # create sh run scripts
+  case ${d} in
   GD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx1} -fa ${f1} " >> "${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx1} -fa ${f1} " >>"${runname}"
     ;;
   TD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx2} -fa ${f2} " >> "${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx2} -fa ${f2} " >>"${runname}"
     ;;
   VC)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} " >> "${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} " >>"${runname}"
     ;;
   CNV)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${sex}" >> "${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${sex}" >>"${runname}"
     ;;
   Report)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -fa ${f1} -fb ${f2}" >> "${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -fa ${f1} -fb ${f2}" >>"${runname}"
     ;;
   esac
   chmod a+x ${runname}
 done
-# cycle on d
+# end of cycle on d
 
 # create jobs submissions script
 cat >${mtb}/run_jobs.sh <<EOI2
@@ -92,8 +146,8 @@ cat >${mtb}/run_jobs.sh <<EOI2
 
 maxhours=48
 # -------------------------------------------
-    date
-    echo "Submitting  GD TD"
+date
+echo "Submitting  GD TD"
 
 for task in GD TD; do
    dname=${case}_${num}_\${task}
@@ -106,7 +160,7 @@ for task in GD TD; do
    fi
 done
 
-    echo "Waiting for GD TD"
+echo "Waiting for GD TD"
 
 # wait no more than maxhours
 count=1
@@ -119,18 +173,18 @@ while [ \${count} -lt \${maxhours} ]; do
      break
    fi
 done
-    if [ \${count} -ge \${maxhours} ]; then
+if [ \${count} -ge \${maxhours} ]; then
     date
     echo "Waited to long for job results for GD TD; exiting"
     exit
-    fi
+fi
 
-    echo "Finished GD TD"
+echo "Finished GD TD"
 
 # -------------------------------------------
 
-    date
-    echo "Submitting  VC CNV"
+date
+echo "Submitting  VC CNV"
 
 for task in VC CNV; do
    dname=${case}_${num}_\${task}
@@ -143,7 +197,7 @@ for task in VC CNV; do
    fi
 done
 
-    echo "Waiting for VC CNV"
+echo "Waiting for VC CNV"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
    if [ -e ${mtb}/.STARTING_MARKER_VC ] || [ -e ${mtb}/.STARTING_MARKER_CNV ]; then
@@ -155,12 +209,12 @@ while [ \${count} -lt \${maxhours} ]; do
    fi
 done
 
-    echo "Finished VC CNV"
+echo "Finished VC CNV"
 
 # -------------------------------------------
 
-	date
-	echo "Submitting  Report"
+date
+echo "Submitting  Report"
 
 for task in Report; do
 	dname=${case}_${num}_\${task}
@@ -173,7 +227,7 @@ for task in Report; do
 		fi
 done
 
-	 echo "Waiting for Report"
+echo "Waiting for Report"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
 	if [ -e ${mtb}/.STARTING_MARKER_Report]; then
@@ -185,9 +239,9 @@ while [ \${count} -lt \${maxhours} ]; do
    fi
 done
 
-    echo "Finished Report"
-    date
-    echo "Finished all jobs for ${num} "
+echo "Finished Report"
+date
+echo "Finished all jobs for ${num} "
 # -------------------------------------------
 exit
 EOI2

@@ -6,55 +6,86 @@
 # script to run the actual analysis
 # Version 31.07.2019
 
+# TODO: copy to main cfg
+get_config_value()
+{
+  SCRIPT_PATH=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+  )
+
+  cat ${SCRIPT_PATH}/conf/settings.yaml | shyaml get-value $1
+}
+
 SCRIPT_PATH=$(
   cd "$(dirname "${BASH_SOURCE[0]}")"
   pwd -P
 )
 TOOLS_PATH="${SCRIPT_PATH}/tools"
 
-function usage {
-   echo "usage: make_alignment_VC_CNV.sh -t task -s sex -c case -n num -fa file [-h]"
-   echo "       make_alignment_VC_CNV.sh -t Report -c case -n num -fa file -fb file [-h]"
-   echo "  -t  task (VC, Report)                              specify task"
-   echo "  -s  sex                                  specify sex"
-   echo "  -c  case                                 specify case"
-   echo "  -n  num                                  specify num"
-   echo "  -fa file                                 specify file a"
-   echo "  -fb second file (if task is Report)      specify file b"
-   echo "  -h                   show this help screen"
-   exit 1
+possible_tasks=("GD TD VC CNV Report")
+possible_sex=("XX XY")
+
+function usage() {
+  echo "usage: make_alignment_VC_CNV.sh -t task -s sex -c case -n num -fa file [-h]"
+  echo "       make_alignment_VC_CNV.sh -t Report -c case -n num -fa file -fb file [-h]"
+  echo "  -t  task                                 specify task (${possible_tasks})"
+  echo "  -s  sex                                  specify gender (${possible_sex})"
+  echo "  -c  case                                 specify case"
+  echo "  -n  num                                  specify num"
+  echo "  -fa file                                 specify file a"
+  echo "  -fb second file (if task is Report)      specify file b"
+  echo "  -h                   show this help screen"
+  exit 1
 }
 
-while getopts c:t:s:c:n:fa:fb:h option
-do
-case "${option}"
-in
-   c) case=$OPTARG;;
-   t) task=$OPTARG;;
-   n) num=$OPTARG;;
-   s) sex=$OPTARG;;
-   fa) file_a=$OPTARG;;
-   fb) file_b=$OPTARG;;
-   h) usage;;
-esac
+while getopts c:t:s:c:n:fa:fb:h option; do
+  case "${option}" in
+  c) case=$OPTARG ;;
+  t) task=$OPTARG ;;
+  n) num=$OPTARG ;;
+  s) sex=$OPTARG ;;
+  fa) file_a=$OPTARG ;;
+  fb) file_b=$OPTARG ;;
+  h) usage ;;
+  \?)
+    echo "Unknown option: -$OPTARG" >&2
+    exit 1
+    ;;
+  :)
+    echo "Missing option argument for -$OPTARG" >&2
+    exit 1
+    ;;
+  *)
+    echo "Unimplemented option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
 done
 
-#case=$1 # somatic or somaticGermline
-#task=$2 # GD or TD (alignment)
-#num=$3  # 73
-#sex=$4
+if [[ ! " ${possible_tasks[@]} " =~ " ${task} " ]]; then
+  echo "unknown task: ${task}"
+  echo "use one of the following values: ${possible_tasks}"
+  exit 1
+fi
+
+if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
+  echo "unknown sex: ${sex}"
+  echo "use one of the following values: ${possible_sex}"
+  exit 1
+fi
 
 ##################################################################################################################
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
 ## TODO: link as volumes
 ## General
-DIR_DATA="${SCRIPT_PATH}/volumes/data"             # folder contatining the raw data (.fastq files)
-DIR_ANNOTATION="${SCRIPT_PATH}/volumes/annotation" # folder containing annotation files like captureRegions.bed
-DIR_OUTPUT="${SCRIPT_PATH}/volumes/output"
-DIR_REF="${SCRIPT_PATH}/volumes/ref" # <- TODO: ???
+DIR_DATA="${SCRIPT_PATH}/assets/data"             # folder contatining the raw data (.fastq files)
+DIR_ANNOTATION="${SCRIPT_PATH}/assets/annotation" # folder containing annotation files like captureRegions.bed
+DIR_OUTPUT="${SCRIPT_PATH}/assets/output"
+DIR_REF="${SCRIPT_PATH}/assets/ref" # <- TODO: ???
 
-mtb="${SCRIPT_PATH}/${case}_${num}" # folder containing output
+mtb="${DIR_OUTPUT}/${case}_${num}" # folder containing output
 wes="${mtb}/WES"
 ana="${mtb}/Analysis"
 RscriptPath="${SCRIPT_PATH}/RScripts"
@@ -78,6 +109,7 @@ dbSNPvcf="/path/to/dbSNP/dbSNP/snp150hg19.vcf.gz "
 # END variables
 
 ## load settings
+## TODO: use yaml file and shyaml
 source ${SCRIPT_PATH}/conf/settings.cfg
 
 ## Tools and paths
@@ -150,37 +182,6 @@ Rscript=$(command -v Rscript)
 ## MAIN ##
 ##########
 
-# SAMPLE
-NameD=${case}_${num}_${task}
-xx=${sex}
-InputPath=${DIR_DATA}/$xx ## change later !!!
-Input1File=${file_a}1          # filename without extension
-Input2File=${file_a}2          # filename without extension
-
-# temp files
-fastq1=${InputPath}/${Input1File}.fastq.gz
-fastq2=${InputPath}/${Input2File}.fastq.gz
-fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
-fastq_o1_u_t=${DIR_TMP}/${NameD}_output1_unpaired_trimmed.fastq.gz
-fastq_o2_p_t=${DIR_TMP}/${NameD}_output2_paired_trimmed.fastq.gz
-fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
-bam=${DIR_TMP}/${NameD}_output.bam
-prefixsort=${DIR_TMP}/${NameD}_output.sort
-sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
-bai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bai
-bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam.list
-realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bam
-realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bai
-fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bam
-fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
-csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
-
-recalbam=${wes}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-statstxt=${wes}/${NameD}_stats.txt
-coveragetxt=${wes}/${NameD}_coverage.all.txt
-
-
 ### program calls
 case ${task} in
 
@@ -189,6 +190,36 @@ GD | TD)
   if [ ! -d ${DIR_TMP} ]; then
     mkdir ${DIR_TMP}
   fi
+
+  # SAMPLE
+  NameD=${case}_${num}_${task}
+  xx=${sex}
+  InputPath=${DIR_DATA}/$xx ## change later !!!
+  Input1File=${file_a}1     # filename without extension
+  Input2File=${file_a}2     # filename without extension
+
+  # temp files
+  fastq1=${InputPath}/${Input1File}.fastq.gz
+  fastq2=${InputPath}/${Input2File}.fastq.gz
+  fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
+  fastq_o1_u_t=${DIR_TMP}/${NameD}_output1_unpaired_trimmed.fastq.gz
+  fastq_o2_p_t=${DIR_TMP}/${NameD}_output2_paired_trimmed.fastq.gz
+  fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
+  bam=${DIR_TMP}/${NameD}_output.bam
+  prefixsort=${DIR_TMP}/${NameD}_output.sort
+  sortbam=${DIR_TMP}/${NameD}_output.sort.bam
+  rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
+  bai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bai
+  bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam.list
+  realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bam
+  realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bai
+  fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bam
+  fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
+  csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
+
+  recalbam=${wes}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  statstxt=${wes}/${NameD}_stats.txt
+  coveragetxt=${wes}/${NameD}_coverage.all.txt
 
   # fastqc zip to WES
   ${FASTQC} ${fastq1} -o ${wes}
@@ -391,8 +422,8 @@ Report)
   ${Rscript} ${ana}/Main.R ${case} ${num} ${file_a} ${file_b} ${mtb} ${RscriptPath} ${DatabasePath}
 
   ${Rscript} -e "library(knitr); knit('Report.Rnw')"
-  ${soft}/pdflatex -interaction=nonstopmode Report.tex
-  ${soft}/pdflatex -interaction=nonstopmode Report.tex
+  pdflatex -interaction=nonstopmode Report.tex
+  pdflatex -interaction=nonstopmode Report.tex
   ;;
   # eo Report
 esac

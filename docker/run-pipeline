@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# TODO: add some parameters and documentation (usage)
-
-docker run --name run-miracum-pipeline --rm miracumpipe:latest /opt/MIRACUM-Pipe/interface.sh

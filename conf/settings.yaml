@@ -1,0 +1,13 @@
+global:
+  memory: 64g
+  cpucores: 12
+varscan:
+  somatic:
+    minCoverage: 8
+    tumorPurity: 0.5
+    minFreqForHom: "0.75"
+  fpfilter:
+    minVarCount: 4
+annovar:
+  protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
+  argop: 'g,f,f,f,f,f,f,f,f,f,f'
