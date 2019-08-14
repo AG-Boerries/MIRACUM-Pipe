@@ -25,13 +25,15 @@ source "${DIR_SCRIPT}"/global.sh
 function usage() {
   echo "usage: make_alignment_VC_CNV.sh -d dir [-h]"
   echo "  -d  dir             specify file a"
+  echo "  -t  task            specify task"
   echo "  -h                  show this help screen"
   exit 1
 }
 
-while getopts d:h option; do
+while getopts d:t:h option; do
   case "${option}" in
   d) DIR_PATIENT=$OPTARG ;;
+  t) task=$OPTARG ;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
