@@ -1,4 +1,4 @@
-global:
+common:
   memory: 64g
   cpucores: 12
 varscan:
@@ -17,5 +17,6 @@ reference:
   genome: hg19.fa
   length: hg19_chr.len
   dbSNP: snp150hg19.vcf.gz
+  mappability: out100m2_hg19.gem
   sequencing:
     capture_regions: CaptureRegions.bed
