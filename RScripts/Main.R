@@ -60,7 +60,6 @@ source(paste(path_script, "mutationSignatureAnalysisFunction.R", sep = "/"))
 ##################
 # FASTQC Reports #
 
-# TODO: change the following lines to accept explicit file names
 tumor <- paste0("../WES/", tumor, "1_fastqc/Images/per_base_quality.png")
 germline <- paste0("../WES/", germline, "1_fastqc/Images/per_base_quality.png")
 
