@@ -26,3 +26,12 @@ function get_config_value()
 }
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
+
+## Directories
+## General
+DIR_ASSETS="${DIR_SCRIPT}/assets"
+
+DIR_INPUT="${DIR_ASSETS}/input"             # folder contatining the raw data (.fastq files)
+DIR_OUTPUT="${DIR_ASSETS}/output"
+DIR_REF="${DIR_ASSETS}/references"        # reference genome
+DIR_TMP="/tmp" # temporary folder

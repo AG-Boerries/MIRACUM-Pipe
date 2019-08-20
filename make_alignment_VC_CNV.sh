@@ -6,8 +6,6 @@
 # script to run the actual analysis
 # Version 31.07.2019
 
-
-
 DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit
   pwd -P
@@ -20,11 +18,9 @@ DIR_TOOLS="${DIR_SCRIPT}/tools"
 source "${DIR_SCRIPT}"/global.sh
 
 
-
-
 function usage() {
   echo "usage: make_alignment_VC_CNV.sh -d dir [-h]"
-  echo "  -d  dir             specify file a"
+  echo "  -d  dir             specify relative folder of patient"
   echo "  -t  task            specify task"
   echo "  -h                  show this help screen"
   exit 1
@@ -53,8 +49,9 @@ done
 #  c) case=$OPTARG ;;
 #  n) num=$OPTARG ;;
 #  s) sex=$OPTARG ;;
-#  fa) file_a=$OPTARG ;;
-#  fb) file_b=$OPTARG ;;
+
+CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${DIR_PATIENT}")
+CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${DIR_PATIENT}")
 
 # load patient yaml
 sex=get_config_value sex "${DIR_PATIENT}"
@@ -87,20 +84,14 @@ done
 ##################################################################################################################
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
-## everything in assets is intended to be linked as a volume
-## General
-DIR_ASSETS="${DIR_SCRIPT}/assets"
 
-DIR_DATA="${DIR_ASSETS}/data"             # folder contatining the raw data (.fastq files)
-DIR_OUTPUT="${DIR_ASSETS}/output"
-DIR_REF="${DIR_ASSETS}/references"        # reference genome
 
-mtb="${DIR_OUTPUT}/${DIR_PATIENT}"        # folder containing output
+mtb="${DIR_OUTPUT}/${case}_${DIR_PATIENT}"        # folder containing output
 wes="${mtb}/WES"
 ana="${mtb}/Analysis"
 RscriptPath="${DIR_SCRIPT}/RScripts"
 DatabasePath="${DIR_SCRIPT}/Databases"
-DIR_TMP="/tmp" # temporary folder
+
 # end paths
 
 ## Genome
@@ -216,10 +207,10 @@ GD | TD)
 
   # SAMPLE
   NameD=${case}_${DIR_PATIENT}_${task}
-  xx=${sex}
-  InputPath=${DIR_DATA}/${xx} ## change later !!!
-  Input1File=${file_a}1     # filename without extension
-  Input2File=${file_a}2     # filename without extension
+  xx=${DIR_PATIENT}
+  InputPath=${DIR_INPUT}/${xx} ## change later !!!
+  Input1File=${CFG_FILE_GERMLINE}1     # filename without extension
+  Input2File=${CFG_FILE_GERMLINE}2     # filename without extension
 
   # temp files
   fastq1=${InputPath}/${Input1File}.fastq.gz
@@ -459,7 +450,8 @@ EOI
 Report)
   cd "${ana}" || exit
 
-  ${Rscript} "${ana}"/Main.R "${case}" "${DIR_PATIENT}" "${file_a}" "${file_b}" "${mtb}" "${RscriptPath}" "${DatabasePath}"
+  # TODO: refactor R-Script to use different folders and also add DIR_REF (to link to Target file)
+  ${Rscript} "${ana}"/Main.R "${case}" "${DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" "${mtb}" "${RscriptPath}" "${DatabasePath}"
 
   ${Rscript} -e "library(knitr); knit('Report.Rnw')"
   pdflatex -interaction=nonstopmode Report.tex

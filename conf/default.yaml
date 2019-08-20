@@ -1,6 +1,10 @@
 common:
   memory: 64g
   cpucores: 12
+  files:
+    tumor: SLGFSK_TD_chr12_R
+    germline: SLGFSK_GD_chr12_R
+
 varscan:
   minBaseQual: 28
   minVAF: 0.10

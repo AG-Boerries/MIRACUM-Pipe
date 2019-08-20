@@ -3,10 +3,14 @@
 # script to create working directory and sh job submissions for the WES samples
 # Version 31.07.2019
 
-SCRIPT_PATH=$(
+DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")"
   pwd -P
 )
+
+## load settings
+# shellcheck source=global.sh
+source "${DIR_SCRIPT}"/global.sh
 
 ########################
 ## Example run script ##
@@ -24,26 +28,14 @@ possible_sex=("XX XY")
 
 function usage() {
   echo "usage: createSet.sh -s sex -c case -n num -fg filename -ft filename -g folder -t folder [-h]"
-  echo "  -s  sex              specify sex (${possible_sex})"
-  echo "  -c  case             specify case (${possible_cases})"
-  echo "  -n  num              specify num"
-  echo "  -fg filename         specify filename germline without file extension"
-  echo "  -ft filename         specify filename tumor without file extension"
-  echo "  -g folder            specify folder containing germline"
-  echo "  -t folder            specify folder containing tumor"
+  echo "  -d  dir              specify relative folder of patient"
   echo "  -h                   show this help screen"
   exit 1
 }
 
-while getopts c:n:s:g:t:fa:fb:h option; do
+while getopts d:h option; do
   case "${option}" in
-  c) case=$OPTARG ;;
-  n) num=$OPTARG ;;
-  s) sex=$OPTARG ;;
-  g) xx1=$OPTARG ;;
-  t) xx2=$OPTARG ;;
-  fa) f1=$OPTARG ;;
-  fb) f2=$OPTARG ;;
+  d) DIR_PATIENT=$OPTARG ;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -60,17 +52,25 @@ while getopts c:n:s:g:t:fa:fb:h option; do
   esac
 done
 
-if [[ ! " ${possible_cases[@]} " =~ " ${case} " ]]; then
-  echo "unknown case: ${case}"
-  echo "use one of the following values: ${possible_cases}"
-  exit 1
+
+CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${DIR_PATIENT}")
+CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${DIR_PATIENT}")
+
+# load patient yaml
+sex=get_config_value sex "${DIR_PATIENT}"
+if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
+  case=somaticGermline
+else
+  case=somatic
 fi
 
-if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
-  echo "unknown sex: ${sex}"
-  echo "use one of the following values: ${possible_sex}"
-  exit 1
-fi
+for value in "${possible_sex[@]}"
+do
+  [[ "${sex}" = "${value}" ]] && \
+    echo "unknown sex: ${sex}" && \
+    echo "use one of the following values: $(join_by ' ' ${possible_sex})" && \
+    exit 1
+done
 
 #case=$1                                     # somatic or somaticGermline
 #sex=$7                                      # gender
@@ -82,13 +82,15 @@ fi
 #f1=$5                                       # filename_germline_without_file_extension       ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
 #f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
 
+xx1="${DIR_PATIENT}"
+xx2="${DIR_PATIENT}"
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
 
-DIR_OUTPUT="${SCRIPT_PATH}/assets/output"
+DIR_OUTPUT="${DIR_SCRIPT}/assets/output"
 
-mtb="${DIR_OUTPUT}/${case}_${num}" # path to output folder, subfolder with type of analysis and ID is automatically created
+mtb="${DIR_OUTPUT}/${case}_${DIR_PATIENT}" # path to output folder, subfolder with type of analysis and ID is automatically created
 wes="${mtb}/WES"                   # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
 ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated copy number variations and annotated variants
 
@@ -112,31 +114,31 @@ fi
 
 for d in GD TD VC CNV Report; do
   # create sh scripts
-  dname=${case}_${num}_${d}
-  jobname=${num}_${d}
+  dname=${case}_${DIR_PATIENT}_${d}
+  jobname=${DIR_PATIENT}_${d}
   runname=${mtb}/run_${dname}.sh
 
   cat >${runname} <<EOI
 #!/usr/bin/env bash
 
 EOI
-  # TODO: split make alignment to 4 filkes
+  # TODO: split make alignment to 4 files
   # create sh run scripts
   case ${d} in
   GD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx1} -fa ${f1} " >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   TD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${xx2} -fa ${f2} " >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
     ;;
   VC)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} " >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
     ;;
   CNV)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -s ${sex}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
     ;;
   Report)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -c ${case} -t ${d} -n ${num} -fa ${f1} -fb ${f2}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
     ;;
   esac
   chmod a+x ${runname}
@@ -153,7 +155,7 @@ date
 echo "Submitting  GD TD"
 
 for task in GD TD; do
-   dname=${case}_${num}_\${task}
+   dname=${case}_${DIR_PATIENT}_\${task}
    cd ${mtb}
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
@@ -190,7 +192,7 @@ date
 echo "Submitting  VC CNV"
 
 for task in VC CNV; do
-   dname=${case}_${num}_\${task}
+   dname=${case}_${DIR_PATIENT}_\${task}
    cd ${mtb}
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
@@ -220,7 +222,7 @@ date
 echo "Submitting  Report"
 
 for task in Report; do
-	dname=${case}_${num}_\${task}
+	dname=${case}_${DIR_PATIENT}_\${task}
 	cd $mtb
 	if [ -f .STARTING_MARKER_\${task} ]; then
 	    exit "Previous job uncompleted. Aborting!"
@@ -244,7 +246,7 @@ done
 
 echo "Finished Report"
 date
-echo "Finished all jobs for ${num} "
+echo "Finished all jobs for ${DIR_PATIENT} "
 # -------------------------------------------
 exit
 EOI2

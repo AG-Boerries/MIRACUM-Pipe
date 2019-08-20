@@ -2,7 +2,6 @@
 
 # variables
 version_trimmomatic=0.39
-version_GATK="3.8-1-0-gf15c1c3ef"
 version_picard="2.18.15"
 version_VarScan="v2.3.9"
 version_bedtools="2.28.0"
@@ -20,23 +19,6 @@ find ${working_dir} -type f -name '*.o' -delete
 
 ####### install from web #######
 
-
-########
-# GATK #
-########
-# remove old verion
-cd ${working_dir}
-
-# download new version
-wget "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=${version_GATK}" \
-    -O gatk.zip
-
-# unzip
-unzip -o gatk.zip
-rm -f gatk.zip
-
-# rename folder and file (neglect version information)
-mv GenomeAnalysisTK* gatk
 
 MY_PATH="$MY_PATH:$working_dir/gatk/"
 

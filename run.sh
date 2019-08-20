@@ -13,13 +13,7 @@ possible_sex=("XX XY")
 
 function usage() {
   echo "usage: createSet.sh -s sex -c case -n num -fg filename -ft filename -g folder -t folder [-h]"
-  echo "  -s  sex              specify sex (${possible_sex})"
-  echo "  -c  case             specify case (${possible_cases})"
-  echo "  -n  num              specify num"
-  echo "  -fg filename         specify filename germline without file extension"
-  echo "  -ft filename         specify filename tumor without file extension"
-  echo "  -g folder            specify folder containing germline"
-  echo "  -t folder            specify folder containing tumor"
+  echo "  -d  dir              specify directory in which the patients are located"
   echo "  -h                   show this help screen"
   exit 1
 }
@@ -32,16 +26,13 @@ function usage() {
 #method=$6 # somatic or somaticGermline
 #ID=$7
 
-while getopts h option; do
+# in patient's config.yaml:
+#  echo "  -s  sex              specify sex (${possible_sex})"
+#  echo "  -c  case             specify case (${possible_cases})"
+
+while getopts dh option; do
   case "${option}" in
-  id) ID=$OPTARG ;;
-  m) method=$OPTARG ;;
-  n) num=$OPTARG ;;
-  s) sex=$OPTARG ;;
-  g) dir_germline=$OPTARG ;;
-  t) dir_tumor=$OPTARG ;;
-  fg) filename_germline=$OPTARG ;;
-  ft) filename_tumor=$OPTARG ;;
+  d) patient_dir=$OPTARG ;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -58,15 +49,26 @@ while getopts h option; do
   esac
 done
 
-if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
-  echo "unknown sex: ${sex}"
-  echo "use one of the following values: ${possible_sex}"
+if [[ -z ${patient_dir} ]]; then
+  echo "no patient dir given"
   exit 1
 fi
 
-${SCRIPT_PATH}/createSet.sh -c ${method} ${ID} ${dir_tumor} ${dir_germline} \
-  ${filename_germline} ${filename_tumor} ${sex}
+#if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
+#  echo "unknown sex: ${sex}"
+#  echo "use one of the following values: ${possible_sex}"
+#  exit 1
+#fi
 
-cd ${method}_${ID}
+# TODO: finalize call with patient dir as param and nothing else :)
+for patient_dir in ${SCRIPT_PATH}/input/*; do
+  if [[ ! -f ${patient_dir}/.processed ]]; then
+    ${SCRIPT_PATH}/createSet.sh -p ${patient_dir}
 
-./run_jobs.sh >out &
+    (${SCRIPT_PATH}/assets/input/${patient_dir}/run_jobs.sh > out && touch .processed) &
+  fi
+done
+
+
+
+

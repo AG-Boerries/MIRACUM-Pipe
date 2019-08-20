@@ -1,5 +1,9 @@
 FROM miracumpipe_tools:latest
 
-COPY ./run.sh /opt/MIRACUM-Pipe/
+COPY ./*.sh /opt/MIRACUM-Pipe/
+COPY ./conf/default.yaml /opt/MIRACUM-Pipe/conf
 
 # ENTRYPOINT ["/opt/MIRACUM-Pipe/interface.sh"]
+
+# TODO: define volumes
+VOLUME /assets/
