@@ -65,16 +65,16 @@ else
   # possibility to comfortably run tasks separately
   case ${task} in
     cnv)
-      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
+      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
       echo "not yet implemented"
     ;;
 
     vc)
-      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
+      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
       echo "not yet implemented"
     ;;
     report)
-      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
+      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
       echo "not yet implemented"
     ;;
 
