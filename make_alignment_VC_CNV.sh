@@ -101,7 +101,7 @@ ChromoLength="${DIR_REF}/chromosomes/$(get_config_value reference.length "${DIR_
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
-CaptureRegions="${DIR_REF}/$(get_config_value reference.sequencing.genome "${DIR_PATIENT}")"
+CaptureRegions="${DIR_REF}/$(get_config_value reference.sequencing.capture_regions "${DIR_PATIENT}")"
 
 # database for known variants
 ## dbSNP vcf File
