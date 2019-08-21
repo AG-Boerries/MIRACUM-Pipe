@@ -53,9 +53,6 @@ while getopts d:h option; do
 done
 
 
-CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${DIR_PATIENT}")
-CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${DIR_PATIENT}")
-
 # load patient yaml
 sex=get_config_value sex "${DIR_PATIENT}"
 if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
@@ -82,8 +79,6 @@ done
 #f1=$5                                       # filename_germline_without_file_extension       ## Inputf1=$homedata/ngs/$xx1/fastq/$f1 -> R1,R2
 #f2=$6                                       # filename_tumor_without_file_extension          ## Inputf2=$homedata/ngs/$xx2/fastq/$f2 -> R1,R2
 
-xx1="${DIR_PATIENT}"
-xx2="${DIR_PATIENT}"
 
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
