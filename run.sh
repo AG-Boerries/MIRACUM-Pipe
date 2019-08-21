@@ -21,7 +21,7 @@ function usage() {
   exit 1
 }
 
-while getopts d:t:h option; do
+while getopts d:t:fh option; do
   case "${option}" in
   t) task=$OPTARG;;
   d) DIR_PATIENT=$OPTARG ;;
