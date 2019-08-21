@@ -5,6 +5,9 @@ common:
     tumor: SLGFSK_TD_chr12_R
     germline: SLGFSK_GD_chr12_R
 
+annotation:
+  germline: no
+
 varscan:
   minBaseQual: 28
   minVAF: 0.10
@@ -14,9 +17,11 @@ varscan:
     minFreqForHom: "0.75"
   fpfilter:
     minVarCount: 4
+
 annovar:
   protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
   argop: 'g,f,f,f,f,f,f,f,f,f,f'
+
 reference:
   genome: hg19.fa
   length: hg19_chr.len

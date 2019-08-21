@@ -12,3 +12,5 @@ VOLUME /opt/MIRACUM-Pipe/assets/references
 
 VOLUME /opt/MIRACUM-Pipe/tools/annovar
 VOLUME /opt/MIRACUM-Pipe/tools/gatk
+
+VOLUME /opt/MIRACUM-Pipe/conf

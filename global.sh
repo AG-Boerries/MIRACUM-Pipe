@@ -15,7 +15,13 @@ function get_config_value()
 
   # first look inside the patient specific config
   patient_conf="${SCRIPT_PATH}"/assets/input/"${2}"/config.yaml
-  [[ -f "${patient_conf}" ]] && value=$(shyaml get-value "${1}" < "${patient_conf}" 2> /dev/null)
+  if [[ -f "${patient_conf}" ]]; then
+    cat ${patient_conf}
+    value=$(shyaml get-value "${1}" < "${patient_conf}" 2> /dev/null)
+  else
+    echo "no patient config in ${2}"
+    exit 1
+  fi
 
   # if value not available in patient specific config, take global config's value
   if [[ -z "${value}" ]]; then

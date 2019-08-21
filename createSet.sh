@@ -54,7 +54,7 @@ done
 
 
 # load patient yaml
-sex=get_config_value sex "${DIR_PATIENT}"
+sex=$(get_config_value sex "${DIR_PATIENT}")
 if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
   case=somaticGermline
 else
@@ -95,14 +95,13 @@ ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated 
 ## MAIN ##
 ##########
 
-pathtothis="."
 if [ ! -d ${mtb} ]; then
   mkdir -p ${wes}
   mkdir ${ana}
 
-  cp ${pathtothis}/make_alignment_VC_CNV.sh ${mtb}
-  cp ${pathtothis}/RScripts/Main.R ${ana}
-  cp ${pathtothis}/RScripts/Report.Rnw ${ana}
+  cp ${DIR_SCRIPT}/make_alignment_VC_CNV.sh ${mtb}
+  cp ${DIR_SCRIPT}/RScripts/Main.R ${ana}
+  cp ${DIR_SCRIPT}/RScripts/Report.Rnw ${ana}
 fi
 
 # cycle on tasks
@@ -124,16 +123,16 @@ EOI
     echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   TD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   VC)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   CNV)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   Report)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >>"${runname}"
+    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   esac
   chmod a+x ${runname}

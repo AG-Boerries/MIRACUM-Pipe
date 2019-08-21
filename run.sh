@@ -52,8 +52,9 @@ done
 
 
 if [[ -z "${dir}" && -z "${task}" ]]; then
-  for DIR_PATIENT in ${DIR_SCRIPT}/input/*; do
+  for DIR_PATIENT in ${DIR_SCRIPT}/assets/input/*; do
     if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
+      echo "computing ${DIR_PATIENT##*/}"
       ${DIR_SCRIPT}/createSet.sh -d "${DIR_PATIENT##*/}"
 
       (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
@@ -80,7 +81,7 @@ else
 
     default)
       if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
-        ${DIR_OUTPUT}/createSet.sh -d "${DIR_PATIENT##*/}"
+        ${DIR_SCRIPT}/createSet.sh -d "${DIR_PATIENT##*/}"
         (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
       fi
     ;;
