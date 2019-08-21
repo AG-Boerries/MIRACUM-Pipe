@@ -3,36 +3,29 @@
 # createSet.sh and make_alignment_VC_CNV.sh need to be in the base directory
 # first germline (GD), then tumor (TD)
 
-SCRIPT_PATH=$(
+DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")"
   pwd -P
 )
 
-possible_cases=("somatic somaticGermline")
-possible_sex=("XX XY")
+DIR_OUTPUT="${DIR_SCRIPT}/assets/output"
+
+possible_tasks=("GD TD VC CNV Report")
 
 function usage() {
-  echo "usage: createSet.sh -s sex -c case -n num -fg filename -ft filename -g folder -t folder [-h]"
-  echo "  -d  dir              specify directory in which the patients are located"
+  echo "usage: run.sh [-d dir] [-t task] [-f] [-h]"
+  echo "  -t  task             specify task ${possible_tasks}"
+  echo "  -f                   specify forced run, i.e. neglecting if a patient already was computed"
+  echo "  -d  dir              specify directory in which the patient is located"
   echo "  -h                   show this help screen"
   exit 1
 }
 
-#dir_tumor=$1
-#dir_germline=$2
-#sex=$3 # XX or XY
-#filename_germline=$4
-#filename_tumor=$5
-#method=$6 # somatic or somaticGermline
-#ID=$7
-
-# in patient's config.yaml:
-#  echo "  -s  sex              specify sex (${possible_sex})"
-#  echo "  -c  case             specify case (${possible_cases})"
-
-while getopts dh option; do
+while getopts d:t:h option; do
   case "${option}" in
-  d) patient_dir=$OPTARG ;;
+  t) task=$OPTARG;;
+  d) DIR_PATIENT=$OPTARG ;;
+  f) force=true;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -49,26 +42,47 @@ while getopts dh option; do
   esac
 done
 
-if [[ -z ${patient_dir} ]]; then
-  echo "no patient dir given"
-  exit 1
-fi
-
-#if [[ ! " ${possible_sex[@]} " =~ " ${sex} " ]]; then
-#  echo "unknown sex: ${sex}"
-#  echo "use one of the following values: ${possible_sex}"
-#  exit 1
-#fi
-
-# TODO: finalize call with patient dir as param and nothing else :)
-for patient_dir in ${SCRIPT_PATH}/input/*; do
-  if [[ ! -f ${patient_dir}/.processed ]]; then
-    ${SCRIPT_PATH}/createSet.sh -p ${patient_dir}
-
-    (${SCRIPT_PATH}/assets/input/${patient_dir}/run_jobs.sh > out && touch .processed) &
-  fi
+for value in "${possible_tasks[@]}"
+do
+  [[ "${task}" = "${value}" ]] && \
+    echo "unknown task: ${task}" && \
+    echo "use one of the following values: $(join_by ' ' ${possible_tasks})" && \
+    exit 1
 done
 
 
+if [[ -z "${dir}" && -z "${task}" ]]; then
+  for DIR_PATIENT in ${DIR_SCRIPT}/input/*; do
+    if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
+      ${DIR_SCRIPT}/createSet.sh -d "${DIR_PATIENT##*/}"
 
+      (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
+    fi
+  done
 
+#  ${DOCKER_COMMAND} ${DIR_MIRACUM}/run.sh
+else
+  # possibility to comfortably run tasks separately
+  case ${task} in
+    cnv)
+      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
+      echo "not yet implemented"
+    ;;
+
+    vc)
+      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
+      echo "not yet implemented"
+    ;;
+    report)
+      # ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
+      echo "not yet implemented"
+    ;;
+
+    default)
+      if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
+        ${DIR_OUTPUT}/createSet.sh -d "${DIR_PATIENT##*/}"
+        (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
+      fi
+    ;;
+  esac
+fi
