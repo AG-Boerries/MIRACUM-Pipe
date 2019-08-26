@@ -112,6 +112,7 @@ CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "${DIR_PATI
 
 
 CFG_COMMON_CPUCORES=$(get_config_value common.cpucores "${DIR_PATIENT}")
+CFG_COMMON_MEMORY=$(get_config_value common.memory "${DIR_PATIENT}")
 CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${DIR_PATIENT}")
 CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${DIR_PATIENT}")
 
@@ -134,7 +135,7 @@ java="java -Djava.io.tmpdir=${DIR_TMP} " # path to java
 # Pre-Processing
 FASTQC="${DIR_TOOLS}/FastQC/bin/fastqc -t ${CFG_COMMON_CPUCORES} --extract "
 
-TRIM="${java} -Xmx8g -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
+TRIM="${java} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
 TrimmomaticAdapter="${DIR_TOOLS}/Trimmomatic/adapters"
 CUT="cut -f1,2,3"
 
@@ -154,17 +155,17 @@ MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${CFG_VARSCAN_M
 STATS="${SAMTOOLS} stats "
 
 # GATK
-GATK="java -Xmx8g -jar ${DIR_TOOLS}/gatk/GenomeAnalysisTK.jar"
+GATK="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/gatk/GenomeAnalysisTK.jar"
 RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${CFG_COMMON_CPUCORES} "
 IndelRealigner="${GATK} -R ${GENOME} -T IndelRealigner "
 BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${CFG_REFERENCE_DBSNP} -nct ${CFG_COMMON_CPUCORES} "
 PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
 # PICARD
-FixMate="java -Xmx8g -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
+FixMate="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
 
 # VARSCAN
-VarScan="${DIR_TOOLS}/varscan/varscan.py"
+VarScan="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/varscan/VarScan.jar"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
@@ -180,7 +181,7 @@ TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 COVERAGE="${DIR_TOOLS}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
 # SNPEFF
-SNPEFF="${java} -Xmx8g -jar ${DIR_TOOLS}/snpEff/snpEff.jar GRCh37.75 -c ${DIR_TOOLS}/snpEff/snpEff.config -canon -v"
+SNPEFF="${java} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/snpEff/snpEff.jar GRCh37.75 -c ${DIR_TOOLS}/snpEff/snpEff.config -canon -v"
 
 # FREEC
 freec="${DIR_TOOLS}/FREEC/bin/freec "
