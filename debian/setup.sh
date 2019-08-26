@@ -7,11 +7,11 @@ DIR_SCRIPT=$(
 
 function install_java8()
 {
-  ## install jdk8
+  ## install jre8
   apt-get install -y apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
-  wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add - && \
+  wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
   add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install adoptopenjdk-8-openj9 && apt-get remove default-jdk
+  apt-get update && apt-get install adoptopenjdk-8-openj9-jre
 }
 
 
@@ -30,5 +30,7 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
   pip3 install shyaml && \
   apt-get purge -y python3-pip && \
   install_java8 && \
-  apt-get -y purge default-jre && \
+  apt-get -y purge  default-jre default-jdk-headless \
+                    openjdk-11-jdk openjdk-11-jdk-headless \
+                    openjdk-11-jre openjdk-11-jre-headless && \
   apt-get -y autoremove
