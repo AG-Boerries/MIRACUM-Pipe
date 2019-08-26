@@ -16,7 +16,6 @@ function get_config_value()
   # first look inside the patient specific config
   patient_conf="${SCRIPT_PATH}"/assets/input/"${2}"/config.yaml
   if [[ -f "${patient_conf}" ]]; then
-    cat ${patient_conf}
     value=$(shyaml get-value "${1}" < "${patient_conf}" 2> /dev/null)
   else
     echo "no patient config in ${2}"
@@ -30,14 +29,21 @@ function get_config_value()
 
   echo "${value}"
 }
+export -f get_config_value
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
+export -f join_by
+
 ## Directories
 ## General
-DIR_ASSETS="${DIR_SCRIPT}/assets"
+export DIR_ASSETS="${DIR_SCRIPT}/assets"
+export DIR_TOOLS="${DIR_SCRIPT}/tools"
 
-DIR_INPUT="${DIR_ASSETS}/input"             # folder contatining the raw data (.fastq files)
-DIR_OUTPUT="${DIR_ASSETS}/output"
-DIR_REF="${DIR_ASSETS}/references"        # reference genome
-DIR_TMP="/tmp" # temporary folder
+export DIR_INPUT="${DIR_ASSETS}/input"            # folder contatining the raw data (.fastq files)
+export DIR_OUTPUT="${DIR_ASSETS}/output"
+export DIR_REF="${DIR_ASSETS}/references"         # reference genome
+export DIR_TMP="/tmp"                # temporary folder
+
+export DIR_CHROMOSOMES="${DIR_REF}/chromosomes"
+export DIR_DBSNP="${DIR_REF}/dbSNP"

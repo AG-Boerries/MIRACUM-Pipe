@@ -4,11 +4,13 @@
 # first germline (GD), then tumor (TD)
 
 DIR_SCRIPT=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")"
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
 )
 
-DIR_OUTPUT="${DIR_SCRIPT}/assets/output"
+## load settings
+# shellcheck source=global.sh
+. "${DIR_SCRIPT}"/global.sh
 
 possible_tasks=("GD TD VC CNV Report")
 
@@ -50,19 +52,36 @@ do
     exit 1
 done
 
+# create temporary folder if not existent
+[[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
 
-if [[ -z "${dir}" && -z "${task}" ]]; then
-  for DIR_PATIENT in ${DIR_SCRIPT}/assets/input/*; do
-    if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
-      echo "computing ${DIR_PATIENT##*/}"
-      ${DIR_SCRIPT}/createSet.sh -d "${DIR_PATIENT##*/}"
+# run script
+if [[ -z "${DIR_PATIENT}" && -z "${task}" ]]; then
+  for dir in "${DIR_SCRIPT}"/assets/input/*; do
+    if [[ ! -f "${DIR_PATIENT}"/.processed || ${force} ]]; then
+      DIR_PATIENT=${dir##*/}
+      echo "computing ${DIR_PATIENT}"
+      "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT}"
 
-      (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
+      if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
+        case=somaticGermline
+      else
+        case=somatic
+      fi
+
+      ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > out && touch .processed) &
     fi
   done
 
 #  ${DOCKER_COMMAND} ${DIR_MIRACUM}/run.sh
 else
+
+  if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
+    case=somaticGermline
+  else
+    case=somatic
+  fi
+
   # possibility to comfortably run tasks separately
   case ${task} in
     cnv)
@@ -80,9 +99,10 @@ else
     ;;
 
     default)
-      if [[ ! -f ${DIR_PATIENT}/.processed || ${force} ]]; then
-        ${DIR_SCRIPT}/createSet.sh -d "${DIR_PATIENT##*/}"
-        (${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}/run_jobs.sh > out && touch .processed) &
+      if [[ ! -f "${DIR_PATIENT}"/.processed || "${force}" ]]; then
+        echo "computing ${DIR_PATIENT}"
+        "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT##*/}"
+        ("${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}"/run_jobs.sh > out && touch .processed) &
       fi
     ;;
   esac

@@ -1,9 +1,11 @@
-FROM miracumpipe_tools:latest
+FROM debian:10
 
-COPY ./*.sh /opt/MIRACUM-Pipe/
-COPY ./conf/default.yaml /opt/MIRACUM-Pipe/conf
+ADD . /opt/MIRACUM-Pipe
 
-# ENTRYPOINT ["/opt/MIRACUM-Pipe/interface.sh"]
+RUN apt-get update && apt-get upgrade -y && \
+    /opt/MIRACUM-Pipe/debian/setup.sh && \
+    Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R && \
+    /opt/MIRACUM-Pipe/tools/install.sh
 
 # define volumes
 VOLUME /opt/MIRACUM-Pipe/assets/input

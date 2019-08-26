@@ -95,13 +95,10 @@ ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated 
 ## MAIN ##
 ##########
 
+# reate folder if not exists
 if [ ! -d ${mtb} ]; then
   mkdir -p ${wes}
   mkdir ${ana}
-
-  cp ${DIR_SCRIPT}/make_alignment_VC_CNV.sh ${mtb}
-  cp ${DIR_SCRIPT}/RScripts/Main.R ${ana}
-  cp ${DIR_SCRIPT}/RScripts/Report.Rnw ${ana}
 fi
 
 # cycle on tasks
@@ -120,19 +117,19 @@ EOI
   # create sh run scripts
   case ${d} in
   GD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   TD)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   VC)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   CNV)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   Report)
-    echo "bash ${mtb}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
     ;;
   esac
   chmod a+x ${runname}
@@ -217,7 +214,7 @@ echo "Submitting  Report"
 
 for task in Report; do
 	dname=${case}_${DIR_PATIENT}_\${task}
-	cd $mtb
+	cd ${mtb}
 	if [ -f .STARTING_MARKER_\${task} ]; then
 	    exit "Previous job uncompleted. Aborting!"
 	else
@@ -229,7 +226,7 @@ done
 echo "Waiting for Report"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-	if [ -e ${mtb}/.STARTING_MARKER_Report]; then
+	if [ -e ${mtb}/.STARTING_MARKER_Report ]; then
      sleep 1h
      date
      (( count++ ))
@@ -242,6 +239,9 @@ echo "Finished Report"
 date
 echo "Finished all jobs for ${DIR_PATIENT} "
 # -------------------------------------------
+
+cd ${mtb} && touch .processed
+
 exit
 EOI2
 chmod a+x ${mtb}/run_jobs.sh

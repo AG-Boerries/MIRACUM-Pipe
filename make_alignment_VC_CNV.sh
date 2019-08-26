@@ -11,11 +11,9 @@ DIR_SCRIPT=$(
   pwd -P
 )
 
-DIR_TOOLS="${DIR_SCRIPT}/tools"
-
 ## load settings
 # shellcheck source=global.sh
-source "${DIR_SCRIPT}"/global.sh
+. "${DIR_SCRIPT}"/global.sh
 
 
 function usage() {
@@ -46,15 +44,19 @@ while getopts d:t:h option; do
   esac
 done
 
-#  c) case=$OPTARG ;;
-#  n) num=$OPTARG ;;
-#  s) sex=$OPTARG ;;
+# if no patient is defined
+if [[ -z "${DIR_PATIENT}" ]]; then
+  echo "no patient defined."
+  echo "--"
+  usage
+fi
+
 
 CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${DIR_PATIENT}")
 CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${DIR_PATIENT}")
 
 # load patient yaml
-sex=get_config_value sex "${DIR_PATIENT}"
+sex=$(get_config_value sex "${DIR_PATIENT}")
 if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
   case=somaticGermline
 else
@@ -85,41 +87,41 @@ done
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
 
-
-mtb="${DIR_OUTPUT}/${case}_${DIR_PATIENT}"        # folder containing output
-wes="${mtb}/WES"
-ana="${mtb}/Analysis"
-RscriptPath="${DIR_SCRIPT}/RScripts"
-DatabasePath="${DIR_SCRIPT}/Databases"
+# folder containing patient output
+DIR_TARGET="${DIR_OUTPUT}/${case}_${DIR_PATIENT}"
+DIR_WES="${DIR_TARGET}/WES"
+DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+DIR_RSCRIPT="${DIR_SCRIPT}/RScripts"
+DIR_DATABASE="${DIR_SCRIPT}/Databases"
 
 # end paths
 
 ## Genome
 GENOME="${DIR_REF}/Genome/$(get_config_value reference.genome "${DIR_PATIENT}")"
-Chromosomes="${DIR_REF}/chromosomes"
-ChromoLength="${DIR_REF}/chromosomes/$(get_config_value reference.length "${DIR_PATIENT}")"
+
+CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.length "${DIR_PATIENT}")"
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
-CaptureRegions="${DIR_REF}/$(get_config_value reference.sequencing.capture_regions "${DIR_PATIENT}")"
+CFG_REFERENCE_CAPTUREREGIONS="${DIR_REF}/$(get_config_value reference.sequencing.capture_regions "${DIR_PATIENT}")"
 
 # database for known variants
 ## dbSNP vcf File
-dbSNPvcf="${DIR_REF}/dbSNP/$(get_config_value reference.dbSNP "${DIR_PATIENT}")"
+CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "${DIR_PATIENT}")"
 # END variables
 
 
-nCore=$(get_config_value common.cpucores "${DIR_PATIENT}")
-minBaseQual=$(get_config_value varscan.minBaseQual "${DIR_PATIENT}")
-minVAF=$(get_config_value varscan.minVAF "${DIR_PATIENT}")
+CFG_COMMON_CPUCORES=$(get_config_value common.cpucores "${DIR_PATIENT}")
+CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${DIR_PATIENT}")
+CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${DIR_PATIENT}")
 
 # VarScan somatic
-minCoverage=$(get_config_value varscan.somatic.minCoverage "${DIR_PATIENT}")
-TumorPurity=$(get_config_value varscan.somatic.tumorPurity "${DIR_PATIENT}")
-minFreqForHom=$(get_config_value varscan.somatic.minFreqForHom "${DIR_PATIENT}")
+CFG_VARSCAN_SOMATIC_MINCOVERAGE=$(get_config_value varscan.somatic.minCoverage "${DIR_PATIENT}")
+CFG_VARSCAN_SOMATIC_TUMORPURITY=$(get_config_value varscan.somatic.tumorPurity "${DIR_PATIENT}")
+CFG_VARSCAN_SOMATIC_MINFREQFORHOM=$(get_config_value varscan.somatic.minFreqForHom "${DIR_PATIENT}")
 
 # VarScan fpfilter
-minVarCount=$(get_config_value vascan.fpfilter.minVarCount "${DIR_PATIENT}")
+CFG_VARSCAN_FPLFILTER_MINVARCOUNT=$(get_config_value varscan.fpfilter.minVarCount "${DIR_PATIENT}")
 
 # ANNOVAR Databases
 protocol=$(get_config_value annovar.protocol "${DIR_PATIENT}")
@@ -127,48 +129,47 @@ argop=$(get_config_value annovar.argop "${DIR_PATIENT}")
 
 ## Tools and paths
 # Paths
-soft=${DIR_TOOLS}                       # folder containing all used tools
 java="java -Djava.io.tmpdir=${DIR_TMP} " # path to java
 
 # Pre-Processing
-FASTQC="${soft}/FastQC/fastqc -t ${nCore} --extract "
+FASTQC="${DIR_TOOLS}/FastQC/bin/fastqc -t ${CFG_COMMON_CPUCORES} --extract "
 
-TRIM="${java} -Xmx150g -jar ${soft}/Trimmomatic/trimmomatic.jar PE -threads ${nCore} -phred33 "
-TrimmomaticAdapter="${soft}/Trimmomatic/adapters"
+TRIM="${java} -Xmx8g -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
+TrimmomaticAdapter="${DIR_TOOLS}/Trimmomatic/adapters"
 CUT="cut -f1,2,3"
 
 # Alignment
-BWAMEM="${soft}/bwa/bwa mem -M "
+BWAMEM="${DIR_TOOLS}/bwa/bwa mem -M "
 
 # BAM-Readcount
-BamReadcount="${soft}/bam-readcount/bin/bam-readcount -q 1 -b 20 -w 1 -f ${GENOME} "
+BamReadcount="${DIR_TOOLS}/bam-readcount/bin/bam-readcount -q 1 -b 20 -w 1 -f ${GENOME} "
 
 # SAMTOOLS
-SAMTOOLS="${soft}/samtools/samtools" # path to samtools
-SAMVIEW="${SAMTOOLS} view -@ ${nCore} "
-SAMSORT="${SAMTOOLS} sort -@ ${nCore} "
+SAMTOOLS="${DIR_TOOLS}/samtools/samtools" # path to samtools
+SAMVIEW="${SAMTOOLS} view -@ ${CFG_COMMON_CPUCORES} "
+SAMSORT="${SAMTOOLS} sort -@ ${CFG_COMMON_CPUCORES} "
 SAMRMDUP="${SAMTOOLS} rmdup "
 SAMINDEX="${SAMTOOLS} index "
-MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${minBaseQual}"
+MPILEUP="${SAMTOOLS} mpileup -B -C 50 -f ${GENOME} -q 1 --min-BQ ${CFG_VARSCAN_MINBASEQUAL}"
 STATS="${SAMTOOLS} stats "
 
 # GATK
-GATK="${soft}/gatk/gatk"
-RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${nCore} "
+GATK="java -Xmx8g -jar ${DIR_TOOLS}/gatk/GenomeAnalysisTK.jar"
+RealignerTargetCreator="${GATK} -T RealignerTargetCreator -R ${GENOME} -nt ${CFG_COMMON_CPUCORES} "
 IndelRealigner="${GATK} -R ${GENOME} -T IndelRealigner "
-BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${dbSNPvcf} -nct ${nCore} "
-PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${nCore} "
+BaseRecalibrator="${GATK} -T BaseRecalibrator -l INFO -R ${GENOME} -knownSites ${CFG_REFERENCE_DBSNP} -nct ${CFG_COMMON_CPUCORES} "
+PrintReads="${GATK} -T PrintReads -R ${GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
 # PICARD
-FixMate="${soft}/bin/picard FixMateInformation "
+FixMate="java -Xmx8g -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
 
 # VARSCAN
-VarScan="${soft}/varscan/varscan.py"
+VarScan="${DIR_TOOLS}/varscan/varscan.py"
 SOMATIC="${VarScan} somatic"
 PROCESSSOMATIC="${VarScan} processSomatic"
 
 # ANNOVAR
-ANNOVAR="${soft}/annovar/bin/annovar"
+ANNOVAR="${DIR_TOOLS}/annovar/bin/annovar"
 ANNOVARData="${ANNOVAR}/humandb"
 CONVERT2ANNOVAR2="${ANNOVAR}/convert2annovar.pl --format vcf4old --outfile "
 CONVERT2ANNOVAR3="${ANNOVAR}/convert2annovar.pl --format vcf4old --includeinfo --comment --outfile "
@@ -176,13 +177,13 @@ CONVERT2ANNOVAR="${ANNOVAR}/convert2annovar.pl --format vcf4 --includeinfo --com
 TABLEANNOVAR="${ANNOVAR}/table_annovar.pl"
 
 # COVERAGE
-COVERAGE="${soft}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
+COVERAGE="${DIR_TOOLS}/bedtools2/bin/bedtools coverage -hist -g ${GENOME}.fai -sorted "
 
 # SNPEFF
-SNPEFF="${java} -Xmx150g -jar ${soft}/snpEff/snpEff.jar GRCh37.75 -c ${soft}/snpEff/snpEff.config -canon -v"
+SNPEFF="${java} -Xmx8g -jar ${DIR_TOOLS}/snpEff/snpEff.jar GRCh37.75 -c ${DIR_TOOLS}/snpEff/snpEff.config -canon -v"
 
-# ControlFREEC
-freec="${soft}/bin/freec "
+# FREEC
+freec="${DIR_TOOLS}/FREEC/bin/freec "
 
 gemMappabilityFile="${DIR_REF}/mappability/$(get_config_value reference.mappability "${DIR_PATIENT}")"
 
@@ -194,6 +195,8 @@ Rscript=$(command -v Rscript)
 ##########
 ## MAIN ##
 ##########
+
+echo -e "\t computing ${task}"
 
 ### program calls
 case ${task} in
@@ -231,20 +234,20 @@ GD | TD)
   fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
   csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
-  recalbam=${wes}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  statstxt=${wes}/${NameD}_stats.txt
-  coveragetxt=${wes}/${NameD}_coverage.all.txt
+  recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  statstxt=${DIR_WES}/${NameD}_stats.txt
+  coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
   # fastqc zip to WES
-  ${FASTQC} "${fastq1}" -o "${wes}"
-  ${FASTQC} "${fastq2}" -o "${wes}"
+  ${FASTQC} "${fastq1}" -o "${DIR_WES}"
+  ${FASTQC} "${fastq2}" -o "${DIR_WES}"
 
   # trim fastq
   ${TRIM} "${fastq1}" "${fastq2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
     ILLUMINACLIP:"${TrimmomaticAdapter}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
 
-  ${FASTQC} "${fastq_o1_p_t}" -o "${wes}"
-  ${FASTQC} "${fastq_o2_p_t}" -o "${wes}"
+  ${FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
+  ${FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
 
   # make bam
   ${BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t 12 "${GENOME}" \
@@ -279,10 +282,10 @@ GD | TD)
   ${PrintReads} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 
   # coverage
-  ${COVERAGE} -b "${recalbam}" -a "${CaptureRegions}" | grep '^all' >"${coveragetxt}"
+  ${COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
 
   # zip
-  ${FASTQC} "${recalbam}" -o "${wes}"
+  ${FASTQC} "${recalbam}" -o "${DIR_WES}"
   ;;
 # eo alignment
 
@@ -296,19 +299,19 @@ VC)
   NameD=${case}_${DIR_PATIENT}_${task}
   NameGD=${case}_${DIR_PATIENT}_GD
   NameTD=${case}_${DIR_PATIENT}_TD
-  recalbamGD=${wes}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  recalbamTD=${wes}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  snpvcf=${wes}/${NameD}.output.snp.vcf
-  indelvcf=${wes}/${NameD}.output.indel.vcf
+  recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
+  indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
   ${MPILEUP} "${recalbamGD}" "${recalbamTD}" | ${SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
-    --min-coverage "${minCoverage}" --tumor-purity "${TumorPurity}" --min-var-freq "${minVAF}" \
-    --min-freq-for-hom "${minFreqForHom}" --min-avg-qual "${minBaseQual}" --output-vcf 1 --mpileup 1
+    --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" --min-var-freq "${CFG_VARSCAN_MINVAF}" \
+    --min-freq-for-hom "${CFG_VARSCAN_SOMATIC_MINFREQFORHOM}" --min-avg-qual "${CFG_VARSCAN_MINBASEQUAL}" --output-vcf 1 --mpileup 1
 
   # Processing of somatic mutations
 
-  ${PROCESSSOMATIC} "${snpvcf}" --min-tumor-freq "${minVAF}"
-  ${PROCESSSOMATIC} "${indelvcf}" --min-tumor-freq "${minVAF}"
+  ${PROCESSSOMATIC} "${snpvcf}" --min-tumor-freq "${CFG_VARSCAN_MINVAF}"
+  ${PROCESSSOMATIC} "${indelvcf}" --min-tumor-freq "${CFG_VARSCAN_MINVAF}"
 
   # FP Filter:  snp.Somatic.hc snp.LOH.hc snp.Germline.hc
   # FP Filter:  indel.Somatic.hc indel.LOH.hc indel.Germline.hc
@@ -323,11 +326,11 @@ VC)
     fi
 
     for name2 in ${names2}; do
-      hc_vcf=${wes}/${NameD}.output.${name1}.${name2}.hc.vcf
-      hc_avi=${wes}/${NameD}.output.${name1}.${name2}.hc.avinput
-      hc_rci=${wes}/${NameD}.output.${name1}.${name2}.hc.readcount.input
-      hc_rcs=${wes}/${NameD}.output.${name1}.${name2}.hc.readcounts
-      hc_fpf=${wes}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
+      hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
+      hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
+      hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
+      hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
+      hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
       if [ "${name2}" = Somatic ]; then
         recalbam=${recalbamTD}
       else
@@ -337,12 +340,12 @@ VC)
       ${CUT} "${hc_avi}" > "${hc_rci}"
       ${BamReadcount} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
       ${VarScan} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
-        --min-ref-basequal "${minBaseQual}" --min-var-basequal "${minBaseQual}" --min-var-count "${minVarCount}" \
-        --min-var-freq "${minVAF}"
+        --min-ref-basequal "${CFG_VARSCAN_MINBASEQUAL}" --min-var-basequal "${CFG_VARSCAN_MINBASEQUAL}" \
+        --min-var-count "${CFG_VARSCAN_FPLFILTER_MINVARCOUNT}" --min-var-freq "${CFG_VARSCAN_MINVAF}"
     done
   done
 
-  data=${wes}
+  data=${DIR_WES}
   for name1 in ${names1}; do
     # Annotation snp.Somatic.hc $data/NameD.output.snp.Somatic.hc.fpfilter.vcf
     # Annotation indel.Somatic.hc $data/NameD.output.indel.Somatic.hc.fpfilter.vcf
@@ -393,17 +396,17 @@ VC)
 ## CNV  ----------------------------------------------------------------------------------------------------------
 # TODO: make_cnv.sh
 CNV)
-  output="${wes}/CNV"
+  output="${DIR_WES}/CNV"
 
   if [ ! -d "${output}" ]; then
     mkdir "${output}"
   fi
 
-  cat >"${wes}"/CNV_config.txt <<EOI
+  cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
 
-chrFiles = ${Chromosomes}
-chrLenFile = ${ChromoLength}
+chrFiles = ${DIR_CHROMOSOMES}
+chrLenFile = ${CFG_REFERENCE_LENGTH}
 breakPointType = 4
 breakPointThreshold = 1.2
 forceGCcontentNormalization = 1
@@ -425,33 +428,34 @@ contaminationAdjustment = TRUE
 
 [sample]
 
-mateFile = ${wes}/${case}_${DIR_PATIENT}_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+mateFile = ${DIR_WES}/${case}_${DIR_PATIENT}_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 inputFormat = BAM
 mateOrientation = FR
 
 [control]
 
-mateFile = ${wes}/${case}_${DIR_PATIENT}_GD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+mateFile = ${DIR_WES}/${case}_${DIR_PATIENT}_GD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 inputFormat = BAM
 mateOrientation = FR
 
 [target]
 
-captureRegions = ${CaptureRegions}
+captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
   export PATH=${PATH}:${SAMTOOLS}
-  "${freec}"-conf "${wes}"/CNV_config.txt
+  "${freec}"-conf "${DIR_WES}"/CNV_config.txt
   ;;
   # eo CNV
 
 ## Report  -------------------------------------------------------------------------------------------------------
 # TODO: make_report.sh
 Report)
-  cd "${ana}" || exit
+  cd "${DIR_ANALYSIS}" || exit
 
   # TODO: refactor R-Script to use different folders and also add DIR_REF (to link to Target file)
-  ${Rscript} "${ana}"/Main.R "${case}" "${DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" "${mtb}" "${RscriptPath}" "${DatabasePath}"
+  ${Rscript} "${DIR_ANALYSIS}"/Main.R "${case}" "${DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
+    "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}"
 
   ${Rscript} -e "library(knitr); knit('Report.Rnw')"
   pdflatex -interaction=nonstopmode Report.tex

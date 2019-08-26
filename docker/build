@@ -14,7 +14,7 @@ case "$1" in
             ;;
 
         interface)
-            docker build -f ./Dockerfile -t miracumpipe:latest ../
+            docker build -f ./Dockerfile_interface -t miracumpipe:latest ../
             ;;
         all)
             docker build -f ./Dockerfile_base -t miracumpipe_base:latest ../
