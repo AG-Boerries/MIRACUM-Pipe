@@ -69,7 +69,7 @@ if [[ -z "${DIR_PATIENT}" && -z "${task}" ]]; then
         case=somatic
       fi
 
-      ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > out && touch .processed) &
+      ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${DIR_PATIENT}/run.log) &
     fi
   done
 
@@ -101,8 +101,8 @@ else
     default)
       if [[ ! -f "${DIR_PATIENT}"/.processed || "${force}" ]]; then
         echo "computing ${DIR_PATIENT}"
-        "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT##*/}"
-        ("${DIR_OUTPUT}/${case}_${DIR_PATIENT##*/}"/run_jobs.sh > out && touch .processed) &
+        "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT}"
+        ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${DIR_PATIENT}/run.log) &
       fi
     ;;
   esac
