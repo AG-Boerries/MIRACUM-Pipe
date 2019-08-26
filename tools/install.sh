@@ -3,7 +3,7 @@
 # variables
 version_trimmomatic="0.39"
 version_picard="2.18.15"
-version_VarScan="v2.3.9"
+version_VarScan="2.3.9"
 version_bedtools="2.28.0"
 
 ########
@@ -49,7 +49,7 @@ MY_PATH="$MY_PATH:$DIR_SCRIPT/picard/"
 ###########
 mkdir -p ${DIR_SCRIPT}/varscan
 cd ${DIR_SCRIPT}/varscan
-wget https://sourceforge.net/projects/varscan/files/VarScan.${version_VarScan}.jar \
+wget https://sourceforge.net/projects/varscan/files/VarScan.v${version_VarScan}.jar \
     -O varscan/VarScan.jar
 
 MY_PATH="$MY_PATH:$DIR_SCRIPT/varscan/"
@@ -60,7 +60,7 @@ MY_PATH="$MY_PATH:$DIR_SCRIPT/varscan/"
 #############
 cd ${DIR_SCRIPT}
 
-wget https://github.com/arq5x/bedtools2/releases/download/${version_bedtools}/bedtools-${version_bedtools}.tar.gz \
+wget https://github.com/arq5x/bedtools2/releases/download/v${version_bedtools}/bedtools-${version_bedtools}.tar.gz \
     -O bedtools2.tar.gz
 
 tar -xzf bedtools2.tar.gz
