@@ -17,7 +17,6 @@ MY_LD_LIBRARY_PATH=''
 find ${DIR_SCRIPT} -type f -name '*.o' -delete
 
 
-
 ##########
 # FastQC #
 ##########
