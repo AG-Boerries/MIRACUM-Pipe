@@ -37,13 +37,20 @@ export -f join_by
 
 ## Directories
 ## General
-export DIR_ASSETS="${DIR_SCRIPT}/assets"
-export DIR_TOOLS="${DIR_SCRIPT}/tools"
+readonly DIR_ASSETS="${DIR_SCRIPT}/assets"
+readonly DIR_TOOLS="${DIR_SCRIPT}/tools"
+readonly DIR_INPUT="${DIR_ASSETS}/input"            # folder contatining the raw data (.fastq files)
+readonly DIR_OUTPUT="${DIR_ASSETS}/output"
+readonly DIR_REF="${DIR_ASSETS}/references"         # reference genome
+readonly DIR_TMP="/tmp"                # temporary folder
+readonly DIR_CHROMOSOMES="${DIR_REF}/chromosomes"
+readonly DIR_DBSNP="${DIR_REF}/dbSNP"
 
-export DIR_INPUT="${DIR_ASSETS}/input"            # folder contatining the raw data (.fastq files)
-export DIR_OUTPUT="${DIR_ASSETS}/output"
-export DIR_REF="${DIR_ASSETS}/references"         # reference genome
-export DIR_TMP="/tmp"                # temporary folder
-
-export DIR_CHROMOSOMES="${DIR_REF}/chromosomes"
-export DIR_DBSNP="${DIR_REF}/dbSNP"
+export DIR_ASSETS
+export DIR_TOOLS
+export DIR_INPUT
+export DIR_OUTPUT
+export DIR_REF
+export DIR_TMP
+export DIR_CHROMOSOMES
+export DIR_DBSNP
