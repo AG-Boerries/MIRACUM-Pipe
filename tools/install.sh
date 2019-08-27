@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 # variables
-version_trimmomatic="0.39"
-version_picard="2.20.6"
-version_VarScan="2.3.9"
-version_bedtools="2.28.0"
+readonly VERSION_TRIMMOMATIC="0.39"
+readonly VERSION_PICARD="2.20.6"
+readonly VERSION_VARSCAN="2.3.9"
+readonly VERSION_BEDTOOLS="2.28.0"
 
 ########
-DIR_SCRIPT="$( cd "$(dirname "$0")" ; pwd -P )"
-
-MY_PATH="$DIR_SCRIPT/../"
-MY_LD_LIBRARY_PATH=''
+readonly DIR_SCRIPT=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd -P
+)
 
 
 # remove old object files
@@ -23,13 +23,9 @@ find ${DIR_SCRIPT} -type f -name '*.o' -delete
 cd ${DIR_SCRIPT}/FastQC
 ant build
 chmod +x bin/fastqc
-MY_PATH="$MY_PATH:$DIR_SCRIPT/FastQC/bin/"
 
 
 ####### install from web #######
-
-
-MY_PATH="$MY_PATH:$DIR_SCRIPT/gatk/"
 
 
 ##########
@@ -38,10 +34,8 @@ MY_PATH="$MY_PATH:$DIR_SCRIPT/gatk/"
 mkdir -p ${DIR_SCRIPT}/picard
 cd ${DIR_SCRIPT}/picard
 
-wget https://github.com/broadinstitute/picard/releases/download/${version_picard}/picard.jar \
+wget https://github.com/broadinstitute/picard/releases/download/${VERSION_PICARD}/picard.jar \
     -O picard.jar
-
-MY_PATH="$MY_PATH:$DIR_SCRIPT/picard/"
 
 
 ###########
@@ -49,10 +43,8 @@ MY_PATH="$MY_PATH:$DIR_SCRIPT/picard/"
 ###########
 mkdir -p ${DIR_SCRIPT}/varscan
 cd ${DIR_SCRIPT}/varscan
-wget https://sourceforge.net/projects/varscan/files/VarScan.v${version_VarScan}.jar \
+wget https://sourceforge.net/projects/varscan/files/VarScan.v${VERSION_VARSCAN}.jar \
     -O varscan/VarScan.jar
-
-MY_PATH="$MY_PATH:$DIR_SCRIPT/varscan/"
 
 
 #############
@@ -60,15 +52,13 @@ MY_PATH="$MY_PATH:$DIR_SCRIPT/varscan/"
 #############
 cd ${DIR_SCRIPT}
 
-wget https://github.com/arq5x/bedtools2/releases/download/v${version_bedtools}/bedtools-${version_bedtools}.tar.gz \
+wget https://github.com/arq5x/bedtools2/releases/download/v${VERSION_BEDTOOLS}/bedtools-${VERSION_BEDTOOLS}.tar.gz \
     -O bedtools2.tar.gz
 
 tar -xzf bedtools2.tar.gz
 rm -f bedtools2.tar.gz
 
 cd bedtools2 && make
-
-MY_PATH="$MY_PATH:$DIR_SCRIPT/bedtools2/bin/"
 
 
 ##########
@@ -80,15 +70,13 @@ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip -O snpE
 unzip -o snpEff.zip
 rm -f snpEff.zip
 
-MY_PATH="$MY_PATH:$DIR_SCRIPT/snpEff/:$DIR_SCRIPT/clinEff/"
-
 ###############
 # Trimmomatic #
 ###############
 cd ${DIR_SCRIPT}
 
 # download new version
-wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-${version_trimmomatic}.zip \
+wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-${VERSION_TRIMMOMATIC}.zip \
     -O trimmomatic.zip
 
 # unzip
@@ -97,15 +85,12 @@ rm -f trimmomatic.zip
 
 # rename folder and file (neglect version information)
 mv Trimmomatic* Trimmomatic
-mv Trimmomatic/trimmomatic-${version_trimmomatic}.jar Trimmomatic/trimmomatic.jar
-
-MY_PATH="$MY_PATH:$DIR_SCRIPT/Trimmomatic/"
+mv Trimmomatic/trimmomatic-${VERSION_TRIMMOMATIC}.jar Trimmomatic/trimmomatic.jar
 
 ###############
 # Trimmomatic #
 ###############
 cd ${DIR_SCRIPT}
-
 
 
 ###### COMPILE SUBMODULES #######
@@ -126,8 +111,6 @@ mkdir -p bin
 chmod +x src/freec
 mv src/freec bin
 
-MY_PATH="$DIR_SCRIPT/FREEC/bin:$MY_PATH"
-
 # add module
 cd cd ${DIR_SCRIPT}/FREEC/mappability
 wget https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
@@ -146,15 +129,11 @@ cmake ../ && make
 mv ${DIR_SCRIPT}/bam-readcount/build/bin ${DIR_SCRIPT}/bam-readcount/bin
 rm -rf ${DIR_SCRIPT}/bam-readcount/build
 
-MY_PATH="$DIR_SCRIPT/bam-readcount/bin:$MY_PATH"
-
 #######
 # bwa #
 #######
 cd ${DIR_SCRIPT}/bwa && make && chmod +x bwa
 rm -f *.o
-
-MY_PATH="$DIR_SCRIPT/bwa:$MY_PATH"
 
 
 ##########
@@ -184,15 +163,10 @@ make
 
 rm -f ${DIR_SCRIPT}/samtools/*.o
 
-MY_PATH="$DIR_SCRIPT/bwa:$MY_PATH"
-
 # htslib is built by samtools
 rm -f ${DIR_SCRIPT}/htslib/*.o
 
-# MY_LD_LIBRARY_PATH="$DIR_SCRIPT/htslib:$MY_LD_LIBRARY_PATH"
 
 # add lib folder system wide
 echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 
-# write MY_PATH into file
-echo "export PATH=$PATH:$MY_PATH" >> /etc/environment
