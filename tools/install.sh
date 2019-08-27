@@ -2,7 +2,7 @@
 
 # variables
 version_trimmomatic="0.39"
-version_picard="2.18.15"
+version_picard="2.20.6"
 version_VarScan="2.3.9"
 version_bedtools="2.28.0"
 
