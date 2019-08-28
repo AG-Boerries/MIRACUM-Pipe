@@ -2,28 +2,28 @@
 
 case "$1" in
         base)
-            docker build -f ./Dockerfile_base -t miracumpipe_base:latest ../
+            docker build --no-cache -f ./Dockerfile_base -t miracumpipe_base:latest ../
             ;;
 
         R)
-            docker build -f ./Dockerfile_R -t miracumpipe_r:latest ../
+            docker build --no-cache -f ./Dockerfile_R -t miracumpipe_r:latest ../
             ;;
 
         tools)
-            docker build -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
+            docker build --no-cache -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
             ;;
 
         interface)
-            docker build -f ./Dockerfile_interface -t miracumpipe:latest ../
+            docker build --no-cache -f ./Dockerfile_interface -t miracumpipe:latest ../
             ;;
         all)
-            docker build -f ./Dockerfile_base -t miracumpipe_base:latest ../
-            docker build -f ./Dockerfile_R -t miracumpipe_r:latest ../
-            docker build -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
-            docker build -f ./Dockerfile -t miracumpipe:latest ../
+            docker build --no-cache -f ./Dockerfile_base -t miracumpipe_base:latest ../
+            docker build --no-cache -f ./Dockerfile_R -t miracumpipe_r:latest ../
+            docker build --no-cache -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
+            docker build --no-cache -f ./Dockerfile -t miracumpipe:latest ../
             ;;
 
         *)
-            echo $"Usage: $0 {base|R|tools|interface|all}"
+            echo $"Usage: $0 {base|R|tools|interface|all} [args]"
             exit 1
 esac
