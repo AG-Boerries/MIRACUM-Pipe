@@ -3,7 +3,7 @@
 # createSet.sh and make_alignment_VC_CNV.sh need to be in the base directory
 # first germline (GD), then tumor (TD)
 
-DIR_SCRIPT=$(
+readonly DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
 )
@@ -25,9 +25,9 @@ function usage() {
 
 while getopts d:t:fh option; do
   case "${option}" in
-  t) task=$OPTARG;;
-  d) DIR_PATIENT=$OPTARG ;;
-  f) force=true;;
+  t) readonly PARAM_TASK=$OPTARG;;
+  d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
+  f) readonly PARAM_FORCE=true;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -46,8 +46,8 @@ done
 
 for value in "${possible_tasks[@]}"
 do
-  [[ "${task}" = "${value}" ]] && \
-    echo "unknown task: ${task}" && \
+  [[ "${PARAM_TASK}" = "${value}" ]] && \
+    echo "unknown task: ${PARAM_TASK}" && \
     echo "use one of the following values: $(join_by ' ' ${possible_tasks})" && \
     exit 1
 done
@@ -56,34 +56,33 @@ done
 [[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
 
 # run script
-if [[ -z "${DIR_PATIENT}" && -z "${task}" ]]; then
+if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
   for dir in "${DIR_SCRIPT}"/assets/input/*; do
-    if [[ ! -f "${DIR_PATIENT}"/.processed || ${force} ]]; then
+    if [[ ! -f "${PARAM_DIR_PATIENT}"/.processed || ${PARAM_FORCE} ]]; then
       DIR_PATIENT=${dir##*/}
       echo "computing ${DIR_PATIENT}"
       "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT}"
 
       if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
-        case=somaticGermline
+        readonly CFG_CASE=somaticGermline
       else
-        case=somatic
+        readonly CFG_CASE=somatic
       fi
 
-      ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${DIR_PATIENT}/run.log) &
+      ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}/run.log) &
     fi
   done
 
-#  ${DOCKER_COMMAND} ${DIR_MIRACUM}/run.sh
 else
 
-  if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
-    case=somaticGermline
+  if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
+    readonly CFG_CASE=somaticGermline
   else
-    case=somatic
+    readonly CFG_CASE=somatic
   fi
 
   # possibility to comfortably run tasks separately
-  case ${task} in
+  case ${PARAM_TASK} in
     cnv)
       # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
       echo "not yet implemented"
@@ -99,10 +98,10 @@ else
     ;;
 
     default)
-      if [[ ! -f "${DIR_PATIENT}"/.processed || "${force}" ]]; then
-        echo "computing ${DIR_PATIENT}"
-        "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT}"
-        ("${DIR_OUTPUT}/${case}_${DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${DIR_PATIENT}/run.log) &
+      if [[ ! -f "${PARAM_DIR_PATIENT}"/.processed || "${PARAM_FORCE}" ]]; then
+        echo "computing ${PARAM_DIR_PATIENT}"
+        "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
+        ("${DIR_OUTPUT}/${case}_${PARAM_DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${PARAM_DIR_PATIENT}/run.log) &
       fi
     ;;
   esac

@@ -83,8 +83,6 @@ done
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
 
-DIR_OUTPUT="${DIR_SCRIPT}/assets/output"
-
 mtb="${DIR_OUTPUT}/${case}_${DIR_PATIENT}" # path to output folder, subfolder with type of analysis and ID is automatically created
 wes="${mtb}/WES"                   # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
 ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated copy number variations and annotated variants

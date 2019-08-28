@@ -7,7 +7,7 @@
 # Version 31.07.2019
 
 readonly DIR_SCRIPT=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
 )
 
@@ -205,45 +205,43 @@ case ${PARAM_TASK} in
 ## alignment -----------------------------------------------------------------------------------------------------
 # TODO: make_alignment.sh
 GD | TD)
-  if [ ! -d ${DIR_TMP} ]; then
+  if [[ ! -d ${DIR_TMP} ]]; then
     mkdir -p ${DIR_TMP}
   fi
 
   # SAMPLE
   NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
-  InputPath=${DIR_INPUT}/${PARAM_DIR_PATIENT} ## change later !!!
-  InputFile1=${CFG_FILE_GERMLINE}1     # filename without extension
-  InputFile2=${CFG_FILE_GERMLINE}2     # filename without extension
+
+  readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}1.fastq.gz"
+  readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}2.fastq.gz"
 
   # temp files
-  fastq1=${InputPath}/${InputFile1}.fastq.gz
-  fastq2=${InputPath}/${InputFile2}.fastq.gz
-  fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
-  fastq_o1_u_t=${DIR_TMP}/${NameD}_output1_unpaired_trimmed.fastq.gz
-  fastq_o2_p_t=${DIR_TMP}/${NameD}_output2_paired_trimmed.fastq.gz
-  fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
-  bam=${DIR_TMP}/${NameD}_output.bam
-  prefixsort=${DIR_TMP}/${NameD}_output.sort
-  sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-  rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
-  bai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bai
-  bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam.list
-  realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bam
-  realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bai
-  fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bam
-  fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
-  csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
+  readonly fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
+  readonly fastq_o1_u_t=${DIR_TMP}/${NameD}_output1_unpaired_trimmed.fastq.gz
+  readonly fastq_o2_p_t=${DIR_TMP}/${NameD}_output2_paired_trimmed.fastq.gz
+  readonly fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
+  readonly bam=${DIR_TMP}/${NameD}_output.bam
+  readonly prefixsort=${DIR_TMP}/${NameD}_output.sort
+  readonly sortbam=${DIR_TMP}/${NameD}_output.sort.bam
+  readonly rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
+  readonly bai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bai
+  readonly bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam.list
+  readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bam
+  readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bai
+  readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bam
+  readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
+  readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
-  recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  statstxt=${DIR_WES}/${NameD}_stats.txt
-  coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
+  readonly recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  readonly statstxt=${DIR_WES}/${NameD}_stats.txt
+  readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
   # fastqc zip to WES
-  ${BIN_FASTQC} "${fastq1}" -o "${DIR_WES}"
-  ${BIN_FASTQC} "${fastq2}" -o "${DIR_WES}"
+  ${BIN_FASTQC} "${FILE_FASTQ_1}" -o "${DIR_WES}"
+  ${BIN_FASTQC} "${FILE_FASTQ_2}" -o "${DIR_WES}"
 
   # trim fastq
-  ${BIN_TRIM} "${fastq1}" "${fastq2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
+  ${BIN_TRIM} "${FILE_FASTQ_1}" "${FILE_FASTQ_2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
     ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
 
   ${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
@@ -292,17 +290,17 @@ GD | TD)
 ## variantCalling ------------------------------------------------------------------------------------------------
 # TODO: make_vc.sh
 VC)
-  if [ ! -d "${DIR_TMP}" ]; then
+  if [[ ! -d "${DIR_TMP}" ]]; then
     mkdir -p "${DIR_TMP}"
   fi
 
-  NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
-  NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_GD
-  NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_TD
-  recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
-  snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
-  indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
+  readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
+  readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_GD
+  readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_TD
+  readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
+  readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
   ${BIN_MPILEUP} "${recalbamGD}" "${recalbamTD}" | ${BIN_SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
     --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" \
@@ -317,10 +315,10 @@ VC)
   # FP Filter:  snp.Somatic.hc snp.LOH.hc snp.Germline.hc
   # FP Filter:  indel.Somatic.hc indel.LOH.hc indel.Germline.hc
 
-  names1="snp indel"
+  readonly names1="snp indel"
   for name1 in ${names1}; do
 
-    if [ "${CFG_CASE}" = somatic ]; then
+    if [[ "${CFG_CASE}" = somatic ]]; then
       names2="Somatic LOH"
     else
       names2="Somatic LOH Germline"
@@ -332,10 +330,10 @@ VC)
       hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
       hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
       hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
-      if [ "${name2}" = Somatic ]; then
-        recalbam=${recalbamTD}
+      if [[ "${name2}" = Somatic ]]; then
+        readonly recalbam=${recalbamTD}
       else
-        recalbam=${recalbamGD}
+        readonly recalbam=${recalbamGD}
       fi
       ${CONVERT2ANNOVAR2} "${hc_avi}" "${hc_vcf}"
       ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
@@ -346,47 +344,47 @@ VC)
     done
   done
 
-  data=${DIR_WES}
+  readonly data=${DIR_WES}
   for name1 in ${names1}; do
     # Annotation snp.Somatic.hc $data/NameD.output.snp.Somatic.hc.fpfilter.vcf
     # Annotation indel.Somatic.hc $data/NameD.output.indel.Somatic.hc.fpfilter.vcf
-    hc_=${data}/${NameD}.output.${name1}.Somatic.hc
-    hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
-    hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
-    hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
+    readonly hc_=${data}/${NameD}.output.${name1}.Somatic.hc
+    readonly hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
+    readonly hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
+    readonly hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
     ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
     ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    hc_snpeff=$data/${NameD}.output.$name1.Somatic.SnpEff.vcf
+    readonly hc_snpeff=$data/${NameD}.output.$name1.Somatic.SnpEff.vcf
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 
-    if [ "${CFG_CASE}" = somaticGermline ]; then
+    if [[ "${CFG_CASE}" = somaticGermline ]]; then
       # Annotation snp.Germline.hc $data/NameD.output.snp.Germline.hc.fpfilter.vcf
       # Annotation indel.Germline.hc $data/NameD.output.indel.Germline.hc.fpfilter.vcf
-      hc_=${data}/${NameD}.output.${name1}.Germline.hc
-      hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
-      hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
-      hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
+      readonly hc_=${data}/${NameD}.output.${name1}.Germline.hc
+      readonly hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
+      readonly hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
+      readonly hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
       ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
       ${TABLEANNOVAR} "${hc_N_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
           -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-      hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
+      readonly hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
       ${BIN_SNPEFF} "${hc_fpf}" >"${hc_N_snpeff}"
     fi
 
     # Annotation snp.LOH.hc
     # Annotation indel.LOH.hc
-    hc_vcf=${data}/${NameD}.output.${name1}.LOH.hc.vcf
-    hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
-    hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput
-    hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
+    readonly hc_vcf=${data}/${NameD}.output.${name1}.LOH.hc.vcf
+    readonly hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
+    readonly hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput
+    readonly hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
     ${CONVERT2ANNOVAR3} "${hc_avi}" "${hc_fpf}"
     ${TABLEANNOVAR} "${hc_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
+    readonly hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
     ${BIN_SNPEFF} "${hc_fpf}" >"${hc_L_snpeff}"
   done
 
@@ -399,7 +397,7 @@ VC)
 CNV)
   output="${DIR_WES}/CNV"
 
-  if [ ! -d "${output}" ]; then
+  if [[ ! -d "${output}" ]]; then
     mkdir "${output}"
   fi
 
@@ -458,7 +456,7 @@ Report)
   ${BIN_RSCRIPT} "${DIR_ANALYSIS}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
     "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}"
 
-  ${BIN_RSCRIPT} -e "library(knitr); knit('Report.Rnw')"
+  ${BIN_RSCRIPT} -e "library(knitr); knit('${DIR_RSCRIPT}/RScripts/Report.Rnw')"
   pdflatex -interaction=nonstopmode Report.tex
   pdflatex -interaction=nonstopmode Report.tex
   ;;
