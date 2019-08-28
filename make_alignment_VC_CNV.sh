@@ -65,7 +65,7 @@ fi
 
 # check inputs
 readonly VALID_TASKS=("GD TD VC CNV Report")
-readonly VALID_SEX=("XX XY")
+readonly VALID_SEXES=("XX XY")
 
 for value in "${VALID_TASKS[@]}"
 do
@@ -75,11 +75,11 @@ do
     exit 1
 done
 
-for value in "${VALID_SEX[@]}"
+for value in "${VALID_SEXES[@]}"
 do
   [[ "${CFG_SEX}" = "${value}" ]] && \
     echo "unknown sex: ${CFG_SEX}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_SEX})" && \
+    echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})" && \
     exit 1
 done
 
@@ -319,17 +319,17 @@ VC)
   for name1 in ${names1}; do
 
     if [[ "${CFG_CASE}" = somatic ]]; then
-      names2="Somatic LOH"
+      readonly names2="Somatic LOH"
     else
-      names2="Somatic LOH Germline"
+      readonly names2="Somatic LOH Germline"
     fi
 
     for name2 in ${names2}; do
-      hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
-      hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
-      hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
-      hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
-      hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
+      readonly hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
+      readonly hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
+      readonly hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
+      readonly hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
+      readonly hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
       if [[ "${name2}" = Somatic ]]; then
         readonly recalbam=${recalbamTD}
       else
@@ -395,7 +395,7 @@ VC)
 ## CNV  ----------------------------------------------------------------------------------------------------------
 # TODO: make_cnv.sh
 CNV)
-  output="${DIR_WES}/CNV"
+  readonly output="${DIR_WES}/CNV"
 
   if [[ ! -d "${output}" ]]; then
     mkdir "${output}"
