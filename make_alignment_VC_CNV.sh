@@ -449,7 +449,7 @@ EOI
 ## Report  -------------------------------------------------------------------------------------------------------
 # TODO: make_report.sh
 Report)
-  cd "${DIR_ANALYSIS}" || exit
+  cd "${DIR_ANALYSIS}" || exit 1
 
   # TODO: refactor R-Script to use different folders and also add DIR_REF (to link to Target file)
   ${BIN_RSCRIPT} "${DIR_ANALYSIS}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
@@ -465,5 +465,6 @@ esac
 
 # TODO: required in all 4 files
 echo "task ${PARAM_TASK} for ${PARAM_DIR_PATIENT} finished"
-rm .STARTING_MARKER_"${PARAM_TASK}"
+rm "${DIR_TARGET}/.STARTING_MARKER_${PARAM_TASK}"
+
 exit
