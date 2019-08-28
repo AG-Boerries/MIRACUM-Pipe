@@ -231,7 +231,7 @@ GD | TD)
   readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
   readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
-  readonly recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+  recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
   readonly statstxt=${DIR_WES}/${NameD}_stats.txt
   readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
@@ -330,9 +330,9 @@ VC)
       hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
       hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
       if [[ "${name2}" = Somatic ]]; then
-        readonly recalbam=${recalbamTD}
+        recalbam=${recalbamTD}
       else
-        readonly recalbam=${recalbamGD}
+        recalbam=${recalbamGD}
       fi
       ${CONVERT2ANNOVAR2} "${hc_avi}" "${hc_vcf}"
       ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
