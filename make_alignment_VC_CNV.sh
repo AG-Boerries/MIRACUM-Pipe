@@ -52,9 +52,6 @@ if [[ -z "${PARAM_DIR_PATIENT}" ]]; then
 fi
 
 
-readonly CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${PARAM_DIR_PATIENT}")
-readonly CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${PARAM_DIR_PATIENT}")
-
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
 if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
@@ -86,6 +83,8 @@ done
 ##################################################################################################################
 #### Parameters which have to be adjusted accoridng the the environment or the users needs
 
+readonly CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${PARAM_DIR_PATIENT}")
+readonly CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${PARAM_DIR_PATIENT}")
 
 # folder containing patient output
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
@@ -210,7 +209,7 @@ GD | TD)
   fi
 
   # SAMPLE
-  NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
+  readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
   readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}1.fastq.gz"
   readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}2.fastq.gz"
@@ -325,11 +324,11 @@ VC)
     fi
 
     for name2 in ${names2}; do
-      readonly hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
-      readonly hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
-      readonly hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
-      readonly hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
-      readonly hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
+      hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
+      hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
+      hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
+      hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
+      hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
       if [[ "${name2}" = Somatic ]]; then
         readonly recalbam=${recalbamTD}
       else
@@ -348,10 +347,10 @@ VC)
   for name1 in ${names1}; do
     # Annotation snp.Somatic.hc $data/NameD.output.snp.Somatic.hc.fpfilter.vcf
     # Annotation indel.Somatic.hc $data/NameD.output.indel.Somatic.hc.fpfilter.vcf
-    readonly hc_=${data}/${NameD}.output.${name1}.Somatic.hc
-    readonly hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
-    readonly hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
-    readonly hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
+    hc_=${data}/${NameD}.output.${name1}.Somatic.hc
+    hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
+    hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
+    hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
     ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
     ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
@@ -362,29 +361,29 @@ VC)
     if [[ "${CFG_CASE}" = somaticGermline ]]; then
       # Annotation snp.Germline.hc $data/NameD.output.snp.Germline.hc.fpfilter.vcf
       # Annotation indel.Germline.hc $data/NameD.output.indel.Germline.hc.fpfilter.vcf
-      readonly hc_=${data}/${NameD}.output.${name1}.Germline.hc
-      readonly hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
-      readonly hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
-      readonly hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
+      hc_=${data}/${NameD}.output.${name1}.Germline.hc
+      hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
+      hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
+      hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
       ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
       ${TABLEANNOVAR} "${hc_N_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
           -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-      readonly hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
+      hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
       ${BIN_SNPEFF} "${hc_fpf}" >"${hc_N_snpeff}"
     fi
 
     # Annotation snp.LOH.hc
     # Annotation indel.LOH.hc
-    readonly hc_vcf=${data}/${NameD}.output.${name1}.LOH.hc.vcf
-    readonly hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
-    readonly hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput
-    readonly hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
+    hc_vcf=${data}/${NameD}.output.${name1}.LOH.hc.vcf
+    hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
+    hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput
+    hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
     ${CONVERT2ANNOVAR3} "${hc_avi}" "${hc_fpf}"
     ${TABLEANNOVAR} "${hc_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    readonly hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
+    hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
     ${BIN_SNPEFF} "${hc_fpf}" >"${hc_L_snpeff}"
   done
 
@@ -398,7 +397,7 @@ CNV)
   readonly output="${DIR_WES}/CNV"
 
   if [[ ! -d "${output}" ]]; then
-    mkdir "${output}"
+    mkdir -p "${output}"
   fi
 
   cat >"${DIR_WES}"/CNV_config.txt <<EOI
