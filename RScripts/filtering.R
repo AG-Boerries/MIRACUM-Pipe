@@ -27,7 +27,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   #'
   #' @details The mutations are filtered to find the pathogenic mutations.
   #' @details First only the mutations passing all the quality filters are
-  #' @details considered. Then the tumor mutational burden is calculated in 
+  #' @details considered. Then the tumor mutational burden is calculated in
   #' @details Tumor mode ("T"). Afterwards the filter for the functionality of
   #' @details the genetic region is applied and the mutations with the desired
   #' @details exonic functions are chosen. Only rare mutations are kept.
@@ -50,21 +50,21 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   source(paste(path_script, "filtering_tools.R", sep = "/"))
 
   # Read Data
-  x.snp <- read.csv(snpfile, stringsAsFactors=FALSE)
-  x.indel <- read.csv(indelfile, stringsAsFactors=FALSE)
-  x.snp <- x.snp[-c(1:25), ]
-  x.indel <- x.indel[-c(1:25), ]
+  x.snp <- read.csv(snpfile, stringsAsFactors = FALSE)
+  x.indel <- read.csv(indelfile, stringsAsFactors = FALSE)
+  x.snp <- x.snp[- c(1 : 25),]
+  x.indel <- x.indel[- c(1 : 25),]
   x <- rbind(x.snp, x.indel)
-  
+
   # Quality Filter
   id.pass <- grep("PASS", x$Otherinfo)
   if (length(id.pass) > 0) {
-    x <- x[id.pass, ]
+    x <- x[id.pass,]
   } else {
     stop("No variant passed quality filter!")
   }
 
-  if (mode == "T"){
+  if (mode == "T") {
     # TumorMutationBurden
     tmb <- tumbu(x, sureselect)
   } else {
@@ -80,11 +80,11 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   test <- as.character(x$ExonicFunc.refGene)
   syn.snv <- which(test == "synonymous SNV")
   if (length(syn.snv) > 0) {
-    x <- x[-syn.snv, ]
+    x <- x[- syn.snv,]
   }
   # Filter for rare mutations
   x <- rare(x)
-  
+
   # Extract VAF, Readcounts (and Zygosity)
   x <- vrz(x, mode)
 
@@ -94,50 +94,50 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x$End <- as.numeric(as.character(x$End))
     x$Gene.refGene <- as.character(x$Gene.refGene)
     x <- gene_name(x)
-  
+
     # Further Annotation
     # Database Queries
     x <- isflag(x, dbfile = paste(path_data, "flag_genes.txt", sep = "/"))
     x <- isogtsg(x, dbfile = paste(path_data, "CancerGenesList.txt",
-                                        sep = "/"))
+    sep = "/"))
     x <- ishs(x, paste(path_data, "hotspots_V2.txt", sep = "/"))
     x <- isihs(x, paste(path_data, "hotspots_V2_indel.txt", sep = "/"))
     x <- rvis(x, paste(path_data, "RVIS_score.txt", sep = "/"))
     x <- trgt(x, paste(path_data, "TARGET_db.txt", sep = "/"))
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))
     x <- oncokb(x, paste(path_data, "allActionableVariants.txt", sep = "/"))
-    if (dim(x)[1] != 0){
-    	x <- snpeff(x, snpefffile_snp, snpefffile_indel)
+    if (dim(x)[1] != 0) {
+      x <- snpeff(x, snpefffile_snp, snpefffile_indel)
       x.condel <- addCondel(x, paste(path_data, "fannsdb.tsv.gz", sep = "/"))
-  
-      if (mode == "N" | mode == "T"){
+
+      if (mode == "N" | mode == "T") {
         ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
-                 "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                 "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
-                 "gnomAD_exome_NFE", "ExAC_NFE",
-                 "esp6500siv2_ea", "X1000g2015aug_eur",
-                 "Variant_Allele_Frequency", "Variant_Reads",
-                 "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
-                 "is_flag", "target", "DGIdb", "condel.label", "cosmic84_coding",
-                 "CLINSIG", "CLINSIG.SnpEff", "InterVar.automated.",
-                 "CADD13_PHRED", "DANN_score", "SIFT_pred",
-                 "Polyphen2_HDIV_pred", "avsnp150", "rvis")
-      } else if (mode == "LOH"){
+        "Gene.refGene", "GeneName", "ExonicFunc.refGene",
+        "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
+        "gnomAD_exome_NFE", "ExAC_NFE",
+        "esp6500siv2_ea", "EUR.sites.2015_08",
+        "Variant_Allele_Frequency", "Variant_Reads",
+        "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
+        "is_flag", "target", "DGIdb", "condel.label", "cosmic86_coding",
+        "CLINSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CADD13_PHRED", "DANN_score", "SIFT_pred",
+        "Polyphen2_HDIV_pred", "avsnp150", "rvis")
+      } else if (mode == "LOH") {
         ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
-                 "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                 "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
-                 "gnomAD_exome_NFE", "ExAC_NFE", "esp6500siv2_ea",
-                 "X1000g2015aug_eur", "VAF_Normal", "VAF_Tumor", "Count_Normal",
-                 "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
-                 "is_flag", "target", "DGIdb", "condel.label", "cosmic84_coding",
-                 "CLINSIG", "CLINSIG.SnpEff", "InterVar.automated.",
-                 "CADD13_PHRED", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
-                 "avsnp150", "rvis")
-               }
+        "Gene.refGene", "GeneName", "ExonicFunc.refGene",
+        "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
+        "gnomAD_exome_NFE", "ExAC_NFE", "esp6500siv2_ea",
+        "EUR.sites.2015_08", "VAF_Normal", "VAF_Tumor", "Count_Normal",
+        "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
+        "is_flag", "target", "DGIdb", "condel.label", "cosmic86_coding",
+        "CLINSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CADD13_PHRED", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
+        "avsnp150", "rvis")
+      }
       idx <- match(ids, colnames(x.condel))
       tot <- seq(1, ncol(x.condel))
       idx2 <- setdiff(tot, idx)
-  
+
       x <- x.condel[, c(idx, idx2)]
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
       return(list(table = x, tmb = tmb))
@@ -145,7 +145,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       print("No SNVs passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
       return(list(table = x, tmb = tmb))
-    } else if (mode == "LOH"){
+    } else if (mode == "LOH") {
       print("No LOH passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
       return(list(table = x, tmb = tmb))
