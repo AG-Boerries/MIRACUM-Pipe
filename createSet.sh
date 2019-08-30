@@ -83,9 +83,9 @@ done
 ##################################################################################################################
 ## Parameters which need to be adjusted to the local environment
 
-mtb="${DIR_OUTPUT}/${case}_${DIR_PATIENT}" # path to output folder, subfolder with type of analysis and ID is automatically created
-wes="${mtb}/WES"                   # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
-ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated copy number variations and annotated variants
+DIR_TARGET="${DIR_OUTPUT}/${case}_${DIR_PATIENT}" # path to output folder, subfolder with type of analysis and ID is automatically created
+DIR_WES="${DIR_TARGET}/WES"                       # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
+DIR_ANALYSIS="${DIR_TARGET}/Analysis"             # subfolder containing PDF Report, annotated copy number variations and annotated variants
 
 ##################################################################################################################
 
@@ -94,9 +94,9 @@ ana="${mtb}/Analysis"              # subfolder containing PDF Report, annotated 
 ##########
 
 # reate folder if not exists
-if [ ! -d ${mtb} ]; then
-  mkdir -p ${wes}
-  mkdir ${ana}
+if [ ! -d ${DIR_TARGET} ]; then
+  mkdir -p ${DIR_WES}
+  mkdir ${DIR_ANALYSIS}
 fi
 
 # cycle on tasks
@@ -105,7 +105,7 @@ for d in GD TD VC CNV Report; do
   # create sh scripts
   dname=${case}_${DIR_PATIENT}_${d}
   jobname=${DIR_PATIENT}_${d}
-  runname=${mtb}/run_${dname}.sh
+  runname=${DIR_TARGET}/run_${dname}.sh
 
   cat >${runname} <<EOI
 #!/usr/bin/env bash
@@ -135,7 +135,7 @@ done
 # end of cycle on d
 
 # create jobs submissions script
-cat >${mtb}/run_jobs.sh <<EOI2
+cat >${DIR_TARGET}/run_jobs.sh <<EOI2
 #!/usr/bin/env bash
 
 maxhours=48
@@ -145,7 +145,7 @@ echo "Submitting  GD TD"
 
 for task in GD TD; do
    dname=${case}_${DIR_PATIENT}_\${task}
-   cd ${mtb}
+   cd ${DIR_TARGET}
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
    else
@@ -159,7 +159,7 @@ echo "Waiting for GD TD"
 # wait no more than maxhours
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-   if [ -e ${mtb}/.STARTING_MARKER_GD ] || [ -e ${mtb}/.STARTING_MARKER_TD ]; then
+   if [ -e ${DIR_TARGET}/.STARTING_MARKER_GD ] || [ -e ${DIR_TARGET}/.STARTING_MARKER_TD ]; then
      sleep 1h
      date
      (( count++ ))
@@ -182,7 +182,7 @@ echo "Submitting  VC CNV"
 
 for task in VC CNV; do
    dname=${case}_${DIR_PATIENT}_\${task}
-   cd ${mtb}
+   cd ${DIR_TARGET}
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
    else
@@ -194,7 +194,7 @@ done
 echo "Waiting for VC CNV"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-   if [ -e ${mtb}/.STARTING_MARKER_VC ] || [ -e ${mtb}/.STARTING_MARKER_CNV ]; then
+   if [ -e ${DIR_TARGET}/.STARTING_MARKER_VC ] || [ -e ${DIR_TARGET}/.STARTING_MARKER_CNV ]; then
      sleep 1h
      date
      (( count++ ))
@@ -212,7 +212,7 @@ echo "Submitting  Report"
 
 for task in Report; do
 	dname=${case}_${DIR_PATIENT}_\${task}
-	cd ${mtb}
+	cd ${DIR_TARGET}
 	if [ -f .STARTING_MARKER_\${task} ]; then
 	    exit "Previous job uncompleted. Aborting!"
 	else
@@ -224,7 +224,7 @@ done
 echo "Waiting for Report"
 count=1
 while [ \${count} -lt \${maxhours} ]; do
-	if [ -e ${mtb}/.STARTING_MARKER_Report ]; then
+	if [ -e ${DIR_TARGET}/.STARTING_MARKER_Report ]; then
      sleep 1h
      date
      (( count++ ))
@@ -238,11 +238,11 @@ date
 echo "Finished all jobs for ${DIR_PATIENT} "
 # -------------------------------------------
 
-cd ${mtb} && touch .processed
+cd ${DIR_TARGET} && touch .processed
 
 exit
 EOI2
-chmod a+x ${mtb}/run_jobs.sh
+chmod a+x ${DIR_TARGET}/run_jobs.sh
 
 exit
 # --------------------------------------------------------------------------------------------------------
