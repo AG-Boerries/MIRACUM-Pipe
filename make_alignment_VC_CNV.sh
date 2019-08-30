@@ -192,6 +192,9 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 ##################################################################################################################
 
+# TODO: reconstruct copy of R-files into DIR_TARGET
+#       (should be changed later then, requires changes in R-Scripts)
+
 ##########
 ## MAIN ##
 ##########
@@ -442,7 +445,7 @@ captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
   export PATH=${PATH}:${BIN_SAMTOOLS}
-  "${BIN_FREEC}"-conf "${DIR_WES}"/CNV_config.txt
+  "${BIN_FREEC}" -conf "${DIR_WES}"/CNV_config.txt
   ;;
   # eo CNV
 
@@ -455,7 +458,7 @@ Report)
   ${BIN_RSCRIPT} "${DIR_ANALYSIS}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
     "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}"
 
-  ${BIN_RSCRIPT} -e "library(knitr); knit('${DIR_RSCRIPT}/RScripts/Report.Rnw')"
+  ${BIN_RSCRIPT} -e "library(knitr); knit('${DIR_ANALYSIS}/Report.Rnw')"
   pdflatex -interaction=nonstopmode Report.tex
   pdflatex -interaction=nonstopmode Report.tex
   ;;
@@ -466,5 +469,3 @@ esac
 # TODO: required in all 4 files
 echo "task ${PARAM_TASK} for ${PARAM_DIR_PATIENT} finished"
 rm "${DIR_TARGET}/.STARTING_MARKER_${PARAM_TASK}"
-
-exit
