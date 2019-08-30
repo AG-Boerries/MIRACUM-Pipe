@@ -5,12 +5,12 @@
 
 options(repos=structure(c(CRAN="http://cran.us.r-project.org")))
 
-# install.packages("doMC", repos="http://R-Forge.R-project.org")
-install.packages(c( "foreach", "doParallel"))
+install.packages(c( "foreach", "doMC"))
 install.packages("openxlsx", dependencies=TRUE)
 install.packages("RColorBrewer")
 install.packages("RColorBrewer")
 install.packages("circlize")
+install.packages("kableExtra")
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
