@@ -1,21 +1,15 @@
 {
-    "uuid": "c56d1bb0-ce95-4ee8-a93a-fcfba921d1e1",
+    "uuid": "cc6baac3-84ac-45c9-8f6a-41590e86f3fa",
     "tags": [],
     "format-version": "0.1",
-    "name": "MIRACUM - mapped reads postprocessing (beta3)",
-    "version": 2,
+    "name": "MIRACUM - mapped reads postprocessing",
+    "version": 3,
     "steps": {
         "0": {
             "tool_id": null,
             "tool_version": null,
             "outputs": [],
-            "workflow_outputs": [
-                {
-                    "output_name": "output",
-                    "uuid": "2c160532-5c64-4436-8f88-8b5366658ded",
-                    "label": null
-                }
-            ],
+            "workflow_outputs": [],
             "input_connections": {},
             "tool_state": "{}",
             "id": 0,
@@ -37,16 +31,8 @@
             "tool_version": "2.0.2+galaxy1",
             "outputs": [
                 {
-                    "type": "input",
-                    "name": "output_collection"
-                },
-                {
                     "type": "tabular",
                     "name": "output"
-                },
-                {
-                    "type": "html",
-                    "name": "html_file"
                 }
             ],
             "workflow_outputs": [
@@ -74,16 +60,6 @@
             "errors": null,
             "name": "Samtools stats",
             "post_job_actions": {
-                "HideDatasetActionhtml_file": {
-                    "output_name": "html_file",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "HideDatasetActionoutput_collection": {
-                    "output_name": "output_collection",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
                 "RenameDatasetActionhtml_file": {
                     "output_name": "html_file",
                     "action_type": "RenameDatasetAction",
@@ -129,7 +105,7 @@
                     "id": 0
                 }
             },
-            "tool_state": "{\"input_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"rule_configuration\": \"{\\\"__current_case__\\\": 0, \\\"rules_selector\\\": \\\"false\\\"}\", \"conditions\": \"[{\\\"__index__\\\": 0, \\\"filters\\\": [{\\\"__index__\\\": 0, \\\"bam_property\\\": {\\\"__current_case__\\\": 14, \\\"bam_property_selector\\\": \\\"mapQuality\\\", \\\"bam_property_value\\\": \\\">=1\\\"}}, {\\\"__index__\\\": 1, \\\"bam_property\\\": {\\\"__current_case__\\\": 11, \\\"bam_property_selector\\\": \\\"isProperPair\\\", \\\"bam_property_value\\\": \\\"true\\\"}}]}]\", \"__page__\": null}",
+            "tool_state": "{\"input_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"rule_configuration\": \"{\\\"__current_case__\\\": 0, \\\"rules_selector\\\": \\\"false\\\"}\", \"conditions\": \"[{\\\"__index__\\\": 0, \\\"filters\\\": [{\\\"__index__\\\": 0, \\\"bam_property\\\": {\\\"__current_case__\\\": 14, \\\"bam_property_selector\\\": \\\"mapQuality\\\", \\\"bam_property_value\\\": \\\">=1\\\"}}, {\\\"__index__\\\": 1, \\\"bam_property\\\": {\\\"__current_case__\\\": 6, \\\"bam_property_selector\\\": \\\"isMapped\\\", \\\"bam_property_value\\\": \\\"true\\\"}}, {\\\"__index__\\\": 2, \\\"bam_property\\\": {\\\"__current_case__\\\": 7, \\\"bam_property_selector\\\": \\\"isMateMapped\\\", \\\"bam_property_value\\\": \\\"true\\\"}}]}]\", \"__page__\": null}",
             "id": 2,
             "tool_shed_repository": {
                 "owner": "devteam",
@@ -241,7 +217,7 @@
                     "id": 3
                 }
             },
-            "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
+            "tool_state": "{\"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"input_bam\\\": {\\\"__class__\\\": \\\"ConnectedValue\\\"}, \\\"ref_file\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"__rerun_remap_job_id__\": null, \"iterations\": \"\\\"5\\\"\", \"__page__\": null}",
             "id": 4,
             "tool_shed_repository": {
                 "owner": "devteam",
@@ -292,7 +268,7 @@
                     "id": 4
                 }
             },
-            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
+            "tool_state": "{\"baq_settings\": \"{\\\"__current_case__\\\": 0, \\\"extended_baq\\\": \\\"\\\", \\\"modify_quality\\\": \\\"\\\", \\\"use_baq\\\": \\\"\\\"}\", \"__page__\": null, \"option_set\": \"{\\\"__current_case__\\\": 1, \\\"adjust_mq\\\": \\\"50\\\", \\\"change_identical\\\": \\\"false\\\", \\\"option_sets\\\": \\\"advanced\\\"}\", \"__rerun_remap_job_id__\": null, \"reference_source\": \"{\\\"__current_case__\\\": 0, \\\"ref_fasta\\\": \\\"hg19full\\\", \\\"reference_source_selector\\\": \\\"cached\\\"}\", \"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\"}",
             "id": 5,
             "tool_shed_repository": {
                 "owner": "devteam",
@@ -304,22 +280,22 @@
             "errors": null,
             "name": "CalMD",
             "post_job_actions": {
-                "HideDatasetActioncalmd_output": {
-                    "output_name": "calmd_output",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "DeleteIntermediatesActioncalmd_output": {
-                    "output_name": "calmd_output",
-                    "action_type": "DeleteIntermediatesAction",
-                    "action_arguments": {}
-                },
                 "RenameDatasetActioncalmd_output": {
                     "output_name": "calmd_output",
                     "action_type": "RenameDatasetAction",
                     "action_arguments": {
                         "newname": "Recalibrated #{input_bam|basename}"
                     }
+                },
+                "DeleteIntermediatesActioncalmd_output": {
+                    "output_name": "calmd_output",
+                    "action_type": "DeleteIntermediatesAction",
+                    "action_arguments": {}
+                },
+                "HideDatasetActioncalmd_output": {
+                    "output_name": "calmd_output",
+                    "action_type": "HideDatasetAction",
+                    "action_arguments": {}
                 }
             },
             "label": null,
@@ -358,7 +334,7 @@
                     "id": 5
                 }
             },
-            "tool_state": "{\"input_bam\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"rule_configuration\": \"{\\\"__current_case__\\\": 0, \\\"rules_selector\\\": \\\"false\\\"}\", \"conditions\": \"[{\\\"__index__\\\": 0, \\\"filters\\\": [{\\\"__index__\\\": 0, \\\"bam_property\\\": {\\\"__current_case__\\\": 14, \\\"bam_property_selector\\\": \\\"mapQuality\\\", \\\"bam_property_value\\\": \\\"<=254\\\"}}]}]\", \"__page__\": null}",
+            "tool_state": "{\"input_bam\": \"{\\\"__class__\\\": \\\"ConnectedValue\\\"}\", \"__rerun_remap_job_id__\": null, \"rule_configuration\": \"{\\\"__current_case__\\\": 0, \\\"rules_selector\\\": \\\"false\\\"}\", \"conditions\": \"[{\\\"__index__\\\": 0, \\\"filters\\\": [{\\\"__index__\\\": 0, \\\"bam_property\\\": {\\\"__current_case__\\\": 14, \\\"bam_property_selector\\\": \\\"mapQuality\\\", \\\"bam_property_value\\\": \\\"<=254\\\"}}]}]\", \"__page__\": null}",
             "id": 6,
             "tool_shed_repository": {
                 "owner": "devteam",
@@ -384,12 +360,7 @@
                 }
             },
             "label": null,
-            "inputs": [
-                {
-                    "name": "input_bam",
-                    "description": "runtime parameter for tool Filter"
-                }
-            ],
+            "inputs": [],
             "position": {
                 "top": 478.5,
                 "left": 1441
@@ -403,16 +374,8 @@
             "tool_version": "2.0.2+galaxy1",
             "outputs": [
                 {
-                    "type": "input",
-                    "name": "output_collection"
-                },
-                {
                     "type": "tabular",
                     "name": "output"
-                },
-                {
-                    "type": "html",
-                    "name": "html_file"
                 }
             ],
             "workflow_outputs": [
@@ -440,16 +403,6 @@
             "errors": null,
             "name": "Samtools stats",
             "post_job_actions": {
-                "HideDatasetActionhtml_file": {
-                    "output_name": "html_file",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
-                "HideDatasetActionoutput_collection": {
-                    "output_name": "output_collection",
-                    "action_type": "HideDatasetAction",
-                    "action_arguments": {}
-                },
                 "RenameDatasetActionhtml_file": {
                     "output_name": "html_file",
                     "action_type": "RenameDatasetAction",
