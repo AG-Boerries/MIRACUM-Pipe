@@ -2,8 +2,8 @@ common:
   memory: 64g
   cpucores: 12
   files:
-    tumor: SLGFSK_TD_chr12_R
-    germline: SLGFSK_GD_chr12_R
+    tumor: tumor_R
+    germline: germline_R
 
 annotation:
   germline: no

@@ -3,3 +3,11 @@
 ._createSet.sh
 ._make_alignment_VC_CNV.sh
 RScripts/._*
+
+assets/input/*
+!assets/input/.gitkeep
+
+assets/output/*
+!assets/output/.gitkeep
+
+.idea

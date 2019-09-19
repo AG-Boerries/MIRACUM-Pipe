@@ -214,8 +214,13 @@ GD | TD)
   # SAMPLE
   readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
-  readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}1.fastq.gz"
-  readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}2.fastq.gz"
+  if [[ ${PARAM_TASK} = GD ]]; then
+    FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}1.fastq.gz"
+    FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}2.fastq.gz"
+  else
+    FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR}1.fastq.gz"
+    FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR}2.fastq.gz"
+  fi
 
   # temp files
   readonly fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
@@ -445,7 +450,7 @@ captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
   export PATH=${PATH}:${BIN_SAMTOOLS}
-  "${BIN_FREEC}" -conf "${DIR_WES}"/CNV_config.txt
+  ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
   ;;
   # eo CNV
 

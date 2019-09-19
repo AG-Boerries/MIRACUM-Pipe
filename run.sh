@@ -69,7 +69,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
         readonly CFG_CASE=somatic
       fi
 
-      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/run.log) &
+      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh 2&1> ${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/run.log) &
     fi
   done
 
@@ -81,28 +81,28 @@ else
     readonly CFG_CASE=somatic
   fi
 
-  # possibility to comfortably run tasks separately
-  case ${PARAM_TASK} in
-    cnv)
-      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
-      echo "not yet implemented"
-    ;;
+  if [[ ! -z ${PARAM_TASK} ]]; then
+    # possibility to comfortably run tasks separately
+    case "${PARAM_TASK}" in
+      cnv)
+        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
+        echo "not yet implemented"
+      ;;
 
-    vc)
-      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
-      echo "not yet implemented"
-    ;;
-    report)
-      # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
-      echo "not yet implemented"
-    ;;
-
-    default)
-      if [[ ! -f "${PARAM_DIR_PATIENT}"/.processed || "${PARAM_FORCE}" ]]; then
-        echo "computing ${PARAM_DIR_PATIENT}"
-        "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
-        ("${DIR_OUTPUT}/${case}_${PARAM_DIR_PATIENT}"/run_jobs.sh > ${DIR_OUTPUT}/${case}_${PARAM_DIR_PATIENT}/run.log) &
-      fi
-    ;;
-  esac
+      vc)
+        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
+        echo "not yet implemented"
+      ;;
+      report)
+        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
+        echo "not yet implemented"      
+      ;;
+    esac
+  else
+    if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
+      echo "computing ${PARAM_DIR_PATIENT}"
+      "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
+      ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh &
+    fi
+  fi
 fi

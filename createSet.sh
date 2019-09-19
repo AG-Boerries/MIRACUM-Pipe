@@ -4,7 +4,7 @@
 # Version 31.07.2019
 
 DIR_SCRIPT=$(
-  cd "$(dirname "${BASH_SOURCE[0]}")"
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
 )
 
@@ -97,6 +97,8 @@ DIR_ANALYSIS="${DIR_TARGET}/Analysis"             # subfolder containing PDF Rep
 if [ ! -d ${DIR_TARGET} ]; then
   mkdir -p ${DIR_WES}
   mkdir ${DIR_ANALYSIS}
+  cp ${DIR_SCRIPT}/RScripts/Main.R ${DIR_ANALYSIS}
+  cp ${DIR_SCRIPT}/RScripts/Report.Rnw ${DIR_ANALYSIS}
 fi
 
 # cycle on tasks
@@ -238,7 +240,7 @@ date
 echo "Finished all jobs for ${DIR_PATIENT} "
 # -------------------------------------------
 
-cd ${DIR_TARGET} && touch .processed
+touch ${DIR_TARGET}/.processed
 
 exit
 EOI2

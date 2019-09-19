@@ -11,6 +11,7 @@ install.packages("RColorBrewer")
 install.packages("RColorBrewer")
 install.packages("circlize")
 install.packages("kableExtra")
+install.packages("knitr")
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
