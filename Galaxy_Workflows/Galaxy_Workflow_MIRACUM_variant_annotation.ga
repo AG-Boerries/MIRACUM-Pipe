@@ -3,7 +3,7 @@
     "tags": [],
     "format-version": "0.1",
     "name": "MIRACUM - variant annotation",
-    "version": 32,
+    "version": 33,
     "steps": {
         "0": {
             "tool_id": null,
@@ -358,7 +358,7 @@
                     "id": 1
                 }
             },
-            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"rs_ss\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"SAO\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 1, \\\"column_name\\\": \\\"rs_cfl\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"CFL\\\", \\\"operation\\\": \\\"first\\\"}, {\\\"__index__\\\": 2, \\\"column_name\\\": \\\"rs_asp\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"ASP\\\", \\\"operation\\\": \\\"first\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
+            "tool_state": "{\"a\": \"{\\\"__current_case__\\\": 0, \\\"a_selector\\\": \\\"extract\\\", \\\"actions\\\": [{\\\"__index__\\\": 0, \\\"column_name\\\": \\\"rs_ss\\\", \\\"column_type\\\": \\\"integer\\\", \\\"element_to_extract\\\": \\\"SAO\\\", \\\"operation\\\": \\\"first\\\"}]}\", \"__page__\": null, \"region_only\": \"\\\"true\\\"\", \"annotate_source\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"infile\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\"}",
             "id": 8,
             "tool_shed_repository": {
                 "owner": "iuc",
