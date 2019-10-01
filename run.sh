@@ -69,7 +69,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
         readonly CFG_CASE=somatic
       fi
 
-      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh 2&1> ${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/run.log) &
+      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh 2>&1 ${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/run.log) &
     fi
   done
 
@@ -102,7 +102,7 @@ else
     if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
       echo "computing ${PARAM_DIR_PATIENT}"
       "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
-      ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh &
+      ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh) &
     fi
   fi
 fi
