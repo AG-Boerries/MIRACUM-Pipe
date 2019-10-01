@@ -101,7 +101,9 @@ vrz <- function(x, mode){
     vaf.tumor <- as.character(vaf.tumor)
     vaf.tumor2 <- as.numeric(gsub("%", "", vaf.tumor))
     exclude <- which(vaf.tumor2 < 20)
-    x <- x[-exclude, ]
+    if(length(exclude) !=0){
+      x <- x[-exclude, ]
+    }
     }
   return(x)
 }

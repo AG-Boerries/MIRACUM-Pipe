@@ -119,8 +119,8 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
         "Variant_Allele_Frequency", "Variant_Reads",
         "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
         "is_flag", "target", "DGIdb", "condel.label", "cosmic86_coding",
-        "CLINSIG", "CLINSIG.SnpEff", "InterVar_automated",
-        "CADD13_PHRED", "DANN_score", "SIFT_pred",
+        "CLNSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CADD_phred", "DANN_score", "SIFT_pred",
         "Polyphen2_HDIV_pred", "avsnp150", "rvis")
       } else if (mode == "LOH") {
         ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
@@ -130,8 +130,8 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
         "EUR.sites.2015_08", "VAF_Normal", "VAF_Tumor", "Count_Normal",
         "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
         "is_flag", "target", "DGIdb", "condel.label", "cosmic86_coding",
-        "CLINSIG", "CLINSIG.SnpEff", "InterVar_automated",
-        "CADD13_PHRED", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
+        "CLNSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CADD_phred", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
         "avsnp150", "rvis")
       }
       idx <- match(ids, colnames(x.condel))

@@ -363,7 +363,7 @@ VC)
     ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    readonly hc_snpeff=$data/${NameD}.output.$name1.Somatic.SnpEff.vcf
+    readonly hc_snpeff=${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 
     if [[ "${CFG_CASE}" = somaticGermline ]]; then
@@ -378,7 +378,7 @@ VC)
           -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
       hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
-      ${BIN_SNPEFF} "${hc_fpf}" >"${hc_N_snpeff}"
+      ${BIN_SNPEFF} "${hc_fpf}" > "${hc_N_snpeff}"
     fi
 
     # Annotation snp.LOH.hc
@@ -392,7 +392,7 @@ VC)
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
     hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
-    ${BIN_SNPEFF} "${hc_fpf}" >"${hc_L_snpeff}"
+    ${BIN_SNPEFF} "${hc_fpf}" > "${hc_L_snpeff}"
   done
 
   rm -r ${DIR_TMP}/*
