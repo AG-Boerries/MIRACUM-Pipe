@@ -207,8 +207,8 @@ case ${PARAM_TASK} in
 ## alignment -----------------------------------------------------------------------------------------------------
 # TODO: make_alignment.sh
 GD | TD)
-  if [[ ! -d ${DIR_TMP} ]]; then
-    mkdir -p ${DIR_TMP}
+  if [[ ! -d "${DIR_TMP}" ]]; then
+    mkdir -p "${DIR_TMP}"
   fi
 
   # SAMPLE
@@ -363,7 +363,7 @@ VC)
     ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    readonly hc_snpeff=${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf
+    readonly hc_snpeff="${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf"
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 
     if [[ "${CFG_CASE}" = somaticGermline ]]; then
@@ -395,7 +395,7 @@ VC)
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_L_snpeff}"
   done
 
-  rm -r ${DIR_TMP}/*
+  rm -r "${DIR_TMP:?}/*"
   ;;
 # eo VC
 

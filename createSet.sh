@@ -86,6 +86,7 @@ done
 DIR_TARGET="${DIR_OUTPUT}/${case}_${DIR_PATIENT}" # path to output folder, subfolder with type of analysis and ID is automatically created
 DIR_WES="${DIR_TARGET}/WES"                       # subfolder containing the alignemnt, coverage, copy number variation and variant calling results
 DIR_ANALYSIS="${DIR_TARGET}/Analysis"             # subfolder containing PDF Report, annotated copy number variations and annotated variants
+DIR_LOG="${DIR_TARGET}/log"
 
 ##################################################################################################################
 
@@ -94,22 +95,23 @@ DIR_ANALYSIS="${DIR_TARGET}/Analysis"             # subfolder containing PDF Rep
 ##########
 
 # reate folder if not exists
-if [ ! -d ${DIR_TARGET} ]; then
-  mkdir -p ${DIR_WES}
-  mkdir ${DIR_ANALYSIS}
-  cp ${DIR_SCRIPT}/RScripts/Main.R ${DIR_ANALYSIS}
-  cp ${DIR_SCRIPT}/RScripts/Report.Rnw ${DIR_ANALYSIS}
+if [ ! -d "${DIR_TARGET}" ]; then
+  mkdir -p "${DIR_WES}"
+  mkdir "${DIR_ANALYSIS}"
+  mkdir "${DIR_LOG}"
+  cp "${DIR_SCRIPT}/RScripts/Main.R" "${DIR_ANALYSIS}"
+  cp "${DIR_SCRIPT}/RScripts/Report.Rnw" "${DIR_ANALYSIS}"
 fi
 
 # cycle on tasks
 
 for d in GD TD VC CNV Report; do
   # create sh scripts
-  dname=${case}_${DIR_PATIENT}_${d}
-  jobname=${DIR_PATIENT}_${d}
-  runname=${DIR_TARGET}/run_${dname}.sh
+  dname="${case}_${DIR_PATIENT}_${d}"
+  # jobname="${DIR_PATIENT}_${d}"
+  runname="${DIR_TARGET}/run_${dname}.sh"
 
-  cat >${runname} <<EOI
+  cat > "${runname}" <<EOI
 #!/usr/bin/env bash
 
 EOI
@@ -117,27 +119,27 @@ EOI
   # create sh run scripts
   case ${d} in
   GD)
-    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   TD)
-    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   VC)
-    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   CNV)
-    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   Report)
-    echo "bash ${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" >> "${runname}"
+    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   esac
-  chmod a+x ${runname}
+  chmod a+x "${runname}"
 done
 # end of cycle on d
 
 # create jobs submissions script
-cat >${DIR_TARGET}/run_jobs.sh <<EOI2
+cat > "${DIR_TARGET}/run_jobs.sh" << EOI2
 #!/usr/bin/env bash
 
 maxhours=48
@@ -152,7 +154,7 @@ for task in GD TD; do
        exit "Previous job uncompleted. Aborting!"
    else
        echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
-       sh run_\${dname}.sh
+       sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
    fi
 done
 
@@ -189,7 +191,7 @@ for task in VC CNV; do
        exit "Previous job uncompleted. Aborting!"
    else
        echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
-       sh run_\${dname}.sh
+       sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
    fi
 done
 
@@ -219,7 +221,7 @@ for task in Report; do
 	    exit "Previous job uncompleted. Aborting!"
 	else
 	    echo "STARTING \${dname}"; echo "\${dname}" > .STARTING_MARKER_\${task}
-	    sh run_\${dname}.sh
+	    sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
 		fi
 done
 
@@ -244,7 +246,7 @@ touch ${DIR_TARGET}/.processed
 
 exit
 EOI2
-chmod a+x ${DIR_TARGET}/run_jobs.sh
+chmod a+x "${DIR_TARGET}/run_jobs.sh"
 
 exit
 # --------------------------------------------------------------------------------------------------------
