@@ -326,9 +326,9 @@ VC)
   for name1 in ${names1}; do
 
     if [[ "${CFG_CASE}" = somatic ]]; then
-      readonly names2="Somatic LOH"
+      names2="Somatic LOH"
     else
-      readonly names2="Somatic LOH Germline"
+      names2="Somatic LOH Germline"
     fi
 
     for name2 in ${names2}; do
@@ -363,7 +363,7 @@ VC)
     ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    readonly hc_snpeff="${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf"
+    hc_snpeff="${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf"
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 
     if [[ "${CFG_CASE}" = somaticGermline ]]; then
