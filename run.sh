@@ -104,7 +104,7 @@ else
       echo "computing ${PARAM_DIR_PATIENT}"
       "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
       ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh \ 
-        &> "${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/log/run.log" ) &
+        &> "${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}/log/run.log" ) &
     fi
   fi
 fi
