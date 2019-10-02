@@ -69,7 +69,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
         readonly CFG_CASE=somatic
       fi
 
-      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh 
+      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh \
         &> "${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/log/run.log") &
     fi
   done
