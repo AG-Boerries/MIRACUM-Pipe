@@ -204,8 +204,8 @@ tables <- function(x_s, x_l = NULL){
                        "Variant_Allele_Frequency",
                        "Zygosity", "Variant_Reads", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "gnomAD_exome_NFE", "CADD13_PHRED", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic84_coding"), drop = FALSE]
+                       "gnomAD_exome_NFE", "CADD_phred", "condel.label",
+                       "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
   write.xlsx(ts_og_table, file = "TumorSuppressor-OncogeneTable.xlsx",
              quote = F, sep = "\t", row.names = F, col.names = T)
 
@@ -213,8 +213,8 @@ tables <- function(x_s, x_l = NULL){
                      "AAChange.SnpEff", "Variant_Allele_Frequency", "Zygosity",
                      "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
                      "is_hotspot", "target", "gnomAD_exome_NFE",
-                     "CADD13_PHRED", "condel.label", "CLINSIG.SnpEff",
-                     "cosmic84_coding"), drop = FALSE]
+                     "CADD_phred", "condel.label", "CLINSIG.SnpEff",
+                     "cosmic86_coding"), drop = FALSE]
   write.xlsx(sm_table, file = "somaticMutations.xlsx",
              quote = F, sep = "\t", row.names = F, col.names = T)
   if (!is.null(x_l)){
@@ -222,8 +222,8 @@ tables <- function(x_s, x_l = NULL){
                        "AAChange.SnpEff", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "gnomAD_exome_NFE", "CADD13_PHRED", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic84_coding"), drop = FALSE]
+                       "gnomAD_exome_NFE", "CADD_phred", "condel.label",
+                       "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
     write.xlsx(lm_table, file = "lohMutations.xlsx",
                quote = F, sep = "\t", row.names = F, col.names = T)
   }else{
@@ -459,20 +459,20 @@ write_all_mut <- function(x_s, x_l = NULL){
                   "Variant_Allele_Frequency", "Variant_Reads",
                   "AAChange.SnpEff", "is_tumorsuppressor",
                   "is_oncogene", "is_hotspot", "target", "gnomAD_exome_NFE",
-                  "CADD13_PHRED", "condel.label", "CLINSIG.SnpEff",
-                  "cosmic84_coding"),
+                  "CADD_phred", "condel.label", "CLINSIG.SnpEff",
+                  "cosmic86_coding"),
               drop = FALSE]
   if (!is.null(x_l)){
     tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                     "VAF_Tumor", "Count_Tumor", "AAChange.SnpEff",
                     "is_tumorsuppressor", "is_oncogene",
-                    "is_hotspot", "target", "gnomAD_exome_NFE", "CADD13_PHRED",
-                    "condel.label", "CLINSIG.SnpEff", "cosmic84_coding"),
+                    "is_hotspot", "target", "gnomAD_exome_NFE", "CADD_phred",
+                    "condel.label", "CLINSIG.SnpEff", "cosmic86_coding"),
                 drop = FALSE]
     }
   col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
-                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD13",
-                 "Condel", "CLINSIG", "COSMIC84")
+                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
+                 "Condel", "CLINSIG", "COSMIC")
   colnames(tmp1) <- col_names
   if (!is.null(x_l)) {
     colnames(tmp2) <- col_names

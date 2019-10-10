@@ -139,7 +139,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
     y = tmp$Value
     grid.points(x,y,pch = ".", gp = gpar(col = colors()[461]))
   })
-  cytoband_df = circlize::read.cytoband(species = "hg19")$df
+  cytoband_df = circlize::read.cytoband()$df
   add_track(cytoband_df, panel_fun = function(gr) {
     cytoband_chr = gr
     grid.rect(cytoband_chr[[2]], unit(0, "npc"),

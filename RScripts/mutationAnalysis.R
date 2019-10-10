@@ -56,7 +56,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   #' @details performed to get an overview of the mutation's impact.
   require(org.Hs.eg.db)
   require(GOstats)
-  require(ReactomePA)
+  #require(ReactomePA)
   require(openxlsx)
   require(Homo.sapiens)
   require(stringr)

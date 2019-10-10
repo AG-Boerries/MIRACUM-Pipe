@@ -23,7 +23,6 @@ library(SomaticSignatures)
 library(VariantAnnotation)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-library(ReactomePA)
 
 args <- commandArgs()
 

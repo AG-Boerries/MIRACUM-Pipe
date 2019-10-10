@@ -296,7 +296,7 @@ importantPathways <- mutation_analysis_result$important_pathways
 if (length(importantPathways) == 0){
   print("Keine Mutationen in wichtigen Signalwegen!")
 } else{
-  tbl <- importantPathways[ ,c('Pathway', 'Symbol', 'GeneName', 'ExonicFunc', 'VAF', 'Reads', 'AAChange', 'target', 'MAF', 'CADD13', 'Condel', 'CLINSIG', 'COSMIC84')]
+  tbl <- importantPathways[ ,c('Pathway', 'Symbol', 'GeneName', 'ExonicFunc', 'VAF', 'Reads', 'AAChange', 'target', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')]
   colnames(tbl) <- c('Pathway', 'Symbol', 'Gene Name', 'Exonic Function', 'VAF', 'Reads', 'Aminoacid Change', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
   tbl$COSMIC <- sub(";.*", "", tbl$COSMIC)
   tbl$COSMIC <- gsub(",", ", ", tbl$COSMIC)
