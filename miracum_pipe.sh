@@ -109,8 +109,8 @@ readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_REF}/$(get_config_value reference.s
 readonly CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "${PARAM_DIR_PATIENT}")"
 # END variables
 
-
-readonly CFG_COMMON_CPUCORES=$(get_config_value common.cpucores "${PARAM_DIR_PATIENT}")
+# take cpucores/2
+readonly CFG_COMMON_CPUCORES=$(($(get_config_value common.cpucores "${PARAM_DIR_PATIENT}")/2))
 readonly CFG_COMMON_MEMORY=$(get_config_value common.memory "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${PARAM_DIR_PATIENT}")
