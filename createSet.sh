@@ -172,7 +172,7 @@ while [ \${count} -lt \${maxhours} ]; do
 done
 if [ \${count} -ge \${maxhours} ]; then
     date
-    echo "Waited to long for job results for GD TD; exiting"
+    echo "Waited too long for job results for GD TD; exiting"
     exit
 fi
 

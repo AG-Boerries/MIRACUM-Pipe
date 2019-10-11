@@ -20,6 +20,33 @@ function usage() {
   exit 1
 }
 
+# run_pipe relative_patient_dir dir_log
+function run_pipe() {
+  # use parallel shell scripting
+  ("${DIR_SCRIPT}"/miracum_pipe.sh -t TD -d "${1}" &> ${2}/TD.log) &
+  ("${DIR_SCRIPT}"/miracum_pipe.sh -t GD -d "${1}" &> ${2}/GD.log) &
+  wait
+
+  # use parallel shell scripting
+  ("${DIR_SCRIPT}"/miracum_pipe.sh -t VC -d "${1}"  &> ${2}/VC.log) &
+  ("${DIR_SCRIPT}"/miracum_pipe.sh -t CNV -d "${1}" &> ${2}/CNV.log) &
+  wait
+
+  # create report based on the results of the processes above
+  ("${DIR_SCRIPT}"/miracum_pipe.sh -t Report -d "${1}" &> ${2}/Report.log) &
+}
+
+# get_case relative_patient_dir
+function get_case() {
+  patient_dir=$1
+
+  if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
+    echo "somaticGermline"
+  else
+    echo "somatic"
+  fi
+}
+
 while getopts d:t:fh option; do
   case "${option}" in
   t) readonly PARAM_TASK=$OPTARG;;
@@ -58,59 +85,69 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
     if [[ ! -f "${PARAM_DIR_PATIENT}"/.processed || ${PARAM_FORCE} ]]; then
       DIR_PATIENT=${dir##*/}
       echo "computing ${DIR_PATIENT}"
-      "${DIR_SCRIPT}"/createSet.sh -d "${DIR_PATIENT}"
 
-      if [[ "$(get_config_value annotation.germline "${DIR_PATIENT}")" = "True" ]]; then
-        readonly CFG_CASE=somaticGermline
+      CFG_CASE=$(get_case ${DIR_PATIENT})
+      DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
+      DIR_LOG="${DIR_TARGET}/log"
+
+      mkdir -p "${DIR_LOG}"
+
+      run_pipe "${DIR_PATIENT}" "${DIR_LOG}"
+
+      if [[ -f "${DIR_TARGET}/Analysis/Report.pdf" ]]; then
+        touch "${DIR_TARGET}/.processed"
       else
-        readonly CFG_CASE=somatic
+        echo "${DIR_PATIENT} failed"
       fi
-
-      ("${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"/run_jobs.sh \
-        &> "${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}/log/run.log") &
     fi
   done
 
 else
+  CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
+  DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
+  DIR_LOG="${DIR_TARGET}/log"
 
-  if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
-    readonly CFG_CASE=somaticGermline
-  else
-    readonly CFG_CASE=somatic
-  fi
+  mkdir -p "${DIR_LOG}"
 
-  if [[ ! -z ${PARAM_TASK} ]]; then
-    # possibility to comfortably run tasks separately
-    case "${PARAM_TASK}" in
-      td) 
-        # TODO: make_alignment.sh -t td -d "${dir}"
-        "${DIR_SCRIPT}"/miracum_pipe.sh -t TD -d "${dir}"
-      ;;
-      gd)
-        # TODO: make_alignment.sh -t gd -d "${dir}"
-        "${DIR_SCRIPT}"/miracum_pipe.sh -t GD -d "${dir}"
-      ;;
+  # if alreacy computed, i.e. file .processed exists, only compute again if forced
+  if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
+    if [[ ! -z ${PARAM_TASK} ]]; then
+      # possibility to comfortably run tasks separately
+      case "${PARAM_TASK}" in
+        td) 
+          # TODO: make_alignment.sh -t td -d "${dir}"
+          "${DIR_SCRIPT}"/miracum_pipe.sh -t TD -d "${dir}"
+        ;;
+        gd)
+          # TODO: make_alignment.sh -t gd -d "${dir}"
+          "${DIR_SCRIPT}"/miracum_pipe.sh -t GD -d "${dir}"
+        ;;
 
-      cnv)
-        # TODO: make_cnv.sh -d "${dir}"
-        "${DIR_SCRIPT}"/miracum_pipe.sh -t CNV -d "${dir}"
-      ;;
+        cnv)
+          # TODO: make_cnv.sh -d "${dir}"
+          "${DIR_SCRIPT}"/miracum_pipe.sh -t CNV -d "${dir}"
+        ;;
 
-      vc)
-        # TODO: make_vc.sh -d "${dir}"
-        "${DIR_SCRIPT}"/miracum_pipe.sh -t VC -d "${dir}"
-      ;;
-      report)
-        # TODO: make_report.sh -d "${dir}"
-        "${DIR_SCRIPT}"/miracum_pipe.sh -t Report -d "${dir}"
-      ;;
-    esac
-  else
-    if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
+        vc)
+          # TODO: make_vc.sh -d "${dir}"
+          "${DIR_SCRIPT}"/miracum_pipe.sh -t VC -d "${dir}"
+        ;;
+        report)
+          # TODO: make_report.sh -d "${dir}"
+          "${DIR_SCRIPT}"/miracum_pipe.sh -t Report -d "${dir}"
+        ;;
+      esac
+    else
       echo "computing ${PARAM_DIR_PATIENT}"
       "${DIR_SCRIPT}"/createSet.sh -d "${PARAM_DIR_PATIENT}"
-      ("${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"/run_jobs.sh \ 
-        &> "${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}/log/run.log" ) &
+
+      run_pipe "${PARAM_DIR_PATIENT}" "${DIR_LOG}"
+
+      if [[ -f "${DIR_TARGET}/Analysis/Report.pdf" ]]; then
+        touch "${DIR_TARGET}/.processed"
+      else
+        echo "${PARAM_DIR_PATIENT} failed"
+      fi
     fi
   fi
 fi
