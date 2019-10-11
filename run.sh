@@ -12,7 +12,7 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=global.sh
 . "${DIR_SCRIPT}"/global.sh
 
-possible_tasks=("GD TD VC CNV Report")
+possible_tasks=("gd td vc cnv report")
 
 function usage() {
   echo "usage: run.sh [-d dir] [-t task] [-f] [-h]"
@@ -85,18 +85,27 @@ else
   if [[ ! -z ${PARAM_TASK} ]]; then
     # possibility to comfortably run tasks separately
     case "${PARAM_TASK}" in
+      td) 
+        # TODO: make_alignment.sh -t td -d "${dir}"
+        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t TD -d "${dir}"
+      ;;
+      gd)
+        # TODO: make_alignment.sh -t gd -d "${dir}"
+        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t GD -d "${dir}"
+      ;;
+
       cnv)
-        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_cnv.sh -d "${dir}"
-        echo "not yet implemented"
+        # TODO: make_cnv.sh -d "${dir}"
+        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t CNV -d "${dir}"
       ;;
 
       vc)
-        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_vc.sh -d "${dir}"
-        echo "not yet implemented"
+        # TODO: make_vc.sh -d "${dir}"
+        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t VC -d "${dir}"
       ;;
       report)
-        # TODO: ${DOCKER_COMMAND} ${DIR_MIRACUM}/make_report.sh -d "${dir}"
-        echo "not yet implemented"      
+        # TODO: make_report.sh -d "${dir}"
+        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t Report -d "${dir}"
       ;;
     esac
   else

@@ -192,14 +192,13 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 ##################################################################################################################
 
-# TODO: reconstruct copy of R-files into DIR_TARGET
-#       (should be changed later then, requires changes in R-Scripts)
-
 ##########
 ## MAIN ##
 ##########
 
-echo -e "\t computing ${PARAM_TASK}"
+# TODO: required in all 4 files
+echo "STARTING ${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}";
+touch "${DIR_TARGET}/.STARTING_MARKER_${PARAM_TASK}"
 
 ### program calls
 case ${PARAM_TASK} in

@@ -153,7 +153,6 @@ for task in GD TD; do
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
    else
-       echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
        sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
    fi
 done
@@ -190,7 +189,6 @@ for task in VC CNV; do
    if [ -f .STARTING_MARKER_\${task} ]; then
        exit "Previous job uncompleted. Aborting!"
    else
-       echo "STARTING \$dname"; echo "\$dname" > .STARTING_MARKER_\${task}
        sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
    fi
 done
@@ -220,7 +218,6 @@ for task in Report; do
 	if [ -f .STARTING_MARKER_\${task} ]; then
 	    exit "Previous job uncompleted. Aborting!"
 	else
-	    echo "STARTING \${dname}"; echo "\${dname}" > .STARTING_MARKER_\${task}
 	    sh run_\${dname}.sh &> ${DIR_LOG}/\${task}.log
 		fi
 done
