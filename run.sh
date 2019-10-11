@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# createSet.sh and make_alignment_VC_CNV.sh need to be in the base directory
-# first germline (GD), then tumor (TD)
-
 readonly DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
@@ -87,25 +84,25 @@ else
     case "${PARAM_TASK}" in
       td) 
         # TODO: make_alignment.sh -t td -d "${dir}"
-        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t TD -d "${dir}"
+        "${DIR_SCRIPT}"/miracum_pipe.sh -t TD -d "${dir}"
       ;;
       gd)
         # TODO: make_alignment.sh -t gd -d "${dir}"
-        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t GD -d "${dir}"
+        "${DIR_SCRIPT}"/miracum_pipe.sh -t GD -d "${dir}"
       ;;
 
       cnv)
         # TODO: make_cnv.sh -d "${dir}"
-        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t CNV -d "${dir}"
+        "${DIR_SCRIPT}"/miracum_pipe.sh -t CNV -d "${dir}"
       ;;
 
       vc)
         # TODO: make_vc.sh -d "${dir}"
-        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t VC -d "${dir}"
+        "${DIR_SCRIPT}"/miracum_pipe.sh -t VC -d "${dir}"
       ;;
       report)
         # TODO: make_report.sh -d "${dir}"
-        "${DIR_SCRIPT}"/make_alignment_VC_CNV.sh -t Report -d "${dir}"
+        "${DIR_SCRIPT}"/miracum_pipe.sh -t Report -d "${dir}"
       ;;
     esac
   else

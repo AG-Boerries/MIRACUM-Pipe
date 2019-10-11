@@ -119,19 +119,19 @@ EOI
   # create sh run scripts
   case ${d} in
   GD)
-    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
+    echo "${DIR_SCRIPT}/miracum_pipe.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   TD)
-    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
+    echo "${DIR_SCRIPT}/miracum_pipe.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   VC)
-    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
+    echo "${DIR_SCRIPT}/miracum_pipe.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   CNV)
-    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
+    echo "${DIR_SCRIPT}/miracum_pipe.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   Report)
-    echo "${DIR_SCRIPT}/make_alignment_VC_CNV.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
+    echo "${DIR_SCRIPT}/miracum_pipe.sh -t ${d} -d ${DIR_PATIENT}" > "${runname}"
     ;;
   esac
   chmod a+x "${runname}"
