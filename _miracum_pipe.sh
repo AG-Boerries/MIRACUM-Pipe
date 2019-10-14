@@ -12,8 +12,8 @@ readonly DIR_SCRIPT=$(
 )
 
 ## load settings
-# shellcheck source=global.sh
-. "${DIR_SCRIPT}"/global.sh
+# shellcheck source=common.cfg.sh
+. "${DIR_SCRIPT}"/common.cfg.sh
 
 
 function usage() {
