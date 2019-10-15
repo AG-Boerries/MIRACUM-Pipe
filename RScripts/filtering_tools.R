@@ -181,8 +181,9 @@ ishs <- function(x, dbfile){
   #' @note required in db: Hugo_Symbol, Genomic_Position,
   #' @note -Reference_Amino_Acid, Variant_Amino_Acid, Amino_Acid_Position
   #' @note required in x: Gene.refGene, Start, AAChange.refGene
-  lisths <- read.delim(dbfile, header = T,
-                       sep = "\t", colClasses = "character")
+  # lisths <- read.delim(dbfile, header = T,
+  #                      sep = "\t", colClasses = "character")
+  lisths <- read.xls(xls = dbfile, sheet = 1)
   x$is_hotspot <- 0
   idh <- which (x$Gene.refGene %in% lisths$Hugo_Symbol)
   phs <- which (lisths$Hugo_Symbol %in% x$Gene.refGene)
@@ -242,8 +243,10 @@ isihs <- function(x, dbfile){
   #' @note required in db: Hugo_Symbol, Genomic_Position,
   #' @note -Reference_Amino_Acid, Variant_Amino_Acid, Amino_Acid_Position
   #' @note required in x: Gene.refGene, Start, AAChange.refGene
-  lisths <- read.delim(dbfile, header = T,
-                       sep = "\t", colClasses = "character")
+  # lisths <- read.delim(dbfile, header = T,
+  #                      sep = "\t", colClasses = "character")
+  lisths <- read.xls(xls = dbfile, sheet = 2)
+
   # list should already habe a hotspot column for snps
   fs <- which(x$ExonicFunc.refGene != "frameshift deletion")
   fs2 <- which(x$ExonicFunc.refGene[fs] != "frameshift insertion")

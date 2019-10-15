@@ -1,12 +1,13 @@
 #################
 # Coverage Plot #
-coverage_plot <- function(path, outfilePDF){
+coverage_plot <- function(path, outfilePDF, pathOutput){
   #' Coverage Plot
   #'
   #' @description Coverage Plot
   #'
   #' @param path string. Path to data
   #' @param outfilePDF string. Name of output file
+  #' @param pathOutput string. Output Directory
   #'
   #' @return list of
   #' @return cov numerical. Mean coverage
@@ -20,7 +21,7 @@ coverage_plot <- function(path, outfilePDF){
   # Assumes you've already run coverageBed -hist, and grep'd '^all'. E.g. something like:
   # find *.bam | parallel 'bedtools -abam {} -b capture.bed -hist | grep ^all > {}.all.txt'
   # Get a list of the bedtools output files you'd like to read in
-  print(files <- list.files(path = paste0("../WES/"), pattern="all.txt$"))
+  print(files <- list.files(path = path, pattern="all.txt$"))
   # Optional, create short sample names from the filenames. 
   # For example, in this experiment, my sample filenames might look like this:
   # prefixToTrash-01.pe.on.pos.dedup.realigned.recalibrated.bam
@@ -29,7 +30,7 @@ coverage_plot <- function(path, outfilePDF){
   # This regular expression leaves me with "samp01", "samp02", and "samp03" in the legend.
   
   print(labs <- gsub("_coverage.all.txt", "", files, perl = TRUE))
-  files <- paste("../WES/", files, sep = '')
+  files <- paste(path, files, sep = '')
   
   # Create lists to hold coverage and cumulative coverage for each alignment,
   # and read the data into these lists.
@@ -79,7 +80,7 @@ coverage_plot <- function(path, outfilePDF){
   
   
   # Mean Coverage
-  sink(file = 'MeanCoverage.txt', append = T, split = T)
+  sink(file = paste0(pathOutput, 'MeanCoverage.txt'), append = T, split = T)
   for (i in 1:length(files)) {
     print(paste('Mean Coverage', labs[i], ':',
                 sum(cov[[i]][,2] * cov[[i]][, 5]), sep = " "))

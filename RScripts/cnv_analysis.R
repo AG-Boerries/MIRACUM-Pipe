@@ -15,6 +15,8 @@
 #' @param outfile_dna_damage string. Filename of Output file
 #' @param path_data string. Directory of the databases
 #' @param path_script string. Directory of required scripts
+#' @param pathOutput string. Output directory
+#' @param targets_txt string. Path of the targets.txt file provided by the Capture Kit manufracturer
 #' 
 #' @return returns list of
 #' @return cnvs_annotated dataframe. Table of annotated CNVs
@@ -26,10 +28,11 @@
 cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                          outfile_ideogram, outfile, outfile_onco,
                          outfile_tumorsuppressors, outfile_loss, outfile_gain,
-                         outfile_dna_damage, path_data, path_script){
+                         outfile_dna_damage, path_data, path_script, pathOutput, targets_txt){
 
   load(paste(path_data, "GOGeneSets.RData", sep = "/"))
-  targets <- read.table(paste(path_data, "Targets.txt", sep = "/"))
+  #targets <- read.table(paste(path_data, "Targets.txt", sep = "/"))
+  targets <- read.table(targets_txt)
   
   assess_significance(ratio_file = ratio_file, cnvs_file = cnvs_file,
                       outfile = cnv_pvalue_txt)
@@ -56,7 +59,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                                          path_data = path_data,
                                          path_script = path_script)
   
-  out <- cnv_table(cnvs = cnvs_annotated$CNVsAnnotated)
+  out <- cnv_table(cnvs = cnvs_annotated$CNVsAnnotated, pathOutput)
   ddr <- cnv_dna_damage(input = out, outfile_dna_damage = outfile_dna_damage,
                         db = paste(path_data, "DNA_Damage_Response.txt",
                                    sep = "/"))

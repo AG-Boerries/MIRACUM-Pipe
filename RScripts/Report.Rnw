@@ -38,9 +38,9 @@ library(knitr)
 library(kableExtra)
 options(knitr.table.format = "latex")
 # set global chunk options
-opts_chunk$set(fig.path = "figure/", fig.align = "center", fig.show = "hold")
+opts_chunk$set(fig.align = "center", fig.show = "hold")
 options(formatR.arrow = TRUE, width = 90)
-load("WES.RData")
+#load("WES.RData")
 sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 @
 
@@ -146,11 +146,13 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 \clearpage
 
 <<eval=TRUE, results='tex', echo=FALSE>>=
-tmp <- read.delim('MutationTable.txt')
+#tmp <- read.delim('MutationTable.txt')
+tmp <- mutation_analysis_result$mutation_table
 colnames(tmp) <- c("Mutationstype", "Number of exonic", "Zygosity", "TS", "OG", "HS")
 kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = 12)
-n_s <- sum(tmp[c(1:2, 4:5), 2])
-n_l <- sum(tmp[c(3,6), 2])
+tmp.exon <- tmp[,2]
+n_s <- sum(as.numeric(tmp.exon[c(1:2, 4:5)]))
+n_l <- sum(as.numeric(tmp.exon[c(3,6)]))
 n_a <- n_s + n_l
 @
 

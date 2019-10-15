@@ -46,6 +46,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   require(stringr)
   require(openxlsx)
   require(Rsamtools)
+  require(gdata)
 
   source(paste(path_script, "filtering_tools.R", sep = "/"))
 
@@ -100,8 +101,10 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- isflag(x, dbfile = paste(path_data, "flag_genes.txt", sep = "/"))
     x <- isogtsg(x, dbfile = paste(path_data, "CancerGenesList.txt",
     sep = "/"))
-    x <- ishs(x, paste(path_data, "hotspots_V2.txt", sep = "/"))
-    x <- isihs(x, paste(path_data, "hotspots_V2_indel.txt", sep = "/"))
+    # x <- ishs(x, paste(path_data, "hotspots_V2.txt", sep = "/"))
+    # x <- isihs(x, paste(path_data, "hotspots_V2_indel.txt", sep = "/"))
+    x <- ishs(x, paste(path_data, "hotspots_v2.xls", sep = "/"))
+    x <- isihs(x, paste(path_data, "hotspots_v2.xls", sep = "/"))
     x <- rvis(x, paste(path_data, "RVIS_score.txt", sep = "/"))
     x <- trgt(x, paste(path_data, "TARGET_db.txt", sep = "/"))
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))

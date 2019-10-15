@@ -330,7 +330,7 @@ cnv_processing <- function(cnv_file, targets,
   return(list(loss_go = loss_go, gain_go = gain_go))
 }
 
-cnv_table <- function(cnvs){
+cnv_table <- function(cnvs, pathOutput){
   #' CNV Table
   #'
   #' @description Write CNV Table
@@ -354,7 +354,7 @@ cnv_table <- function(cnvs){
     tmp <- data.frame(Gene = genes, Chr = chr, Start = start, End = end, CopyNumber = copyNumber, Status = status)
     output <- rbind(output, tmp)
   }
-  write.xlsx(output, file = "CNV_Table.xlsx", keepNA = FALSE, rowNames = FALSE,
+  write.xlsx(output, file = paste0(pathOutput, "CNV_Table.xlsx"), keepNA = FALSE, rowNames = FALSE,
              firstRow = TRUE)
   return(output)
 }

@@ -5,7 +5,7 @@
 mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
                              outfile_reactome, outfile_consensus,
                              outfile_hallmarks, outfile_mtb_genesets, path_data,
-                             path_script){
+                             path_script, pathOutput, targets_txt){
   #' Mutation Analysis
   #'
   #' @description Analysis and Annotation of Mutations
@@ -21,6 +21,8 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   #' @param outfile_mtb_genesets string. Name of output file
   #' @param path_data string. Directory of the databases
   #' @param path_script string. Directory of required scripts
+  #' @param pathOutput string. Output directory
+  #' @param targets_txt string. Path of the targets.txt file provided by the Capture Kit manufracturer
   #'
   #' @return returns list of
   #' @return ts_og dataframe. Table of mutations in tumorsuppressor and
@@ -66,8 +68,9 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   load(paste(path_data, "Consensus.RData", sep = "/"))
   load(paste(path_data, "hallmarksOfCancer_GeneSets.RData", sep = "/"))
   load(paste(path_data, "MTB_Genesets.rda", sep = "/"))
-  targets <- read.table(paste(path_data, "Targets.txt", sep = "/"))
-
+  #targets <- read.table(paste(path_data, "Targets.txt", sep = "/"))
+  targets <- read.table(targets_txt)
+  
   source(paste(path_script, "MutAna_tools.R", sep = "/"))
 
   x_loh <- loh
@@ -94,15 +97,15 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   sub_lst <- div(x_s, x_l, no_loh)
 # Write/print summary of mutationsnumber, diverse tables
   mutation_table <- mut_tab(sub_lst$x_s_snp, sub_lst$x_s_indel, sub_lst$x_l_snp,
-                            sub_lst$x_l_indel)
+                            sub_lst$x_l_indel, pathOutput = pathOutput)
   if (!no_loh) {
-    mut_stats_res <- mut_stats(x_s, x_l, tumbu)
-    tbl <- tables(x_s, x_l)
-    all_mut <- write_all_mut(x_s = x_s, x_l = x_l)
+    mut_stats_res <- mut_stats(x_s, x_l, tumbu, pathOutput = pathOutput)
+    tbl <- tables(x_s, x_l, pathOutput = pathOutput)
+    all_mut <- write_all_mut(x_s = x_s, x_l = x_l, pathOutput = pathOutput)
   } else {
-    mut_stats_res <- mut_stats(x_s = x_s, tumbu = tumbu)
-    tbl <- tables(x_s= x_s)
-    all_mut <- write_all_mut(x_s = x_s)
+    mut_stats_res <- mut_stats(x_s = x_s, tumbu = tumbu, pathOutput = pathOutput)
+    tbl <- tables(x_s= x_s, pathOutput = pathOutput)
+    all_mut <- write_all_mut(x_s = x_s, pathOutput = pathOutput)
   }
 
 # produce circos plot
@@ -123,8 +126,8 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   result_hm <- get_terms(hallmarksOfCancer, outfile_hallmarks, prep$de_genes,
                          prep$universe)
 # Check for important pathways
-  check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets, outfile_mtb_genesetsprep)
-  importantpws <- imp_pws(check_mat, all_mut$all_muts)
+  check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets, outfile_mtb_genesetsprep, pathOutput = pathOutput)
+  importantpws <- imp_pws(check_mat, all_mut$all_muts, pathOutput = pathOutput)
 
   return(list(ts_og = tbl$ts_og_table,
               go = result_go, reactome = result_re,
@@ -136,5 +139,6 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
               important_pathways = importantpws,
               som_mut_tab = tbl$sm_table,
               table_loh_mutations = tbl$lm_table,
-              all_mutations = all_mut$all_muts))
+              all_mutations = all_mut$all_muts,
+              mutation_table = mutation_table))
 }
