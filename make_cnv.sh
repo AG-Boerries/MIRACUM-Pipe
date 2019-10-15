@@ -58,35 +58,29 @@ fi
 readonly VALID_TASKS=("GD TD VC CNV Report")
 readonly VALID_SEXES=("XX XY")
 
-for value in "${VALID_TASKS[@]}"
-do
-  [[ "${PARAM_TASK}" = "${value}" ]] && \
-    echo "unknown task: ${PARAM_TASK}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})" && \
-    exit 1
-done
+if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
+  echo "unknown task: ${PARAM_TASK}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
+  exit 1
+fi
 
-for value in "${VALID_SEXES[@]}"
-do
-  [[ "${CFG_SEX}" = "${value}" ]] && \
-    echo "unknown sex: ${CFG_SEX}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})" && \
-    exit 1
-done
+if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
+  echo "unknown sex: ${CFG_SEX}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})"
+  exit 1
+fi
 
 ##################################################################################################################
 
 ## load programs
 # shellcheck source=programs.cfg.sh
-. "${DIR_SCRIPT}"/programs.cfg.sh
+. "${DIR_SCRIPT}/programs.cfg.sh"
 
 ##################################################################################################################
 
-readonly output="${DIR_WES}/CNV"
+readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 
-if [[ ! -d "${output}" ]]; then
-  mkdir -p "${output}"
-fi
+[[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
@@ -101,7 +95,7 @@ intercept = 0
 minCNAlength = 3
 maxThreads = 12
 noisyData = TRUE
-outputDir = ${output}
+outputDir = ${DIR_CNV_OUTPUT}
 ploidy = 2
 printNA = FALSE
 readCountThreshold = 50

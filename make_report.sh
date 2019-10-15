@@ -4,7 +4,6 @@
 ## WES Pipeline for somatic and germline ##
 ###########################################
 # script to run the actual analysis
-# Version 31.07.2019
 
 readonly DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
@@ -24,10 +23,9 @@ function usage() {
   exit 1
 }
 
-while getopts d:t:h option; do
+while getopts d:h option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
-  t) readonly PARAM_TASK=$OPTARG ;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -61,39 +59,30 @@ else
 fi
 
 # check inputs
-readonly VALID_TASKS=("GD TD VC CNV Report")
 readonly VALID_SEXES=("XX XY")
 
-for value in "${VALID_TASKS[@]}"
-do
-  [[ "${PARAM_TASK}" = "${value}" ]] && \
-    echo "unknown task: ${PARAM_TASK}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})" && \
-    exit 1
-done
 
-for value in "${VALID_SEXES[@]}"
-do
-  [[ "${CFG_SEX}" = "${value}" ]] && \
-    echo "unknown sex: ${CFG_SEX}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})" && \
-    exit 1
-done
+if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
+  echo "unknown sex: ${CFG_SEX}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})"
+  exit 1
+fi
 
 ##################################################################################################################
 
 ## load programs
 # shellcheck source=programs.cfg.sh
-. "${DIR_SCRIPT}"/programs.cfg.sh
+. "${DIR_SCRIPT}/programs.cfg.sh"
 
 ##################################################################################################################
 
 cd "${DIR_ANALYSIS}" || exit 1
 
 # TODO: refactor R-Script to use different folders and also add DIR_REF (to link to Target file)
-${BIN_RSCRIPT} "${DIR_ANALYSIS}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
-  "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}"
+${BIN_RSCRIPT} "${DIR_RSCRIPT}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
+  "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}
 
-${BIN_RSCRIPT} -e "library(knitr); knit('${DIR_ANALYSIS}/Report.Rnw')"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.Rdata'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw')"
+
 pdflatex -interaction=nonstopmode Report.tex
 pdflatex -interaction=nonstopmode Report.tex

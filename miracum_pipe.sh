@@ -9,11 +9,11 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
-possible_tasks=("gd td vc cnv report")
+readonly VALID_TASKS=("gd td vc cnv report")
 
 function usage() {
-  echo "usage: run.sh [-d dir] [-t task] [-f] [-h]"
-  echo "  -t  task             specify task ${possible_tasks}"
+  echo "usage: miracum_pipe.sh [-d dir] [-t task] [-f] [-h]"
+  echo "  -t  task             specify task ${VALID_TASKS}"
   echo "  -f                   specify forced run, i.e. neglecting if a patient already was computed"
   echo "  -d  dir              specify directory in which the patient is located"
   echo "  -h                   show this help screen"
@@ -30,17 +30,17 @@ function run_pipe() {
   mkdir -p "${dir_log}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_alignment.sh -t TD -d "${dir_patient}" &> ${dir_log}/TD.log) &
-  ("${DIR_SCRIPT}"/make_alignment.sh -t GD -d "${dir_patient}" &> ${dir_log}/GD.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
   wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_vc.sh -d "${dir_patient}"  &> ${dir_log}/VC.log) &
-  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/CNV.log) &
+  ("${DIR_SCRIPT}"/make_vc.sh -d "${dir_patient}"  &> ${dir_log}/vc.log) &
+  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log) &
   wait
 
   # create report based on the results of the processes above
-  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/Report.log) &
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
 }
 
 # get_case relative_patient_dir
@@ -57,7 +57,7 @@ function get_case() {
 while getopts d:t:fh option; do
   case "${option}" in
   t) readonly PARAM_TASK=$OPTARG;;
-  d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
+  d) readonly PARAM_DIR_PATIENT=$OPTARG;;
   f) readonly PARAM_FORCE=true;;
   h) usage ;;
   \?)
@@ -75,13 +75,11 @@ while getopts d:t:fh option; do
   esac
 done
 
-for value in "${possible_tasks[@]}"
-do
-  [[ "${PARAM_TASK}" = "${value}" ]] && \
-    echo "unknown task: ${PARAM_TASK}" && \
-    echo "use one of the following values: $(join_by ' ' ${possible_tasks})" && \
-    exit 1
-done
+if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
+  echo "unknown task: ${PARAM_TASK}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
+  exit 1
+fi
 
 # create temporary folder if not existent
 [[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
@@ -120,21 +118,21 @@ else
       # possibility to comfortably run tasks separately
       case "${PARAM_TASK}" in
         td)
-          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir}"
+          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/td.log
         ;;
         gd)
-          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir}"
+          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/gd.log
         ;;
 
         cnv)
-          "${DIR_SCRIPT}"/make_cnv.sh -d "${dir}"
+          "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/cnv.log
         ;;
 
         vc)
-          "${DIR_SCRIPT}"/make_vc.sh -d "${dir}"
+          "${DIR_SCRIPT}"/make_vc.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/vc.log
         ;;
         report)
-          "${DIR_SCRIPT}"/make_report.sh -d "${dir}"
+          "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/report.log
         ;;
       esac
     else

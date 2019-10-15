@@ -24,11 +24,11 @@ function get_config_value()
 
   # if value not available in patient specific config, look into custom config
   if [[ -z "${value}" ]]; then
-    value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/custom/custom.yaml)
-    
+    value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/custom.yaml 2> /dev/null)
+
     # if value not available in custom config, take global config's value
     if [[ -z "${value}" ]]; then
-      value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/default.yaml)
+      value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/default.yaml 2> /dev/null)
     fi
   fi
 

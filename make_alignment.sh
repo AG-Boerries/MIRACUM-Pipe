@@ -57,30 +57,26 @@ else
 fi
 
 # check inputs
-readonly VALID_TASKS=("GD TD VC CNV Report")
+readonly VALID_TASKS=("gd td")
 readonly VALID_SEXES=("XX XY")
 
-for value in "${VALID_TASKS[@]}"
-do
-  [[ "${PARAM_TASK}" = "${value}" ]] && \
-    echo "unknown task: ${PARAM_TASK}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})" && \
-    exit 1
-done
+if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
+  echo "unknown task: ${PARAM_TASK}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
+  exit 1
+fi
 
-for value in "${VALID_SEXES[@]}"
-do
-  [[ "${CFG_SEX}" = "${value}" ]] && \
-    echo "unknown sex: ${CFG_SEX}" && \
-    echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})" && \
-    exit 1
-done
+if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
+  echo "unknown sex: ${CFG_SEX}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_SEXES})"
+  exit 1
+fi
 
 ##################################################################################################################
 
 ## load programs
 # shellcheck source=programs.cfg.sh
-. "${DIR_SCRIPT}"/programs.cfg.sh
+. "${DIR_SCRIPT}/programs.cfg.sh"
 
 ##################################################################################################################
 
