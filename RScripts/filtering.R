@@ -3,7 +3,7 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, path_data, path_script, sureselect, mode = "T"){
+                      outfile, path_data, path_script, covered_region, mode = "T"){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -67,7 +67,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
 
   if (mode == "T") {
     # TumorMutationBurden
-    tmb <- tumbu(x, sureselect)
+    tmb <- tumbu(x, covered_region)
   } else {
     tmb <- 0
   }

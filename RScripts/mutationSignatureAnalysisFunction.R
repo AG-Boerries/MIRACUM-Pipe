@@ -1,6 +1,6 @@
 mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                                       sample_name = NULL, only_coding = FALSE,
-                                      path_data, pathOutput){
+                                      path_data, path_output){
   #' Mutation Signature Analysis
   #'
   #' @description Mutation Signature Analysis adopted from YAPSA package
@@ -12,7 +12,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   #' @param only_coding logical. Use only mutations in coding regions
   #' @param (default: F)
   #' @param path_data string. Path to data
-  #' @param pathOutput string. Output directory
+  #' @param path_output string. Output directory
   #'
   #' @return returns list of
   #' @return CosmicValid_cutoffGen_LCDlist dataframe. List of cutoff genes
@@ -184,7 +184,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
         "Signatures_Identified" = CosmicValid_cutoffGen_LCDlist$out_sig_ind_df,
         "Normalized_Exposures" = CosmicValid_cutoffGen_LCDlist$norm_exposures,
         Summary = out)
-  write.xlsx(output, paste0(pathOutput, sample_name, "_Mutation_Signature_cutoff_",
+  write.xlsx(output, paste0(path_output, sample_name, "_Mutation_Signature_cutoff_",
              cutoffPerc, "Percent.xlsx"), rowNames = T, firstRow = T,
              headerStyle = createStyle(textDecoration = 'bold'))
   return(list(CosmicValid_cutoffGen_LCDlist = CosmicValid_cutoffGen_LCDlist,
