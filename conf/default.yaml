@@ -30,3 +30,4 @@ reference:
   mappability: out100m2_hg19.gem
   sequencing:
     capture_regions: CaptureRegions.bed
+    capture_genes: Targets.txt

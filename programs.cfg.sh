@@ -19,8 +19,8 @@ readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.l
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
-readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_REF}/$(get_config_value reference.sequencing.capture_regions "${PARAM_DIR_PATIENT}")"
-readonly CFG_REFERENCE_CAPTUREGENES="${DIR_REF}/$(get_config_value reference.sequencing.capture_genes "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_REF}/$(get_config_value reference.sequencing.captureRegions "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_CAPTUREGENES="${DIR_REF}/$(get_config_value reference.sequencing.captureGenes "${PARAM_DIR_PATIENT}")"
 
 
 # database for known variants
