@@ -187,8 +187,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
 }
 
 
-cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumorsuppressors, dbfile,
-                           path_data, path_script){
+cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumorsuppressors, dbfile, path_data, path_script){
   #' CNV Annotation
   #'
   #' @description Annotate the CNV Regions
@@ -276,7 +275,7 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
 
 cnv_processing <- function(cnv_file, targets,
                            outfile_loss, outfile_gain, go.bp,
-                           outfile_dna_damage, path_data, path_script){
+                           path_data, path_script){
   #' CNV Processing
   #'
   #' @description Copy Number Analysis
@@ -286,7 +285,6 @@ cnv_processing <- function(cnv_file, targets,
   #' @param outfile_loss string. Filename of genes with loss
   #' @param outfile_gain string. Filename of genes with gain
   #' @param go.bp dataframe. GO Database
-  #' @param outfile_dna_damage string. Filename of Output file
   #' @param path_data string. Directory of the databases
   #' @param path_script string. Directory of required scripts
   #'
@@ -330,7 +328,7 @@ cnv_processing <- function(cnv_file, targets,
   return(list(loss_go = loss_go, gain_go = gain_go))
 }
 
-cnv_table <- function(cnvs, pathOutput){
+cnv_table <- function(cnvs){
   #' CNV Table
   #'
   #' @description Write CNV Table
@@ -340,7 +338,6 @@ cnv_table <- function(cnvs, pathOutput){
   #' @return output dataframe. Table of genes with CNVs
   #'
   #' @details Regions with CNVs are correlated to the corresponding genes.
-  #' @details The table is written to "CNV_Table.xlsx".
   output <- data.frame()
   for(i in 1:dim(cnvs)[1]){
     genesSplitList <- strsplit(cnvs$genes, split = ',')
@@ -354,8 +351,6 @@ cnv_table <- function(cnvs, pathOutput){
     tmp <- data.frame(Gene = genes, Chr = chr, Start = start, End = end, CopyNumber = copyNumber, Status = status)
     output <- rbind(output, tmp)
   }
-  write.xlsx(output, file = paste0(pathOutput, "CNV_Table.xlsx"), keepNA = FALSE, rowNames = FALSE,
-             firstRow = TRUE)
   return(output)
 }
 

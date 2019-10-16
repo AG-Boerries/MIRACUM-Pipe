@@ -78,7 +78,7 @@ div <- function(x_s, x_l, no_loh){
               no_indel_loh = no_indel_loh))
 }
 
-mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, pathOutput){
+mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel){
   #' Mutation Table
   #'
   #' @description Build Mutation Table
@@ -87,13 +87,11 @@ mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, pathOutput){
   #' @param x_s_indel dataframe. List of somatic InDels
   #' @param x_l_snp dataframe. List of LoH SNVs
   #' @param x_l_indel dataframe. List of LoH InDels
-  #' @param pathOutput string. Output directory
   #'
   #' @return muta_tab dataframe. Summary table of mutations
   #'
   #' @details A summary table is build that shows the number of mutations
   #' @details separating SNVs/InDels, somatic/LoH and Zygosity.
-  #' @details The table is also written in MutationTable.txt.
   muta_tab <- matrix(data = "-", nrow = 6, ncol = 6)
   colnames(muta_tab) <- c("Mutationtype", "Number of exonic", "Zygosity",
                                "Tumorsuppressor", "Oncogene", "Hotspot")
@@ -138,13 +136,12 @@ mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, pathOutput){
                         & x_s_indel$Zygosity == "het")
   muta_tab[6, 6] <- sum(x_l_indel$is_hotspot != 0 )
 
-  write.table(x = muta_tab, file = paste0(pathOutput, "MutationTable.txt"), quote = F,
-              sep = "\t", row.names = F, col.names = T)
+  #write.table(x = muta_tab, file = paste0(path_output, "MutationTable.txt"), quote = F, sep = "\t", row.names = F, col.names = T)
   print(muta_tab)
  return(muta_tab = muta_tab)
 }
 
-mut_stats <- function(x_s, x_l = NULL, tumbu, pathOutput) {
+mut_stats <- function(x_s, x_l = NULL, tumbu) {
   #' Mutation Statistics
   #'
   #' @description Print Number of Somatic Mutations
@@ -152,7 +149,6 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, pathOutput) {
   #' @param x_s dataframe. List of somatic mutations
   #' @param x_l dataframe. List of LoH mutations
   #' @param tumbu numerical. Tumor mutational burden
-  #' @param pathOutput string. Output directory
   #'
   #' @return list of
   #' @return tot_mut numerical. Total number of mutations
@@ -160,8 +156,6 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, pathOutput) {
   #' @return loh_mut numerical. Number of all LoH mutations
   #'
   #' @details Statistical number are calculated and printed. Furthermore
-  #' @details the results are printed in mutationsStats.txt.
-  sink(file = paste0(pathOutput, "mutationsStats.txt"), append = T, split = T)
   print(paste(dim(x_s)[1], "somatic mutations", sep = " ")) 
   if (is.null(x_l)){
     print("0 LoH")
@@ -173,7 +167,6 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, pathOutput) {
   print(paste("total number of mutations:", dim(x_s)[1] + dim_x_l,
               sep = " "))
   print(paste("mutational burden:", tumbu, sep = " "))
-  sink()
   totalmutationnumber <- dim(x_s)[1] + dim_x_l
   somaticmutations <- dim(x_s)[1]
   lohmutations <- dim_x_l
@@ -181,7 +174,7 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, pathOutput) {
               loh_mut <- lohmutations))
 }
 
-tables <- function(x_s, x_l = NULL, pathOutput){
+tables <- function(x_s, x_l = NULL){
   #' Create Tables
   #'
   #' @description Write Tables for Tumorsuppressors/Oncogenes, all somatic
@@ -189,7 +182,6 @@ tables <- function(x_s, x_l = NULL, pathOutput){
   #'
   #' @param x_s dataframe. List of somatic mutations
   #' @param x_l dataframe. List of LoH mutations
-  #' @param pathOutput string. Output directory
   #'
   #' @return list of
   #' @return ts_og_table dataframe. List of mutations in tumorsuppressors and
@@ -197,9 +189,9 @@ tables <- function(x_s, x_l = NULL, pathOutput){
   #' @return sm_table dataframe. List if somatic mutations
   #' @return lm_table dataframe. List of LoH mutations
   #'
-  #' @details The Tables TumorSuppressor-OncogeneTable.xlsx,
-  #' @details somaticMutations.xlsx and lohMutations.xlsx are generated and
-  #' @details stored as well as returned.
+  #' @details The Tables TumorSuppressor-OncogeneTable,
+  #' @details somaticMutations and lohMutations are generated and
+  #' @details stored.
   ts_og_table <- x_s[x_s$is_tumorsuppressor == 1 |
                        x_s$is_oncogene == 1,
                      c("Gene.refGene", "GeneName",
@@ -209,8 +201,6 @@ tables <- function(x_s, x_l = NULL, pathOutput){
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
                        "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
-  write.xlsx(ts_og_table, file = paste0(pathOutput, "TumorSuppressor-OncogeneTable.xlsx"),
-             quote = F, sep = "\t", row.names = F, col.names = T)
 
   sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                      "AAChange.SnpEff", "Variant_Allele_Frequency", "Zygosity",
@@ -218,8 +208,7 @@ tables <- function(x_s, x_l = NULL, pathOutput){
                      "is_hotspot", "target", "gnomAD_exome_NFE",
                      "CADD_phred", "condel.label", "CLINSIG.SnpEff",
                      "cosmic86_coding"), drop = FALSE]
-  write.xlsx(sm_table, file = paste0(pathOutput,"somaticMutations.xlsx"),
-             quote = F, sep = "\t", row.names = F, col.names = T)
+
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                        "AAChange.SnpEff", "VAF_Normal", "VAF_Tumor",
@@ -227,8 +216,7 @@ tables <- function(x_s, x_l = NULL, pathOutput){
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
                        "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
-    write.xlsx(lm_table, file = paste0(pathOutput, "lohMutations.xlsx"),
-               quote = F, sep = "\t", row.names = F, col.names = T)
+
   }else{
     lm_table <- data.frame()
     
@@ -433,21 +421,19 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   dev.off()	
 }
 
-write_all_mut <- function(x_s, x_l = NULL, pathOutput){
+write_all_mut <- function(x_s, x_l = NULL){
   #' Write all Mutations
   #'
   #' @description Write all Mutations in a xlsx File
   #'
   #' @param x_s dataframe. List of somatic mutations
   #' @param x_l dataframe. List of LoH mutations
-  #' @param pathOutput string. Output directory
   #' 
   #' @return list of
   #' @return all_muts dataframe. Table of all mutations
   #' @return mut vector of strings. List of mutated genes
   #' 
-  #' @details A table with all mutations (somatic and LoH) is saved in
-  #' @detials All_Mutations_Somatic.xlsx.
+  #' @details A table with all mutations (somatic and LoH) is saved.
   mutations_somatic <- as.character(x_s$Gene.refGene)
   mutations_somatic <- unique(mutations_somatic)
   if (!is.null(x_l)){
@@ -486,8 +472,6 @@ write_all_mut <- function(x_s, x_l = NULL, pathOutput){
     } else {
       all_mutations <- tmp1
     }
-  write.xlsx(all_mutations, file = paste0(pathOutput,"All_Mutations_Somatic_LoH.xlsx"),
-             keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
   return(list(all_muts = all_mutations, mut = mut))
 }
 
@@ -638,7 +622,7 @@ get_terms <- function(dataset, outfile, mut.entrez, t2.entrez){
   return(ds_res = ds_test)
 }
 
-write_mtb_genesets <- function(mulist, mtb.genesets, outfile_mtb_geneset, pathOutput){
+write_mtb_genesets <- function(mulist, mtb.genesets, outfile_mtb_geneset){
   #' Important Pathways
   #' 
   #' @description Find mutations in important pathways
@@ -646,7 +630,6 @@ write_mtb_genesets <- function(mulist, mtb.genesets, outfile_mtb_geneset, pathOu
   #' @param mulist dataframe. Table of mutated genes
   #' @param mtb.genesets dataframe. List of important pathways
   #' @param outfile_mtb_geneset string. Name of output file
-  #' @param pathOutput string. Output directory
   #' 
   #' @return ch_mat matrix. Result matrix
   #' 
@@ -664,26 +647,21 @@ write_mtb_genesets <- function(mulist, mtb.genesets, outfile_mtb_geneset, pathOu
       }
     }
   }
-  write.xlsx(check_matrix, outfile_mtb_genesets, rowNames = TRUE,
-             firstRow = TRUE)
   return(ch_mat = check_matrix)
 }
 
-imp_pws <- function(ch_mat, all_muts, pathOutput){
+imp_pws <- function(ch_mat, all_muts){
   #' Important Pathways
   #' 
   #' @description Sort mutations into important pathways
   #'
   #' @param ch_mat matrix. Result matrix
   #' @param all_muts dataframe. Table of mutations
-  #' @param pathOutput string. Output directory
-  #' 
+  #'
   #' @return important_pws dataframe. Table of mutations in important pathways
   #' 
   #' @details A Table for the important Pathways is built that contains all the
-  #' @details mutations found belonging to them. The results are writte in file
-  #' @details "MTB_Pathways-Gene.txt". 
-  sink(file = paste0(pathOutput, "MTB_Pathways-Gene.txt"), append = T, split = T)
+  #' @details mutations found belonging to them.
   print("PI3K-AKT-mTOR:")
   tmp <- rownames(ch_mat)[ch_mat[, 3] == 1]
   print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
@@ -699,7 +677,6 @@ imp_pws <- function(ch_mat, all_muts, pathOutput){
   print("Tyrosine Kinases:")
   tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
   print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  sink()
   #print("PI3K-AKT-mTOR:")
   pi3k <- rownames(ch_mat)[ch_mat[, 3] == 1]
   if (length(pi3k) != 0){

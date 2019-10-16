@@ -1,13 +1,12 @@
 #################
 # Coverage Plot #
-coverage_plot <- function(path, outfilePDF, pathOutput){
+coverage_plot <- function(path, outfilePDF){
   #' Coverage Plot
   #'
   #' @description Coverage Plot
   #'
   #' @param path string. Path to data
   #' @param outfilePDF string. Name of output file
-  #' @param pathOutput string. Output Directory
   #'
   #' @return list of
   #' @return cov numerical. Mean coverage
@@ -80,12 +79,10 @@ coverage_plot <- function(path, outfilePDF, pathOutput){
   
   
   # Mean Coverage
-  sink(file = paste0(pathOutput, 'MeanCoverage.txt'), append = T, split = T)
   for (i in 1:length(files)) {
     print(paste('Mean Coverage', labs[i], ':',
                 sum(cov[[i]][,2] * cov[[i]][, 5]), sep = " "))
   }
-  sink()
   return(list(cov = cov,labs = labs, files = files))
 }
 

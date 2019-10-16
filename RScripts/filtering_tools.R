@@ -1,12 +1,12 @@
 #### Functions for filtering
 
-tumbu <- function(x, sureselect){
+tumbu <- function(x, covered_region){
   #' Tumor Mutational Burden
   #'
   #' @description Calculates the tumor mutational burden
   #'
   #' @param x dataframe. Table of Mutations
-  #' @param sureselect string. Describes Sequencer
+  #' @param sureselect string. Covered region by sequencer in Mb
   #'
   #' @return returns tmb, double. tumor mutational burden
   #'
@@ -16,14 +16,8 @@ tumbu <- function(x, sureselect){
   #' @details every mutation including intronic, up-/downstream and so on.
   #' @details The total number of mutations is divided by the area in MegaBases
   #' @details that the sequencer covers
-  if (sureselect == "V6"){
-    tmb <- nrow(x) / 60
-  } else if (sureselect == "V5UTR"){
-    tmb <- nrow(x) / 75
-  }
-  else if (sureselect == "VCRome"){
-      tmb <- nrow(x) / 45.1
-    }
+  covered_region <- as.numeric(covered_region)
+  tmb <- nrow(x) / covered_region
   tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
   return(tmb)
 }
