@@ -16,6 +16,7 @@ function usage() {
   echo "  -t  task             specify task ${VALID_TASKS}"
   echo "  -f                   specify forced run, i.e. neglecting if a patient already was computed"
   echo "  -d  dir              specify directory in which the patient is located"
+  echo "  -s                   computing sequentially; might be required if ressources are limited"
   echo "  -h                   show this help screen"
   exit 1
 }
@@ -65,6 +66,24 @@ function run_pipe() {
   cleanup "${dir_patient}"
 }
 
+# run_pipe_seq relative_patient_dir dir_target
+function run_pipe_seq() {
+  local dir_patient="${1}"
+  local dir_target="${2}"
+
+  local dir_log="${dir_target}/log"
+
+  setup "${dir_patient}" "${dir_target}"
+
+  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
+  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> ${dir_log}/gd.log)
+  ("${DIR_SCRIPT}"/make_vc.sh  -d "${dir_patient}" &> ${dir_log}/vc.log)
+  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+
+  cleanup "${dir_patient}"
+}
+
 # get_case relative_patient_dir
 function get_case() {
   local dir_patient="${1}"
@@ -76,11 +95,12 @@ function get_case() {
   fi
 }
 
-while getopts d:t:fh option; do
+while getopts d:t:fhs option; do
   case "${option}" in
   t) readonly PARAM_TASK=$OPTARG;;
   d) readonly PARAM_DIR_PATIENT=$OPTARG;;
   f) readonly PARAM_FORCE=true;;
+  s) readonly PARAM_SEQ=true;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -107,7 +127,11 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
       CFG_CASE=$(get_case ${DIR_PATIENT})
       DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
 
-      run_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -z "${PARAM_SEQ}" ]]; then
+        run_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
+      else
+        run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
+      fi
 
       # check if report was generated successfully
       if [[ -f "${DIR_ANALYSIS}/Report.pdf" ]]; then
@@ -172,7 +196,11 @@ else
       CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
       DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 
-      run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -z "${PARAM_SEQ}" ]]; then
+        run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+      else
+        run_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+      fi
 
       # check if report was generated successfully
       if [[ -f "${DIR_ANALYSIS}/Report.pdf" ]]; then
