@@ -2,7 +2,7 @@ FROM miracumpipe_tools:latest
 
 COPY ./*.sh /opt/MIRACUM-Pipe/
 COPY ./RScripts/* /opt/MIRACUM-Pipe/RScripts/
-COPY ./conf/default.yaml /opt/MIRACUM-Pipe/conf/default.yaml
+COPY ./conf/*.yaml /opt/MIRACUM-Pipe/conf/
 
 # define volumes
 VOLUME /opt/MIRACUM-Pipe/assets/input

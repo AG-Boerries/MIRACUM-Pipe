@@ -20,27 +20,49 @@ function usage() {
   exit 1
 }
 
-# run_pipe relative_patient_dir dir_log
+
+# setup relative_patient_dir dir_target
+function setup() {
+  local dir_patient="${1}"
+  local dir_target="${2}"
+
+  local dir_tmp="$(get_config_value common.dirTmp "${dir_patient}")/${dir_patient}"
+  mkdir -p ${dir_tmp}
+
+  local dir_log="${dir_target}/log"
+  mkdir -p "${dir_log}"
+}
+
+# cleanup relative_patient_dir
+function cleanup() {
+  local dir_patient="${1}"
+  local dir_tmp="$(get_config_value common.dirTmp "${dir_patient}")/${dir_patient}"
+  rm -rf "${dir_tmp:?}"
+}
+
+# run_pipe relative_patient_dir dir_target
 function run_pipe() {
   local dir_patient="${1}"
   local dir_target="${2}"
 
   local dir_log="${dir_target}/log"
 
-  mkdir -p "${dir_log}"
+  setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
   wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_vc.sh -d "${dir_patient}"  &> ${dir_log}/vc.log) &
-  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
+  ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
   wait
 
   # create report based on the results of the processes above
   ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+
+  cleanup "${dir_patient}"
 }
 
 # get_case relative_patient_dir
@@ -75,15 +97,6 @@ while getopts d:t:fh option; do
   esac
 done
 
-if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
-  echo "unknown task: ${PARAM_TASK}"
-  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
-  exit 1
-fi
-
-# create temporary folder if not existent
-[[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
-
 # run script
 if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
   for dir in "${DIR_SCRIPT}"/assets/input/*; do
@@ -110,31 +123,49 @@ else
   DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
   DIR_LOG="${DIR_TARGET}/log"
 
+  readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
+
+  # create temporary folder if not existent
+  [[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
+
   mkdir -p "${DIR_LOG}"
 
   # if already computed, i.e. file .processed exists, only compute again if forced
   if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
-    if [[ ! -z ${PARAM_TASK} ]]; then
+    if [[ ! -z ${PARAM_TASK} ]]; then 
+      if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
+        echo "unknown task: ${PARAM_TASK}"
+        echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
+        exit 1
+      fi
+
+      CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
+      DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
+
+      setup "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+
       # possibility to comfortably run tasks separately
       case "${PARAM_TASK}" in
         td)
-          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/td.log
+          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log"
         ;;
         gd)
-          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/gd.log
+          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/gd.log"
         ;;
 
         cnv)
-          "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/cnv.log
+          "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
         ;;
 
         vc)
-          "${DIR_SCRIPT}"/make_vc.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/vc.log
+          "${DIR_SCRIPT}"/make_vc.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log"
         ;;
         report)
-          "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> ${DIR_LOG}/report.log
+          "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
         ;;
       esac
+
+      cleanup "${PARAM_DIR_PATIENT}"
     else
       echo "computing ${PARAM_DIR_PATIENT}"
 

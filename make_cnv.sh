@@ -14,6 +14,7 @@ function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
   echo "  -t  task            specify task"
+  echo "  -p                  computing as parallel process"
   echo "  -h                  show this help screen"
   exit 1
 }
@@ -22,6 +23,7 @@ while getopts d:t:h option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
   t) readonly PARAM_TASK=$OPTARG ;;
+  p) readonly PARALLEL_PROCESSES=2 ;;
   h) usage ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
@@ -55,14 +57,7 @@ else
 fi
 
 # check inputs
-readonly VALID_TASKS=("GD TD VC CNV Report")
 readonly VALID_SEXES=("XX XY")
-
-if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
-  echo "unknown task: ${PARAM_TASK}"
-  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
-  exit 1
-fi
 
 if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
   echo "unknown sex: ${CFG_SEX}"

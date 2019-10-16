@@ -1,7 +1,8 @@
 # TODO: comment this file
 common:
-  memory: 64g
-  cpucores: 12
+  dirTmp: /tmp
+  memory: 8g
+  cpucores: 4
   files:
     tumor: tumor_R
     germline: germline_R
@@ -29,5 +30,5 @@ reference:
   dbSNP: snp150hg19.vcf.gz
   mappability: out100m2_hg19.gem
   sequencing:
-    capture_regions: CaptureRegions.bed
-    capture_genes: Targets.txt
+    captureRegions: CaptureRegions.bed
+    captureGenes: Targets.txt

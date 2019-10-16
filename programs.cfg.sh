@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+ # temporary folder
+readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
+
 readonly CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${PARAM_DIR_PATIENT}")
 readonly CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${PARAM_DIR_PATIENT}")
 
@@ -28,9 +31,20 @@ readonly CFG_REFERENCE_CAPTUREGENES="${DIR_REF}/$(get_config_value reference.seq
 readonly CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "${PARAM_DIR_PATIENT}")"
 # END variables
 
+# if no parallel computation, set processes to 1
+if [[ -z ${PARALLEL_PROCESSES} ]]; then  
+  readonly TMP_PROCESSES=1
+else
+  readonly TMP_PROCESSES="{PARALLEL_PROCESSES}"
+fi
+
 # take cpucores/2
-readonly CFG_COMMON_CPUCORES=$(($(get_config_value common.cpucores "${PARAM_DIR_PATIENT}")/2))
-readonly CFG_COMMON_MEMORY=$(get_config_value common.memory "${PARAM_DIR_PATIENT}")
+readonly CFG_COMMON_CPUCORES=$(($(get_config_value common.cpucores "${PARAM_DIR_PATIENT}")/${TMP_PROCESSES}))
+
+readonly tmp_memory=$(get_config_value common.memory "${PARAM_DIR_PATIENT}")
+# take memory/2
+
+readonly CFG_COMMON_MEMORY="$(("${tmp_memory//[^0-9.]/}"/${TMP_PROCESSES}))${tmp_memory//[^a-zA-Z]/}"
 readonly CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${PARAM_DIR_PATIENT}")
 

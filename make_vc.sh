@@ -20,15 +20,17 @@ function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
   echo "  -t  task            specify task"
+  echo "  -p                  computing as parallel process"
   echo "  -h                  show this help screen"
   exit 1
 }
 
-while getopts d:t:h option; do
+while getopts d:t:ph option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
   t) readonly PARAM_TASK=$OPTARG ;;
   h) usage ;;
+  p) readonly PARALLEL_PROCESSES=2 ;;
   \?)
     echo "Unknown option: -$OPTARG" >&2
     exit 1
@@ -61,14 +63,7 @@ else
 fi
 
 # check inputs
-readonly VALID_TASKS=("GD TD VC CNV Report")
 readonly VALID_SEXES=("XX XY")
-
-if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
-  echo "unknown task: ${PARAM_TASK}"
-  echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
-  exit 1
-fi
 
 if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
   echo "unknown sex: ${CFG_SEX}"
@@ -84,7 +79,7 @@ fi
 
 ##################################################################################################################
 
-[[ -d "${DIR_ANA}" ]] || mkdir -p "${DIR_ANA}"
+[[ -d "${DIR_ANALYSIS}" ]] || mkdir -p "${DIR_ANALYSIS}"
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_GD
@@ -179,5 +174,3 @@ for name1 in ${names1}; do
   hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_L_snpeff}"
 done
-
-rm -r "${DIR_TMP:?}/*"
