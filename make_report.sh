@@ -79,10 +79,10 @@ fi
 cd "${DIR_ANALYSIS}" || exit 1
 
 # TODO: refactor R-Script to use different folders and also add DIR_REF (to link to Target file)
-${BIN_RSCRIPT} "${DIR_RSCRIPT}"/Main.R "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
-  "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}
+${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
+  "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "75"
 
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.Rdata'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw')"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.Rdata'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
 pdflatex -interaction=nonstopmode Report.tex
 pdflatex -interaction=nonstopmode Report.tex
