@@ -82,8 +82,8 @@ fi
 [[ -d "${DIR_ANALYSIS}" ]] || mkdir -p "${DIR_ANALYSIS}"
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
-readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_GD
-readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_TD
+readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_gd
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf

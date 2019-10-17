@@ -103,13 +103,13 @@ contaminationAdjustment = TRUE
 
 [sample]
 
-mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_TD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 inputFormat = BAM
 mateOrientation = FR
 
 [control]
 
-mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_GD_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_gd_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 inputFormat = BAM
 mateOrientation = FR
 
