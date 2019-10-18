@@ -11,11 +11,13 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
+readonly VALID_TASKS=("gd td")
+readonly VALID_SEXES=("XX XY")
 
 function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
-  echo "  -t  task            specify task"
+  echo "  -t  task            specify task: $(join_by ' ' ${VALID_TASKS})"
   echo "  -p                  computing as parallel process"
   echo "  -h                  show this help screen"
   exit 1
@@ -59,8 +61,6 @@ else
 fi
 
 # check inputs
-readonly VALID_TASKS=("gd td")
-readonly VALID_SEXES=("XX XY")
 
 if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
   echo "unknown task: ${PARAM_TASK}"
