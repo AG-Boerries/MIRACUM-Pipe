@@ -87,7 +87,7 @@ fi
 # SAMPLE
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
-if [[ ${PARAM_TASK} = GD ]]; then
+if [[ "${PARAM_TASK}" = "gd" ]]; then
   readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}1.fastq.gz"
   readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE}2.fastq.gz"
 else
