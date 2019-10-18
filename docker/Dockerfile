@@ -2,10 +2,9 @@ FROM debian:10
 
 ADD . /opt/MIRACUM-Pipe
 
-RUN cd /opt/MIRACUM-Pipe && git submodule update --init --recursive && cd /
-
 RUN apt-get update && apt-get upgrade -y && \
     /opt/MIRACUM-Pipe/debian/setup.sh && \
+    cd /opt/MIRACUM-Pipe && git submodule update --init --recursive && cd / && \
     Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R && \
     /opt/MIRACUM-Pipe/tools/install.sh
 
