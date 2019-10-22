@@ -11,7 +11,7 @@ readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 readonly DIR_WES="${DIR_TARGET}/WES"
 readonly DIR_ANALYSIS="${DIR_TARGET}/Analysis"
 readonly DIR_RSCRIPT="${DIR_SCRIPT}/RScripts"
-readonly DIR_DATABASE="${DIR_SCRIPT}/Databases"
+readonly DIR_DATABASE="${DIR_SCRIPT}/databases"
 
 # end paths
 
