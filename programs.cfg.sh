@@ -10,8 +10,6 @@ readonly CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${PARAM_DIR
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 readonly DIR_WES="${DIR_TARGET}/WES"
 readonly DIR_ANALYSIS="${DIR_TARGET}/Analysis"
-readonly DIR_RSCRIPT="${DIR_SCRIPT}/RScripts"
-readonly DIR_DATABASE="${DIR_SCRIPT}/databases"
 
 # end paths
 
@@ -130,8 +128,6 @@ export CFG_FILE_GERMLINE
 export DIR_TARGET
 export DIR_WES
 export DIR_ANALYSIS
-export DIR_RSCRIPT
-export DIR_DATABASE
 
 
 export FILE_GENOME
