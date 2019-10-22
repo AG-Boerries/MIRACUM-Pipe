@@ -24,6 +24,7 @@ readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.l
 ## SureSelect (Capture Kit)
 readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_REF}/$(get_config_value reference.sequencing.captureRegions "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_CAPTUREGENES="${DIR_REF}/$(get_config_value reference.sequencing.captureGenes "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.captureRegion)"
 
 
 # database for known variants
@@ -32,7 +33,7 @@ readonly CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "$
 # END variables
 
 # if no parallel computation, set processes to 1
-if [[ -z ${PARALLEL_PROCESSES} ]]; then  
+if [[ -z ${PARALLEL_PROCESSES} ]]; then
   readonly TMP_PROCESSES=1
 else
   readonly TMP_PROCESSES="{PARALLEL_PROCESSES}"
@@ -137,6 +138,7 @@ export FILE_GENOME
 export CFG_REFERENCE_LENGTH
 
 export CFG_REFERENCE_CAPTUREREGIONS
+export CFG_REFERENCE_COVEREDREGION
 
 export CFG_REFERENCE_DBSNP
 

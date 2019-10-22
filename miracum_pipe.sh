@@ -132,9 +132,9 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
       else
         run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
       fi
-
+# TODO change Report name to ${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_${DATE}.pdf
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
       else
         echo "${DIR_PATIENT} failed"
@@ -156,7 +156,7 @@ else
 
   # if already computed, i.e. file .processed exists, only compute again if forced
   if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
-    if [[ ! -z ${PARAM_TASK} ]]; then 
+    if [[ ! -z ${PARAM_TASK} ]]; then
       if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
         echo "unknown task: ${PARAM_TASK}"
         echo "use one of the following values: $(join_by ' ' ${VALID_TASKS})"
@@ -203,7 +203,7 @@ else
       fi
 
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
       else
         echo "${PARAM_DIR_PATIENT} failed"
