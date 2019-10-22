@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-###########################################
-## WES Pipeline for somatic and germline ##
-###########################################
-# script to run the actual analysis
-# Version 31.07.2019
-
 readonly DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
@@ -19,7 +13,6 @@ readonly DIR_SCRIPT=$(
 function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
-  echo "  -t  task            specify task"
   echo "  -p                  computing as parallel process"
   echo "  -h                  show this help screen"
   exit 1
@@ -28,7 +21,6 @@ function usage() {
 while getopts d:t:ph option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
-  t) readonly PARAM_TASK=$OPTARG ;;
   h) usage ;;
   p) readonly PARALLEL_PROCESSES=2 ;;
   \?)

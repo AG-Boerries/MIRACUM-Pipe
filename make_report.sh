@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-###########################################
-## WES Pipeline for somatic and germline ##
-###########################################
-# script to run the actual analysis
-
 readonly DIR_SCRIPT=$(
   cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
   pwd -P
@@ -18,7 +13,6 @@ readonly DIR_SCRIPT=$(
 function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
-  echo "  -t  task            specify task"
   echo "  -h                  show this help screen"
   exit 1
 }

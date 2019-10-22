@@ -13,13 +13,12 @@ readonly DIR_SCRIPT=$(
 function usage() {
   echo "usage: miracum_pipe.sh -d dir [-h]"
   echo "  -d  dir             specify relative folder of patient"
-  echo "  -t  task            specify task"
   echo "  -p                  computing as parallel process"
   echo "  -h                  show this help screen"
   exit 1
 }
 
-while getopts d:t:h option; do
+while getopts d:t:ph option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
   t) readonly PARAM_TASK=$OPTARG ;;
