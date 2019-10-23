@@ -40,8 +40,6 @@ path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
 
-date <- Sys.Date()
-
 # setwd(path)
 
 #############
@@ -76,7 +74,7 @@ if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
   snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
   indel_file_gd <- paste0(path_input, sample, "_vc.output.indel.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
-  filter_out_gd <- paste0(sample, "_VC_Germline_NORMAL_", date, ".xlsx")
+  filter_out_gd <- paste0(sample, "_VC_Germline_NORMAL.xlsx")
   snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
   snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
 }
@@ -86,21 +84,21 @@ indel_file_td <- paste0(path_input, sample, "_vc.output.indel.Somatic.hc.TUMOR.a
 snpefffile_snp <- paste0(path_input, sample, "_vc.output.snp.Somatic.SnpEff.vcf")
 snpefffile_indel <- paste0(path_input, sample,
                           "_vc.output.indel.Somatic.SnpEff.vcf")
-filter_out_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR_", date, ".xlsx")
+filter_out_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.xlsx")
 # LOH
 snp_file_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.hc.avinput.hg19_multianno.csv")
 indel_file_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.hc.avinput.hg19_multianno.csv")
-loh_out <- paste0(path_output, sample, "_VC_LOH_", date, ".xlsx")
+loh_out <- paste0(path_output, sample, "_VC_LOH.xlsx")
 snpefffile_snp_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.SnpEff.vcf")
 snpefffile_indel_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.SnpEff.vcf")
 # Results
-outfile_circos <- paste0(path_output, sample, "_TD_circos_", date, ".pdf")
-outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO_", date, ".xlsx")
-outfile_reactome <- paste0(path_output, sample, "_TD_hyperGTest_Reactome_", date, ".xlsx")
-outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus_", date, ".xlsx")
-outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks_", date, ".xlsx")
-outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets_", date, ".xlsx")
-coverage_out <- paste0(path_output, sample, "_coverage_", date, ".pdf")
+outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
+outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
+outfile_reactome <- paste0(path_output, sample, "_TD_hyperGTest_Reactome.xlsx")
+outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus.xlsx")
+outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx")
+outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
+coverage_out <- paste0(path_output, sample, "_coverage.pdf")
 
 if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
@@ -159,14 +157,14 @@ cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.
 # Results
 cnv_pvalue_txt <- paste(path_output, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs",
                       ".p.value.txt", sep = "")
-cnv_plot <- paste0(path_output, sample, "_CNV_Plot_", date, ".pdf")
-cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram_",date,".pdf")
-cnv_annot_out <- paste0(path_output, sample, "_CNV_", date, ".xlsx")
-outfile_onco <- paste0(path_output, sample, "_CNV_Oncogene_", date, ".xlsx")
-outfile_ts <- paste0(path_output, sample, "_CNV_TumorSuppressors_", date, ".xlsx")
-outfile_loss <- paste0(path_output, sample, "_CNV_loss_GO_", date, ".xlsx")
-outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO_", date, ".xlsx")
-outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage_", date , ".xlsx")
+cnv_plot <- paste0(path_output, sample, "_CNV_Plot.pdf")
+cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
+cnv_annot_out <- paste0(path_output, sample, "_CNV.xlsx")
+outfile_onco <- paste0(path_output, sample, "_CNV_Oncogene.xlsx")
+outfile_ts <- paste0(path_output, sample, "_CNV_TumorSuppressors.xlsx")
+outfile_loss <- paste0(path_output, sample, "_CNV_loss_GO.xlsx")
+outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
+outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
 
 cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file
                                      = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
