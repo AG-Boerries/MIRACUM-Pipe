@@ -34,7 +34,7 @@ readonly CFG_REFERENCE_DBSNP="${DIR_DBSNP}/$(get_config_value reference.dbSNP "$
 if [[ -z ${PARALLEL_PROCESSES} ]]; then
   readonly TMP_PROCESSES=1
 else
-  readonly TMP_PROCESSES="{PARALLEL_PROCESSES}"
+  readonly TMP_PROCESSES="${PARALLEL_PROCESSES}"
 fi
 
 # take cpucores/2
