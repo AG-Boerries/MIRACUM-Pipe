@@ -132,7 +132,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
       else
         run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
       fi
-# TODO change Report name to ${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_${DATE}.pdf
+      
       # check if report was generated successfully
       if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
