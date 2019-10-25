@@ -18,10 +18,9 @@ function usage() {
   exit 1
 }
 
-while getopts d:t:ph option; do
+while getopts d:ph option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
-  t) readonly PARAM_TASK=$OPTARG ;;
   p) readonly PARALLEL_PROCESSES=2 ;;
   h) usage ;;
   \?)

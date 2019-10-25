@@ -73,7 +73,7 @@ fi
 
 [[ -d "${DIR_ANALYSIS}" ]] || mkdir -p "${DIR_ANALYSIS}"
 
-readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
+readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_gd
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
@@ -109,11 +109,13 @@ for name1 in ${names1}; do
     hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
     hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
     hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
-    if [[ "${name2}" = Somatic ]]; then
+    
+    if [[ "${name2}" = "Somatic" ]]; then
       recalbam=${recalbamTD}
     else
       recalbam=${recalbamGD}
     fi
+    
     ${CONVERT2ANNOVAR2} "${hc_avi}" "${hc_vcf}"
     ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
     ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
