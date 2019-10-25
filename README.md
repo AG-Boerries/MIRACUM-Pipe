@@ -3,8 +3,11 @@ MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs),
 
 ## Getting Started
 
+This repo is intended to be run as docker (see [MIRACUM-Pipe-docker]()). Alternatively, you can pick a [Galaxy version]().
+
+In some cases Docker or Galaxy might be inapropriate. Therefore, one can install this software on a [Debian 10](https://www.debian.org/) system.
+
 ### Prerequisites
-This piece of software is intended to run in a Docker environment. In some cases Docker might be inapropriate. Therefore, one can install this software on a [Debian 10](https://www.debian.org/) system.
 We offer installation scripts. In order to setup up the main components execute the following scripts.
 
 ```bash
@@ -18,8 +21,8 @@ Rsctipt RScripts/install_packages.R
 ./tools/install.sh
 ```
 
-Further one needs to install some components manually.
-
+Further one needs to install some components manually. See [MIRACUM-Pipe-docker]() for more information.
+You can also simply apply the [setup.sh]() file for this repo. Just download it into the root of your clone of this project.
 
 
 Additional Files
@@ -42,15 +45,12 @@ Additional Files
 
 If available, the used versions are noted.
 
-### Additional Files
-
-
 ## Running MIRACUM-Pipe
-
+Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum-pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker]().
 
 
 ### Adding new databases respectively update current databases
-For the databases contained in ANNOVAR updating or installing new databases is very simple following the descriptions on the homepage of ANNOVAR. If the additional database is installed it has to be added in line 117 and 118 in the **make\_alignment\_VC\_CNV.sh** script. Adding a database currently not supported by ANNOVAR is also possible but one has to add a few lines and the actual database to the corresponding part in the **filtering.R** script. See the documentation of the R scripts.
+For the databases contained in ANNOVAR updating or installing new databases is very simple following the descriptions on the homepage of ANNOVAR. If the additional database is installed it has to be added in the yaml configuration file. Adding a database currently not supported by ANNOVAR is also possible but one has to add a few lines and the actual database to the corresponding part in the **filtering.R** script. See the documentation of the R scripts.
 
 ### Information about the included R-scripts
 All neccessary informations about the included R-scripts can be found with the *?functionName* function in R.
