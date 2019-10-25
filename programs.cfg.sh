@@ -44,8 +44,8 @@ readonly tmp_memory=$(get_config_value common.memory "${PARAM_DIR_PATIENT}")
 # take memory/2
 
 readonly CFG_COMMON_MEMORY="$(("${tmp_memory//[^0-9.]/}"/${TMP_PROCESSES}))${tmp_memory//[^a-zA-Z]/}"
-readonly CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MINBASEQUAL=$(get_config_value tools.general.minBaseQual "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MINVAF=$(get_config_value tools.varscan.minVAF "${PARAM_DIR_PATIENT}")
 
 # VarScan somatic
 readonly CFG_VARSCAN_SOMATIC_MINCOVERAGE=$(get_config_value tools.varscan.somatic.minCoverage "${PARAM_DIR_PATIENT}")
