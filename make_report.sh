@@ -75,8 +75,17 @@ cd "${DIR_ANALYSIS}" || exit 1
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE}" "${CFG_FILE_TUMOR}" \
   "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}"
 
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.Rdata'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
 mv "${DIR_ANALYSIS}/Report.tex" "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
-pdflatex -interaction=nonstopmode "${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
-pdflatex -interaction=nonstopmode "${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
+
+pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+  --output-directory="${DIR_ANALYSIS}"
+pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+  --output-directory="${DIR_ANALYSIS}"
+
+# remove aux files which are created while pdflatex
+rm -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
+      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \
+      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.log" \
+      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.out"
