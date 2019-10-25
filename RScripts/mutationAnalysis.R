@@ -57,7 +57,6 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   #' @details including a table for cancer genes. A functional pathway analysis
   #' @details performed to get an overview of the mutation's impact.
   require(org.Hs.eg.db)
-  require(GOstats)
   require(openxlsx)
   require(Homo.sapiens)
   require(stringr)

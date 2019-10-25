@@ -19,7 +19,6 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("OmicCircos")
 BiocManager::install("rtracklayer")
 BiocManager::install("org.Hs.eg.db")
-BiocManager::install("GOstats")
 BiocManager::install("Homo.sapiens")
 
 BiocManager::install("biomaRt")

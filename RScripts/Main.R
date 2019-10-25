@@ -9,7 +9,6 @@ library(doMC)
 library(rtracklayer)
 library(openxlsx)
 library(org.Hs.eg.db)
-library(GOstats)
 library(Homo.sapiens)
 library(biomaRt)
 library(RColorBrewer)
@@ -39,8 +38,7 @@ path_script <- args[11]
 path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
-
-# setwd(path)
+author <- args[15]
 
 #############
 # Functions #

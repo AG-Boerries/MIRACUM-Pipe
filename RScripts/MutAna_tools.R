@@ -200,14 +200,14 @@ tables <- function(x_s, x_l = NULL){
                        "Zygosity", "Variant_Reads", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
+                       "CLINSIG.SnpEff", "cosmic_coding"), drop = FALSE]
 
   sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                      "AAChange.SnpEff", "Variant_Allele_Frequency", "Zygosity",
                      "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
                      "is_hotspot", "target", "gnomAD_exome_NFE",
                      "CADD_phred", "condel.label", "CLINSIG.SnpEff",
-                     "cosmic86_coding"), drop = FALSE]
+                     "cosmic_coding"), drop = FALSE]
 
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
@@ -215,7 +215,7 @@ tables <- function(x_s, x_l = NULL){
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic86_coding"), drop = FALSE]
+                       "CLINSIG.SnpEff", "cosmic_coding"), drop = FALSE]
 
   }else{
     lm_table <- data.frame()
@@ -450,14 +450,14 @@ write_all_mut <- function(x_s, x_l = NULL){
                   "AAChange.SnpEff", "is_tumorsuppressor",
                   "is_oncogene", "is_hotspot", "target", "gnomAD_exome_NFE",
                   "CADD_phred", "condel.label", "CLINSIG.SnpEff",
-                  "cosmic86_coding"),
+                  "cosmic_coding"),
               drop = FALSE]
   if (!is.null(x_l)){
     tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                     "VAF_Tumor", "Count_Tumor", "AAChange.SnpEff",
                     "is_tumorsuppressor", "is_oncogene",
                     "is_hotspot", "target", "gnomAD_exome_NFE", "CADD_phred",
-                    "condel.label", "CLINSIG.SnpEff", "cosmic86_coding"),
+                    "condel.label", "CLINSIG.SnpEff", "cosmic_coding"),
                 drop = FALSE]
     }
   col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",

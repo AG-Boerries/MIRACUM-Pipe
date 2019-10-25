@@ -128,7 +128,7 @@ ${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
 ${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
 
 # make bam
-${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t 12 "${FILE_GENOME}" \
+${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
 "${fastq_o1_p_t}" "${fastq_o2_p_t}" | ${BIN_SAMVIEW} -bS - >"${bam}"
 
 # stats

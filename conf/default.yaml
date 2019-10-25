@@ -1,5 +1,6 @@
 # TODO: comment this file
 common:
+  author: Author
   dirTmp: /tmp
   memory: 8g
   cpucores: 4
@@ -20,39 +21,51 @@ tools:
 
   samtools:
     mpileup:
-      # TODO ALL Parameters
+      # TODO add parameters to programm call
       #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
+      illumina: FALSE
       #-A, --count-orphans     do not discard anomalous read pairs
+      countOrphans: FALSE
       #-b, --bam-list FILE     list of input BAM filenames, one per line
       #-B, --no-BAQ            disable BAQ (per-Base Alignment Quality)
+      noBAQ: TRUE
       #-C, --adjust-MQ INT     adjust mapping quality; recommended:50, disable:0 [0]
+      adjustMQ: 50
       #-d, --max-depth INT     max per-file depth; avoids excessive memory usage [8000]
+      maxDepth: 8000
       #-E, --redo-BAQ          recalculate BAQ on the fly, ignore existing BQs
+      redoBAQ: FALSE
       #-f, --fasta-ref FILE    faidx indexed reference sequence file
       #-G, --exclude-RG FILE   exclude read groups listed in FILE
+      excludeRG: FALSE
       #-l, --positions FILE    skip unlisted positions (chr pos) or regions (BED)
+      position: FALSE
       #-q, --min-MQ INT        skip alignments with mapQ smaller than INT [0]
+      minMQ: 1
       #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> minBaseQual
       #-r, --region REG        region in which pileup is generated
+      region: FALSE
       #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
+      ignoreRG: FALSE
       #--rf, --incl-flags STR|INT  required flags: skip reads with mask bits unset []
+      inclFlags: FALSE
       #--ff, --excl-flags STR|INT  filter flags: skip reads with mask bits set [UNMAP,SECONDARY,QCFAIL,DUP]
+      exclFlags: FALSE
       #-x, --ignore-overlaps   disable read-pair overlap detection
+      ignoreOverlaps: FALSE
 
   varscan:
-  # minimum variant allele frequency to call a variant
+  # minimum variant allele / tumor frequency to call a variant
     minVAF: 0.10
     somatic:
-      # minimum coverage in normal and tumor to call a variant
+      #--min-coverage - Minimum coverage in normal and tumor to call variant [8] -> minCoverage
       minCoverage: 8
       # estimated purity (tumor content) of tumor sample
       tumorPurity: 0.5
       # minimal frequency to call homozygote
       minFreqForHom: 0.75
-      # TODO ALL Parameters
       #--output-snp - Output file for SNP calls [output.snp]
       #--output-indel - Output file for indel calls [output.indel]
-      #--min-coverage - Minimum coverage in normal and tumor to call variant [8] -> minCoverage
       #--min-coverage-normal - Minimum coverage in normal to call somatic [8]
       minCoverageNormal: 8
       #--min-coverage-tumor - Minimum coverage in tumor to call somatic [6]
@@ -71,21 +84,19 @@ tools:
       #--validation - If set to 1, outputs all compared positions even if non-variant
       validation: 0
       #--output-vcf - If set to 1, output VCF instead of VarScan native format
+      #outputVCF: 1
 
     processSomatic:
-      # TODO ALL Parameters
-      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10]
-      minTumorFreq: 0.10
+      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> minVAF
+      #minTumorFreq: 0.10
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]
       maxNormalFreq: 0.05
       #--p-value - P-value for high-confidence calling [0.07]
       pValue: 0.07
 
     fpfilter:
-      # minimum number of variant supporting reads
+      #--min-var-count		Minimum number of variant-supporting reads [4]
       minVarCount: 4
-      # TODO ALL Parameters
-      #--min-var-count		Minimum number of variant-supporting reads [4] -> minVarCount
       #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
       minVarCountLc: 2
       #--min-var-freq		Minimum variant allele frequency [0.05] -> minVAF
@@ -106,19 +117,19 @@ tools:
       #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
       minStrandReads: 5
       #--min-ref-basequal	Minimum average base quality for ref allele [15] -> minBaseQual
-      minRefBasequal: 15
+      #minRefBasequal: 15
       #--min-var-basequal	Minimum average base quality for var allele [15] -> minBaseQual
-      minVarBasequal: 15
+      #minVarBasequal: 15
       #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
       maxBasequalDiff: 50
       #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
-      minRefAvgrl: 90
+      minRefAVGRL: 90
       #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
-      minVarAvgrl: 90
+      minVarAVGRL: 90
       #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
       maxRlDiff: 0.25
       #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
-      macRefMMQS: 100
+      maxRefMMQS: 100
       #--max-var-mmqs		Maximum mismatch quality sum of variant-supporting reads [100]
       maxVarMMQS: 100
       #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
@@ -126,15 +137,15 @@ tools:
       #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
       maxMMQSDiff: 50
       #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
-      minRefMapqual: 15
+      minRefMapqQal: 15
       #--min-var-mapqual	Minimum average mapping quality for var allele [15]
-      minVarMapqual: 15
+      minVarMapQual: 15
       #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
-      maxMapqualDiff: 50
+      maxMapQualDiff: 50
 
   annovar:
     # define annotation databases, together with their type, used. The databases have to be installed with annovar
-    protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic86_coding,cosmic86_noncoding'
+    protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
     argop: 'g,f,f,f,f,f,f,f,f,f,f'
 
   ControlFREEC:

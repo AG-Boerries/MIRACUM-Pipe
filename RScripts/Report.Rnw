@@ -46,7 +46,7 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 
 \title{\Sexpr{sample} - Report}
 
-\author{Autor}
+\author{\Sexpr{author}}
 
 \maketitle
 \tableofcontents
