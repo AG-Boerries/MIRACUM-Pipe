@@ -48,16 +48,16 @@ readonly CFG_VARSCAN_MINBASEQUAL=$(get_config_value varscan.minBaseQual "${PARAM
 readonly CFG_VARSCAN_MINVAF=$(get_config_value varscan.minVAF "${PARAM_DIR_PATIENT}")
 
 # VarScan somatic
-readonly CFG_VARSCAN_SOMATIC_MINCOVERAGE=$(get_config_value varscan.somatic.minCoverage "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_SOMATIC_TUMORPURITY=$(get_config_value varscan.somatic.tumorPurity "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_SOMATIC_MINFREQFORHOM=$(get_config_value varscan.somatic.minFreqForHom "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_SOMATIC_MINCOVERAGE=$(get_config_value tools.varscan.somatic.minCoverage "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_SOMATIC_TUMORPURITY=$(get_config_value tools.varscan.somatic.tumorPurity "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_SOMATIC_MINFREQFORHOM=$(get_config_value tools.varscan.somatic.minFreqForHom "${PARAM_DIR_PATIENT}")
 
 # VarScan fpfilter
-readonly CFG_VARSCAN_FPLFILTER_MINVARCOUNT=$(get_config_value varscan.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPLFILTER_MINVARCOUNT=$(get_config_value tools.varscan.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
-readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value annovar.protocol "${PARAM_DIR_PATIENT}")
-readonly CFG_ANNOVAR_ARGOP=$(get_config_value annovar.argop "${PARAM_DIR_PATIENT}")
+readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value tools.annovar.protocol "${PARAM_DIR_PATIENT}")
+readonly CFG_ANNOVAR_ARGOP=$(get_config_value tools.annovar.argop "${PARAM_DIR_PATIENT}")
 
 ## Tools and paths
 # Paths
