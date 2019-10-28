@@ -120,12 +120,14 @@ done
 # run script
 if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
   for dir in "${DIR_SCRIPT}"/assets/input/*; do
-    if [[ ! -f "${PARAM_DIR_PATIENT}"/.processed || ${PARAM_FORCE} ]]; then
+    # estimate output dir
+    CFG_CASE=$(get_case ${DIR_PATIENT})
+    DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
+    DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+
+    if [[ ! -f "${DIR_TARGET}"/.processed || ${PARAM_FORCE} ]]; then
       DIR_PATIENT=${dir##*/}
       echo "computing ${DIR_PATIENT}"
-
-      CFG_CASE=$(get_case ${DIR_PATIENT})
-      DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
 
       if [[ -z "${PARAM_SEQ}" ]]; then
         run_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
@@ -134,8 +136,9 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
       fi
       
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
+        echo "${DIR_PATIENT} finished"
       else
         echo "${DIR_PATIENT} failed"
       fi
@@ -151,11 +154,15 @@ else
 
   # create temporary folder if not existent
   [[ -d "${DIR_TMP}" ]] || mkdir -p "${DIR_TMP}"
-
-  mkdir -p "${DIR_LOG}"
-
+  [[ -d "${DIR_LOG}" ]] || mkdir -p "${DIR_LOG}"
+  
+  # estimate output dir
+  CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
+  DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
+  DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+  
   # if already computed, i.e. file .processed exists, only compute again if forced
-  if [[ ! -f "${PARAM_DIR_PATIENT}/.processed" || "${PARAM_FORCE}" ]]; then
+  if [[ ! -f "${DIR_TARGET}/.processed" || "${PARAM_FORCE}" ]]; then
     if [[ ! -z ${PARAM_TASK} ]]; then
       if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
         echo "unknown task: ${PARAM_TASK}"
@@ -163,9 +170,7 @@ else
         exit 1
       fi
 
-      CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
-      DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
-
+      # setup processing
       setup "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
 
       # possibility to comfortably run tasks separately
@@ -193,9 +198,6 @@ else
     else
       echo "computing ${PARAM_DIR_PATIENT}"
 
-      CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
-      DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
-
       if [[ -z "${PARAM_SEQ}" ]]; then
         run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
       else
@@ -205,6 +207,7 @@ else
       # check if report was generated successfully
       if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
+        echo "${PARAM_DIR_PATIENT} finished"
       else
         echo "${PARAM_DIR_PATIENT} failed"
       fi
