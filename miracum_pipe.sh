@@ -120,13 +120,15 @@ done
 # run script
 if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
   for dir in "${DIR_SCRIPT}"/assets/input/*; do
+    # get relative dir patient
+    DIR_PATIENT=${dir##*/}
+  
     # estimate output dir
     CFG_CASE=$(get_case ${DIR_PATIENT})
     DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
     DIR_ANALYSIS="${DIR_TARGET}/Analysis"
 
-    if [[ ! -f "${DIR_TARGET}"/.processed || ${PARAM_FORCE} ]]; then
-      DIR_PATIENT=${dir##*/}
+    if [[ ! -f "${DIR_TARGET}/.processed" || "${PARAM_FORCE}" ]]; then
       echo "computing ${DIR_PATIENT}"
 
       if [[ -z "${PARAM_SEQ}" ]]; then
