@@ -128,7 +128,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
     DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
     DIR_ANALYSIS="${DIR_TARGET}/Analysis"
 
-    if [[ ! -f "${DIR_TARGET}/.processed" || "${PARAM_FORCE}" ]]; then
+    if [[ ! -f "${DIR_TARGET}/.processed" || -z "${PARAM_FORCE}" ]]; then
       echo "computing ${DIR_PATIENT}"
 
       if [[ -z "${PARAM_SEQ}" ]]; then
@@ -164,7 +164,7 @@ else
   DIR_ANALYSIS="${DIR_TARGET}/Analysis"
   
   # if already computed, i.e. file .processed exists, only compute again if forced
-  if [[ ! -f "${DIR_TARGET}/.processed" || "${PARAM_FORCE}" ]]; then
+  if [[ ! -f "${DIR_TARGET}/.processed" || -z "${PARAM_FORCE}" ]]; then
     if [[ ! -z ${PARAM_TASK} ]]; then
       if [[ ! " ${VALID_TASKS[@]} " =~ " ${PARAM_TASK} " ]]; then
         echo "unknown task: ${PARAM_TASK}"
