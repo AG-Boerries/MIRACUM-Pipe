@@ -165,7 +165,7 @@ readonly TABLEANNOVAR="${DIR_ANNOVAR}/table_annovar.pl"
 readonly BIN_COVERAGE="${DIR_TOOLS}/bedtools2/bin/bedtools coverage -hist -g ${FILE_GENOME}.fai -sorted "
 
 # SNPEFF
-readonly BIN_SNPEFF="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/snpEff/snpEff.jar GRCh37.75 -c ${DIR_TOOLS}/snpEff/snpEff.config -canon -v"
+readonly BIN_SNPEFF="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/snpEff/snpEff.jar GRCh37.75 -c ${DIR_TOOLS}/snpEff/snpEff.config -canon -v -noLog -noStats"
 
 # FREEC
 readonly BIN_FREEC="${DIR_TOOLS}/FREEC/bin/freec "
