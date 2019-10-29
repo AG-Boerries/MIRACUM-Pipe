@@ -83,8 +83,6 @@ tools:
       strandFilter: 0
       #--validation - If set to 1, outputs all compared positions even if non-variant
       validation: 0
-      #--output-vcf - If set to 1, output VCF instead of VarScan native format
-      #outputVCF: 1
 
     processSomatic:
       #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> minVAF
@@ -116,10 +114,11 @@ tools:
       minStrandedness: 0.01
       #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
       minStrandReads: 5
-      #--min-ref-basequal	Minimum average base quality for ref allele [15] -> minBaseQual
-      #minRefBasequal: 15
-      #--min-var-basequal	Minimum average base quality for var allele [15] -> minBaseQual
-      #minVarBasequal: 15
+      
+      #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
+
+      #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
+
       #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
       maxBasequalDiff: 50
       #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
