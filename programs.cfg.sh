@@ -53,19 +53,30 @@ readonly CFG_GENERAL_MINBASEQUAL=$(get_config_value tools.general.minBaseQual "$
 # sametools mpileup
 readonly CFG_SAMTOOLS_MPILEUP_MINMQ=$(get_config_value tools.samtools.mpileup.minMQ "${PARAM_DIR_PATIENT}")
 readonly CFG_SAMTOOLS_MPILEUP_ADJUSTMQ=$(get_config_value tools.samtools.mpileup.adjustMQ "${PARAM_DIR_PATIENT}")
-# TODO
-#readonly CFG_SAMTOOLS_MPILEUP_ILLUMINA=$(get_config_value tools.samtools.mpileup.illumina "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_COUNTORPHANS=$(get_config_value tools.samtools.mpileup.countOrphans "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_NOBAQ=$(get_config_value tools.samtools.mpileup.noBAQ "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_MAXDEPTH=$(get_config_value tools.samtools.mpileup.maxDepth "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_REDOBAQ=$(get_config_value tools.samtools.mpileup.redoBAQ "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_EXCLUDERG=$(get_config_value tools.samtools.mpileup.excludeRG "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_POSITION=$(get_config_value tools.samtools.mpileup.position "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_REGION=$(get_config_value tools.samtools.mpileup.region "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_IGNORERG=$(get_config_value tools.samtools.mpileup.ignoreRG "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_INCLFLAGS=$(get_config_value tools.samtools.mpileup.inclFlags "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_EXCLFLAGS=$(get_config_value tools.samtools.mpileup.exclFlags "${PARAM_DIR_PATIENT}")
-#readonly CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS=$(get_config_value tools.samtools.mpileup.ignoreFlags "${PARAM_DIR_PATIENT}")
+
+# mpileup flags
+readonly CFG_SAMTOOLS_MPILEUP_ILLUMINA=$(get_config_value tools.samtools.mpileup.illumina "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_COUNTORPHANS=$(get_config_value tools.samtools.mpileup.countOrphans "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_NOBAQ=$(get_config_value tools.samtools.mpileup.noBAQ "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_REDOBAQ=$(get_config_value tools.samtools.mpileup.redoBAQ "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_EXCLUDERG=$(get_config_value tools.samtools.mpileup.excludeRG "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_POSITION=$(get_config_value tools.samtools.mpileup.position "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_REGION=$(get_config_value tools.samtools.mpileup.region "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_IGNORERG=$(get_config_value tools.samtools.mpileup.ignoreRG "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_INCLFLAGS=$(get_config_value tools.samtools.mpileup.inclFlags "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_EXCLFLAGS=$(get_config_value tools.samtools.mpileup.exclFlags "${PARAM_DIR_PATIENT}")
+readonly CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS=$(get_config_value tools.samtools.mpileup.ignoreFlags "${PARAM_DIR_PATIENT}")
+
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_ILLUMINA}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -6"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_COUNTORPHANS}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -A"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_NOBAQ}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -B"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REDOBAQ}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -E"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_EXCLUDERG}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -G"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_POSITION}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -l"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REGION}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -r"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNORERG}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -R"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS}"="True" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -x"
+
 
 # global Varscan parameters
 readonly CFG_VARSCAN_MINVAF=$(get_config_value tools.varscan.minVAF "${PARAM_DIR_PATIENT}")
@@ -135,7 +146,7 @@ readonly BIN_SAMVIEW="${BIN_SAMTOOLS} view -@ ${CFG_COMMON_CPUCORES} "
 readonly BIN_SAMSORT="${BIN_SAMTOOLS} sort -@ ${CFG_COMMON_CPUCORES} "
 readonly BIN_SAMRMDUP="${BIN_SAMTOOLS} rmdup "
 readonly BIN_SAMINDEX="${BIN_SAMTOOLS} index "
-readonly BIN_MPILEUP="${BIN_SAMTOOLS} mpileup -B --adjust-MQ ${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ} -f ${FILE_GENOME} --min-MQ ${CFG_SAMTOOLS_MPILEUP_MINMQ} --min-BQ ${CFG_GENERAL_MINBASEQUAL}"
+readonly BIN_MPILEUP="${BIN_SAMTOOLS} mpileup ${FLAGS_MPILEUP} --adjust-MQ ${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ} -f ${FILE_GENOME} --min-MQ ${CFG_SAMTOOLS_MPILEUP_MINMQ} --min-BQ ${CFG_GENERAL_MINBASEQUAL}"
 readonly BIN_STATS="${BIN_SAMTOOLS} stats "
 
 # GATK
@@ -198,19 +209,6 @@ export CFG_COMMON_MEMORY
 
 export CFG_SAMTOOLS_MPILEUP_MINMQ
 export CFG_SAMTOOLS_MPILEUP_ADJUSTMQ
-# TODO
-#export CFG_SAMTOOLS_MPILEUP_ILLUMINA
-#export CFG_SAMTOOLS_MPILEUP_COUNTORPHANS
-#export CFG_SAMTOOLS_MPILEUP_NOBAQ
-#export CFG_SAMTOOLS_MPILEUP_MAXDEPTH
-#export CFG_SAMTOOLS_MPILEUP_REDOBAQ
-#export CFG_SAMTOOLS_MPILEUP_EXCLUDERG
-#export CFG_SAMTOOLS_MPILEUP_POSITION
-#export CFG_SAMTOOLS_MPILEUP_REGION
-#export CFG_SAMTOOLS_MPILEUP_IGNORERG
-#export CFG_SAMTOOLS_MPILEUP_INCLFLAGS
-#export CFG_SAMTOOLS_MPILEUP_EXCLFLAGS
-#export CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS
 
 export CFG_GENERAL_MINBASEQUAL
 

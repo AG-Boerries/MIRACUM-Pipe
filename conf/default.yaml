@@ -26,7 +26,6 @@ tools:
       illumina: FALSE
       #-A, --count-orphans     do not discard anomalous read pairs
       countOrphans: FALSE
-      #-b, --bam-list FILE     list of input BAM filenames, one per line
       #-B, --no-BAQ            disable BAQ (per-Base Alignment Quality)
       noBAQ: TRUE
       #-C, --adjust-MQ INT     adjust mapping quality; recommended:50, disable:0 [0]
@@ -35,7 +34,6 @@ tools:
       maxDepth: 8000
       #-E, --redo-BAQ          recalculate BAQ on the fly, ignore existing BQs
       redoBAQ: FALSE
-      #-f, --fasta-ref FILE    faidx indexed reference sequence file
       #-G, --exclude-RG FILE   exclude read groups listed in FILE
       excludeRG: FALSE
       #-l, --positions FILE    skip unlisted positions (chr pos) or regions (BED)
@@ -47,10 +45,6 @@ tools:
       region: FALSE
       #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
       ignoreRG: FALSE
-      #--rf, --incl-flags STR|INT  required flags: skip reads with mask bits unset []
-      inclFlags: FALSE
-      #--ff, --excl-flags STR|INT  filter flags: skip reads with mask bits set [UNMAP,SECONDARY,QCFAIL,DUP]
-      exclFlags: FALSE
       #-x, --ignore-overlaps   disable read-pair overlap detection
       ignoreOverlaps: FALSE
 
