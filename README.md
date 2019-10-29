@@ -24,27 +24,6 @@ Rsctipt RScripts/install_packages.R
 Further one needs to install some components manually. See [MIRACUM-Pipe-docker]() for more information.
 You can also simply apply the [setup.sh]() file for this repo. Just download it into the root of your clone of this project.
 
-
-Additional Files
-	* CaptureRegions, e.g. Agilent SureSelect V5UTR according to the used CaptureKit
-	* dbSNP vcf file corresbonding to the one used from ANNOVAR, e.g. snp150hg19.vcf.gz
-	* FLAG genes (included, flag_genes.txt) (Shyr et al., 2014)
-	* CancerGenes from OncoKB (needed)
-	* Cancer hotspots from cancerhotspots.org (needed)
-	* RVIS score (included, RVIS_score.txt) (Petrovski S. et al., 2013)
-	* TARGET db (included, TARGET_db.txt) (https://software.broadinstitute.org/cancer/cga/target)
-	* DGIdb from www.dgidb.org (needed)
-	* Actionable alterations from OncoKB (needed)
-	* Condel score from FannsDB (needed)
-	* captured genes according to the used CaptureKit (Targets.txt supplied for Agilent SureSelect)
-	* Cancer associated pathways (included, MTB_GeneSets.RData)
-	* Consensus Pathways (included, Consensus.RData)
-	* Reactome Pathways (included, Reactome.RData)
-	* GO Pathways (included, GOGeneSets.RData)
-	* HallmarksOfCancer (needed)
-
-If available, the used versions are noted.
-
 ## Running MIRACUM-Pipe
 Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum-pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker]().
 
