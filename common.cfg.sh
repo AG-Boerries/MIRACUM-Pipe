@@ -48,6 +48,7 @@ readonly DIR_INPUT="${DIR_ASSETS}/input"            # folder contatining the raw
 readonly DIR_OUTPUT="${DIR_ASSETS}/output"
 readonly DIR_REF="${DIR_ASSETS}/references"         # reference genome
 readonly DIR_CHROMOSOMES="${DIR_REF}/chromosomes"
+readonly DIR_SEQUENCING="${DIR_REF}/sequencing"
 readonly DIR_RSCRIPT="${DIR_SCRIPT}/RScripts"
 readonly DIR_DATABASE="${DIR_SCRIPT}/databases"
 readonly DIR_DBSNP="${DIR_DATABASE}/dbSNP"
@@ -62,3 +63,4 @@ export DIR_CHROMOSOMES
 export DIR_DBSNP
 export DIR_DATABASE
 export DIR_RSCRIPT
+export DIR_SEQUENCING
