@@ -21,7 +21,6 @@ tools:
 
   samtools:
     mpileup:
-      # TODO add parameters to programm call
       #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
       illumina: FALSE
       #-A, --count-orphans     do not discard anomalous read pairs
@@ -40,7 +39,6 @@ tools:
       position: FALSE
       #-q, --min-MQ INT        skip alignments with mapQ smaller than INT [0]
       minMQ: 1
-      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> minBaseQual
       #-r, --region REG        region in which pileup is generated
       region: FALSE
       #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
@@ -48,27 +46,25 @@ tools:
       #-x, --ignore-overlaps   disable read-pair overlap detection
       ignoreOverlaps: FALSE
 
+      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> tools.general.minBaseQual
+
   varscan:
   # minimum variant allele / tumor frequency to call a variant
     minVAF: 0.10
+
     somatic:
-      #--min-coverage - Minimum coverage in normal and tumor to call variant [8] -> minCoverage
+      #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
       minCoverage: 8
-      # estimated purity (tumor content) of tumor sample
+      #--tumor-purity estimated purity (tumor content) of tumor sample
       tumorPurity: 0.5
-      # minimal frequency to call homozygote
+      #--min-freq-for-hom minimal frequency to call homozygote
       minFreqForHom: 0.75
-      #--output-snp - Output file for SNP calls [output.snp]
-      #--output-indel - Output file for indel calls [output.indel]
       #--min-coverage-normal - Minimum coverage in normal to call somatic [8]
       minCoverageNormal: 8
       #--min-coverage-tumor - Minimum coverage in tumor to call somatic [6]
       minCoverageTumor: 8
-      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> minVAF
-      #--min-freq-for-hom	Minimum frequency to call homozygote [0.75] -> minFregForHom
       #--normal-purity - Estimated purity (non-tumor content) of normal sample [1.00]
       nomralPurity: 1.00
-      #--tumor-purity - Estimated purity (tumor content) of tumor sample [1.00] -> tumorPurity
       #--p-value - P-value threshold to call a heterozygote [0.99]
       pValue: 0.99
       #--somatic-p-value - P-value threshold to call a somatic site [0.05]
@@ -78,20 +74,21 @@ tools:
       #--validation - If set to 1, outputs all compared positions even if non-variant
       validation: 0
 
+      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> tools.varscan.minVAF
+
     processSomatic:
-      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> minVAF
-      #minTumorFreq: 0.10
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]
       maxNormalFreq: 0.05
       #--p-value - P-value for high-confidence calling [0.07]
       pValue: 0.07
+
+      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> tools.varscan.minVAF
 
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
       minVarCount: 4
       #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
       minVarCountLc: 2
-      #--min-var-freq		Minimum variant allele frequency [0.05] -> minVAF
       #--max-somatic-p		Maximum somatic p-value [0.05]
       maxSomaticP: 0.05
       #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
@@ -108,11 +105,6 @@ tools:
       minStrandedness: 0.01
       #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
       minStrandReads: 5
-      
-      #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
-
-      #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
-
       #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
       maxBasequalDiff: 50
       #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
@@ -135,6 +127,10 @@ tools:
       minVarMapQual: 15
       #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
       maxMapQualDiff: 50
+
+      #--min-var-freq		Minimum variant allele frequency [0.05] -> tools.varscan.minVAF
+      #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
+      #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
 
   annovar:
     # define annotation databases, together with their type, used. The databases have to be installed with annovar
@@ -197,8 +193,8 @@ reference:
   mappability: out100m2_hg19.gem
   sequencing:
     # target region covered by the sequencer in .bed format
-    captureRegions: CaptureRegions.bed
+    captureRegions: V5UTR.bed
     # file containing all the covered genes as HUGO Symbols
-    captureGenes: Targets.txt
+    captureGenes: V5UTR_Targets.txt
     # target region in Mega bases covered
     coveredRegion: 75
