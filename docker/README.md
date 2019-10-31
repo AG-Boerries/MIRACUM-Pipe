@@ -1,5 +1,6 @@
 # Docker
-For development, we recommend to use the hierarchical docker stack.
+For development, we recommend to use the hierarchical docker stack, in order to save time while testing and building (the full production build can take about 3 hours)
+
 This stack is based on 
 - Dockerfile_base
     Based on `debian:10` the linux environment is included into this file. All system tools are setup.
