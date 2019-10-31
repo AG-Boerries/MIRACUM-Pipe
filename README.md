@@ -40,7 +40,7 @@ All neccessary informations about the included R-scripts can be found with the *
 
 ## Example
 
-For testing MIRACUM-Pipe an example dataset is provided and downloaded via the **setup.sh** script. It contains the necessary capture region files (`V5UTR.bed`, `V5UTR_Targets.txt`) and the sequence files (`germline_R{1/2}.fastq.gz`, `tumor_R{1/2}.fastq.gz`). For the sake of runtime the fastq files were adjusted to contain only chromosome 12.
+For testing MIRACUM-Pipe an example dataset is provided and downloaded via the **setup.sh** script. It contains the necessary capture region files (`V5UTR.bed`, `V5UTR_Targets.txt`), the sequence files (`germline_R{1/2}.fastq.gz`, `tumor_R{1/2}.fastq.gz`) and the `patient.yaml`. For the sake of runtime the fastq files were adjusted to contain only chromosome 12.
 
 ## Authors
 
