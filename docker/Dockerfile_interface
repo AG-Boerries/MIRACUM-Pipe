@@ -1,4 +1,4 @@
-FROM miracumpipe_report:latest
+FROM miracum_pipe_report:latest
 
 COPY ./*.sh /opt/MIRACUM-Pipe/
 COPY ./conf/*.yaml /opt/MIRACUM-Pipe/conf/
