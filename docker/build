@@ -2,28 +2,31 @@
 
 case "$1" in
         base)
-            docker build --no-cache -f ./Dockerfile_base -t miracumpipe_base:latest ../
+            docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
             ;;
 
         R)
-            docker build --no-cache -f ./Dockerfile_R -t miracumpipe_r:latest ../
+            docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
             ;;
 
         tools)
-            docker build --no-cache -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
+            docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
+            ;;
+        report)
+            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe:latest ../
+            ;;
+        interface)
+            docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
-        interface)
-            docker build --no-cache -f ./Dockerfile_interface -t miracumpipe:latest ../
-            ;;
         all)
-            docker build --no-cache -f ./Dockerfile_base -t miracumpipe_base:latest ../
-            docker build --no-cache -f ./Dockerfile_R -t miracumpipe_r:latest ../
-            docker build --no-cache -f ./Dockerfile_tools -t miracumpipe_tools:latest ../
-            docker build --no-cache -f ./Dockerfile -t miracumpipe:latest ../
+            docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
+            docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
+            docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
+            docker build --no-cache -f ./Dockerfile -t miracum_pipe:latest ../
             ;;
 
         *)
-            echo $"Usage: $0 {base|R|tools|interface|all} [args]"
+            echo $"Usage: $0 {base|R|tools|report|interface|all} [args]"
             exit 1
 esac

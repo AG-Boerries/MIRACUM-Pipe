@@ -4,7 +4,7 @@ MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs),
 
 ## Getting Started
 
-This repo is intended to be run as docker (see [MIRACUM-Pipe-docker]()). Alternatively, you can pick a [Galaxy version]().
+This repo is intended to be run as docker (see [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker)). Alternatively, you can pick a [Galaxy version](https://github.com/AG-Boerries/MIRACUM-Pipe-galaxy).
 
 In some cases Docker or Galaxy might be inapropriate. Therefore, one can install this software on a [Debian 10](https://www.debian.org/) system.
 
@@ -23,12 +23,12 @@ Rsctipt RScripts/install_packages.R
 ./tools/install.sh
 ```
 
-Further one needs to install some components manually. See [MIRACUM-Pipe-docker]() for more information.
+Further one needs to install some components manually. See [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker) for more information.
 You can also simply apply the [setup.sh]() file for this repo. Just download it into the root of your clone of this project.
 
 ## Running MIRACUM-Pipe
 
-Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum-pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker]().
+Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum-pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker).
 
 ### Adding new databases respectively update current databases
 

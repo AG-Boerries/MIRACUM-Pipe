@@ -1,8 +1,6 @@
-FROM miracumpipe_tools:latest
+FROM miracumpipe_report:latest
 
 COPY ./*.sh /opt/MIRACUM-Pipe/
-COPY ./RScripts/* /opt/MIRACUM-Pipe/RScripts/
-RUN true
 COPY ./conf/*.yaml /opt/MIRACUM-Pipe/conf/
 
 # define volumes

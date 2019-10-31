@@ -1,0 +1,3 @@
+FROM miracum_pipe_tools:latest
+
+COPY ./RScripts/* /opt/MIRACUM-Pipe/RScripts/
