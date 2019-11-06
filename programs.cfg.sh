@@ -6,8 +6,10 @@ readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
 # temporary folder
 readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
 
-readonly CFG_FILE_TUMOR=$(get_config_value common.files.tumor "${PARAM_DIR_PATIENT}")
-readonly CFG_FILE_GERMLINE=$(get_config_value common.files.germline "${PARAM_DIR_PATIENT}")
+readonly CFG_FILE_TUMOR_R1=$(get_config_value common.files.tumor_R1 "${PARAM_DIR_PATIENT}")
+readonly CFG_FILE_TUMOR_R2=$(get_config_value common.files.tumor_R2 "${PARAM_DIR_PATIENT}")
+readonly CFG_FILE_GERMLINE_R1=$(get_config_value common.files.germline_R1 "${PARAM_DIR_PATIENT}")
+readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PARAM_DIR_PATIENT}")
 
 # folder containing patient output
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
@@ -189,8 +191,10 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 # export parameters
 export CFG_AUTHOR
 
-export CFG_FILE_TUMOR
-export CFG_FILE_GERMLINE
+export CFG_FILE_TUMOR_R1
+export CFG_FILE_TUMOR_R2
+export CFG_FILE_GERMLINE_R1
+export CFG_FILE_GERMLINE_R2
 
 export DIR_TARGET
 export DIR_WES

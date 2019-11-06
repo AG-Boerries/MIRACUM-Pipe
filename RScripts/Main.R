@@ -58,8 +58,8 @@ source(paste(path_script, "mutationSignatureAnalysisFunction.R", sep = "/"))
 ##################
 # FASTQC Reports #
 
-tumor <- paste0(path_input, tumor, "1_fastqc/Images/per_base_quality.png")
-germline <- paste0(path_input, germline, "1_fastqc/Images/per_base_quality.png")
+tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
+germline <- paste0(path_input, strsplit(x = germline, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
 
 tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")

@@ -4,9 +4,11 @@ common:
   memory: 8g
   cpucores: 4
   files:
-    # filenames of the fastq input fiels without extension
-    tumor: tumor_R
-    germline: germline_R
+    # filenames of the input files as fastq.gz
+    tumor_R1: tumor_R1.fastq.gz
+    tumor_R2: tumor_R2.fastq.gz
+    germline_R1: germline_R1.fastq.gz
+    germline_R2: germline_R2.fastq.gz
 
 annotation:
   # process and annotate germline file, allowed values: yes, no
