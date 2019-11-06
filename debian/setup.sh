@@ -32,7 +32,7 @@ apt-get update
 
 # packages that are required for installation
 apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
-  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev\
+  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev \
   libncurses5-dev libxml2-dev \
   gfortran \
   default-jre \
