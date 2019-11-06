@@ -2,8 +2,9 @@ FROM debian:10
 
 ADD . /opt/MIRACUM-Pipe
 
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends apt-utils && \
+    apt-get upgrade -y && \
     /opt/MIRACUM-Pipe/debian/setup.sh && \
     Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R && \
     /opt/MIRACUM-Pipe/tools/install.sh
