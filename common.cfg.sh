@@ -14,7 +14,7 @@ function get_config_value()
   )
 
   # first look inside the patient specific config
-  patient_conf="${SCRIPT_PATH}"/assets/input/"${2}"/config.yaml
+  patient_conf="${SCRIPT_PATH}"/assets/input/"${2}"/patient.yaml
   if [[ -f "${patient_conf}" ]]; then
     value=$(shyaml get-value "${1}" < "${patient_conf}" 2> /dev/null)
   else
