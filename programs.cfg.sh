@@ -19,7 +19,7 @@ readonly DIR_ANALYSIS="${DIR_TARGET}/Analysis"
 # end paths
 
 ## Genome
-readonly FILE_GENOME="${DIR_REF}/Genome/$(get_config_value reference.genome "${PARAM_DIR_PATIENT}")"
+readonly FILE_GENOME="${DIR_REF}/genome/$(get_config_value reference.genome "${PARAM_DIR_PATIENT}")"
 
 readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.length "${PARAM_DIR_PATIENT}")"
 
