@@ -9,7 +9,7 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
-readonly VALID_TASKS=("gd td vc cnv report")
+readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel")
 
 function usage() {
   echo "usage: miracum_pipe.sh [-d dir] [-t task] [-f] [-h]"
@@ -193,6 +193,16 @@ else
         ;;
         report)
           "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
+        ;;
+
+        td_gd_parallel)
+          ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
+          ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+        ;;
+
+        vc_cnv_parallel)
+          ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
+          ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
         ;;
       esac
 

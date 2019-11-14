@@ -126,17 +126,17 @@ for name1 in ${names1}; do
     ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
     ${BIN_VAR_SCAN} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
       --min-ref-basequal "${CFG_GENERAL_MINBASEQUAL}" --min-var-basequal "${CFG_GENERAL_MINBASEQUAL}" \
-      --min-var-count "${CFG_VARSCAN_FPLFILTER_MINVARCOUNT}" --min-var-freq "${CFG_VARSCAN_MINVAF}" \
-      --min-var-count-lc "${CFG_VARSCAN_FPLFILTER_MINVARCOUNTLC}" --max-somatic-p "${CFG_VARSCAN_FPLFILTER_MAXSOMATICP}" \
-      --max-somatic-p-depth "${CFG_VARSCAN_FPLFILTER_MAXSOMATICPDEPTH}" --min-ref-readpos "${CFG_VARSCAN_FPLFILTER_MINREFREADPOS}" \
-      --min-var-readpos "${CFG_VARSCAN_FPLFILTER_MINVARREADPOS}" --min-ref-dist3 "${CFG_VARSCAN_FPLFILTER_MINREFDIST3}" \
-      --min-var-dist3 "${CFG_VARSCAN_FPLFILTER_MINVARDIST3}" --min-strandedness "${CFG_VARSCAN_FPLFILTER_MINSTRANDEDNESS}" \
-      --min-strand-reads "${CFG_VARSCAN_FPLFILTER_MINSTRANDREADS}" --max-basequal-diff "${CFG_VARSCAN_FPLFILTER_MAXBASEQUALDIFF}" \
-      --min-ref-avgrl "${CFG_VARSCAN_FPLFILTER_MINREFAVGRL}" --min-var-avgrl "${CFG_VARSCAN_FPLFILTER_MINVARAVGRL}" \
-      --max-rl-diff "${CFG_VARSCAN_FPLFILTER_MAXRLDIFF}" --max-ref-mmqs "${CFG_VARSCAN_FPLFILTER_MAXREFMMQS}" \
-      --max-var-mmqs "${CFG_VARSCAN_FPLFILTER_MAXVARMMQS}" --min-mmqs-diff "${CFG_VARSCAN_FPLFILTER_MINMMQSDIFF}" \
-      --max-mmqs-diff "${CFG_VARSCAN_FPLFILTER_MAXMMQSDIFF}" --min-ref-mapqual "${CFG_VARSCAN_FPLFILTER_MINREFMAPQUAL}" \
-      --min-var-mapqual "${CFG_VARSCAN_FPLFILTER_MINVARMAPQUAL}" --max-mapqual-diff "${CFG_VARSCAN_FPLFILTER_MAXMAPQUALDIFF}"
+      --min-var-count "${CFG_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_VARSCAN_MINVAF}" \
+      --min-var-count-lc "${CFG_VARSCAN_FPFILTER_MINVARCOUNTLC}" --max-somatic-p "${CFG_VARSCAN_FPFILTER_MAXSOMATICP}" \
+      --max-somatic-p-depth "${CFG_VARSCAN_FPFILTER_MAXSOMATICPDEPTH}" --min-ref-readpos "${CFG_VARSCAN_FPFILTER_MINREFREADPOS}" \
+      --min-var-readpos "${CFG_VARSCAN_FPFILTER_MINVARREADPOS}" --min-ref-dist3 "${CFG_VARSCAN_FPFILTER_MINREFDIST3}" \
+      --min-var-dist3 "${CFG_VARSCAN_FPFILTER_MINVARDIST3}" --min-strandedness "${CFG_VARSCAN_FPFILTER_MINSTRANDEDNESS}" \
+      --min-strand-reads "${CFG_VARSCAN_FPFILTER_MINSTRANDREADS}" --max-basequal-diff "${CFG_VARSCAN_FPFILTER_MAXBASEQUALDIFF}" \
+      --min-ref-avgrl "${CFG_VARSCAN_FPFILTER_MINREFAVGRL}" --min-var-avgrl "${CFG_VARSCAN_FPFILTER_MINVARAVGRL}" \
+      --max-rl-diff "${CFG_VARSCAN_FPFILTER_MAXRLDIFF}" --max-ref-mmqs "${CFG_VARSCAN_FPFILTER_MAXREFMMQS}" \
+      --max-var-mmqs "${CFG_VARSCAN_FPFILTER_MAXVARMMQS}" --min-mmqs-diff "${CFG_VARSCAN_FPFILTER_MINMMQSDIFF}" \
+      --max-mmqs-diff "${CFG_VARSCAN_FPFILTER_MAXMMQSDIFF}" --min-ref-mapqual "${CFG_VARSCAN_FPFILTER_MINREFMAPQUAL}" \
+      --min-var-mapqual "${CFG_VARSCAN_FPFILTER_MINVARMAPQUAL}" --max-mapqual-diff "${CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF}"
   done
 done
 

@@ -69,15 +69,15 @@ readonly CFG_SAMTOOLS_MPILEUP_INCLFLAGS=$(get_config_value tools.samtools.mpileu
 readonly CFG_SAMTOOLS_MPILEUP_EXCLFLAGS=$(get_config_value tools.samtools.mpileup.exclFlags "${PARAM_DIR_PATIENT}")
 readonly CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS=$(get_config_value tools.samtools.mpileup.ignoreFlags "${PARAM_DIR_PATIENT}")
 
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_ILLUMINA}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -6"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_COUNTORPHANS}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -A"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_NOBAQ}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -B"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REDOBAQ}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -E"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_EXCLUDERG}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -G"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_POSITION}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -l"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REGION}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -r"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNORERG}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -R"
-FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS}" = true ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -x"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_ILLUMINA,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -6"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_COUNTORPHANS,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -A"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_NOBAQ,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -B"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REDOBAQ,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -E"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_EXCLUDERG,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -G"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_POSITION,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -l"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_REGION,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -r"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNORERG,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -R"
+FLAGS_MPILEUP=[[ "${CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS,,}" == "true" ]] && FLAGS_MPILEUP="${FLAGS_MPILEUP} -x"
 
 
 # global Varscan parameters
@@ -92,6 +92,7 @@ readonly CFG_VARSCAN_SOMATIC_MINCOVERAGETUMOR=$(get_config_value tools.varscan.s
 readonly CFG_VARSCAN_SOMATIC_NORMALPURITY=$(get_config_value tools.varscan.somatic.normalPurity "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_SOMATIC_PVALUE=$(get_config_value tools.varscan.somatic.pValue "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_SOMATIC_SOMATICPVALUE=$(get_config_value tools.varscan.somatic.somaticPValue "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_SOMATIC_STRANDFILTER=$(get_config_value tools.varscan.somatic.strandFilter "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_SOMATIC_VALIDATION=$(get_config_value tools.varscan.somatic.validation "${PARAM_DIR_PATIENT}")
 
 # Varscan processSomatic
@@ -99,27 +100,27 @@ readonly CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ=$(get_config_value tools.varsc
 readonly CFG_VARSCAN_PROCESSSOMATIC_PVALUE=$(get_config_value tools.varscan.processSomatic.pValue "${PARAM_DIR_PATIENT}")
 
 # VarScan fpfilter
-readonly CFG_VARSCAN_FPLFILTER_MINVARCOUNT=$(get_config_value tools.varscan.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINVARCOUNTLC=$(get_config_value tools.varscan.fpfilter.minVarCountLC "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXSOMATICP=$(get_config_value tools.varscan.fpfilter.maxSomaticP "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXSOMATICPDEPTH=$(get_config_value tools.varscan.fpfilter.maxSomaticPDepth "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINREFREADPOS=$(get_config_value tools.varscan.fpfilter.minRefReadpos "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINVARREADPOS=$(get_config_value tools.varscan.fpfilter.minVarReadpos "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINREFDIST3=$(get_config_value tools.varscan.fpfilter.minRefDist3 "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINVARDIST3=$(get_config_value tools.varscan.fpfilter.minVarDist3 "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINSTRANDEDNESS=$(get_config_value tools.varscan.fpfilter.minStrandedness "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINSTRANDREADS=$(get_config_value tools.varscan.fpfilter.minStrandReads "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXBASEQUALDIFF=$(get_config_value tools.varscan.fpfilter.maxBasequalDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINREFAVGRL=$(get_config_value tools.varscan.fpfilter.minRefAVGRL "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINVARAVGRL=$(get_config_value tools.varscan.fpfilter.minVarAVGRL "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXRLDIFF=$(get_config_value tools.varscan.fpfilter.maxRlDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXREFMMQS=$(get_config_value tools.varscan.fpfilter.maxRefMMQS "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXVARMMQS=$(get_config_value tools.varscan.fpfilter.maxVarMMQS "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINMMQSDIFF=$(get_config_value tools.varscan.fpfilter.minMMQSDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXMMQSDIFF=$(get_config_value tools.varscan.fpfilter.maxMMQSDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINREFMAPQUAL=$(get_config_value tools.varscan.fpfilter.minRefMapQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MINVARMAPQUAL=$(get_config_value tools.varscan.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPLFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.fpfilter.MaxMapQualDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARCOUNT=$(get_config_value tools.varscan.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARCOUNTLC=$(get_config_value tools.varscan.fpfilter.minVarCountLC "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXSOMATICP=$(get_config_value tools.varscan.fpfilter.maxSomaticP "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXSOMATICPDEPTH=$(get_config_value tools.varscan.fpfilter.maxSomaticPDepth "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINREFREADPOS=$(get_config_value tools.varscan.fpfilter.minRefReadpos "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARREADPOS=$(get_config_value tools.varscan.fpfilter.minVarReadpos "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINREFDIST3=$(get_config_value tools.varscan.fpfilter.minRefDist3 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARDIST3=$(get_config_value tools.varscan.fpfilter.minVarDist3 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINSTRANDEDNESS=$(get_config_value tools.varscan.fpfilter.minStrandedness "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINSTRANDREADS=$(get_config_value tools.varscan.fpfilter.minStrandReads "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXBASEQUALDIFF=$(get_config_value tools.varscan.fpfilter.maxBasequalDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINREFAVGRL=$(get_config_value tools.varscan.fpfilter.minRefAVGRL "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARAVGRL=$(get_config_value tools.varscan.fpfilter.minVarAVGRL "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXRLDIFF=$(get_config_value tools.varscan.fpfilter.maxRlDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXREFMMQS=$(get_config_value tools.varscan.fpfilter.maxRefMMQS "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXVARMMQS=$(get_config_value tools.varscan.fpfilter.maxVarMMQS "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINMMQSDIFF=$(get_config_value tools.varscan.fpfilter.minMMQSDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXMMQSDIFF=$(get_config_value tools.varscan.fpfilter.maxMMQSDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINREFMAPQUAL=$(get_config_value tools.varscan.fpfilter.minRefMapQual "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MINVARMAPQUAL=$(get_config_value tools.varscan.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.fpfilter.MaxMapQualDiff "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value tools.annovar.protocol "${PARAM_DIR_PATIENT}")
@@ -231,27 +232,27 @@ export CFG_VARSCAN_SOMATIC_VALIDATION
 export CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ
 export CFG_VARSCAN_PROCESSSOMATIC_PVALUE
 
-export CFG_VARSCAN_FPLFILTER_MINVARCOUNT
-export CFG_VARSCAN_FPLFILTER_MINVARCOUNTLC
-export CFG_VARSCAN_FPLFILTER_MAXSOMATICP
-export CFG_VARSCAN_FPLFILTER_MAXSOMATICPDEPTH
-export CFG_VARSCAN_FPLFILTER_MINREFREADPOS
-export CFG_VARSCAN_FPLFILTER_MINVARREADPOS
-export CFG_VARSCAN_FPLFILTER_MINREFDIST3
-export CFG_VARSCAN_FPLFILTER_MINVARDIST3
-export CFG_VARSCAN_FPLFILTER_MINSTRANDEDNESS
-export CFG_VARSCAN_FPLFILTER_MINSTRANDREADS
-export CFG_VARSCAN_FPLFILTER_MAXBASEQUALDIFF
-export CFG_VARSCAN_FPLFILTER_MINREFAVGRL
-export CFG_VARSCAN_FPLFILTER_MINVARAVGRL
-export CFG_VARSCAN_FPLFILTER_MAXRLDIFF
-export CFG_VARSCAN_FPLFILTER_MAXREFMMQS
-export CFG_VARSCAN_FPLFILTER_MAXVARMMQS
-export CFG_VARSCAN_FPLFILTER_MINMMQSDIFF
-export CFG_VARSCAN_FPLFILTER_MAXMMQSDIFF
-export CFG_VARSCAN_FPLFILTER_MINREFMAPQUAL
-export CFG_VARSCAN_FPLFILTER_MINVARMAPQUAL
-export CFG_VARSCAN_FPLFILTER_MAXMAPQUALDIFF
+export CFG_VARSCAN_FPFILTER_MINVARCOUNT
+export CFG_VARSCAN_FPFILTER_MINVARCOUNTLC
+export CFG_VARSCAN_FPFILTER_MAXSOMATICP
+export CFG_VARSCAN_FPFILTER_MAXSOMATICPDEPTH
+export CFG_VARSCAN_FPFILTER_MINREFREADPOS
+export CFG_VARSCAN_FPFILTER_MINVARREADPOS
+export CFG_VARSCAN_FPFILTER_MINREFDIST3
+export CFG_VARSCAN_FPFILTER_MINVARDIST3
+export CFG_VARSCAN_FPFILTER_MINSTRANDEDNESS
+export CFG_VARSCAN_FPFILTER_MINSTRANDREADS
+export CFG_VARSCAN_FPFILTER_MAXBASEQUALDIFF
+export CFG_VARSCAN_FPFILTER_MINREFAVGRL
+export CFG_VARSCAN_FPFILTER_MINVARAVGRL
+export CFG_VARSCAN_FPFILTER_MAXRLDIFF
+export CFG_VARSCAN_FPFILTER_MAXREFMMQS
+export CFG_VARSCAN_FPFILTER_MAXVARMMQS
+export CFG_VARSCAN_FPFILTER_MINMMQSDIFF
+export CFG_VARSCAN_FPFILTER_MAXMMQSDIFF
+export CFG_VARSCAN_FPFILTER_MINREFMAPQUAL
+export CFG_VARSCAN_FPFILTER_MINVARMAPQUAL
+export CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF
 
 export CFG_ANNOVAR_PROTOCOL
 export CFG_ANNOVAR_ARGOP
