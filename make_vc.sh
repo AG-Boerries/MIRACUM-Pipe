@@ -84,7 +84,7 @@ readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 ${BIN_MPILEUP} "${recalbamGD}" "${recalbamTD}" | ${BIN_SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
   --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" \
   --min-var-freq "${CFG_VARSCAN_MINVAF}" --min-freq-for-hom "${CFG_VARSCAN_SOMATIC_MINFREQFORHOM}" \
-  --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" --min-coverage-normal "${CFG_VARSCAN_SOMATIC_MINCOVERAGENORMAL}" \
+  --min-coverage-normal "${CFG_VARSCAN_SOMATIC_MINCOVERAGENORMAL}" \
   --min-coverage-tumor "${CFG_VARSCAN_SOMATIC_MINCOVERAGETUMOR}" --normal-purity "${CFG_VARSCAN_SOMATIC_NORMALPURITY}" \
   --p-value "${CFG_VARSCAN_SOMATIC_PVALUE}" --somatic-p-value "${CFG_VARSCAN_SOMATIC_SOMATICPVALUE}" \
   --strand-filter "${CFG_VARSCAN_SOMATIC_STRANDFILTER}" --validation "${CFG_VARSCAN_SOMATIC_VALIDATION}" --output-vcf 1 --mpileup 1

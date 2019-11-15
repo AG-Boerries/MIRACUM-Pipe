@@ -140,7 +140,7 @@ readonly BIN_CUT="cut -f1,2,3"
 readonly BIN_BWAMEM="${DIR_TOOLS}/bwa/bwa mem -M "
 
 # BAM-Readcount
-readonly BIN_BAM_READCOUNT="${DIR_TOOLS}/bam-readcount/bin/bam-readcount -q 1 -b 20 -w 1 -f ${FILE_GENOME} "
+readonly BIN_BAM_READCOUNT="${DIR_TOOLS}/bam-readcount/bin/bam-readcount -q ${CFG_SAMTOOLS_MPILEUP_MINMQ} -b ${CFG_GENERAL_MINBASEQUAL} -w 1 -f ${FILE_GENOME} "
 
 # SAMTOOLS
 readonly BIN_SAMTOOLS="${DIR_TOOLS}/samtools/samtools" # path to samtools
