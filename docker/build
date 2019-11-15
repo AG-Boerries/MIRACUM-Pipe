@@ -12,9 +12,11 @@ case "$1" in
         tools)
             docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
             ;;
+
         report)
-            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe:latest ../
+            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
             ;;
+            
         interface)
             docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
