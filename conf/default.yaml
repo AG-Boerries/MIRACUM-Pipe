@@ -89,7 +89,7 @@ tools:
       #--min-var-count		Minimum number of variant-supporting reads [4]
       minVarCount: 4
       #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
-      minVarCountLc: 2
+      minVarCountLC: 2
       #--max-somatic-p		Maximum somatic p-value [0.05]
       maxSomaticP: 0.05
       #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
@@ -123,7 +123,7 @@ tools:
       #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
       maxMMQSDiff: 50
       #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
-      minRefMapqQal: 15
+      minRefMapQual: 15
       #--min-var-mapqual	Minimum average mapping quality for var allele [15]
       minVarMapQual: 15
       #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]

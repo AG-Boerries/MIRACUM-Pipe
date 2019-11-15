@@ -23,7 +23,8 @@ case "$1" in
             docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
             docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
             docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
-            docker build --no-cache -f ./Dockerfile -t miracum_pipe:latest ../
+            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe:latest ../
+            docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
         *)
