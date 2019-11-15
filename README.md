@@ -24,7 +24,7 @@ Rsctipt RScripts/install_packages.R
 ```
 
 Further one needs to install some components manually. See [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker) for more information.
-You can also simply apply the [setup.sh]() file for this repo. Just download it into the root of your clone of this project.
+You can also simply apply the [setup.sh](https://github.com/AG-Boerries/MIRACUM-Pipe-docker/blob/master/setup.sh) file for this repo. Just download it into the root of your clone of this project.
 
 ## Running MIRACUM-Pipe
 
