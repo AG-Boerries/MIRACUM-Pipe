@@ -65,7 +65,7 @@ tools:
       #--min-coverage-tumor - Minimum coverage in tumor to call somatic [6]
       minCoverageTumor: 8
       #--normal-purity - Estimated purity (non-tumor content) of normal sample [1.00]
-      nomralPurity: 1.00
+      normalPurity: 1.00
       #--p-value - P-value threshold to call a heterozygote [0.99]
       pValue: 0.99
       #--somatic-p-value - P-value threshold to call a somatic site [0.05]

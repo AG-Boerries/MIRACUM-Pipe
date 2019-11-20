@@ -27,7 +27,7 @@ readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.l
 ## SureSelect (Capture Kit)
 readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureRegions "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_CAPTUREGENES="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureGenes "${PARAM_DIR_PATIENT}")"
-readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.coveredRegion)"
+readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.coveredRegion "${PARAM_DIR_PATIENT}")"
 
 
 # database for known variants
@@ -119,7 +119,7 @@ readonly CFG_VARSCAN_FPFILTER_MINMMQSDIFF=$(get_config_value tools.varscan.fpfil
 readonly CFG_VARSCAN_FPFILTER_MAXMMQSDIFF=$(get_config_value tools.varscan.fpfilter.maxMMQSDiff "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_FPFILTER_MINREFMAPQUAL=$(get_config_value tools.varscan.fpfilter.minRefMapQual "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_FPFILTER_MINVARMAPQUAL=$(get_config_value tools.varscan.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.fpfilter.MaxMapQualDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.fpfilter.maxMapQualDiff "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value tools.annovar.protocol "${PARAM_DIR_PATIENT}")

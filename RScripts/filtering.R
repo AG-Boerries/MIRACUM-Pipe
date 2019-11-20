@@ -57,6 +57,9 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   x.indel <- x.indel[- c(1 : 25),]
   x <- rbind(x.snp, x.indel)
 
+  # ANNOVAR changed name of "Otherinfo" column in latest release to "Otherinfo1"
+  colnames(x)[grep(pattern = "Otherinfo1", x = colnames(x))] <- "Otherinfo"
+
   # Quality Filter
   id.pass <- grep("PASS", x$Otherinfo)
   if (length(id.pass) > 0) {
