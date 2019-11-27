@@ -1,5 +1,5 @@
 common:
-  author: Author
+  author: MIRACUM-Pipe
   dirTmp: /tmp
   memory: 8g
   cpucores: 4
