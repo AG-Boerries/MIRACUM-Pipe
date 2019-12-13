@@ -17,7 +17,7 @@ We offer installation scripts. In order to setup up the main components execute 
 ./debian/setup.sh
 
 # install all R-packages
-Rsctipt RScripts/install_packages.R
+Rscript RScripts/install_packages.R
 
 # install tools
 ./tools/install.sh
