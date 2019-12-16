@@ -60,7 +60,7 @@ This work is licensed under [GNU Affero General Public License version 3](https:
 
 We thank
 
-* The Molecular Tumor Board Freburg Team
+* The Molecular Tumor Board Freiburg Team
 * The MIRACUM consortium
 * The German Ministry of Education and Research (BMBF) for funding
 * The developers from Control-FREEC for the code on CNV significance
