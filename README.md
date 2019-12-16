@@ -17,7 +17,7 @@ We offer installation scripts. In order to setup up the main components execute 
 ./debian/setup.sh
 
 # install all R-packages
-Rsctipt RScripts/install_packages.R
+Rscript RScripts/install_packages.R
 
 # install tools
 ./tools/install.sh
@@ -28,7 +28,7 @@ You can also simply apply the [setup.sh](https://github.com/AG-Boerries/MIRACUM-
 
 ## Running MIRACUM-Pipe
 
-Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum-pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker).
+Once you installed the system and setup the required tools and databases, you can simply run the pipeline by setting up patients and run `./miracum_pipe.sh`. For more documentation about this, see the documentation of [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker).
 
 ### Adding new databases respectively update current databases
 
@@ -60,7 +60,7 @@ This work is licensed under [GNU Affero General Public License version 3](https:
 
 We thank
 
-* The Molecular Tumor Board Freburg Team
+* The Molecular Tumor Board Freiburg Team
 * The MIRACUM consortium
 * The German Ministry of Education and Research (BMBF) for funding
 * The developers from Control-FREEC for the code on CNV significance
