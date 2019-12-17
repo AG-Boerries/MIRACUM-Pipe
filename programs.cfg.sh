@@ -3,6 +3,9 @@
 # common settings
 readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
 
+# analysis type
+readonly CFG_ANALYSIS_TYPE=$(get_config_value common.analysisType "${PARAM_DIR_PATIENT}")
+
 # temporary folder
 readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
 
@@ -15,6 +18,7 @@ readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PAR
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 readonly DIR_WES="${DIR_TARGET}/WES"
 readonly DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+readonly DIR_PANEL="${DIR_TARGET}/Panel"
 
 # end paths
 
@@ -199,6 +203,7 @@ export CFG_FILE_GERMLINE_R2
 export DIR_TARGET
 export DIR_WES
 export DIR_ANALYSIS
+export DIR_PANEL
 
 export FILE_GENOME
 export CFG_REFERENCE_LENGTH

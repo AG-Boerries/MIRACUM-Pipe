@@ -41,6 +41,14 @@ function cleanup() {
   rm -rf "${dir_tmp:?}"
 }
 
+# identify type of analysis, either WES or panel
+function protocol_type() {
+  local dir_patient="${1}"
+  local __protocol_type_var="${2}"
+  local value="$(get_config_value common.analysisType "${dir_patient}")"
+  eval $__protocol_type_var="'${value}'"
+}
+
 # run_pipe relative_patient_dir dir_target
 function run_pipe() {
   local dir_patient="${1}"
@@ -49,19 +57,39 @@ function run_pipe() {
   local dir_log="${dir_target}/log"
 
   setup "${dir_patient}" "${dir_target}"
+  analysis_type "${dir_patient}" analysis
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-  ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/td.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/gd.log) &
   wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-  ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/vc.log) &
+  ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/cnv.log) &
   wait
 
   # create report based on the results of the processes above
-  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/report.log)
+
+  cleanup "${dir_patient}"
+}
+
+# run_pipe_panel relative_patient_dir dir_target
+function run_pipe_panel() {
+  local dir_patient="${1}"
+  local dir_target="${2}"
+
+  local dir_log="${dir_target}/log"
+
+  setup "${dir_patient}" "${dir_target}"
+  protocol_type "${dir_patient}" protocol
+
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/td.log)
+  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/vc.log)
+
+  # create report based on the results of the processes above
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" -a "${analysis}" &> ${dir_log}/report.log)
 
   cleanup "${dir_patient}"
 }
@@ -74,12 +102,13 @@ function run_pipe_seq() {
   local dir_log="${dir_target}/log"
 
   setup "${dir_patient}" "${dir_target}"
+  protocol_type "${dir_patient}" protocol
 
-  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
-  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> ${dir_log}/gd.log)
-  ("${DIR_SCRIPT}"/make_vc.sh  -d "${dir_patient}" &> ${dir_log}/vc.log)
-  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
-  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" -a "${protocol}" &> ${dir_log}/td.log)
+  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}"  -a "${protocol}" &> ${dir_log}/gd.log)
+  ("${DIR_SCRIPT}"/make_vc.sh  -d "${dir_patient}" -a "${protocol}" &> ${dir_log}/vc.log)
+  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" -a "${protocol}" &> ${dir_log}/cnv.log)
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" -a "${protocol}" &> ${dir_log}/report.log)
 
   cleanup "${dir_patient}"
 }
@@ -127,14 +156,19 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
     CFG_CASE=$(get_case ${DIR_PATIENT})
     DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
     DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+    protocol_type "${dir_patient}" protocol
 
     if [[ "${PARAM_FORCE}" || ! -f "${DIR_TARGET}/.processed" ]]; then
       echo "computing ${DIR_PATIENT}"
 
-      if [[ -z "${PARAM_SEQ}" ]]; then
+      if [[ -z "${PARAM_SEQ}" && "${protcol,,}" = "wes"]]; then
         run_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
-      else
+      if [[ -z "${PARAM_SEQ}" && "${protcol,,}" = "panel"]]; then
+        run_pipe_panel "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -n "${PARAM_SEQ}" && "${protcol,,}" = "wes"]]; then
         run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -n "${PARAM_SEQ}" && "${protcol,,}" = "panel"]]; then
+        run_pipe_panel "${DIR_PATIENT}" "${DIR_TARGET}"
       fi
       
       # check if report was generated successfully
@@ -162,6 +196,7 @@ else
   CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
   DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
   DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+  protocol_type "${dir_patient}" protocol
   
   # if already computed, i.e. file .processed exists, only compute again if forced
   if [[ "${PARAM_FORCE}" || ! -f "${DIR_TARGET}/.processed" ]]; then
@@ -174,35 +209,36 @@ else
 
       # setup processing
       setup "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+      analysis_type "${dir_patient}" analysis
 
       # possibility to comfortably run tasks separately
       case "${PARAM_TASK}" in
         td)
-          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log"
+          "${DIR_SCRIPT}"/make_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" -a "${protcol}" &> "${DIR_LOG}/td.log"
         ;;
         gd)
-          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/gd.log"
+          "${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${PARAM_DIR_PATIENT}" -a "${protcol}" &> "${DIR_LOG}/gd.log"
         ;;
 
         cnv)
-          "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+          "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" -a "${protcol}" &> "${DIR_LOG}/cnv.log"
         ;;
 
         vc)
-          "${DIR_SCRIPT}"/make_vc.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log"
+          "${DIR_SCRIPT}"/make_vc.sh -d "${PARAM_DIR_PATIENT}" -a "${protcol}" &> "${DIR_LOG}/vc.log"
         ;;
         report)
-          "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
+          "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" -a "${protcol}" &> "${DIR_LOG}/report.log"
         ;;
 
         td_gd_parallel)
-          ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-          ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+          ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" -a "${protcol}" &> ${dir_log}/td.log) &
+          ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" -a "${protcol}" &> ${dir_log}/gd.log) &
         ;;
 
         vc_cnv_parallel)
-          ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-          ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+          ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" -a "${protcol}" &> ${dir_log}/vc.log) &
+          ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" -a "${protcol}" &> ${dir_log}/cnv.log) &
         ;;
       esac
 
@@ -210,14 +246,18 @@ else
     else
       echo "computing ${PARAM_DIR_PATIENT}"
 
-      if [[ -z "${PARAM_SEQ}" ]]; then
-        run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
-      else
-        run_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -z "${PARAM_SEQ}" && "${protcol,,}" = "wes"]]; then
+        run_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -z "${PARAM_SEQ}" && "${protcol,,}" = "panel"]]; then
+        run_pipe_panel "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -n "${PARAM_SEQ}" && "${protcol,,}" = "wes"]]; then
+        run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
+      if [[ -n "${PARAM_SEQ}" && "${protcol,,}" = "panel"]]; then
+        run_pipe_panel "${DIR_PATIENT}" "${DIR_TARGET}"
       fi
 
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" || -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.pdf"]]; then
         touch "${DIR_TARGET}/.processed"
         echo "${PARAM_DIR_PATIENT} finished"
       else

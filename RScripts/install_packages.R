@@ -2,6 +2,7 @@
 # Objective : installs all required R packages
 # Created by: Raphael Scheible
 # Created on: 10.07.19
+# Adjusted on: 10.12.19 by Patrick Metzger
 
 options(repos=structure(c(CRAN="http://cran.us.r-project.org")))
 
@@ -31,3 +32,8 @@ BiocManager::install("VariantAnnotation")
 BiocManager::install("BSgenome.Hsapiens.UCSC.hg19")
 BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
 BiocManager::install("gdata")
+BiocManager::install("data.table")
+BiocManager::install("ensembldb")
+BiocManager::install("EnsDb.Hsapiens.v75")
+BiocManager::install("RMySQL")
+#BiocManager::install("GSA")

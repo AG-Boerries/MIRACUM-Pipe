@@ -17,10 +17,11 @@ function usage() {
   exit 1
 }
 
-while getopts d:h option; do
+while getopts d:h:a option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
   h) usage ;;
+  a) readonly PROTOCOL=$OPTARG
   \?)
     echo "Unknown option: -$OPTARG" >&2
     exit 1
@@ -62,6 +63,12 @@ if [[ ! " ${VALID_SEXES[@]} " =~ " ${CFG_SEX} " ]]; then
   exit 1
 fi
 
+if [[ ! " ${VALID_PROTOCOL[@]} " =~ " ${PROTOCOL} " ]]; then
+  echo "unknown analysis: ${PROTOCOL}"
+  echo "use one of the following values: $(join_by ' ' ${VALID_PROTCOL})"
+  exit 1
+fi
+
 ##################################################################################################################
 
 ## load programs
@@ -69,24 +76,50 @@ fi
 . "${DIR_SCRIPT}/programs.cfg.sh"
 
 ##################################################################################################################
+if [[ "${PROTOCOL,,}" = "wes" ]]; then
+  cd "${DIR_ANALYSIS}" || exit 1
 
-cd "${DIR_ANALYSIS}" || exit 1
+  ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
+    "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" "${CFG_REFERENCE_CAPTUREREGION}" \
+    "${CFG_COMMON_AUTHOR}" ${PROTOCOL,,}
+    
+  ${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
-${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
-  "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" \
-  "${CFG_COMMON_AUTHOR}"
-  
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
+  mv "${DIR_ANALYSIS}/Report.tex" "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
 
-mv "${DIR_ANALYSIS}/Report.tex" "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
+  pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+    --output-directory="${DIR_ANALYSIS}"
+  pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+    --output-directory="${DIR_ANALYSIS}"
 
-pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
-  --output-directory="${DIR_ANALYSIS}"
-pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
-  --output-directory="${DIR_ANALYSIS}"
+  # remove aux files which are created while pdflatex
+  rm -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.log" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.out"
+fi
 
-# remove aux files which are created while pdflatex
-rm -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.log" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.out"
+###################
+# Panel
+if [[ "${PROTOCOL,,}" = "panel" ]]; then
+  cd "${DIR_ANALYSIS}" || exit 1
+
+  ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
+    "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" "${CFG_REFERENCE_CAPTUREREGION}" \
+    "${CFG_COMMON_AUTHOR}" "${PROTOCOL,,}"
+    
+  ${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/Panel.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
+
+  mv "${DIR_ANALYSIS}/Report_Panel.tex" "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex"
+
+  pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex" \
+    --output-directory="${DIR_ANALYSIS}"
+  pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex" \
+    --output-directory="${DIR_ANALYSIS}"
+
+  # remove aux files which are created while pdflatex
+  rm -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.aux" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.toc" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.log" \
+        "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.out"
+fi

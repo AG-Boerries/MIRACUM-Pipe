@@ -1,0 +1,294 @@
+\documentclass[woside,a4paper,12pt]{article}
+\usepackage[sc]{mathpazo}
+\usepackage[german]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{pdfstartview={XYZ null null 1}}
+\usepackage{breakurl}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{fullpage}
+\usepackage{pdflscape}
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE, echo=FALSE, eval=TRUE>>=
+library(knitr)
+library(kableExtra)
+options(knitr.table.format = "latex")
+# set global chunk options
+options(formatR.arrow=TRUE,width=90)
+sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
+Sureselect <- paste(unlist(strsplit(manifest , split = "_")), collapse = " ")
+@
+
+\title{\Sexpr{sample} - Report}
+
+\author{\Sexpr{author}}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+\section{Qualität der Genomsequenzierung}
+\subsection{Raw Quality}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{\Sexpr{tumor}}
+      \caption{Tumor Qualität}
+      \label{fig:1}
+\end{figure}
+
+\subsection{Base Quality Score Recalibration (BQSR)}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{\Sexpr{tumor_bsqr}}
+      \caption{Tumor Qualität nach BQSR}
+      \label{fig:2}
+\end{figure}
+
+\subsection{Zusammenfassung}
+
+\begin{itemize}
+\item {\Sexpr{Sureselect}}
+\item Paired end 100bp
+\item TD: \Sexpr{stats$avreads$nRT} Mio. Reads
+\item Gute Qualität der Reads
+\end{itemize}
+
+\section{Coverage}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{\Sexpr{coverage_out}}
+\caption{Coverage}
+\label{fig:5}
+\end{figure}
+
+\subsection{Mean Coverage}
+<<echo=FALSE, eval=TRUE>>=
+# Mean Coverage
+  for (i in 1:length(stats$cover$files)) {
+    print(paste('Mean Coverage', stats$cover$labs[i],':',sum(stats$cover$cov[[i]][,2]*stats$cover$cov[[i]][,5]),sep = ' '))
+  }
+@
+
+\clearpage
+\section{Mutationsanalyse}
+\subsection{Informationen zur Analyse}
+
+\begin{itemize}
+\item Aligned zum Referenzgenom UCSC hg19
+\item Einschlusskriterien der Mutation
+  \begin{itemize}
+    \item Mindestens 8 Reads pro Base
+    \item Seltene Mutationen (Minor-Allele Frequency (MAF) $< 0.001$, basierend auf gnomAD exome, ExAC, ESP6500 und 1000g)
+    \item Keine \grqq Black-listed\grqq{} Gene/Sequenzen
+    \item Variant Allele Frequency (VAF) $> 10\%$
+  \end{itemize}
+  \item Analyse der Mutationen
+  \begin{itemize}
+  \item Annotation bekannter Mutationen (Cosmic, Clinvar, dbSNP)
+  \item Ranking der Wichtigkeit (RVIS Score)
+  \item Strukturanalyse der mutierten Proteine (Condel, CADD)
+  \end{itemize}
+\end{itemize}
+
+\subsection{Mutationen}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{\Sexpr{outfile_circos}}
+\caption{Circos Plot}
+\label{fig:6}
+\end{figure}
+
+\clearpage
+
+<<eval=TRUE, results='tex', echo=FALSE>>=
+tmp <- read.delim('MutationTable.txt')
+kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c("striped", "hold_position"))
+@
+
+\begin{itemize}
+\item \Sexpr{mutation_analysis_result$tot_mut} Mutationen (exonisch)
+
+\end{itemize}
+<<echo=FALSE, results='tex', eval=TRUE>>=
+tmp <- mutation_analysis_result$ts_og[,c("Gene.refGene","GeneName","is_tumorsuppressor", "is_oncogene", "is_hotspot")]
+colnames(tmp) <- c('Symbol', 'Gene Name','TSG', 'OG', 'HS')
+if(dim(tmp)[1]!=0){
+kable(tmp, format = "latex", caption = "Tumorsuppressoren und Onkogene - Überblick", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1, 3:5), width = "5em") %>% column_spec(2, width = "20em")
+  }else{print("No Tumorsuppressors or Oncogenes!")}
+@
+\clearpage
+
+\begin{landscape}
+\subsection{Tumorsuppressoren und Onkogene}
+\thispagestyle{empty}
+<<echo=FALSE, results='tex', eval=TRUE>>=
+tmp <- mutation_analysis_result$ts_og
+if(dim(tmp)[1]!=0){
+  colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF', 'Zygosity', 'Reads', 'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
+  tmp$MAF <- format(tmp$MAF,digits=3, scientific = TRUE)
+  tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
+  tmp$COSMIC <- gsub(",", ", ", tmp$COSMIC)
+  kable(tmp[,c(1:16)], format = "latex", caption = "Tumorsuppressoren und Onkogene", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(2:4, 11), width = "6em") %>% column_spec(c(1, 7,12), width = "4em") %>% column_spec(c(5:6, 8:10, 13:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
+}else {print("No Tumorsuppressors or Oncogenes!")}
+@
+\clearpage
+
+\subsection{Wichtige Signalwege}
+\thispagestyle{empty}
+<<echo=FALSE, eval=TRUE, results='tex'>>=
+options(knitr.kable.NA = 'None')
+important_pathways <- mutation_analysis_result$important_pathways
+if (length(important_pathways) == 0){
+  print("Keine Mutationen in wichtigen Signalwegen!")
+} else{
+  tbl <- important_pathways[ ,c('Pathway', 'Symbol', 'GeneName', 'ExonicFunc', 'VAF', 'Reads', 'AAChange', 'target', 'MAF', 'CADD13', 'Condel', 'CLINSIG', 'COSMIC84')]
+  colnames(tbl) <- c('Pathway', 'Symbol', 'Gene Name', 'Exonic Function', 'VAF', 'Reads', 'Aminoacid Change', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
+  tbl$COSMIC <- sub(";.*", "", tbl$COSMIC)
+  tbl$COSMIC <- gsub(",", ", ", tbl$COSMIC)
+  id <- which(duplicated(tbl))
+  if (length(id) !=0){
+    tbl[id, "Pathway"] <- paste0(tbl[id, "Pathway"], ".")
+  }
+  kable(tbl, caption = "Important Pathways", booktabs = F, align = "c", longtable = TRUE, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), full_width = FALSE, font_size = 6) %>% column_spec(c(2, 4:6, 9:12), width = "3em") %>% column_spec(c(1, 3), width = "10em") %>% column_spec(c(7, 8, 13), width = "15em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 45)
+}
+@
+\clearpage
+\end{landscape}
+
+\section{Copy Number Variation}
+\subsection{Anzahl CNVs}
+<<echo=FALSE, eval=TRUE>>=
+num <- dim(cnvs$loss_gain$`CN-Losses`)[1] + dim(cnvs$loss_gain$`CN-Gains`)[1]
+print(paste("#CNVs: ", num, sep = ''))
+@
+
+\subsection{Tumorsuppressoren}
+<<echo=FALSE, results='tex', eval=TRUE>>=
+options(knitr.kable.NA = '', knitr.kable.NULL = '')
+tmp <- cnvs$tsg_og$`CN-TSG`[, c("genename", "CN")]
+if (dim(tmp)[1] < 31){
+  kable(tmp, format = "latex", caption = "Tumorsuppressoren", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else if (dim(tmp)[1] < 61){
+  tmp[ c((dim(tmp)[1] + 1) : 60)] <- NA
+  tmp2 <- cbind(tmp[c(1:30), ], tmp[c(31: dim(tmp)[1]), ])
+  kable(tmp2, format = "latex", caption = "Tumorsuppressoren", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else if (dim(tmp)[1] < 91){
+  tmp[ c((dim(tmp)[1] + 1) : 90)] <- NA
+  tmp2 <- cbind(tmp[c(1:30), ], tmp[c(31: 60), ], tmp[c(61: dim(tmp)[1]), ])
+  kable(tmp2, format = "latex", caption = "Tumorsuppressoren", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else {
+  r <- round(dim(tmp)[1]/4)
+  tmp[ c((dim(tmp)[1] + 1) : (4 * r)), ] <- NA
+  tmp2 <- cbind(tmp[c(1:r), ], tmp[c((r + 1) : (2 * r)), ], tmp[c((2 * r + 1) : (3 * r)), ], tmp[c((3 * r + 1) : (4 * r)), ])
+    kable(tmp2, format = "latex", caption = "Tumorsuppressoren", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+}
+@
+\clearpage
+
+\subsection{Onkogene}
+<<echo=FALSE, results='tex', eval=TRUE>>=
+options(knitr.kable.NA = '', knitr.kable.NULL = '')
+tmp <- cnvs$tsg_og$`CN-OG`[, c("genename", "CN")]
+if (dim(tmp)[1] < 31){
+  kable(tmp, format = "latex", caption = "Onkogene", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else if (dim(tmp)[1] < 61){
+  tmp[ c((dim(tmp)[1] + 1) : 60)] <- NA
+  tmp2 <- cbind(tmp[c(1:30), ], tmp[c(31: dim(tmp)[1]), ])
+  kable(tmp2, format = "latex", caption = "Onkogene", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else if (dim(tmp)[1] < 91){
+  tmp[ c((dim(tmp)[1] + 1) : 90), ] <- NA
+  tmp2 <- cbind(tmp[c(1:30), ], tmp[c(31: 60), ], tmp[c(61: dim(tmp)[1]), ])
+  kable(tmp2, format = "latex", caption = "Onkogene", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+  } else {
+  r <- round(dim(tmp)[1]/4)
+  tmp[ c((dim(tmp)[1] + 1) : (4 * r)), ] <- NA
+  tmp2 <- cbind(tmp[c(1:r), ], tmp[c((r + 1) : (2 * r)), ], tmp[c((2 * r + 1) : (3 * r)), ], tmp[c((3 * r + 1) : (4 * r)), ])
+    kable(tmp2, format = "latex", caption = "Onkogene", booktabs = T,longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+}
+@
+\clearpage
+
+\section{Analyse der Mutationssignaturen}
+
+\begin{itemize}
+\item Alle detektierten Mutationen werden berücksichtigt
+\item Nur Signaturen, die mehr als $1\%$ aller SNVs beinhalten, werden verwendet
+\item Die Signautren basieren auf den aktuellen \textit{COSMIC Mutation Signatures} \url{http://cancer.sanger.ac.uk/cosmic/signatures}
+\item \textit{AC3} wird als \textit{BRCAness} bezeichnet
+\end{itemize}
+
+<<echo=FALSE, eval=TRUE, results='tex'>>=
+tmp <- mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$norm_exposures
+tmp[,1] <- tmp[,1] * 100
+tmp <- cbind(mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$out_sig_ind_df,tmp)
+tmp <- tmp[,c(1,4,5)]
+colnames(tmp) <- c("Signature", "Process", "Percentage")
+kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse", booktabs = T, row.names = F, digits=2) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+@
+
+\clearpage
+
+\section{Versionsinfo}
+
+\subsection{Genome}
+\begin{itemize}
+\item UCSC hg19
+\end{itemize}
+
+\subsection{Programmversionen}
+\begin{itemize}
+\item FastQC: 0.11.5
+\item Trimmomatic: 0.36
+\item BWA: 0.7.15
+\item bam-readcount: 0.8.0
+\item samtools 1.4.1
+\item GATK: 3.6
+\item picard-tools: 2.9.2
+\item VarScan: 2.4.3
+\item annovar 2017-07-17
+\item bedtools: 2.26.0
+\item CNVKit: 0.9.5
+\item Java: 1.8.0\_121
+\end{itemize}
+
+\subsection{Annovar Datenbanken}
+\begin{itemize}
+\item refGene GRCh37 (20170601)
+\item esp6500siv2\_all (20141222)
+\item avsnp150 (dbSNP) (20170929)
+\item clinvar\_20170905 (20171003)
+\item 1000g2015aug\_all (20150824)
+\item cosmic84 (20180213)
+\item exac03 (20151129)
+\item gnomad\_exome (20170311)
+\item cadd13 (20170123)
+\end{itemize}
+
+\end{document}

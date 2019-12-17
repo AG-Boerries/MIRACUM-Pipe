@@ -6,7 +6,7 @@ tumbu <- function(x, covered_region){
   #' @description Calculates the tumor mutational burden
   #'
   #' @param x dataframe. Table of Mutations
-  #' @param sureselect string. Covered region by sequencer in Mb
+  #' @param covered_region double. Covered regoin by sequencer in Mb
   #'
   #' @return returns tmb, double. tumor mutational burden
   #'
@@ -20,6 +20,7 @@ tumbu <- function(x, covered_region){
   tmb <- nrow(x) / covered_region
   tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
   return(tmb)
+}
 }
 
 filt <- function(x, func){
@@ -42,7 +43,7 @@ filt <- function(x, func){
   return(x)
 }
 
-vrz <- function(x, mode){
+vrz <- function(x, mode, protocol, capture_region){
   #' Extract VAF, Readcounts and Zygosity
   #'
   #' @description Extracts VAF, Readcounts (and Zygosity)
@@ -59,23 +60,35 @@ vrz <- function(x, mode){
   #' @details We extract VAF and Readcounts both for Tumor and Normal
   #' @details out of the column "Otherinfo". The dataframe x should contain
   #' @details only mutations calls with a lack of heterozygosity.
+  if(dim(x)[1] == 0){
+    return(x)
+  }
   if (mode == "N" | mode == "T"){
     variant_frequency <- c()
     variant_count <- c()
     zygosity <- c()
     for (j in 1:dim(x)[1]) {
       other <- as.character(x[j, "Otherinfo"])
-      zygosity <- c(zygosity, substr(other, 1, 3))
-      split <- strsplit(other, split = ":", fixed = TRUE)
-      variant_frequency <- c(variant_frequency, split[[1]][12])
-      variant_count <- c(variant_count, paste(as.numeric(split[[1]][11]),
-                                              as.numeric(split[[1]][9]),
-                                              sep = "|"))
+      if (protocol == "wes"){
+        zygosity <- c(zygosity, substr(other, 1, 3))
+        split <- strsplit(other, split = ":", fixed = TRUE)
+        variant_frequency <- c(variant_frequency, split[[1]][12])
+        variant_count <- c(variant_count, paste(as.numeric(split[[1]][11]), as.numeric(split[[1]][9]), sep = "|"))
+      }
+      if (protocol == "panel") {
+        zyg <- NA
+        zyg = ifelse(test = grepl("HET=1", other), yes = "het", no = zyg)
+        zyg = ifelse(test = grepl("HOM=1", other), yes = "hom", no = zyg)
+        zygosity <- c(zygosity, zyg)
+        split <- strsplit(other, split = ":", fixed = TRUE)
+        variant_frequency <- c(variant_frequency, split[[1]][20])
+        variant_count <- c(variant_count, paste(as.numeric(split[[1]][19]), as.numeric(split[[1]][17]), sep = "|"))
+      }
     }
-    x <- cbind(x, Variant_Allele_Frequency = variant_frequency,
-               Zygosity = zygosity, Variant_Reads = variant_count)
+    x <- cbind(x, Variant_Allele_Frequency = variant_frequency, Zygosity = zygosity, Variant_Reads = variant_count)
     rownames(x) <- NULL
-  } else if (mode == "LOH"){
+  }
+  if (mode == "LOH"){
     vaf.normal <- c()
     vaf.tumor <- c()
     count.normal <- c()
@@ -85,20 +98,18 @@ vrz <- function(x, mode){
       split <- strsplit(other, split = ":", fixed = TRUE)
       vaf.normal <- c(vaf.normal, split[[1]][12])
       vaf.tumor <- c(vaf.tumor, split[[1]][18])
-      count.normal <- c(count.normal, paste(split[[1]][11], split[[1]][9],
-                                            sep = "|"))
-      count.tumor <- c(count.tumor, paste(split[[1]][17], split[[1]][15],
-                                          sep = "|"))
-    } 
-    x <- cbind(x, VAF_Normal = vaf.normal, VAF_Tumor = vaf.tumor,
-               Count_Normal = count.normal, Count_Tumor = count.tumor)
+      count.normal <- c(count.normal, paste(split[[1]][11], split[[1]][9], sep = "|"))
+      count.tumor <- c(count.tumor, paste(split[[1]][17], split[[1]][15], sep = "|"))
+    }
+      
+    x <- cbind(x, VAF_Normal = vaf.normal, VAF_Tumor = vaf.tumor, Count_Normal = count.normal, Count_Tumor = count.tumor)
     vaf.tumor <- as.character(vaf.tumor)
     vaf.tumor2 <- as.numeric(gsub("%", "", vaf.tumor))
     exclude <- which(vaf.tumor2 < 20)
-    if(length(exclude) !=0){
+    if (length(exclude)){
       x <- x[-exclude, ]
     }
-    }
+  }
   return(x)
 }
 
@@ -175,8 +186,6 @@ ishs <- function(x, dbfile){
   #' @note required in db: Hugo_Symbol, Genomic_Position,
   #' @note -Reference_Amino_Acid, Variant_Amino_Acid, Amino_Acid_Position
   #' @note required in x: Gene.refGene, Start, AAChange.refGene
-  # lisths <- read.delim(dbfile, header = T,
-  #                      sep = "\t", colClasses = "character")
   lisths <- read.xls(xls = dbfile, sheet = 1)
   x$is_hotspot <- 0
   idh <- which (x$Gene.refGene %in% lisths$Hugo_Symbol)
@@ -237,8 +246,6 @@ isihs <- function(x, dbfile){
   #' @note required in db: Hugo_Symbol, Genomic_Position,
   #' @note -Reference_Amino_Acid, Variant_Amino_Acid, Amino_Acid_Position
   #' @note required in x: Gene.refGene, Start, AAChange.refGene
-  # lisths <- read.delim(dbfile, header = T,
-  #                      sep = "\t", colClasses = "character")
   lisths <- read.xls(xls = dbfile, sheet = 2)
 
   # list should already habe a hotspot column for snps
@@ -547,7 +554,7 @@ gene_name <- function(x){
   return(x)
 }
 
-rare <- function(x){
+rare <- function(x, cutoff = 0.001){
   #' rare
   #'
   #' @description Filters for rare mutations
@@ -564,34 +571,36 @@ rare <- function(x){
   keep <- c()
   gnomad <- as.numeric(x$gnomAD_exome_NFE)
   for (n in 1:length(gnomad)){
-    if (!is.na(gnomad[n]) & gnomad[n] <= 0.001){
+    if (!is.na(gnomad[n]) & gnomad[n] <= cutoff){
       keep <- c(keep, n)
       next
     }
     if (is.na(gnomad[n])){
-      if (as.numeric(as.character(x[n, "ExAC_NFE"])) < 0.001
-          & !is.na(as.numeric(as.character(x[n, "ExAC_NFE"])))) {
+      if (as.numeric(as.factor(x[n, "ExAC_NFE"])) < cutoff
+          & !is.na(as.numeric(as.factor(x[n, "ExAC_NFE"])))) {
         keep <- c(keep, n)
         next
       }
-      if (as.numeric(as.character(x[n, "esp6500siv2_ea"])) < 0.01 &
-          !is.na(as.numeric(as.character(x[n, "esp6500siv2_ea"])))) {
+      if (as.numeric(as.factor(x[n, "esp6500siv2_ea"])) < cutoff * 10 &
+          !is.na(as.numeric(as.factor(x[n, "esp6500siv2_ea"])))) {
         keep <- c(keep, n)
         next
       }
-      if (as.numeric(as.character(x[n, "EUR.sites.2015_08"])) < 0.01
-          & !is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
+      if (as.numeric(as.factor(x[n, "X1000g2015aug_eur"])) < cutoff * 10
+          & !is.na(as.numeric(as.factor(x[n, "X1000g2015aug_eur"])))) {
         keep <- c(keep, n)
         next
       }
-      if (is.na(as.numeric(as.character(x[n, "esp6500siv2_ea"])))
-          & is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
+      if (is.na(as.numeric(as.factor(x[n, "esp6500siv2_ea"])))
+          & is.na(as.numeric(as.factor(x[n, "X1000g2015aug_eur"])))) {
         keep <- c(keep, n)
         next
       }
     }
   }
-  x <- x[keep, ]
+  keep <- as.integer(keep)
+  class(keep)
+  x <- x[keep, , drop = F]
   return(x)
 }
 
@@ -627,13 +636,13 @@ helper_se <- function(x, i, id, db){
         }
       }
       clinsi <- x$CLINSIG[i]
-      clinsi <- unlist(strsplit(clinsi, split = "|", fixed = TRUE))
+      clinsi <- unlist(strsplit(as.character(clinsi), split = "|", fixed = TRUE))
       cl <- clinsi[1]
     }
     return(list(b = b, cc = cc, e = e, t = t, cl = cl))
 }
 
-snpeff <- function(x, sef_snp, sef_indel){
+snpeff <- function(x, sef_snp, sef_indel, protocol, capture_region){
   #' Find canonical Transcript, AAChange, BChange
   #'
   #' @description Find canonical information for mutations
@@ -647,54 +656,180 @@ snpeff <- function(x, sef_snp, sef_indel){
   #' @details Find for each mutation the available canonical information
   #' @details provided by SnpEff, so that each mutation can be matched to one
   #' @details transcript, base change and aminoacid change.
-  se_snp <- read.delim(file = sef_snp, sep = "\t", header = FALSE, skip = 36)
-  colnames(se_snp) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER",
+  
+  require(ensembldb)
+  require(EnsDb.Hsapiens.v75)
+  if (protocol == "wes"){
+    se_snp <- read.delim(file = sef_snp, sep = "\t", header = FALSE, skip = 36)
+    colnames(se_snp) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER",
                            "INFO", "FORMAT", "NORMAL", "TUMOR")
-  se_indel <- read.delim(file = sef_indel, sep = "\t", header = FALSE, skip = 36)
-  colnames(se_indel) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER",
+    se_indel <- read.delim(file = sef_indel, sep = "\t", header = FALSE, skip = 36)
+    colnames(se_indel) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER",
                              "INFO", "FORMAT", "NORMAL", "TUMOR")
+  }
+  if (protocol == "panel") {
+    te <- try(read.delim(file = sef_snp, sep = "\t", header = FALSE, skip = 5), silent = TRUE)
+    if (inherits(te, 'try-error')) {
+      se_snp <- data.frame(CHROM = 0, POS = 0, ID = 0, REF = 0, ALT = 0, QUAL = 0, FILTER = 0, INFO = 0)
+    } else {
+      se_snp <- read.delim(file = sef_snp, sep = "\t", header = FALSE, skip = 42)
+      colnames(se_snp) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "TUMOR")
+      }
+    te <- try(read.delim(file = sef_indel, sep = "\t", header = FALSE, skip = 5), silent = TRUE)
+    if (inherits(te, 'try-error')) {
+      se_indel <- data.frame(CHROM = 0, POS = 0, ID = 0, REF = 0, ALT = 0, QUAL = 0, FILTER = 0, INFO = 0)
+    } else {
+      se_indel <- read.delim(file = sef_indel, sep = "\t", header = FALSE, skip = 42)
+      colnames(se_indel) <- c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "TUMOR")
+      }
+  }
+  
   if (nrow(x) == 0){
     return("No Mutations!")
     }
 
-  x$AAChange.SnpEff <- ""
-  x$CChange.SnpEff <- ""
-  x$CLINSIG.SnpEff <- ""
-  x$Ensembl.SnpEff <- ""
-  x$Transcript.SnpEff <- ""
-  for (i in 1:nrow(x)){
-    j <- intersect (which (se_snp$CHROM == x$Chr[i]),
-                    which (se_snp$POS == x$Start[i]))
-    l <- intersect (which (se_indel$CHROM == x$Chr[i]),
-                    which (se_indel$POS == (x$Start[i] - 1)))
+  x$AAChange <- ""
+  x$CChange <- ""
+  x$CLINSIG <- ""
+  x$Ensembl <- ""
+  x$Transcript <- ""
+  for (i in 1:nrow(x)) {
+    j <- intersect (which (se_snp$CHROM == as.character(x$Chr[i])),
+                    which (se_snp$POS == as.character(x$Start[i])))
+    l <- intersect (which (se_indel$CHROM == as.character(x$Chr[i])),
+                    which (se_indel$POS == as.character((x$Start[i]) - 1)))
     res_snp <- rep("", times = 0)
     res_ind <- rep("", times = 0)
     if (length(j) > 0){
       res_snp <- helper_se(x, i, j, se_snp)
       id <- which (!is.na(res_snp$b))
-      x$AAChange.SnpEff[i] <- paste(res_snp$b[id], collapse = ";")
-      x$CChange.SnpEff[i] <- paste(res_snp$cc[id], collapse = ";")
-      x$Ensembl.SnpEff[i] <- paste(res_snp$e[id], collapse = ";")
-      x$Transcript.SnpEff[i] <- paste(res_snp$t[id], collapse = ";")
-      x$CLINSIG.SnpEff[i] <- paste(x$CLINSIG.SnpEff[i], res_snp$cl[1],
+      x$AAChange[i] <- paste(res_snp$b[id], collapse = ";")
+      x$CChange[i] <- paste(res_snp$cc[id], collapse = ";")
+      x$Ensembl[i] <- paste(res_snp$e[id], collapse = ";")
+      x$Transcript[i] <- paste(res_snp$t[id], collapse = ";")
+      x$CLINSIG[i] <- paste(x$CLINSIG[i], res_snp$cl[1],
                                    collapse = ";")
     }
     if (length(l) > 0){
       res_ind <- helper_se(x, i, l, se_indel)
       id <- which (!is.na(res_ind$b))
-      x$AAChange.SnpEff[i] <- paste(x$AAChange.SnpEff[i], res_ind$b[id],
+      x$AAChange[i] <- paste(x$AAChange[i], res_ind$b[id],
                                     collapse = ";")
-      x$CChange.SnpEff[i] <- paste(x$CChange.SnpEff[i], res_ind$cc[id],
+      x$CChange[i] <- paste(x$CChange[i], res_ind$cc[id],
                                    collapse = ";")
-      x$Ensembl.SnpEff[i] <- paste(x$Ensembl.SnpEff[i], res_ind$e[id],
+      x$Ensembl[i] <- paste(x$Ensembl[i], res_ind$e[id],
                                    collapse = ";")
-      x$Transcript.SnpEff[i] <- paste(x$Transcript.SnpEff[i], res_ind$t[id],
+      x$Transcript[i] <- paste(x$Transcript[i], res_ind$t[id],
                                       collapse = ";")
-      x$CLINSIG.SnpEff[i] <- paste(x$CLINSIG.SnpEff[i], res_ind$cl[1],
+      x$CLINSIG[i] <- paste(x$CLINSIG[i], res_ind$cl[1],
                                    collapse = ";")
     }
   }
+  id <- which(x$AAChange == " " | x$AAChange == "")
+  if (length(id) > 0) {
+    ## Get information if available
+    hs <- x$is_hotspot[id]
+    id_hs <- which(hs != "0")
+    ref_Gen <- x$AAChange.refGene[id]
+    split_rg <- strsplit(x = as.character(ref_Gen), split = ":")
+    if (length(id_hs) >0){
+      for (i in 1:length(id_hs)){
+        info <- split_rg[id_hs[i]]
+        l_id <- grep(pattern = hs[id_hs[i]], x = info[[1]])
+        split_rg[id_hs[i]][[1]][c(1:5)] <- info[[1]][c((l_id[1]-4):l_id[1])]
+      }
+    }
+    
+    ## AACode transformation to be consistent
+    ref_Gen_AA <- unlist(lapply(split_rg, function(x){ return(x[5])}))
+    split2 <- strsplit(x = ref_Gen_AA, split = ",", fixed = TRUE)
+    ref_Gen_AA <- unlist(lapply(split2, function(x) { return(x[1])}))
+    ref_Gen_AA <- substr(start = 3, stop = nchar(ref_Gen_AA), x = ref_Gen_AA)
+    AAChange <- o2t(vec_aac = ref_Gen_AA)
+    ## C-Code transformation to be consistent
+    ref_Gen_CC <- unlist(lapply(split_rg, function(x){ return(x[4])}))
+    CChange <- substr(start = 3, stop = nchar(ref_Gen_CC), x = ref_Gen_CC)
+    CChange <- rg2se(vec_ccc = CChange)
+    ## Find Ensemble-ID for Gene
+    ref_Gen_Ens <- unlist(lapply(split_rg, function(x){ return(x[1])}))
+    gID <- genes(EnsDb.Hsapiens.v75)
+    Gen_Ens <- gID$gene_id[match(ref_Gen_Ens, gID$symbol)]
+  }
+  x$AAChange[id] <- AAChange
+  x$CChange[id] <- CChange
+  x$Ensembl[id] <- Gen_Ens
+
   return(x)
+}
+
+rg2se <- function(vec_ccc) {
+  id_na <- which(is.na(vec_ccc))
+  vec_cc <- vec_ccc[-id_na]
+  
+  cc.num = as.numeric(gsub("[^\\d]+", "", vec_cc, perl=TRUE))
+  cc.split = strsplit(vec_cc,
+                      split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
+                      perl=T)
+  cchange <- lapply(cc.split, function(x){
+    return(paste0("c.", x[2], x[1], ">", x[3]))
+  })
+  vec_ccc[-id_na] <- cchange
+  return(vec_ccc)
+}
+
+o2t <- function(vec_aac) {
+  if (length(vec_aac) != 0) {
+      id_na <- which(is.na(vec_aac))
+      vec_aa <- vec_aac[-id_na]
+      
+      aa.num = as.numeric(gsub("[^\\d]+", "", vec_aa, perl=TRUE))
+      aa.split = strsplit(vec_aa,
+                          split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
+                          perl=T)
+      
+      aa_ref <- unlist(lapply(aa.split, function(x){return(x[1])}))
+      aa_alt <- unlist(lapply(aa.split, function(x){return(x[3])}))
+      aa_pos <- aa.num
+      
+      aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S",
+                   "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "delins")
+      aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala",
+                  "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn",
+                  "Lys", "Thr", "Ile", "Met", "fs", "*", "delins")
+      names(aa_long) <- aa_short
+      
+      a3_ref <- aa_long[aa_ref]
+      a3_alt <- aa_long[aa_alt]
+      vec_aa <- paste0("p.", a3_ref, aa_pos, a3_alt)
+  }
+  vec_aac[-id_na] <- vec_aa
+  return(vec_aac)
+}
+
+t2o <- function(vec_aac){
+  if (length(vec_aac) != 0) {
+    id_na <- which(is.na(vec_aac))
+    vec_aa <- vec_aac[-id_na]
+    
+    aa.num = as.numeric(gsub("[^\\d]+", "", vec_aa, perl=TRUE))
+    aa.split = strsplit(vec_aa,
+                        split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
+                        perl=T)
+    
+    aa_ref <- unlist(lapply(aa.split, function(x){return(x[1])}))
+    aa_alt <- unlist(lapply(aa.split, function(x){return(x[3])}))
+    aa_pos <- aa.num
+    
+    aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
+    aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "*")
+    names(aa_short) <- aa_long
+    
+    a1_ref <- aa_short[aa_ref]
+    a1_alt <- aa_short[aa_alt]
+    vec_aa <- paste0("p.", a1_ref, aa_pos, a1_alt)
+  }
+  vec_aac[-id_na] <- vec_aa
+  return(vec_aac)
 }
 
 ####################
@@ -771,4 +906,204 @@ addCondel <- function(x, dbfile){
   x$condel.score <- condelscore
   x$condel.label <- condellabel
   return(x)
+}
+
+target_check <- function(input, capture_region) {
+require(GenomicRanges)
+  man <- read.delim(file = capture_region, header = FALSE)
+  colnames(man) <- c("Chrom", "Start", "End", "Gen_Exon")
+  gr_man <- makeGRangesFromDataFrame(man[, c(1:3)], keep.extra.columns = FALSE,
+                                     ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "Chrom",
+                                     start.field = "Start", end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  gr_x <- makeGRangesFromDataFrame(input, keep.extra.columns = FALSE, ignore.strand = TRUE,
+                                   seqinfo = NULL, seqnames.field = "Chr", start.field = "Start",
+                                   end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  index <- findOverlaps(query = gr_man, subject = gr_x)
+  index <- as.data.frame(index)
+  output <- input[index[, 2], ]
+ 
+  return(output)
+}
+
+
+txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N", "LOH")[1]){
+  
+  # require("data.table")
+  # require("org.Hs.eg.db")
+  # require("gtools")
+  
+  if (Mutation_Status == "T") {
+    Mutation_Status <- "Somatic"
+  } else if (Mutation_Status == "N") {
+    Mutation_Status <- "Germline"
+  } else if (Mutation_Status == "LOH") {
+    Mutation_Status <- "LoH"
+  }
+
+  ann <- input
+  
+  essential.col = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+                    "AAChange", "CChange", "Transcript", "Ensembl", "avsnp150")
+
+  for(i in 1:length(essential.col)){
+    colId = suppressWarnings(grep(pattern = paste0("^",essential.col[i], "$"),
+                                  x = colnames(ann), ignore.case = TRUE))
+    if (length(colId) == 1) {
+      colnames(ann)[colId] = essential.col[i]
+    }
+  }
+
+  if(length(essential.col[!essential.col %in% colnames(ann)]) > 0){
+    message("Available fields:")
+    print(colnames(ann))
+    message(paste0("Missing required field in input file: "))
+    print(essential.col[!essential.col %in% colnames(ann)])
+    stop()
+  }
+
+  if(is.null(idCol) & is.null(id)) {
+    error('Provide either the column containing the Tumor Sample Barcode or the Tumor Sample Barcode as string!')
+    stop()
+  }
+
+  if(is.null(idCol) & !is.null(id)) {
+    ann$Tumor_Sample_Barcode <- as.character(id)
+  }
+  
+  if(!is.null(idCol)) {
+    colnames(ann)[which(colnames(ann) == idCol)] = "Tumor_Sample_Barcode"
+  }
+  
+  if(is.null(Center)) {
+    Center = NA
+  }
+
+  ann$uid = paste("uid", 1:nrow(ann), sep = "")
+  ann.mand = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+               "AAChange", "CChange", "Transcript", "Ensembl", "Tumor_Sample_Barcode", "avsnp150", "uid")
+
+  ann.opt = colnames(ann)[!colnames(ann) %in% ann.mand]
+  ann.opt = c(ann.opt, "uid")
+  ann.opt = ann[, ann.opt]
+  ann = ann[, ann.mand]
+  ann$ExonicFunc.refGene = gsub(pattern = " SNV", replacement = "", x = ann$ExonicFunc.refGene)
+  funcSpl = strsplit(x = as.character(ann$ExonicFunc.refGene), split = ";", fixed = TRUE)
+  funcSpl = sapply(funcSpl, function(l) {l[length(l)]})
+  ann$ExonicFunc.refGene = funcSpl
+
+  funcRef = strsplit(x = as.character(ann$Func.refGene), split = ";", fixed = TRUE)
+  funcRef = sapply(funcRef, function(l) {l[length(l)]})
+  ann$Func.refGene = funcRef
+
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "intronic", yes = "Intron", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "intergenic", yes = "IGR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "downstream", yes = "3'Flank", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "upstream", yes = "5'Flank", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "splicing", yes = "Splice_Site", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "UTR3", yes = "3'UTR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene == "UTR5", yes = "5'UTR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene = ifelse(test = ann$Func.refGene %in% c("ncRNA_exonic", "ncRNA_intronic", "ncRNA_UTR3", "ncRNA_UTR5", "ncRNA"), yes = "RNA", no = ann$ExonicFunc.refGene)
+  ann.lvls = c("synonymous", "nonsynonymous", "stopgain", "stoploss", "frameshift insertion", "frameshift deletion", "nonframeshift insertion", "nonframeshift deletion",
+               "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA")
+  ann.lbls = c("Silent", "Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation", "Frame_Shift_Ins", "Frame_Shift_Del", "In_Frame_Ins", "In_Frame_Del",
+               "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "UNKNOWN", "UNKNOWN", "RNA")
+  names(ann.lbls) = ann.lvls
+  ann$ExonicFunc.refGene = as.character(ann.lbls[as.character(ann$ExonicFunc.refGene)])
+
+  ann.del = ann[ann$Alt %in% "-",]
+  ann = ann[!ann$Alt %in% "-",]
+
+  if(nrow(ann.del) > 0){
+    ann.del$var.type = "DEL"
+  } else {
+    ann.del$var.type = rep(NA, times = dim(ann.del)[1])
+  }
+
+  ann.ins = ann[ann$Ref %in% "-",]
+  ann = ann[!ann$Ref %in% "-",]
+  if(nrow(ann.ins) > 0){
+    ann.ins$var.type = "INS"
+  } else {
+    ann.ins$var.type =  rep(NA, times = dim(ann.ins)[1])
+  }
+  
+  if(nrow(ann) > 0){
+    ann$var.type = "SNP"
+  } else {
+    ann$var.type =  rep(NA, times = dim(ann)[1])
+  }
+
+  ann = rbind(ann, ann.del, ann.ins)
+  ann.splice = ann[ann$ExonicFunc.refGene == "Splice_Site",]
+
+  if(nrow(ann.splice) > 0){
+    ann = ann[ann$ExonicFunc.refGene != "Splice_Site",]
+    ann.splice$Gene.refGene = sapply(strsplit(x = as.character(ann.splice$Gene.refGene), split = "(", fixed = TRUE), "[[", 1)
+    ann = rbind(ann, ann.splice)
+  }
+
+  symbol = unlist(lapply(strsplit(ann$Gene.refGene, split = ";"), function(x) {x[1]}))
+  idx <- which(!is.na(symbol))
+  entrez <- rep(NA, times = length(symbol))
+  entrez[idx] = mget(as.character(symbol[idx]), org.Hs.egSYMBOL2EG, ifnotfound = NA)
+  aa = unlist(lapply(strsplit(x = as.character(ann$AAChange), split = ";", fixed = T), function(x) x[1]))
+  aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
+  aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X")
+  names(aa_short) <- aa_long
+  aa = gsub(aa, pattern = '*',replacement = 'X',fixed = T)
+  aa.num = as.numeric(gsub("[^\\d]+", "", aa, perl=TRUE))
+  aa = unlist(lapply(strsplit(aa , split = '.', fixed = T), function(s) s[2]))
+  aa.split = strsplit(aa, split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=T)
+  aa.split = lapply(aa.split, function(c) {aa_short[c]})
+  aa.short = do.call(rbind , aa.split)
+
+  if(length(which(is.na(aa.num))) != length(aa.num)) {
+    aa.short[, 2] = aa.num
+  } else {
+    aa.short =  NA
+  }
+  if (!is.na(aa.short)){
+    proteinChange = paste0("p.", aa.short[, 1], aa.short[, 2], aa.short[, 3])
+  } else {
+    proteinChange = NA
+  }
+  proteinChange[proteinChange == "p.NANANA"] = ""
+  Transcript_Id = ann$Transcript
+  Transcript_Id[is.na(Transcript_Id)] <- ""
+  TxChange = unlist(lapply(strsplit(x = as.character(ann$CChange), split = ";", fixed = T), function(x) x[1]))
+  ensembl = ann$Ensembl
+  ensembl[is.na(ensembl)] <- ""
+
+  ann.maf = data.table::data.table(Hugo_Symbol = ann$Gene.refGene,
+                                   Entrez_Gene_Id = as.character(entrez),
+                                   Center = Center,
+                                   NCBI_Build = refBuild,
+                                   Chromosome = ann$Chr,
+                                   Start_Position = ann$Start,
+                                   End_Position = ann$End,
+                                   Strand = "+",
+                                   Variant_Classification = ann$ExonicFunc.refGene,
+                                   Variant_Type = ann$var.type,
+                                   Reference_Allele = ann$Ref,
+                                   Tumor_Seq_Allele1 = ann$Ref,
+                                   Tumor_Seq_Allele2 = ann$Alt,
+                                   dbSNP_RS = ann$avsnp150,
+                                   Tumor_Sample_Barcode = ann$Tumor_Sample_Barcode,
+                                   Mutation_Status = Mutation_Status,
+                                   HGSVp_Short = proteinChange,
+                                   Amino_Acid_Change = proteinChange,
+                                   TxChange = TxChange,
+                                   Transcript_Id = Transcript_Id,
+                                   ENSEMBL_Gene_Id = ensembl,
+                                   uid = ann$uid)
+  
+  ann.maf = merge(ann.maf, ann.opt, by = "uid")
+  ann.maf = ann.maf[, `:=`(uid, NULL)]
+
+  ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
+  ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
+
+  return(ann.maf)
 }
