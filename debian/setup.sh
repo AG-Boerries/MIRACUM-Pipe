@@ -14,6 +14,14 @@ function install_java8()
   apt-get update && apt-get install adoptopenjdk-8-openj9
 }
 
+function install_jdk8()
+{
+  ## install jre8
+    apt-get install -y apt-transport-https ca-certificates wget curl dirmngr gnupg software-properties-common && \
+    echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list && \
+    apt-get update && apt-get -y install openjdk-8-jdk
+}
+
 function install_texlive()
 {
   apt-get install -y texlive texlive-lang-german texlive-latex-extra
@@ -42,11 +50,11 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
   python3 python3-pysam \
   python3-pip \
   libsnappy-java && \
-  install_java8 && \
-  apt-get -y purge  default-jre default-jdk-headless \
-                    openjdk-11-jdk openjdk-11-jdk-headless \
-                    openjdk-11-jre openjdk-11-jre-headless && \
   install_texlive && \
   pip3 install shyaml && \
   apt-get purge -y python3-pip && \
-  apt-get -y autoremove
+  apt-get -y purge  default-jre default-jdk-headless \
+                    openjdk-11-jdk openjdk-11-jdk-headless \
+                    openjdk-11-jre openjdk-11-jre-headless && \
+  install_jdk8 && \
+  apt-get -y autoremove 

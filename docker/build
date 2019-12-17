@@ -2,31 +2,31 @@
 
 case "$1" in
         base)
-            docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
             ;;
 
         R)
-            docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
             ;;
 
         tools)
-            docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
             ;;
 
         report)
-            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
             ;;
 
         interface)
-            docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
         all)
-            docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
-            docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
-            docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
-            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
-            docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
+            docker build --build-arg http_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --build-arg https_proxy=http://proxy.ibsm.uni-freiburg.de:8080 --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
         *)

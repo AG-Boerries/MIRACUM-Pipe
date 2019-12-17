@@ -1,3 +1,6 @@
 FROM miracum_pipe_r:latest
 
+ENV HTTP_PROXY "http://proxy.ibsm.uni-freiburg.de:8080"
+ENV HTTPS_PROXY "http://proxy.ibsm.uni-freiburg.de:8080"
+
 RUN /opt/MIRACUM-Pipe/tools/install.sh

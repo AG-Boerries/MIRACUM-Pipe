@@ -3,7 +3,7 @@
 # Created by: Raphael Scheible
 # Created on: 10.07.19
 
-options(repos=structure(c(CRAN="http://cran.us.r-project.org")))
+options(repos=structure(c(CRAN="http://cloud.r-project.org")))
 
 install.packages(c( "foreach", "doMC"))
 install.packages("openxlsx", dependencies=TRUE)
