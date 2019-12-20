@@ -43,7 +43,7 @@ wget https://github.com/broadinstitute/picard/releases/download/${VERSION_PICARD
 ###########
 mkdir -p ${DIR_SCRIPT}/varscan
 cd ${DIR_SCRIPT}/varscan
-wget https://github.com/dkoboldt/varscan/raw/master/VarScan.v${VERSION_VARSCAN}.jar\
+wget https://github.com/dkoboldt/varscan/raw/master/VarScan.v${VERSION_VARSCAN}.jar \
     -O VarScan.jar
 
 

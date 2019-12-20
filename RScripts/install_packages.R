@@ -15,12 +15,12 @@ install.packages("knitr")
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
+BiocManager::install(version = "3.8")
 
 BiocManager::install("OmicCircos")
 BiocManager::install("rtracklayer")
 BiocManager::install("org.Hs.eg.db")
 BiocManager::install("Homo.sapiens")
-
 BiocManager::install("biomaRt")
 BiocManager::install("Rsamtools")
 BiocManager::install("gtrellis")

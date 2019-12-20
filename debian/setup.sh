@@ -11,15 +11,18 @@ function install_java8()
   apt-get install -y apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
   wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
   add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install adoptopenjdk-8-openj9
+  apt-get update && apt-get install adoptopenjdk-8-hotspot
 }
 
 function install_jdk8()
 {
   ## install jre8
     apt-get install -y apt-transport-https ca-certificates wget curl dirmngr gnupg software-properties-common && \
+    cp /etc/apt/sources.list /etc/apt/sources.list.bak && \
     echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list && \
-    apt-get update && apt-get -y install openjdk-8-jdk
+    apt-get update && apt-get -y install openjdk-8-jdk ant && \
+    mv /etc/apt/sources.list.bak /etc/apt/sources.list && \
+    apt-get update
 }
 
 function install_texlive()
@@ -44,17 +47,17 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
   libncurses5-dev libxml2-dev \
   gfortran \
   default-jre \
-  ant \
+  3ant \
   perl-base \
   r-base-core r-recommended \
   python3 python3-pysam \
   python3-pip \
   libsnappy-java && \
-  install_texlive && \
-  pip3 install shyaml && \
-  apt-get purge -y python3-pip && \
+  install_java8 && \
   apt-get -y purge  default-jre default-jdk-headless \
                     openjdk-11-jdk openjdk-11-jdk-headless \
                     openjdk-11-jre openjdk-11-jre-headless && \
-  install_jdk8 && \
-  apt-get -y autoremove 
+  install_texlive && \
+  pip3 install shyaml && \
+  apt-get purge -y python3-pip && \
+  apt-get -y autoremove
