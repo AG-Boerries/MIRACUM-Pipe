@@ -144,12 +144,12 @@ isogtsg <- function(x, dbfile){
   #' @details The same procedure is used for oncogenes.
   db <- read.delim(dbfile, header = T, sep = "\t", colClasses = "character")
   x$is_tumorsuppressor <- 0
-  ts <- which(db$OncoKB.TSG == "Yes")
+  ts <- which(db$Is.Tumor.Suppressor.Gene == "Yes")
   idx <- which (x$Gene.refGene %in% db$Hugo.Symbol[ts])
   x$is_tumorsuppressor[idx] <- 1
 
   x$is_oncogene <- 0
-  og <- which(db$OncoKB.Oncogene == "Yes")
+  og <- which(db$Is.Oncogene == "Yes")
   idx <- which (x$Gene.refGene %in% db$Hugo.Symbol[og])
   x$is_oncogene[idx] <- 1
   return(x)
@@ -411,9 +411,8 @@ oncokb <- function(x, dbfile){
       if (db$Alteration[pta[j]] == "Oncogenic Mutations"){
         for (i in 1:length(id)){
           out <- ""
-          out <- paste0(db$Cancer_Type[pta[j]], ",EL:", db$Level[pta[j]],
-                        ":", db$Drugs[pta[j]], "(", db$PMIDs_for_drug[pta[j]],
-                        ")")
+          out <- paste0(db$Tumor.Type[pta[j]], ",EL:", db$Level[pta[j]],
+                        ":", db$Drugs[pta[j]])
           if (onkb[id[i]] == FALSE){
             onkb[id[i]] <- out
           } else {
@@ -429,9 +428,8 @@ oncokb <- function(x, dbfile){
           if (grepl(ex, x$AAChange.refGene[idh[i]])
               && x$Gene.refGene[idh] == db$Gene[pta[j]]){
             out <- ""
-            out <- paste0(db$Cancer_Type[pta[j]], ",EL:", db$Level[pta[j]],
-                          ":", db$Drugs[pta[j]], "(", db$PMIDs_for_drug[pta[j]],
-                          ")")
+            out <- paste0(db$Tumor.Type[pta[j]], ",EL:", db$Level[pta[j]],
+                          ":", db$Drugs[pta[j]])
             if (onkb[id[i]] == FALSE){
               onkb[id[i]] <- out
             } else {
@@ -448,9 +446,8 @@ oncokb <- function(x, dbfile){
               && grepl("del", x$AAChange.refGene[i])
               && x$Gene.refGene[idh] == db$Gene[pta[j]]){
             out <- ""
-            out <- paste0(db$Cancer_Type[pta[j]], ",EL:", db$Level[pta[j]],
-                          ":", db$Drugs[pta[j]], "(", db$PMIDs_for_drug[pta[j]],
-                          ")")
+            out <- paste0(db$Tumor.Type[pta[j]], ",EL:", db$Level[pta[j]],
+                          ":", db$Drugs[pta[j]])
             if (onkb[id[i]] == FALSE){
               onkb[id[i]] <- out
             } else {
@@ -467,9 +464,8 @@ oncokb <- function(x, dbfile){
               && grepl("ins", x$AAChange.refGene[i])
               && x$Gene.refGene[idh] == db$Gene[pta[j]]){
             out <- ""
-            out <- paste0(db$Cancer_Type[pta[j]], ",EL:", db$Level[pta[j]],
-                          ":", db$Drugs[pta[j]], "(", db$PMIDs_for_drug[pta[j]],
-                          ")")
+            out <- paste0(db$Tumor.Type[pta[j]], ",EL:", db$Level[pta[j]],
+                          ":", db$Drugs[pta[j]])
             if (onkb[id[i]] == FALSE){
               onkb[id[i]] <- out
             } else {
@@ -482,9 +478,8 @@ oncokb <- function(x, dbfile){
           if (db$Gene[pta[j]] == x$Gene.refGene[i]
               && grepl(db$Alteration[pta[j]], x$AAChange.refGene[i])){
             out <- ""
-            out <- paste0(db$Cancer_Type[pta[j]], ",EL:", db$Level[pta[j]],
-                          ":", db$Drugs[pta[j]], "(", db$PMIDs_for_drug[pta[j]],
-                          ")")
+            out <- paste0(db$Tumor.Type[pta[j]], ",EL:", db$Level[pta[j]],
+                          ":", db$Drugs[pta[j]])
             if (onkb[id[i]] == FALSE){
               onkb[id[i]] <- out
             } else {
