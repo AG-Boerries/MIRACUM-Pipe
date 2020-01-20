@@ -10,7 +10,7 @@ library(rtracklayer)
 library(openxlsx)
 library(org.Hs.eg.db)
 library(Homo.sapiens)
-library(biomaRt)
+library(RMySQL)
 library(RColorBrewer)
 library(stringr)
 library(Rsamtools)
@@ -39,6 +39,7 @@ path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
 author <- args[15]
+center <- args[16]
 
 #############
 # Functions #
@@ -72,9 +73,10 @@ if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
   snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
   indel_file_gd <- paste0(path_input, sample, "_vc.output.indel.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
-  filter_out_gd <- paste0(sample, "_VC_Germline_NORMAL.xlsx")
+  filter_out_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.xlsx")
   snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
   snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
+  maf_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.maf")
 }
 # SOMATIC TUMOR
 snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
@@ -83,12 +85,14 @@ snpefffile_snp <- paste0(path_input, sample, "_vc.output.snp.Somatic.SnpEff.vcf"
 snpefffile_indel <- paste0(path_input, sample,
                           "_vc.output.indel.Somatic.SnpEff.vcf")
 filter_out_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.xlsx")
+maf_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.maf")
 # LOH
 snp_file_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.hc.avinput.hg19_multianno.csv")
 indel_file_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.hc.avinput.hg19_multianno.csv")
 loh_out <- paste0(path_output, sample, "_VC_LOH.xlsx")
 snpefffile_snp_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.SnpEff.vcf")
 snpefffile_indel_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.SnpEff.vcf")
+maf_loh <- paste0(path_output, sample, "_VC_LOH.maf")
 # Results
 outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
 outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
@@ -98,29 +102,36 @@ outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx"
 outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
 coverage_out <- paste0(path_output, sample, "_coverage.pdf")
 
+
+
+
+
+
 if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
   filt_result_gd <- filtering(snpfile = snp_file_gd, indelfile =  indel_file_gd,
                             snpefffile_snp = snpefffile_snp_gd,
                             snpefffile_indel = snpefffile_indel_gd,
-                            outfile =  filter_out_gd, path_data = path_data,
+                            outfile =  filter_out_gd, outfile_maf = maf_gd,
+                            path_data = path_data,
                             path_script = path_script, covered_region = NULL,
-                            mode = "N")
+                            mode = "N", center = center)
 }
 # SOMATIC TUMOR
 filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                           snpefffile_snp = snpefffile_snp,
                           snpefffile_indel = snpefffile_indel,
-                          outfile = filter_out_td, path_data = path_data,
+                          outfile = filter_out_td, outfile_maf = maf_td,
+                          path_data = path_data,
                           path_script = path_script, covered_region = covered_region,
-                          mode ="T")
+                          mode ="T", center = center)
 # LOH
 filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            snpefffile_snp = snpefffile_snp_loh,
                            snpefffile_indel = snpefffile_indel_loh,
-                           outfile = loh_out,
+                           outfile = loh_out, outfile_maf = maf_loh,
                            path_data = path_data, path_script = path_script,
-                           covered_region = NULL, mode = "LOH")
+                           covered_region = NULL, mode = "LOH", center = center)
 # Analysis
 mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               somatic = filt_result_td$table,
@@ -130,8 +141,7 @@ mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               outfile_reactome = outfile_reactome,
                                               outfile_consensus = outfile_consensus,
                                               outfile_hallmarks = outfile_hallmarks,
-                                              outfile_mtb_genesets =
-                                              outfile_mtb_genesets,
+                                              outfile_mtb_genesets = outfile_mtb_genesets,
                                               path_data = path_data,
                                               path_script = path_script,
                                               targets_txt = targets_txt)

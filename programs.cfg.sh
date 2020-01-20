@@ -2,6 +2,7 @@
 
 # common settings
 readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
+readonly CFG_CENTER=$(get_config_value common.center "${PARAM_DIR_PATIENT}")
 
 # temporary folder
 readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
@@ -127,7 +128,7 @@ readonly CFG_ANNOVAR_ARGOP=$(get_config_value tools.annovar.argop "${PARAM_DIR_P
 
 ## Tools and paths
 # Paths
-readonly BIN_JAVA="java -Xcompressedrefs -Djava.io.tmpdir=${DIR_TMP} " # path to java
+readonly BIN_JAVA="java -Djava.io.tmpdir=${DIR_TMP} " # path to java
 
 # Pre-Processing
 readonly BIN_FASTQC="${DIR_TOOLS}/FastQC/bin/fastqc -t ${CFG_COMMON_CPUCORES} --extract "
@@ -152,17 +153,17 @@ readonly BIN_MPILEUP="${BIN_SAMTOOLS} mpileup ${FLAGS_MPILEUP} --adjust-MQ ${CFG
 readonly BIN_STATS="${BIN_SAMTOOLS} stats "
 
 # GATK
-readonly BIN_GATK="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/gatk/GenomeAnalysisTK.jar"
+readonly BIN_GATK="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/gatk/GenomeAnalysisTK.jar"
 readonly BIN_REALIGNER_TARGER_CREATOR="${BIN_GATK} -T RealignerTargetCreator -R ${FILE_GENOME} -nt ${CFG_COMMON_CPUCORES} "
 readonly BIN_INDEL_REALIGNER="${BIN_GATK} -R ${FILE_GENOME} -T IndelRealigner "
 readonly BIN_BASE_RECALIBRATOR="${BIN_GATK} -T BaseRecalibrator -l INFO -R ${FILE_GENOME} -knownSites ${CFG_REFERENCE_DBSNP} -nct ${CFG_COMMON_CPUCORES} "
 readonly BIN_PRINT_READS="${BIN_GATK} -T PrintReads -R ${FILE_GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
 # PICARD
-readonly BIN_FIX_MATE="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
+readonly BIN_FIX_MATE="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
 
 # VARSCAN
-readonly BIN_VAR_SCAN="java -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/varscan/VarScan.jar"
+readonly BIN_VAR_SCAN="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/varscan/VarScan.jar"
 readonly BIN_SOMATIC="${BIN_VAR_SCAN} somatic"
 readonly BIN_PROCESSSOMATIC="${BIN_VAR_SCAN} processSomatic"
 
@@ -190,6 +191,7 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # export parameters
 export CFG_AUTHOR
+export CFG_CENTER
 
 export CFG_FILE_TUMOR_R1
 export CFG_FILE_TUMOR_R2

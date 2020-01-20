@@ -4,6 +4,11 @@
 ._make_alignment_VC_CNV.sh
 RScripts/._*
 
+.DS_Store
+._.DS_Store
+._debian
+._docker
+
 assets/input/*
 !assets/input/.gitkeep
 

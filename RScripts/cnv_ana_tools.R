@@ -186,6 +186,40 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
   dev.off()
 }
 
+del_dup_query <- function(da.fr){
+  require(RMySQL)
+  require(doMC)
+  chroms <- unlist(da.fr[[1]])
+  ucscchroms <- unlist(lapply(chroms, function(i) paste0("chr",i)))
+  start_list <- unlist(da.fr[[2]])
+  stop_list <- unlist(da.fr[[3]])
+  out <- mclapply(1:length(ucscchroms), function(i){
+    con<- dbConnect(RMySQL::MySQL(),
+                    host="genome-euro-mysql.soe.ucsc.edu",
+                    user = "genome",
+                    password = '',
+                    port = 3306,
+                    dbname = "hg19"
+    )
+    chrom <-ucscchroms[i]
+    start <-start_list[i]
+    stop <- stop_list[i]
+    tmp <- paste0("Select name2 FROM refGene WHERE chrom='",chrom,"'AND ((cdsStart BETWEEN'",start,"'AND'",stop,"')OR (cdsEnd BETWEEN'",start,"'AND'",stop,"'))")
+    res <- dbSendQuery(con, tmp)
+    da.fr <- dbFetch(res, n =-1)
+    da.fr <- unique(da.fr)
+    dbClearResult(res)
+    da.fr <- sort(unlist(as.list(da.fr)))
+    names(da.fr) <- NULL
+    dbDisconnect(con)
+    return(da.fr)
+  }, mc.cores = detectCores())
+
+  name_vector <- unlist(lapply(1:length(ucscchroms), function(i) paste0(ucscchroms[i],":",start_list[i],"-",stop_list[i])))
+  names(out) <- name_vector
+  return(out)
+}
+
 
 cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumorsuppressors, dbfile, path_data, path_script){
   #' CNV Annotation
@@ -214,9 +248,9 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
 
   db <- read.delim(dbfile, header = T, sep = "\t", colClasses = "character")
   db <- data.frame(db)
-  ts <- which(db$OncoKB.TSG == "Yes")
+  ts <- which(db$Is.Tumor.Suppressor.Gene == "Yes")
   ts <- db[ts, ]
-  og <- which(db$OncoKB.Oncogene == "Yes")
+  og <- which(db$Is.Oncogene == "Yes")
   onc <- db[og, ]
   
   x$genes <- "."
@@ -225,22 +259,15 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   x$Length <- "."
   not.significant <- c()
   
-  ensembl=useMart("ensembl",
-                  dataset="hsapiens_gene_ensembl")
-  
-  for(i in 1:nrow(x)) {
-    cat("Processing CNV#", i, "\n")
-    
-    if(x$WilcoxonRankSumTestPvalue[i] < 0.05
+if(x$WilcoxonRankSumTestPvalue[i] < 0.05
        & x$KolmogorovSmirnovPvalue[i] < 0.05
        & !is.na(x$WilcoxonRankSumTestPvalue[i])
        & !is.na(x$KolmogorovSmirnovPvalue[i])) {
       location <- list(x$chr[i], x$start[i], x$end[i])
-      query <- getBM(c('hgnc_symbol'), filters = c('chromosome_name',
-                                                   'start', 'end'),
-                     values = location, mart = ensembl)
+      
+      query <- del_dup_query(location)
       query2 <- unlist(query)
-      x$genes[i] <- paste(query2, collapse = ",")
+      x$genes[i] <- paste(query2, collapse = ", ")
       
       # Test for Tumor Suppressors
       id.ts <- which(ts$Hugo.Symbol %in% query2)
@@ -271,6 +298,7 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   
   return(list(CNVsAnnotated = x1, CNVOncogenes = onco, CNVTumorSuppressors = tumorSupp))
 }
+
 
 
 cnv_processing <- function(cnv_file, targets,
