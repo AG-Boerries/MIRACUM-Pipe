@@ -2,6 +2,7 @@
 
 # common settings
 readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
+readonly CFG_CENTER=$(get_config_value common.center "${PARAM_DIR_PATIENT}")
 
 # temporary folder
 readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
@@ -190,6 +191,7 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # export parameters
 export CFG_AUTHOR
+export CFG_CENTER
 
 export CFG_FILE_TUMOR_R1
 export CFG_FILE_TUMOR_R2

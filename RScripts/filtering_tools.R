@@ -768,7 +768,7 @@ addCondel <- function(x, dbfile){
   return(x)
 }
 
-txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
+txt2maf <- function(input, Center = center, refBuild = 'hg19', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
   
   # require("data.table")
   # require("org.Hs.eg.db")

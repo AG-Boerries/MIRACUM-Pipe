@@ -39,6 +39,7 @@ path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
 author <- args[15]
+center <- arggs[16]
 
 #############
 # Functions #
@@ -108,7 +109,7 @@ if (args[6] == "somaticGermline"){
                             outfile =  filter_out_gd, outfile_maf = maf_gd,
                             path_data = path_data,
                             path_script = path_script, covered_region = NULL,
-                            mode = "N")
+                            mode = "N", center = center)
 }
 # SOMATIC TUMOR
 filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
@@ -117,14 +118,14 @@ filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                           outfile = filter_out_td, outfile_maf = maf_td,
                           path_data = path_data,
                           path_script = path_script, covered_region = covered_region,
-                          mode ="T")
+                          mode ="T", center = center)
 # LOH
 filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            snpefffile_snp = snpefffile_snp_loh,
                            snpefffile_indel = snpefffile_indel_loh,
                            outfile = loh_out, outfile_maf = maf_gd,
                            path_data = path_data, path_script = path_script,
-                           covered_region = NULL, mode = "LOH")
+                           covered_region = NULL, mode = "LOH", center = center)
 # Analysis
 mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               somatic = filt_result_td$table,

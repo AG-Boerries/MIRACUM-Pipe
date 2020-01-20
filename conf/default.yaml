@@ -1,5 +1,6 @@
 common:
   author: MIRACUM-Pipe
+  center: Freiburg
   dirTmp: /tmp
   memory: 8g
   cpucores: 4
