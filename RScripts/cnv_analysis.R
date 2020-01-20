@@ -44,7 +44,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                                    outfile_tumorsuppressors =
                                      outfile_tumorsuppressors,
                                    dbfile =  paste(path_data,
-                                                   "CancerGenesList.txt",
+                                                   "cancerGeneList.tsv",
                                                    sep = "/"),
                                    path_data = path_data, path_script
                                    = path_script)

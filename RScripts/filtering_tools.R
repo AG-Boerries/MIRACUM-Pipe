@@ -943,8 +943,8 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
   ann.maf = merge(ann.maf, ann.opt, by = "uid")
   ann.maf = ann.maf[, `:=`(uid, NULL)]
 
-  ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
-  ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
+  #ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
+  #ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
 
   return(ann.maf)
 }

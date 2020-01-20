@@ -3,7 +3,7 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, path_data, path_script, covered_region, mode = "T"){
+                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T"){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
