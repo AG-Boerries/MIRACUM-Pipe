@@ -786,7 +786,7 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
   #	ann <- read.table(input, header = T, sep = sep, stringsAsFactors = F)
   
   essential.col = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
-                    "AAChange", "CChange", "Transcript", "Ensembl", "avsnp150")
+                    "AAChange.SnpEff", "CChange.SnpEff", "Transcript.SnpEff", "Ensembl.SnpEff", "avsnp150")
 
   for(i in 1:length(essential.col)){
     colId = suppressWarnings(grep(pattern = paste0("^",essential.col[i], "$"),
@@ -823,7 +823,7 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
 
   ann$uid = paste("uid", 1:nrow(ann), sep = "")
   ann.mand = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
-               "AAChange", "CChange", "Transcript", "Ensembl", "Tumor_Sample_Barcode", "avsnp150", "uid")
+               "AAChange.SnpEff", "CChange.SnpEff", "Transcript.SnpEff", "Ensembl.SnpEff", "Tumor_Sample_Barcode", "avsnp150", "uid")
 
   ann.opt = colnames(ann)[!colnames(ann) %in% ann.mand]
   ann.opt = c(ann.opt, "uid")
@@ -889,7 +889,7 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
   idx <- which(!is.na(symbol))
   entrez <- rep(NA, times = length(symbol))
   entrez[idx] = mget(as.character(symbol[idx]), org.Hs.egSYMBOL2EG, ifnotfound = NA)
-  aa = unlist(lapply(strsplit(x = as.character(ann$AAChange), split = ";", fixed = T), function(x) x[1]))
+  aa = unlist(lapply(strsplit(x = as.character(ann$AAChange.SnpEff), split = ";", fixed = T), function(x) x[1]))
   aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
   aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X")
   names(aa_short) <- aa_long
@@ -898,7 +898,7 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
   aa = unlist(lapply(strsplit(aa , split = '.', fixed = T), function(s) s[2]))
   aa.split = strsplit(aa, split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=T)
   aa.split = lapply(aa.split, function(c) {aa_short[c]})
-  aa.short = do.call(rbind , aa.split)
+  aa.short = do.call(rbind, aa.split)
 
   if(length(which(is.na(aa.num))) != length(aa.num)) {
     aa.short[, 2] = aa.num
@@ -911,10 +911,10 @@ txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL,
     proteinChange = NA
   }
   proteinChange[proteinChange == "p.NANANA"] = ""
-  Transcript_Id = ann$Transcript
+  Transcript_Id = ann$Transcript.SnpEff
   Transcript_Id[is.na(Transcript_Id)] <- ""
-  TxChange = unlist(lapply(strsplit(x = as.character(ann$CChange), split = ";", fixed = T), function(x) x[1]))
-  ensembl = ann$Ensembl
+  TxChange = unlist(lapply(strsplit(x = as.character(ann$CChange.SnpEff), split = ";", fixed = T), function(x) x[1]))
+  ensembl = ann$Ensembl.SnpEff
   ensembl[is.na(ensembl)] <- ""
 
   ann.maf = data.table::data.table(Hugo_Symbol = ann$Gene.refGene,
