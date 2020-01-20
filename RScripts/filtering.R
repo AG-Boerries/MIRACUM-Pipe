@@ -143,6 +143,11 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
 
       x <- x.condel[, c(idx, idx2)]
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+      out.maf <- txt2maf(input = x, Center = 'Freiburg', refBuild = 'hg19',
+                         id = sample, sep = '\t', idCol = NULL,
+                         Mutation_Status = mode)
+      write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
+                  sep = '\t', col.names = T, row.names = F)
       return(list(table = x, tmb = tmb))
     } else if (mode == "N" | mode == "T") {
       print("No SNVs passed filter!")
