@@ -47,7 +47,6 @@ For testing MIRACUM-Pipe an example dataset is provided and downloaded via the *
 * Patrick Metzger
 * Raphael Scheible
 * Maria Hess
-* Victor Jaravine
 * Martin Boeker
 * Geoffroy Andrieux
 * Melanie Börries
