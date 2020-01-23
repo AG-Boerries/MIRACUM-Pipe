@@ -21,6 +21,7 @@ tumbu <- function(x, covered_region){
   tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
   return(tmb)
 }
+}
 
 filt <- function(x, func){
   #' Filter for function
@@ -902,7 +903,31 @@ addCondel <- function(x, dbfile){
   return(x)
 }
 
+<<<<<<< HEAD
+target_check <- function(input, capture_region) {
+require(GenomicRanges)
+  man <- read.delim(file = capture_region, header = FALSE)
+  colnames(man) <- c("Chrom", "Start", "End", "Gen_Exon")
+  gr_man <- makeGRangesFromDataFrame(man[, c(1:3)], keep.extra.columns = FALSE,
+                                     ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "Chrom",
+                                     start.field = "Start", end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  gr_x <- makeGRangesFromDataFrame(input, keep.extra.columns = FALSE, ignore.strand = TRUE,
+                                   seqinfo = NULL, seqnames.field = "Chr", start.field = "Start",
+                                   end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  index <- findOverlaps(query = gr_man, subject = gr_x)
+  index <- as.data.frame(index)
+  output <- input[index[, 2], ]
+ 
+  return(output)
+}
+
+
+txt2maf <- function(input, Center = 'Freiburg', refBuild = 'hg19', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N", "LOH")[1]){
+=======
 txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
+>>>>>>> hpc_dev
   
   # require("data.table")
   # require("org.Hs.eg.db")
@@ -917,10 +942,16 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   }
 
   ann <- input
+<<<<<<< HEAD
+  
+  essential.col = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+                    "AAChange", "CChange", "Transcript", "Ensembl", "avsnp150")
+=======
   #	ann <- read.table(input, header = T, sep = sep, stringsAsFactors = F)
   
   essential.col = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
                     "AAChange.SnpEff", "CChange.SnpEff", "Transcript.SnpEff", "Ensembl.SnpEff", "avsnp150")
+>>>>>>> hpc_dev
 
   for(i in 1:length(essential.col)){
     colId = suppressWarnings(grep(pattern = paste0("^",essential.col[i], "$"),
@@ -957,7 +988,11 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
 
   ann$uid = paste("uid", 1:nrow(ann), sep = "")
   ann.mand = c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+<<<<<<< HEAD
+               "AAChange", "CChange", "Transcript", "Ensembl", "Tumor_Sample_Barcode", "avsnp150", "uid")
+=======
                "AAChange.SnpEff", "CChange.SnpEff", "Transcript.SnpEff", "Ensembl.SnpEff", "Tumor_Sample_Barcode", "avsnp150", "uid")
+>>>>>>> hpc_dev
 
   ann.opt = colnames(ann)[!colnames(ann) %in% ann.mand]
   ann.opt = c(ann.opt, "uid")
@@ -983,7 +1018,11 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann.lvls = c("synonymous", "nonsynonymous", "stopgain", "stoploss", "frameshift insertion", "frameshift deletion", "nonframeshift insertion", "nonframeshift deletion",
                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA")
   ann.lbls = c("Silent", "Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation", "Frame_Shift_Ins", "Frame_Shift_Del", "In_Frame_Ins", "In_Frame_Del",
+<<<<<<< HEAD
+               "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "UNKNOWN", "UNKNOWN", "RNA")
+=======
                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "Unknown", "Unknown", "RNA")
+>>>>>>> hpc_dev
   names(ann.lbls) = ann.lvls
   ann$ExonicFunc.refGene = as.character(ann.lbls[as.character(ann$ExonicFunc.refGene)])
 
@@ -1023,7 +1062,11 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   idx <- which(!is.na(symbol))
   entrez <- rep(NA, times = length(symbol))
   entrez[idx] = mget(as.character(symbol[idx]), org.Hs.egSYMBOL2EG, ifnotfound = NA)
+<<<<<<< HEAD
+  aa = unlist(lapply(strsplit(x = as.character(ann$AAChange), split = ";", fixed = T), function(x) x[1]))
+=======
   aa = unlist(lapply(strsplit(x = as.character(ann$AAChange.SnpEff), split = ";", fixed = T), function(x) x[1]))
+>>>>>>> hpc_dev
   aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
   aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X")
   names(aa_short) <- aa_long
@@ -1032,7 +1075,11 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   aa = unlist(lapply(strsplit(aa , split = '.', fixed = T), function(s) s[2]))
   aa.split = strsplit(aa, split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=T)
   aa.split = lapply(aa.split, function(c) {aa_short[c]})
+<<<<<<< HEAD
+  aa.short = do.call(rbind , aa.split)
+=======
   aa.short = do.call(rbind, aa.split)
+>>>>>>> hpc_dev
 
   if(length(which(is.na(aa.num))) != length(aa.num)) {
     aa.short[, 2] = aa.num
@@ -1045,10 +1092,17 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
     proteinChange = NA
   }
   proteinChange[proteinChange == "p.NANANA"] = ""
+<<<<<<< HEAD
+  Transcript_Id = ann$Transcript
+  Transcript_Id[is.na(Transcript_Id)] <- ""
+  TxChange = unlist(lapply(strsplit(x = as.character(ann$CChange), split = ";", fixed = T), function(x) x[1]))
+  ensembl = ann$Ensembl
+=======
   Transcript_Id = ann$Transcript.SnpEff
   Transcript_Id[is.na(Transcript_Id)] <- ""
   TxChange = unlist(lapply(strsplit(x = as.character(ann$CChange.SnpEff), split = ";", fixed = T), function(x) x[1]))
   ensembl = ann$Ensembl.SnpEff
+>>>>>>> hpc_dev
   ensembl[is.na(ensembl)] <- ""
 
   ann.maf = data.table::data.table(Hugo_Symbol = ann$Gene.refGene,
@@ -1077,8 +1131,16 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann.maf = merge(ann.maf, ann.opt, by = "uid")
   ann.maf = ann.maf[, `:=`(uid, NULL)]
 
+<<<<<<< HEAD
+  ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
+  ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
+
+  return(ann.maf)
+}
+=======
   #ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
   #ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
 
   return(ann.maf)
 }
+>>>>>>> hpc_dev

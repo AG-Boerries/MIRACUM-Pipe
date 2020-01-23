@@ -2,6 +2,7 @@
 
 # common settings
 readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
+readonly CFG_CENTER=$(get_config_value common.center "${PARAM_DIR_PATIENT}")
 
 # analysis type
 readonly CFG_ANALYSIS_TYPE=$(get_config_value common.analysisType "${PARAM_DIR_PATIENT}")
@@ -131,12 +132,12 @@ readonly CFG_ANNOVAR_ARGOP=$(get_config_value tools.annovar.argop "${PARAM_DIR_P
 
 ## Tools and paths
 # Paths
-readonly BIN_JAVA="java -Xcompressedrefs -Djava.io.tmpdir=${DIR_TMP} " # path to java
+readonly BIN_JAVA="java -Djava.io.tmpdir=${DIR_TMP} " # path to java
 
 # Pre-Processing
 readonly BIN_FASTQC="${DIR_TOOLS}/FastQC/bin/fastqc -t ${CFG_COMMON_CPUCORES} --extract "
 
-readonly BIN_TRIM="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
+readonly BIN_TRIM="${BIN_JAVA} -Xcompressedrefs -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
 readonly DIR_TRIMMOMATIC_ADAPTER="${DIR_TOOLS}/Trimmomatic/adapters"
 readonly BIN_CUT="cut -f1,2,3"
 
@@ -194,6 +195,7 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # export parameters
 export CFG_AUTHOR
+export CFG_CENTER
 
 export CFG_FILE_TUMOR_R1
 export CFG_FILE_TUMOR_R2
