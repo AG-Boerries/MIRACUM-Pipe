@@ -138,7 +138,7 @@ if (protocol == "wes"){
   maf_gd <- paste0(path_output, sample, "_Germline.maf")
   maf_td <- paste0(path_output, sample, "_Somatic.maf")
   maf_loh <- paste0(path_output, sample, "_LoH.maf")
-  maF_complete <- paste0(path_output, sample, ".maf")
+  maf_complete <- paste0(path_output, sample, ".maf")
 }
 if (protocol == "panel"){
   # Panel Analysis - tumor only!
