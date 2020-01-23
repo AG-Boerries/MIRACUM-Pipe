@@ -41,8 +41,18 @@ path_script <- args[11]
 path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
-author <- args[15]
-center <- args[16]
+capture_region <- args[15]
+author <- args[16]
+center <- args[18]
+protocol <- args[17]
+modus <- args[6]
+
+if (protocol == "panel") {
+  path_input <- paste(args[10], "Panel/", sep = "/")
+}
+if (protocol == "wes") {
+  path_input <- paste(args[10], "WES/", sep = "/")
+}
 
 #############
 # Functions #
@@ -99,7 +109,7 @@ if (protocol == "wes"){
     # GERMLINE NORMAL
     snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
     indel_file_gd <- paste0(path_input, sample, "_vc.output.indel.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
-    filter_out_gd <- paste0(sample, "_VC_Germline_NORMAL.xlsx")
+    filter_out_gd <- paste0(path_input, sample, "_VC_Germline_NORMAL.xlsx")
     snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
     snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
     outfile_circos_gd <- paste0(path_output, sample, "_GD_circos.pdf")
@@ -128,6 +138,7 @@ if (protocol == "wes"){
   maf_gd <- paste0(path_output, sample, "_Germline.maf")
   maf_td <- paste0(path_output, sample, "_Somatic.maf")
   maf_loh <- paste0(path_output, sample, "_LoH.maf")
+  maF_complete <- paste0(path_output, sample, ".maf")
 }
 if (protocol == "panel"){
   # Panel Analysis - tumor only!

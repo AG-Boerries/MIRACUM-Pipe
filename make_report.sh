@@ -106,7 +106,7 @@ if [[ "${PROTOCOL,,}" = "panel" ]]; then
 
   ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
     "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" "${CFG_REFERENCE_CAPTUREREGION}" \
-    "${CFG_COMMON_AUTHOR}" "${PROTOCOL,,}"
+    "${CFG_AUTHOR}" "${PROTOCOL,,}" "${CFG_CENTER}"
     
   ${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/Panel.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
 

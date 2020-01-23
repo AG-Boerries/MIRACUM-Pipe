@@ -902,6 +902,25 @@ addCondel <- function(x, dbfile){
   return(x)
 }
 
+target_check <- function(input, capture_region) {
+require(GenomicRanges)
+  man <- read.delim(file = capture_region, header = FALSE)
+  colnames(man) <- c("Chrom", "Start", "End", "Gen_Exon")
+  gr_man <- makeGRangesFromDataFrame(man[, c(1:3)], keep.extra.columns = FALSE,
+                                     ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "Chrom",
+                                     start.field = "Start", end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  gr_x <- makeGRangesFromDataFrame(input, keep.extra.columns = FALSE, ignore.strand = TRUE,
+                                   seqinfo = NULL, seqnames.field = "Chr", start.field = "Start",
+                                   end.field = "End", starts.in.df.are.0based = FALSE)
+  
+  index <- findOverlaps(query = gr_man, subject = gr_x)
+  index <- as.data.frame(index)
+  output <- input[index[, 2], ]
+ 
+  return(output)
+}
+
 txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
   
   # require("data.table")
