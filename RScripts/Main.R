@@ -11,6 +11,7 @@ library(openxlsx)
 library(org.Hs.eg.db)
 library(Homo.sapiens)
 library(RMySQL)
+library(biomaRt)
 library(RColorBrewer)
 library(stringr)
 library(Rsamtools)
@@ -39,7 +40,7 @@ path_data <- args[12]
 targets_txt <- args[13]
 covered_region <- args[14]
 author <- args[15]
-center <- arggs[16]
+center <- args[16]
 
 #############
 # Functions #
@@ -82,7 +83,8 @@ if (args[6] == "somaticGermline"){
 snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
 indel_file_td <- paste0(path_input, sample, "_vc.output.indel.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
 snpefffile_snp <- paste0(path_input, sample, "_vc.output.snp.Somatic.SnpEff.vcf")
-snpefffile_indel <- paste0(path_input, sample, "_vc.output.indel.Somatic.SnpEff.vcf")
+snpefffile_indel <- paste0(path_input, sample,
+                          "_vc.output.indel.Somatic.SnpEff.vcf")
 filter_out_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.xlsx")
 maf_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.maf")
 # LOH
@@ -100,6 +102,11 @@ outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus.xlsx"
 outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx")
 outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
 coverage_out <- paste0(path_output, sample, "_coverage.pdf")
+
+
+
+
+
 
 if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
@@ -123,7 +130,7 @@ filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
 filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            snpefffile_snp = snpefffile_snp_loh,
                            snpefffile_indel = snpefffile_indel_loh,
-                           outfile = loh_out, outfile_maf = maf_gd,
+                           outfile = loh_out, outfile_maf = maf_loh,
                            path_data = path_data, path_script = path_script,
                            covered_region = NULL, mode = "LOH", center = center)
 # Analysis

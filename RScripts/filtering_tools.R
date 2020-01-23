@@ -768,7 +768,7 @@ addCondel <- function(x, dbfile){
   return(x)
 }
 
-txt2maf <- function(input, Center = center, refBuild = 'hg19', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
+txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
   
   # require("data.table")
   # require("org.Hs.eg.db")
@@ -849,7 +849,7 @@ txt2maf <- function(input, Center = center, refBuild = 'hg19', idCol = NULL, id 
   ann.lvls = c("synonymous", "nonsynonymous", "stopgain", "stoploss", "frameshift insertion", "frameshift deletion", "nonframeshift insertion", "nonframeshift deletion",
                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA")
   ann.lbls = c("Silent", "Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation", "Frame_Shift_Ins", "Frame_Shift_Del", "In_Frame_Ins", "In_Frame_Del",
-               "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "UNKNOWN", "UNKNOWN", "RNA")
+               "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "Unknown", "Unknown", "RNA")
   names(ann.lbls) = ann.lvls
   ann$ExonicFunc.refGene = as.character(ann.lbls[as.character(ann$ExonicFunc.refGene)])
 

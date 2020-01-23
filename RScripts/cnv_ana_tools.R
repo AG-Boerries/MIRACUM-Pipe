@@ -220,6 +220,7 @@ del_dup_query <- function(da.fr){
   return(out)
 }
 
+
 cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumorsuppressors, dbfile, path_data, path_script){
   #' CNV Annotation
   #'
@@ -258,15 +259,43 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   x$Length <- "."
   not.significant <- c()
   
-  if(x$WilcoxonRankSumTestPvalue[i] < 0.05
-       & x$KolmogorovSmirnovPvalue[i] < 0.05
-       & !is.na(x$WilcoxonRankSumTestPvalue[i])
-       & !is.na(x$KolmogorovSmirnovPvalue[i])) {
+  # Annotaion via MySQL database
+#  for(i in 1:nrow(x)) {
+#    cat("Processing CNV#", i, "\n")
+#
+#    if(x$WilcoxonRankSumTestPvalue[i] < 0.05 & x$KolmogorovSmirnovPvalue[i] < 0.05 & !is.na(x$WilcoxonRankSumTestPvalue[i]) & !is.na(x$KolmogorovSmirnovPvalue[i])) {
+#      location <- list(x$chr[i], x$start[i], x$end[i])
+#      query <- del_dup_query(location)
+#      query2 <- unlist(query)
+#      x$genes[i] <- paste(query2, collapse = ", ")
+#      
+#      # Test for Tumor Suppressors
+#      id.ts <- which(ts$Hugo.Symbol %in% query2)
+#      if(sum(id.ts) > 0) {
+#        x$TumorSuppressor[i] <- paste(ts$Hugo.Symbol[id.ts], collapse = ",")
+#      }
+#      id.onc <- which(onc$Hugo.Symbol %in% query2)
+#      if(sum(id.onc) > 0) {
+#        x$Oncogene[i] <- paste(onc$Hugo.Symbol[id.onc], collapse = ",")
+#      }
+#      x$Length[i] <- x$end[i] - x$start[i]
+#    } else {
+#      not.significant <- c(not.significant, i)
+#    }
+#  }
+
+# Annotation with biomaRt
+
+  ensembl=useMart("ensembl", dataset="hsapiens_gene_ensembl")
+  
+  for(i in 1:nrow(x)) {
+    cat("Processing CNV#", i, "\n")
+    
+    if(x$WilcoxonRankSumTestPvalue[i] < 0.05 & x$KolmogorovSmirnovPvalue[i] < 0.05 & !is.na(x$WilcoxonRankSumTestPvalue[i]) & !is.na(x$KolmogorovSmirnovPvalue[i])) {
       location <- list(x$chr[i], x$start[i], x$end[i])
-      
-      query <- del_dup_query(location)
+      query <- getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl)
       query2 <- unlist(query)
-      x$genes[i] <- paste(query2, collapse = ", ")
+      x$genes[i] <- paste(query2, collapse = ",")
       
       # Test for Tumor Suppressors
       id.ts <- which(ts$Hugo.Symbol %in% query2)
@@ -282,7 +311,8 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
       not.significant <- c(not.significant, i)
     }
   }
-  
+
+
   if (length(not.significant) > 0){
     x1 <- x[-not.significant, ]
   } else {
@@ -297,6 +327,7 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   
   return(list(CNVsAnnotated = x1, CNVOncogenes = onco, CNVTumorSuppressors = tumorSupp))
 }
+
 
 
 cnv_processing <- function(cnv_file, targets,
