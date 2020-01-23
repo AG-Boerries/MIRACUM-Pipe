@@ -45,6 +45,7 @@ center <- args[16]
 #############
 # Functions #
 # Mutation Analysis #
+print("Load functions.")
 source(paste(path_script, "filtering.R", sep = "/"))
 source(paste(path_script, "filtering_tools.R", sep = "/"))
 source(paste(path_script, "mutationAnalysis.R", sep = "/"))
@@ -69,7 +70,8 @@ germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.real
 #####################
 # Mutation Analysis
 #####################
-# FILES
+# DEFINE FILES
+print("Preparations.")
 if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
   snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
@@ -77,23 +79,19 @@ if (args[6] == "somaticGermline"){
   filter_out_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.xlsx")
   snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
   snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
-  maf_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.maf")
 }
 # SOMATIC TUMOR
 snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
 indel_file_td <- paste0(path_input, sample, "_vc.output.indel.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
 snpefffile_snp <- paste0(path_input, sample, "_vc.output.snp.Somatic.SnpEff.vcf")
-snpefffile_indel <- paste0(path_input, sample,
-                          "_vc.output.indel.Somatic.SnpEff.vcf")
+snpefffile_indel <- paste0(path_input, sample, "_vc.output.indel.Somatic.SnpEff.vcf")
 filter_out_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.xlsx")
-maf_td <- paste0(path_output, sample, "_VC_Somatic_TUMOR.maf")
 # LOH
 snp_file_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.hc.avinput.hg19_multianno.csv")
 indel_file_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.hc.avinput.hg19_multianno.csv")
 loh_out <- paste0(path_output, sample, "_VC_LOH.xlsx")
 snpefffile_snp_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.SnpEff.vcf")
 snpefffile_indel_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.SnpEff.vcf")
-maf_loh <- paste0(path_output, sample, "_VC_LOH.maf")
 # Results
 outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
 outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
@@ -103,13 +101,15 @@ outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx"
 outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
 coverage_out <- paste0(path_output, sample, "_coverage.pdf")
 
-
-
-
-
+# MAFs
+maf_gd <- paste0(path_output, sample, "_Germline.maf")
+maf_td <- paste0(path_output, sample, "_Somatic.maf")
+maf_loh <- paste0(path_output, sample, "_LoH.maf")
+maf_complete <- paste0(path_output, sample, ".maf")
 
 if (args[6] == "somaticGermline"){
   # GERMLINE NORMAL
+  print("Filtering for Germline.")
   filt_result_gd <- filtering(snpfile = snp_file_gd, indelfile =  indel_file_gd,
                             snpefffile_snp = snpefffile_snp_gd,
                             snpefffile_indel = snpefffile_indel_gd,
@@ -119,6 +119,7 @@ if (args[6] == "somaticGermline"){
                             mode = "N", center = center)
 }
 # SOMATIC TUMOR
+print("Filtering for Tumor.")
 filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                           snpefffile_snp = snpefffile_snp,
                           snpefffile_indel = snpefffile_indel,
@@ -127,6 +128,7 @@ filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                           path_script = path_script, covered_region = covered_region,
                           mode ="T", center = center)
 # LOH
+print("Filtering for LoH.")
 filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            snpefffile_snp = snpefffile_snp_loh,
                            snpefffile_indel = snpefffile_indel_loh,
@@ -134,6 +136,7 @@ filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            path_data = path_data, path_script = path_script,
                            covered_region = NULL, mode = "LOH", center = center)
 # Analysis
+print("Variant Analysis.")
 mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               somatic = filt_result_td$table,
                                               tumbu = filt_result_td$tmb,
@@ -147,9 +150,19 @@ mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               path_script = path_script,
                                               targets_txt = targets_txt)
 
+# Combine MAF files to obtain one complete maf per patient
+if (args[6] == "somaticGermline"){
+  maf_comb <- rbind(filt_result_td$maf,filt_result_gd$maf, filt_result_loh$maf)
+  write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
+} else {
+  maf_comb <- rbind(filt_result_td$maf, filt_result_loh$maf)
+  write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
+}
+
 ###
 # STATISTICS
 ## Input Files
+print("Statistics.")
 stats_td <- paste0(path_input, sample, "_gd_stats.txt")
 stats_gd <- paste0(path_input, sample, "_td_stats.txt")
 ## Analysis
@@ -158,7 +171,7 @@ stats <- stats(path = path_input, outfile_pdf = coverage_out,
 
 ########################
 # Copy Number Analysis #
-
+print("CNV Analysis.")
 ## Input/Output Files
 ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
 cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
@@ -190,7 +203,7 @@ cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file
                                      targets_txt = targets_txt)
 ###############################
 # Mutation Signature Analysis #
-
+print("Mutation Signature Analysis.")
 somaticVCF <- paste0(path_input, sample,
                      "_vc.output.snp.Somatic.hc.fpfilter.vcf")
 
