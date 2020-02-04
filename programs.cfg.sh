@@ -133,7 +133,7 @@ readonly BIN_JAVA="java -Djava.io.tmpdir=${DIR_TMP} " # path to java
 # Pre-Processing
 readonly BIN_FASTQC="${DIR_TOOLS}/FastQC/bin/fastqc -t ${CFG_COMMON_CPUCORES} --extract "
 
-readonly BIN_TRIM="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
+readonly BIN_TRIM="${BIN_JAVA} -Xcompressedrefs -jar ${DIR_TOOLS}/Trimmomatic/trimmomatic.jar PE -threads ${CFG_COMMON_CPUCORES} -phred33 "
 readonly DIR_TRIMMOMATIC_ADAPTER="${DIR_TOOLS}/Trimmomatic/adapters"
 readonly BIN_CUT="cut -f1,2,3"
 
