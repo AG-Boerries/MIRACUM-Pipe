@@ -828,6 +828,11 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann.opt = colnames(ann)[!colnames(ann) %in% ann.mand]
   ann.opt = c(ann.opt, "uid")
   ann.opt = ann[, ann.opt]
+
+  # adding MIRACUM prefix to all optional columns to simplify the import in cBioPortal via namespace
+  colnames(ann.opt) <- paste("MIRACUM", colnames(ann.opt), sep = ".")
+  colnames(ann.opt)[dim(ann.opt)[2]] <- "uid"
+
   ann = ann[, ann.mand]
   ann$ExonicFunc.refGene = gsub(pattern = " SNV", replacement = "", x = ann$ExonicFunc.refGene)
   funcSpl = strsplit(x = as.character(ann$ExonicFunc.refGene), split = ";", fixed = TRUE)

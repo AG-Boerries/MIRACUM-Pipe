@@ -126,7 +126,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
     # estimate output dir
     CFG_CASE=$(get_case ${DIR_PATIENT})
     DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${DIR_PATIENT}"
-    DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+    DIR_ANALYSES="${DIR_TARGET}/Analyses"
 
     if [[ "${PARAM_FORCE}" || ! -f "${DIR_TARGET}/.processed" ]]; then
       echo "computing ${DIR_PATIENT}"
@@ -138,7 +138,7 @@ if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" ]]; then
       fi
       
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${DIR_PATIENT}_Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
         echo "${DIR_PATIENT} finished"
       else
@@ -161,7 +161,7 @@ else
   # estimate output dir
   CFG_CASE=$(get_case ${PARAM_DIR_PATIENT})
   DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
-  DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+  DIR_ANALYSES="${DIR_TARGET}/Analyses"
   
   # if already computed, i.e. file .processed exists, only compute again if forced
   if [[ "${PARAM_FORCE}" || ! -f "${DIR_TARGET}/.processed" ]]; then
@@ -217,7 +217,7 @@ else
       fi
 
       # check if report was generated successfully
-      if [[ -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+      if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
         touch "${DIR_TARGET}/.processed"
         echo "${PARAM_DIR_PATIENT} finished"
       else

@@ -24,6 +24,7 @@ library(VariantAnnotation)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 library(gdata)
+library(gtools)
 
 args <- commandArgs()
 
@@ -33,7 +34,7 @@ args <- commandArgs()
 sample <- paste(args[6:7], collapse = "_")
 tumor <- args[8]
 germline <- args[9]
-path_output <- paste(args[10], "Analysis/", sep = "/")
+path_output <- paste(args[10], "Analyses/", sep = "/")
 path_input <- paste(args[10], "WES/", sep = "/")
 path_script <- args[11]
 path_data <- args[12]
@@ -44,7 +45,7 @@ center <- args[16]
 
 #############
 # Functions #
-# Mutation Analysis #
+# Mutation Analyses #
 print("Load functions.")
 source(paste(path_script, "filtering.R", sep = "/"))
 source(paste(path_script, "filtering_tools.R", sep = "/"))
@@ -52,7 +53,7 @@ source(paste(path_script, "mutationAnalysis.R", sep = "/"))
 source(paste(path_script, "MutAna_tools.R", sep = "/"))
 source(paste(path_script, "stats.R", sep = "/"))
 source(paste(path_script, "stats_tools.R", sep = "/"))
-# Copy Number Analysis #
+# Copy Number Analyses #
 source(paste(path_script, "cnv_analysis.R", sep = "/"))
 source(paste(path_script, "cnv_ana_tools.R", sep = "/"))
 # Mutation Signature Analysis #
@@ -68,7 +69,7 @@ tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realign
 germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 
 #####################
-# Mutation Analysis
+# Mutation Analyses
 #####################
 # DEFINE FILES
 print("Preparations.")
@@ -136,7 +137,7 @@ filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            path_data = path_data, path_script = path_script,
                            covered_region = NULL, mode = "LOH", center = center)
 # Analysis
-print("Variant Analysis.")
+print("Variant Analyses.")
 mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
                                               somatic = filt_result_td$table,
                                               tumbu = filt_result_td$tmb,
@@ -152,10 +153,12 @@ mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
 
 # Combine MAF files to obtain one complete maf per patient
 if (args[6] == "somaticGermline"){
-  maf_comb <- rbind(filt_result_td$maf,filt_result_gd$maf, filt_result_loh$maf)
+  maf_comb <- smartbind(filt_result_td$maf,filt_result_gd$maf, filt_result_loh$maf)
+  #maf_comb <- rbind(filt_result_td$maf,filt_result_gd$maf)
   write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
 } else {
-  maf_comb <- rbind(filt_result_td$maf, filt_result_loh$maf)
+  maf_comb <- smartbind(filt_result_td$maf, filt_result_loh$maf)
+  #maf_comb <- filt_result_td$maf
   write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
 }
 
@@ -171,7 +174,7 @@ stats <- stats(path = path_input, outfile_pdf = coverage_out,
 
 ########################
 # Copy Number Analysis #
-print("CNV Analysis.")
+print("CNV Analyses.")
 ## Input/Output Files
 ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
 cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")

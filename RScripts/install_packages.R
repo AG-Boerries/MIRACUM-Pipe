@@ -2,6 +2,8 @@
 # Objective : installs all required R packages
 # Created by: Raphael Scheible
 # Created on: 10.07.19
+# Extended by: Patrick Metzger
+# Extended on: 23.01.2020
 
 options(repos=structure(c(CRAN="http://cloud.r-project.org")))
 

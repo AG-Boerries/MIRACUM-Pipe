@@ -70,23 +70,23 @@ fi
 
 ##################################################################################################################
 
-cd "${DIR_ANALYSIS}" || exit 1
+cd "${DIR_ANALYSES}" || exit 1
 
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
   "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" \
   "${CFG_AUTHOR}" "${CFG_CENTER}" 
   
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSIS}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
-mv "${DIR_ANALYSIS}/Report.tex" "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
+mv "${DIR_ANALYSES}/Report.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
 
-pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
-  --output-directory="${DIR_ANALYSIS}"
-pdflatex -interaction=nonstopmode "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
-  --output-directory="${DIR_ANALYSIS}"
+pdflatex -interaction=nonstopmode "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+  --output-directory="${DIR_ANALYSES}"
+pdflatex -interaction=nonstopmode "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
+  --output-directory="${DIR_ANALYSES}"
 
 # remove aux files which are created while pdflatex
-rm -f "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.log" \
-      "${DIR_ANALYSIS}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.out"
+rm -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
+      "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \
+      "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.log" \
+      "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.out"

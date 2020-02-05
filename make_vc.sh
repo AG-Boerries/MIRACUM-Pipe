@@ -71,7 +71,7 @@ fi
 
 ##################################################################################################################
 
-[[ -d "${DIR_ANALYSIS}" ]] || mkdir -p "${DIR_ANALYSIS}"
+[[ -d "${DIR_ANALYSES}" ]] || mkdir -p "${DIR_ANALYSES}"
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_gd
