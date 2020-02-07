@@ -32,6 +32,7 @@ args <- commandArgs()
 # General #
 
 sample <- paste(args[6:7], collapse = "_")
+id <- args[7]
 tumor <- args[8]
 germline <- args[9]
 path_output <- paste(args[10], "Analyses/", sep = "/")
@@ -117,7 +118,7 @@ if (args[6] == "somaticGermline"){
                             outfile =  filter_out_gd, outfile_maf = maf_gd,
                             path_data = path_data,
                             path_script = path_script, covered_region = NULL,
-                            mode = "N", center = center)
+                            mode = "N", center = center, id = id)
 }
 # SOMATIC TUMOR
 print("Filtering for Tumor.")
@@ -127,7 +128,7 @@ filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                           outfile = filter_out_td, outfile_maf = maf_td,
                           path_data = path_data,
                           path_script = path_script, covered_region = covered_region,
-                          mode ="T", center = center)
+                          mode ="T", center = center, id = id)
 # LOH
 print("Filtering for LoH.")
 filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
@@ -135,7 +136,7 @@ filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
                            snpefffile_indel = snpefffile_indel_loh,
                            outfile = loh_out, outfile_maf = maf_loh,
                            path_data = path_data, path_script = path_script,
-                           covered_region = NULL, mode = "LOH", center = center)
+                           covered_region = NULL, mode = "LOH", center = center, id = id)
 # Analysis
 print("Variant Analyses.")
 mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
