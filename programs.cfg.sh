@@ -15,7 +15,7 @@ readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PAR
 # folder containing patient output
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 readonly DIR_WES="${DIR_TARGET}/WES"
-readonly DIR_ANALYSIS="${DIR_TARGET}/Analysis"
+readonly DIR_ANALYSES="${DIR_TARGET}/Analyses"
 
 # end paths
 
@@ -200,7 +200,7 @@ export CFG_FILE_GERMLINE_R2
 
 export DIR_TARGET
 export DIR_WES
-export DIR_ANALYSIS
+export DIR_ANALYSES
 
 export FILE_GENOME
 export CFG_REFERENCE_LENGTH

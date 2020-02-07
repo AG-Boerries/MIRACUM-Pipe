@@ -3,7 +3,7 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg"){
+                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg", id = id){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -144,7 +144,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       x <- x.condel[, c(idx, idx2)]
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
       out.maf <- txt2maf(input = x, Center = center, refBuild = 'GRCh37',
-                         id = sample, sep = '\t', idCol = NULL,
+                         id = id, sep = '\t', idCol = NULL,
                          Mutation_Status = mode)
       write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
                   sep = '\t', col.names = T, row.names = F)
