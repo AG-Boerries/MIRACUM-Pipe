@@ -770,10 +770,6 @@ addCondel <- function(x, dbfile){
 
 txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
   
-  # require("data.table")
-  # require("org.Hs.eg.db")
-  # require("gtools")
-  
   if (Mutation_Status == "T") {
     Mutation_Status <- "Somatic"
   } else if (Mutation_Status == "N") {
@@ -783,7 +779,6 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   }
 
   ann <- input
-  #	ann <- read.table(input, header = T, sep = sep, stringsAsFactors = F)
   
   essential.col <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
                     "AAChange.SnpEff", "CChange.SnpEff", "Transcript.SnpEff", "Ensembl.SnpEff", "avsnp150")
@@ -945,7 +940,7 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   TxChange[TxChange == ""] <- NA
 
 
-  ann.maf <- data.table::data.table(Hugo_Symbol = ann$Gene.refGene,
+  ann.maf <- data.table::data.table(Hugo_Symbol = as.character(symbol),
                                     Entrez_Gene_Id = as.character(entrez),
                                     Center = Center,
                                     NCBI_Build = refBuild,
@@ -973,7 +968,7 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   
   # Clean Up for "misinterpretable" characters
   ann.maf$MIRACUM.target <- gsub(ann.maf$MIRACUM.target, pattern = "\n", replacement = "; ", fixed = T)
-  ann.maf$MIRACUM.Otherinfo <- gsub(ann.maf$ MIRACUM.Otherinfo, pattern = "\t", replacement = ";", fixed = T)
+  ann.maf$MIRACUM.Otherinfo <- gsub(ann.maf$MIRACUM.Otherinfo, pattern = "\t", replacement = ";", fixed = T)
   
   #ann.maf <- ann.maf[order(ann.maf[,"Chromosome"], ann.maf[,"Start_Position"]), ]
   #ann.maf <- ann.maf[mixedorder(ann.maf$Chromosome), ]
