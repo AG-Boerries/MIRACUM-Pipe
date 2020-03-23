@@ -27,7 +27,7 @@
 cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                          outfile_ideogram, outfile, outfile_onco,
                          outfile_tumorsuppressors, outfile_loss, outfile_gain,
-                         outfile_dna_damage, path_data, path_script, targets_txt){
+                         outfile_dna_damage, path_data, path_script, targets_txt, id, outfile_cbioportal){
 
   load(paste(path_data, "GOGeneSets.RData", sep = "/"))
   targets <- read.table(targets_txt)

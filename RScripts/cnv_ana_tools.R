@@ -436,3 +436,41 @@ cnv_dna_damage<- function(input, outfile_dna_damage, db){
   write.xlsx(l, file = outfile_dna_damage, row.names = FALSE, col.names = TRUE)
   return(l)
 }
+
+cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
+  #' Export annotated CNVs to a txt file
+  #' 
+  #' @describtion Export annotated CNVs to a text file for subsequent import in cbioportal
+  #' 
+  #' @param cnvs dataframe. Table of annotated CNVs
+  #' @param id string. Sample ID
+  #' @param outfile_cbioportal string. Name of the outputfile
+  require(tidyr)
+  require(stringi)
+  require(org.Hs.eg.db)
+  
+  cnvs.sub <- subset(cnvs, select = c("copy.number", "genes"))
+  cnvs.sub.extended <- data.frame(separate_rows(cnvs.sub,genes,sep=","))
+  # remove empty genes
+  cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$genes),]
+  cnvs.sub.extended$Entrez <- unlist(lapply(mget(cnvs.sub.extended$genes, org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
+  cnvs.out <- data.frame(Hugo_Symbol = cnvs.sub.extended$genes, Entrez_Gene_Id = cnvs.sub.extended$Entrez, Sample_ID = cnvs.sub.extended$copy.number)
+  
+  # how to deal with multiple copy number variations for a single gene?
+  # keep only the maximal CNA
+  # cnvs.out <- cnvs.out[!duplicated(cnvs.out$Hugo_Symbol),]
+  cnvs.out <- as.data.table(cnvs.out)
+  cnvs.out <- cnvs.out[cnvs.out[, .I[which.max(Sample_ID)], by=Hugo_Symbol]$V1]
+  
+  # set sample specific column name
+  colnames(cnvs.out)[3] <- paste(id,"TD",sep = "_")
+  # convert total copy numbers from Control-FREEC to allowed values
+  # allowed values -2, -1, 0, 1, 2, NA
+  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 0] <- -2
+  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 1] <- -1
+  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 2] <- 0
+  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 3] <- 1
+  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD > 3] <- 2
+  
+  write.table(x = cnvs.out, file = outfile_cbioportal, quote = F, sep = "\t", col.names = T, row.names = F)
+}

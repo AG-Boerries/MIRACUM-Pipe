@@ -25,6 +25,8 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 library(gdata)
 library(gtools)
+library(stringi)
+library(tidyr)
 
 args <- commandArgs()
 
@@ -191,6 +193,7 @@ outfile_ts <- paste0(path_output, sample, "_CNV_TumorSuppressors.xlsx")
 outfile_loss <- paste0(path_output, sample, "_CNV_loss_GO.xlsx")
 outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
 outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
+outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
 
 cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file
                                      = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
@@ -204,7 +207,10 @@ cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file
                                      outfile_dna_damage = outfile_dna_damage,
                                      path_data = path_data,
                                      path_script = path_script,
-                                     targets_txt = targets_txt)
+                                     targets_txt = targets_txt.
+                                     outfile_cbioportal = outfile_cnvs_cbioportal,
+                                     id = id)
+
 ###############################
 # Mutation Signature Analysis #
 print("Mutation Signature Analysis.")
