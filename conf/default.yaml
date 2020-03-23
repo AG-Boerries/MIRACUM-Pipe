@@ -10,6 +10,7 @@ common:
     tumor_R2: tumor_R2.fastq.gz
     germline_R1: germline_R1.fastq.gz
     germline_R2: germline_R2.fastq.gz
+  protocol: wes
 
 annotation:
   # process and annotate germline file, allowed values: yes, no

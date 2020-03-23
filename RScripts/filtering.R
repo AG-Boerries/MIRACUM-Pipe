@@ -152,10 +152,12 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     } else if (mode == "N" | mode == "T") {
       print("No SNVs passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+      out.maf <- data.frame()
       return(list(table = x, tmb = tmb, maf = out.maf))
     } else if (mode == "LOH") {
       print("No LOH passed filter!")
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+      out.maf <- data.frame()
       return(list(table = x, tmb = tmb, maf = out.maf))
     }
   }
