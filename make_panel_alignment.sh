@@ -11,6 +11,7 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
+# for now only "tumor only" panels
 readonly VALID_TASKS=("td")
 readonly VALID_SEXES=("XX XY")
 
@@ -27,7 +28,6 @@ while getopts d:t:ph option; do
   case "${option}" in
   d) readonly PARAM_DIR_PATIENT=$OPTARG ;;
   t) readonly PARAM_TASK=$OPTARG ;;
-  p) readonly PARAM_PROTOCOL=$OPTARG ;;
   p) readonly PARALLEL_PROCESSES=2 ;;
   h) usage ;;
   \?)
@@ -57,7 +57,7 @@ fi
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
 readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
 if [[ "${CFG_PROTOCOL}" == "panel" ]]; then
-  readonly CFG_CASE=tumor
+  readonly CFG_CASE=panelTumor
 fi
 #if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
 #  readonly CFG_CASE=somaticGermline
@@ -92,13 +92,14 @@ fi
 # SAMPLE
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
-if [[ "${PARAM_TASK}" = "gd" ]]; then
-  readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE_R1}"
-  readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE_R2}"
-else
-  readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R1}"
-  readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R2}"
-fi
+# "tumor only" panel
+#if [[ "${PARAM_TASK}" = "gd" ]]; then
+#  readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE_R1}"
+#  readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_GERMLINE_R2}"
+#else
+
+readonly FILE_FASTQ_1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R1}"
+readonly FILE_FASTQ_2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R2}"
 
 # temp files
 readonly fastq_o1_p_t=${DIR_TMP}/${NameD}_output1_paired_trimmed.fastq.gz
@@ -121,20 +122,54 @@ recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.ba
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
+# TODO
+# Panel Files are spread over multiple files, e.g. 4
+# filenames without extension in yaml file!
+files_numbers="1 2 3 4"
+for f_n in ${files_numbers}
+do
+	readonly fastq1="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R1}${f_n}_R1_001.fastq.gz"
+	readonly fastq2="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FILE_TUMOR_R2}${f_n}_R2_001.fastq.gz"
+	readonly fastq_o1_p_t="${DIR_TMP}/${NameD}_${f_n}_output1_paired_trimmed.fastq.gz"
+	readonly fastq_o1_u_t="${DIR_TMP}/${NameD}_${f_n}_output1_unpaired_trimmed.fastq.gz" 
+	readonly fastq_o2_p_t="${DIR_TMP}/${NameD}_${f_n}_output2_paired_trimmed.fastq.gz"
+	readonly fastq_o2_u_t="${DIR_TMP}/${NameD}_${f_n}_output2_unpaired_trimmed.fastq.gz"
+
+	readonly tmpbam="${DIR_WES}/${NameD}_${f_n}.bam"
+	readonly tmpsortbam="${DIR_WES}/${NameD}_${f_n}.sort.bam"
+
+	# trim fastqc
+	${BIN_TRIM} ${fastq1} ${fastq2} ${fastq_o1_p_t} ${fastq_o1_u_t} ${fastq_o2_p_t} ${fastq_o2_u_t} \
+  "${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
+	${BIN_FASTQC}  ${fastq_o1_p_t} -o ${DIR_WES}
+	${BIN_FASTQC}  ${fastq_o2_p_t} -o ${DIR_WES}
+
+	# make bam
+	${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
+  ${fastq_o1_p_t} ${fastq_o2_p_t} | ${BIN_SAMVIEW} -bS - > ${tmpbam}
+	# sort bam
+	${BIN_SAMSORT} ${tmpbam} -T ${prefixsort} -o ${tmpsortbam}
+done 
+
+# Merge BAMs
+${BIN_SAMTOOLS} merge -f "${bam}" "${DIR_WES}/${NameD}_1.bam" "${DIR_WES}/${NameD}_2.bam" "${DIR_WES}/${NameD}_3.bam" "${DIR_WES}/${NameD}_4.bam"
+
+# TODO
+# Alternative if only two files, one paired-end sample
 # fastqc zip to WES
-${BIN_FASTQC} "${FILE_FASTQ_1}" -o "${DIR_WES}"
-${BIN_FASTQC} "${FILE_FASTQ_2}" -o "${DIR_WES}"
+#${BIN_FASTQC} "${FILE_FASTQ_1}" -o "${DIR_WES}"
+#${BIN_FASTQC} "${FILE_FASTQ_2}" -o "${DIR_WES}"
 
 # trim fastq
-${BIN_TRIM} "${FILE_FASTQ_1}" "${FILE_FASTQ_2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
-ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
+#${BIN_TRIM} "${FILE_FASTQ_1}" "${FILE_FASTQ_2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
+#ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
 
-${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
-${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
+#${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
+#${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
 
 # make bam
-${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
-"${fastq_o1_p_t}" "${fastq_o2_p_t}" | ${BIN_SAMVIEW} -bS - >"${bam}"
+#${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
+#"${fastq_o1_p_t}" "${fastq_o2_p_t}" | ${BIN_SAMVIEW} -bS - >"${bam}"
 
 # stats
 ${BIN_STATS} "${bam}" >"${statstxt}"
