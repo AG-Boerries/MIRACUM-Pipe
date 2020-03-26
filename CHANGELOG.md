@@ -1,5 +1,9 @@
 # Changelog
 
+## Release v1.2.0
+
+* Added export of copy number alterations for later import into cBioPortal
+
 ## Release v1.1.0
 
 * Included export into a maf file for later import into cBioPortal
