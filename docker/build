@@ -22,11 +22,11 @@ case "$1" in
             ;;
 
         all)
-            docker build --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
-            docker build --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
-            docker build --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
-            docker build --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
-            docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
+            docker build --env HTTP_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --env HTTPS_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --no-cache -f ./Dockerfile_base -t miracum_pipe_base:latest ../
+            docker build --env HTTP_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --env HTTPS_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --no-cache -f ./Dockerfile_R -t miracum_pipe_r:latest ../
+            docker build --env HTTP_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --env HTTPS_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --no-cache -f ./Dockerfile_tools -t miracum_pipe_tools:latest ../
+            docker build --env HTTP_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --env HTTPS_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
+            docker build --env HTTP_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --env HTTPS_PROXY="http://proxy.ibsm.uni-freiburg.de:8080" --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
         *)
