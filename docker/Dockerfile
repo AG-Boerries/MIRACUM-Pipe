@@ -1,5 +1,8 @@
 FROM debian:10
 
+ENV http_proxy http://proxy.ibsm.uni-freiburg.de:8080
+ENV https_proxy http://proxy.ibsm.uni-freiburg.de:8080
+
 ADD . /opt/MIRACUM-Pipe
 
 RUN apt-get update && \

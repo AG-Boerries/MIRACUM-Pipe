@@ -20,3 +20,15 @@ This stack is based on
 ## Use the dockerized version
 
 For more information of who to use the docker container, see [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker).
+
+## Building behind a proxy server
+
+If you are behind a proxy server and need to build the docker from scratch you need to add the following build arguments in the docker/build file.
+
+- --build-arg http_proxy=http://proxy.server.de:port
+- --build-arg https_proxy=https://proxy.server.de:port
+
+Additionally, the proxy settings can also be added in the Dockerfiles as ENV parameters
+
+- ENV http_proxy http://proxy.server.de:port
+- ENV https_proxy https://proxy.server.de:port
