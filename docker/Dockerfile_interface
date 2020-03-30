@@ -1,7 +1,7 @@
 FROM miracum_pipe_report:latest
 
-ENV HTTP_PROXY "http://proxy.ibsm.uni-freiburg.de:8080"
-ENV HTTPS_PROXY "http://proxy.ibsm.uni-freiburg.de:8080"
+ENV http_proxy http://proxy.ibsm.uni-freiburg.de:8080
+ENV https_proxy http://proxy.ibsm.uni-freiburg.de:8080
 
 COPY ./*.sh /opt/MIRACUM-Pipe/
 COPY ./conf/*.yaml /opt/MIRACUM-Pipe/conf/
