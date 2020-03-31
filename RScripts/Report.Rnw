@@ -40,7 +40,7 @@ options(knitr.table.format = "latex")
 # set global chunk options
 opts_chunk$set(fig.align = "center", fig.show = "hold")
 options(formatR.arrow = TRUE, width = 90)
-#load("WES.RData")
+
 sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 @
 

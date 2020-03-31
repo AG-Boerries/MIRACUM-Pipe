@@ -76,7 +76,7 @@ ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${C
   "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" \
   "${CFG_AUTHOR}" "${CFG_CENTER}" 
   
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/WES.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/MTB.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
 mv "${DIR_ANALYSES}/Report.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
 
