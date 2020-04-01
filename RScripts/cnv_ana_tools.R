@@ -186,6 +186,64 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot,
   dev.off()
 }
 
+make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol){
+  #' Make CNV Graph for significant ones
+  #'
+  #' @description Plot significant CNVs on Genome
+  #'
+  #' @param ratio_file string. Filename of ratio file with p-values for CNVs
+  #' @param outfile_ideogram string. Filename of ideogram
+  #'
+  #' @details This function produces a plot containing an ideogram that
+  #' @details visualizes the significant CNVs on the human genome.
+  require(gtrellis)
+  require(circlize)
+  require(ComplexHeatmap)
+  if (protocol != "panelTumor"){
+    dataTable <- read.table(ratio_file, header = FALSE, skip = 1)
+    ratio <- data.frame(dataTable)
+  } else {
+    ratio <- as.data.frame(ratio_file)
+  }
+  colnames(ratio) <- c("chr", "start", "end", "CopyNumber", "status", "WRST", "KS")
+  ratio_new <- ratio
+  ratio_new$chr <- paste('chr', ratio_new$chr, sep = '')
+
+  col_fun = colorRamp2(c(0, 1, 3, 4, 5, 6), c("darkblue", "mediumblue",
+                                              "red", "firebrick3", "red4",
+                                              "darkred"))
+  cm = ColorMapping(col_fun = col_fun)
+  lgd = color_mapping_legend(cm, plot = FALSE, title = "total Copy Number")
+
+  ratio_new$CopyNumber[which(as.numeric(ratio_new$CopyNumber) > 6)] <- 6
+
+  pdf(file = outfile_ideogram, width = 12, height = 12, pointsize = 20)
+  gtrellis_layout(n_track = 1, ncol = 1, track_axis = FALSE,
+                  xpadding = c(0.1, 0), gap = unit(4, "mm"), border = FALSE,
+                  asist_ticks = FALSE, add_ideogram_track = TRUE,
+                  ideogram_track_height = unit(3, "mm"),legend = lgd)
+
+  tt <- which(as.numeric(ratio_new$CopyNumber) > 2
+              | (as.numeric(ratio_new$CopyNumber) < 2 & as.numeric(ratio_new$CopyNumber) != -1))
+  tmp <- ratio_new[tt,]
+
+  add_track(track = 1, tmp, panel_fun = function(gr) {
+    grid.rect(x = gr$start, y = unit(0.2, "npc"), width = (gr$end - gr$start),
+              height = unit(0.8, "npc"), hjust = 0, vjust = 0,
+              default.units = "native", gp = gpar(fill = col_fun(gr$CopyNumber),
+                                                  col = NA))
+  })
+  add_track(track = 2, clip = FALSE, panel_fun = function(gr) {
+    chr = get_cell_meta_data("name")
+    if(chr == "chrY") {
+      grid.lines(get_cell_meta_data("xlim"), unit(c(0, 0), "npc"),
+                 default.units = "native")
+    }
+    grid.text(chr, x = 0, y = 0, just = c("left", "bottom"))
+  })
+  dev.off()
+}
+
 del_dup_query <- function(da.fr){
   require(RMySQL)
   require(doMC)
@@ -219,7 +277,6 @@ del_dup_query <- function(da.fr){
   names(out) <- name_vector
   return(out)
 }
-
 
 cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumorsuppressors, dbfile, path_data, path_script){
   #' CNV Annotation
@@ -258,7 +315,8 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   x$Oncogene <- "."
   x$Length <- "."
   not.significant <- c()
-  
+  te <- try(read.delim(file = sef_snp, sep = "\t", header = FALSE, comment.char = "#"), silent = TRUE)
+    if (inherits(te, 'try-error')) {
   # Annotaion via MySQL database
 #  for(i in 1:nrow(x)) {
 #    cat("Processing CNV#", i, "\n")
@@ -293,7 +351,15 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
     
     if(x$WilcoxonRankSumTestPvalue[i] < 0.05 & x$KolmogorovSmirnovPvalue[i] < 0.05 & !is.na(x$WilcoxonRankSumTestPvalue[i]) & !is.na(x$KolmogorovSmirnovPvalue[i])) {
       location <- list(x$chr[i], x$start[i], x$end[i])
-      query <- getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl)
+      # try USCS SQL server first
+      query <- try(del_dup_query(location), silent = TRUE)
+      if (inherits(query, 'try-error')){
+        # try biomaRt next
+        query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
+      }
+      if (inherits(query, 'try-error')){
+        error("Check your internet connection. Connection to USCS SQL and biomaRt server failed!")
+      }
       query2 <- unlist(query)
       x$genes[i] <- paste(query2, collapse = ",")
       
@@ -327,8 +393,6 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   
   return(list(CNVsAnnotated = x1, CNVOncogenes = onco, CNVTumorSuppressors = tumorSupp))
 }
-
-
 
 cnv_processing <- function(cnv_file, targets,
                            outfile_loss, outfile_gain, go.bp,
@@ -369,6 +433,7 @@ cnv_processing <- function(cnv_file, targets,
   cnv.genes <- cnv.genes[!is.na(cnv.genes)]
   prep <- prep_pwa(targets, cnv.genes)
   loss_go <- get_terms(go.bp, outfile_loss, prep$de_genes, prep$universe)
+  
   ########
   # GAIN #
   cnv.genes <- c()
@@ -395,19 +460,25 @@ cnv_table <- function(cnvs){
   #' @return output dataframe. Table of genes with CNVs
   #'
   #' @details Regions with CNVs are correlated to the corresponding genes.
+  #' @details The table is written to "CNV_Table.xlsx".
   output <- data.frame()
+  genesSplitList <- strsplit(as.character(cnvs$genes), split = ',')
+  entryLength <- lapply(genesSplitList, length)
   for(i in 1:dim(cnvs)[1]){
-    genesSplitList <- strsplit(cnvs$genes, split = ',')
-    entryLength <- lapply(genesSplitList, length)
-    chr <- rep(cnvs$chr[i],entryLength[[i]])
-    start <- rep(cnvs$start[i],entryLength[[i]])
-    end <- rep(cnvs$end[i],entryLength[[i]])
-    genes <- genesSplitList[[i]]
-    copyNumber <- rep(cnvs$copy.number[i],entryLength[[i]])
-    status <- rep(cnvs$status[i],entryLength[[i]])
-    tmp <- data.frame(Gene = genes, Chr = chr, Start = start, End = end, CopyNumber = copyNumber, Status = status)
-    output <- rbind(output, tmp)
+    if (cnvs$genes[i] != "") {
+      chr <- rep(cnvs$chr[i], entryLength[[i]])
+      start <- rep(cnvs$start[i], entryLength[[i]])
+      end <- rep(cnvs$end[i], entryLength[[i]])
+      genes <- genesSplitList[[i]]
+      genes[2:length(genes)] <- substr(genes[2:length(genes)], start = 2,
+                                       stop = nchar(as.character(genes[2:length(genes)])))
+      copyNumber <- rep(cnvs$copy.number[i], entryLength[[i]])
+      status <- rep(cnvs$status[i], entryLength[[i]])
+      tmp <- data.frame(Gene = genes, Chr = chr, Start = start, End = end, CopyNumber = copyNumber, Status = status)
+      output <- rbind(output, tmp)
+    }
   }
+  #write.xlsx(output, file = "CNV_Table.xlsx", keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
   return(output)
 }
 
@@ -473,4 +544,116 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD > 3] <- 2
   
   write.table(x = cnvs.out, file = outfile_cbioportal, quote = F, sep = "\t", col.names = T, row.names = F)
+}
+
+# TODO
+cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path_data, sureselect, targets_txt, protocol) {
+  #' CNV Analysis for Tumor-Only Data
+  #'
+  #' @description Get Tables for CNVs
+  #'
+  #' @param input_file string. Filename for Data to be analysed
+  #' @param outfile string. Filename for output file
+  #' @param outfile_ts_og string. Filename for TSG and OG table
+  #' @param outfile_ideogram string. Filename for Plot
+  #' @param path_data string. Path to databases
+  #' @param mode string. Capture Kit
+  #'
+  #' @return loss_gain table. Table containing all losses and gains
+  #' @return tsg_og table. Table containing CNVs in TSG and OG
+  #'
+  #' @details CNVs detected in the Pipeline are analysed according to their
+  #' @details status. That means if they are losses or gains. Further CNVs
+  #' @details for tumorsuppressor genes (TSG) and oncogenes (OG) are listed
+  #' @details in another table. If the capture kit is covering most of the
+  #' @details genome, there is a plot of the CNVS created.
+  cnvs <- read.table(file = input_file, header = TRUE)
+  cnvs$CN <- 2
+  cnvs$CN <- (2^cnvs$log2)
+  cnvs$CN <- round(cnvs$CN)
+  cnvs$length <- 0
+  cnvs$length <- (cnvs$end - cnvs$start)
+  if (mode == "TruSight_Amplicon"){
+    genelist <- c("ABL1", "AKT1", "ALK", "APC", "ATM", "BRAF", "CDH1", "CDKN2A",
+                  "CSF1R", "CTNNB1", "EGFR", "ERBB2", "ERBB4", "FBXW7", "FGFR1",
+                  "FGFR2", "FGFR3", "FLT3", "GNA11", "GNAQ", "GNAS", "HNF1A",
+                  "HRAS", "IDH1", "JAK2", "JAK3", "KDR", "KIT", "KRAS", "MET",
+                  "MLH1", "MPL", "NOTCH1", "NPM1", "NRAS", "PDGFRA", "PIK3CA",
+                  "PTEN", "PTPN11", "RB1", "RET", "SMAD4", "SMARCB1", "SMO",
+                  "SRC", "STK11", "TP53", "VHL")
+  } else if (mode == "TruSight_Tumor"){
+    genelist <- c("AKT1", "BRIP1", "AKT2", "BTK", "AKT3", "CARD11", "ALK",
+                  "CCND1", "APC", "CCND2", "AR", "CCNE1", "ARID1A", "CD79A",
+                  "ATM", "CD79B", "ATR", "CDH1", "BAP1", "CDK12", "BARD1",
+                  "CDK4", "BCL2", "CDK6", "BCL6", "CDKN2A", "BRAF", "CEBPA",
+                  "BRCA1", "CHEK1", "BRCA2", "CHEK2", "CREBBP", "CSF1R",
+                  "CTNNB1", "DDR2", "DNMT3A", "EGFR", "EP300", "ERBB2",
+                  "ERBB3", "ERBB4", "ERCC1", "ERCC2", "ERG", "ESR1", "EZH2",
+                  "FAM175A", "FANCI", "FGFR2", "FANCL", "FGFR3", "FBXW7",
+                  "FGFR4", "FGF1", "FLT1", "FGF2", "FLT3", "FGF3", "FOXL2",
+                  "FGF4", "GEN1", "FGF5", "GNA11", "FGF6", "GNAQ", "FGF7",
+                  "GNAS", "FGF8", "HNF1A", "FGF9", "HRAS", "FGF10", "IDH1",
+                  "FGF14", "IDH2", "FGF23", "INPP4B", "FGFR1", "JAK2", "JAK3",
+                  "MSH3", "KDR", "MSH6", "KIT", "MTOR", "KMT2A", "MLL",
+                  "MUTYH", "KRAS", "MYC", "MAP2K1", "MYCL1", "MAP2K2", "MYCN",
+                  "MCL1", "MYD88", "MDM2", "NBN", "MDM4", "NF1", "MET",
+                  "NOTCH1", "MLH1", "NOTCH2", "MLLT3", "NOTCH3", "MPL", "NPM1",
+                  "MRE11A", "NRAS", "MSH2", "NRG1", "PALB2", "PDGFRA",
+                  "PDGFRB", "PIK3CA", "RAD51D", "TSC1", "RAD54L", "TSC2", "RB1",
+                  "VHL", "RET", "XRCC2", "PIK3CB", "RICTOR", "PIK3CD", "ROS1",
+                  "PIK3CG", "RPS6KB1", "PIK3R1", "SLX4", "PMS2", "SMAD4",
+                  "PPP2R2A", "SMARCB1", "PTCH1", "SMO", "PTEN", "SRC", "PTPN11",
+                  "STK11", "RAD51", "TERT", "RAD51B", "TET2", "RAD51C", "TP53")
+  }
+  if (protocol == "panelTumor"){
+    geneList <- read.table(file = targets_txt, stringsAsFactors = FALSE)$V1
+  }
+
+  cnvs$genename<- lapply(strsplit(x = as.character(cnvs$gene), split = ".",
+                                  fixed = T), function(x) x[1])
+  cnvs$genename<- lapply(strsplit(x = as.character(cnvs$genename), split = "_",
+                                  fixed = T), function(x) x[1])
+  i <- which (cnvs$genename %in% genelist)
+  cnvs$genename[-i] <- gsub("\\d+$", "", cnvs$genename[-i])
+  
+  # Find all tumorsuppressors and oncogenes with cnv
+  db <- read.delim(paste(path_data, "cancerGeneList.tsv", sep = "/"),
+                   header = T, sep = "\t", colClasses = "character")
+  cnvs$is_tsg <- 0
+  ts <- which(db$OncoKB.TSG == "Yes")
+  idt <- which (cnvs$genename %in% db$Hugo.Symbol[ts])
+  cnvs_ts <- cnvs[idt, c(1:10)]
+  idt <- which( cnvs_ts$CN != 2)
+  cnvs_ts <- cnvs_ts[idt, ]
+
+  cnvs$is_og <- 0
+  og <- which(db$OncoKB.Oncogene == "Yes")
+  ido <- which (cnvs$genename %in% db$Hugo.Symbol[og])
+  cnvs_og <- cnvs[ido, c(1:10)]
+  ido <- which( cnvs_og$CN != 2)
+  cnvs_og <- cnvs_og[ido, ]
+
+  # Find all gains and losses and print them in xlsx table
+  idg <- which(cnvs$CN > 2)
+  idl <- which(cnvs$CN < 2)
+  id <- c(idg, idl)
+  cnvs_l <- cnvs[idl, ]
+  cnvs_g <- cnvs[idg, ]
+
+  lst1 <- list("CN-Losses" = cnvs_l[, c("chromosome", "start", "end",
+                                        "genename", "CN", "length", "is_tsg",
+                                        "is_og")],
+               "CN-Gains" = cnvs_g[, c("chromosome", "start", "end", "genename",
+                                       "CN", "length", "is_tsg", "is_og")])
+  write.xlsx(lst1, file = outfile)
+
+
+  lst2 <- list("CN-TSG" = cnvs_og, "CN-OG" = cnvs_ts)
+  write.xlsx(lst2, file = outfile_ts_og)
+
+  if (mode == "TruSight_Tumor"){
+    make_cnv_ideo_sig(ratio_file = cnvs, outfile_ideogram = outfile_ideogram, protocol = "Tumor_Only")
+  }
+
+  return(list(loss_gain = lst1, tsg_og = lst2))
 }

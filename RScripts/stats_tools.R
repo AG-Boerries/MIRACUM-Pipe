@@ -1,12 +1,13 @@
 #################
 # Coverage Plot #
-coverage_plot <- function(path, outfilePDF){
+coverage_plot <- function(path, outfilePDF, protocol){
   #' Coverage Plot
   #'
   #' @description Coverage Plot
   #'
   #' @param path string. Path to data
   #' @param outfilePDF string. Name of output file
+  #' @param protocol strin. Protocl of analyses
   #'
   #' @return list of
   #' @return cov numerical. Mean coverage
@@ -54,22 +55,42 @@ coverage_plot <- function(path, outfilePDF){
   pdf(file = outfilePDF, height = 12, width = 12, pointsize=20)
   
   # Create plot area, but do not plot anything. Add gridlines and axis labels.
-  plot(cov[[1]][2:401, 2], cov_cumul[[1]][1:400], type='n', xlab="Depth",
+ if (protocol != "panelTumor"){
+    plot(cov[[1]][2:401, 2], cov_cumul[[1]][1:400], type='n', xlab="Depth",
        ylab = expression("Fraction of capture target bases " >= " depth"),
        ylim = c(0,1.0), main = "Target Region Coverage")
-  abline(v = 20, col = "gray60")
-  abline(v = 50, col = "gray60")
-  abline(v = 80, col = "gray60")
-  abline(v = 100, col = "gray60")
-  abline(h = 0.50, col = "gray60")
-  abline(h = 0.90, col = "gray60")
-  axis(1, at = c(20,50,80), labels = c(20,50,80))
-  axis(2, at = c(0.90), labels = c(0.90))
-  axis(2, at = c(0.50), labels = c(0.50))
+    abline(v = 20, col = "gray60")
+    abline(v = 50, col = "gray60")
+    abline(v = 80, col = "gray60")
+    abline(v = 100, col = "gray60")
+    abline(h = 0.50, col = "gray60")
+    abline(h = 0.90, col = "gray60")
+    axis(1, at = c(20, 50, 80), labels = c(20, 50, 80))
+    axis(2, at = c(0.90), labels = c(0.90))
+    axis(2, at = c(0.50), labels = c(0.50))
+  } else {
+    plot(cov[[1]][2:10001, 2], cov_cumul[[1]][1:10000], type='n', xlab="Depth",
+         ylab = expression("Fraction of capture target bases " >= " depth"),
+         ylim = c(0,1.0), main = "Target Region Coverage")
+    abline(v = 2000, col = "gray60")
+    abline(v = 5000, col = "gray60")
+    abline(v = 8000, col = "gray60")
+    abline(v = 10000, col = "gray60")
+    abline(h = 0.50, col = "gray60")
+    abline(h = 0.90, col = "gray60")
+    axis(1, at = c(2000, 5000, 8000), labels = c(2000, 5000, 8000))
+    axis(2, at = c(0.90), labels = c(0.90))
+    axis(2, at = c(0.50), labels = c(0.50))
+  }
   
   # Actually plot the data for each of the alignments (stored in the lists).
-  for (i in 1:length(cov)) points(cov[[i]][2:401, 2], cov_cumul[[i]][1:400],
+if (protocol != "panelTumor"){
+    for (i in 1:length(cov)) points(cov[[i]][2:401, 2], cov_cumul[[i]][1:400],
                                   type = "l", lwd = 3, col = cols[i])
+  } else {
+    for (i in 1:length(cov)) points(cov[[i]][2:10001, 2], cov_cumul[[i]][1:10000],
+                                    type = "l", lwd = 3, col = cols[i])
+  }
   
   # Add a legend using the nice sample labeles rather than the full filenames.
   legend("topright", legend = labs, col = cols, lty = 1, lwd = 4)
@@ -114,4 +135,14 @@ reads <- function(tfile, gfile){
   ngreads <- round(greads)
   
   return(list(nRT = ntreads, nRG = ngreads))
+}
+
+treads <- function(tfile){
+  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
+  id <- which (as.character(treads$V2) == "reads properly paired:")
+  treads <- as.character(treads$V3[id])
+  treads <- as.numeric(treads)/1000000
+  ntreads <- round(treads)
+
+return(list(nRT = ntreads, nRG = NULL))
 }

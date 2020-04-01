@@ -3,7 +3,7 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg", id = id){
+                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg", id = id, protocol, sureselect){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -15,7 +15,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   #' @param outfile dataframe. Table with results
   #' @param path_data string. Directory of the databases
   #' @param path_script string. Directory of required scripts
-  #' @param sureselect string. Kind of sequencer
+  #' @param sureselect string. Kind of sequencer; path to bed file
   #' @param mode string. Mode for filtering: "T", "N", "LOH"
   #'
   #' @return returns list of
@@ -47,14 +47,15 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   require(openxlsx)
   require(Rsamtools)
   require(gdata)
+  requeire(GenomicRanges)
 
   source(paste(path_script, "filtering_tools.R", sep = "/"))
 
   # Read Data
-  x.snp <- read.csv(snpfile, stringsAsFactors = FALSE)
-  x.indel <- read.csv(indelfile, stringsAsFactors = FALSE)
-  x.snp <- x.snp[- c(1 : 25),]
-  x.indel <- x.indel[- c(1 : 25),]
+  x.snp <- read.csv(file  = snpfile, stringsAsFactors = FALSE, comment.char = "#", header = TRUE)
+  x.indel <- read.csv(file = indelfile, stringsAsFactors = FALSE, comment.char = "#", header = TRUE)
+  #x.snp <- x.snp[- c(1 : 25),]
+  #x.indel <- x.indel[- c(1 : 25),]
   x <- rbind(x.snp, x.indel)
 
   # ANNOVAR changed name of "Otherinfo" column in latest release to "Otherinfo1"
@@ -66,6 +67,11 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- x[id.pass,]
   } else {
     stop("No variant passed quality filter!")
+  }
+
+  # Filter for targets region in panels
+  if (protocol == "panelTumor"){
+    x <- target_check(x, sureselect)
   }
 
   if (mode == "T") {
@@ -90,7 +96,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   x <- rare(x)
 
   # Extract VAF, Readcounts (and Zygosity)
-  x <- vrz(x, mode)
+  x <- vrz(x, mode, protocol = protocol)
 
   if (dim(x)[1] != 0) {
     # Include GeneName
@@ -110,7 +116,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))
     x <- oncokb(x, paste(path_data, "oncokb_biomarker_drug_associations.tsv", sep = "/"))
     if (dim(x)[1] != 0) {
-      x <- snpeff(x, snpefffile_snp, snpefffile_indel)
+      x <- snpeff(x, snpefffile_snp, snpefffile_indel, protocol)
       x.condel <- addCondel(x, paste(path_data, "fannsdb.tsv.gz", sep = "/"))
 
       if (mode == "N" | mode == "T") {
@@ -145,7 +151,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
       out.maf <- txt2maf(input = x, Center = center, refBuild = 'GRCh37',
                          id = id, sep = '\t', idCol = NULL,
-                         Mutation_Status = mode)
+                         Mutation_Status = mode, protocol = protocol, snv_vcf = snpefffile_snp, indel_vcf = snpefffile_indel)
       write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
                   sep = '\t', col.names = T, row.names = F)
       return(list(table = x, tmb = tmb, maf = out.maf))

@@ -46,6 +46,7 @@ targets_txt <- args[13]
 covered_region <- args[14]
 author <- args[15]
 center <- args[16]
+bed_file <- args[17]
 
 #############
 # Functions #
@@ -153,8 +154,8 @@ if (protocol != "panelTumor"){
                                                      path_data = path_data,
                                                      path_script = path_script,
                                                      targets_txt = targets_txt,
-                                                     protocol = "Tumor_only",
-                                                     sureselect = )
+                                                     protocol = "panelTumor",
+                                                     sureselect = bed_file)
   }
   # SOMATIC TUMOR
   print("Filtering for Tumor.")
@@ -165,7 +166,7 @@ if (protocol != "panelTumor"){
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,
                               mode ="T", center = center, id = id,
-                              protocol = protocol, sureselect)
+                              protocol = protocol, sureselect = bed_file)
   # LOH
   print("Filtering for LoH.")
   filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,
@@ -174,7 +175,7 @@ if (protocol != "panelTumor"){
                                outfile = loh_out, outfile_maf = maf_loh,
                                path_data = path_data, path_script = path_script,
                                covered_region = NULL, mode = "LOH", center = center, id = id,
-                               protocol = protocol, sureselect)
+                               protocol = protocol, sureselect = bed_file)
   # Analyses
   print("Variant Analyses.")
   mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
@@ -189,7 +190,7 @@ if (protocol != "panelTumor"){
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
-                                                protocol = protocol, sureselect)
+                                                protocol = protocol, sureselect = bed_file)
 }
 if (protocol == "panelTumor"){
   print("Filtering for Tumor.")
@@ -200,7 +201,7 @@ if (protocol == "panelTumor"){
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,
                               mode ="T", center = center, id = id,
-                              protocol = protocol, sureselect)
+                              protocol = protocol, sureselect = bed_file)
 
   filt_result_loh <- list(table = NULL, tmb = NULL)
 
@@ -218,7 +219,7 @@ if (protocol == "panelTumor"){
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
-                                                protocol = protocol, sureselect)
+                                                protocol = protocol, sureselect = bed_file)
   
 
 # Combine MAF files to obtain one complete maf per patient
@@ -292,18 +293,12 @@ if (protocol == "panelTumor"){
   ## Input Files
   cnvsFile <- paste0(path_input, "_td_output.sort.filtered.rmdup.realigned.fixed.cnr")
   ## Output Files
-  outfile <- paste0(sample, "_CNV.xlsx")
-  outfile_ts_og <- paste0(sample, "_CNV_TSG_OG.xlsx")
-  outfile_ideogram <- paste0(sample, "_ideogram.pdf")
-  if( manifest == "V6") {
-    cnvs <- cnv_panel(input_file = cnvsFile, outfile = outfile,
+  outfile <- paste0(path_output, sample, "_CNV.xlsx")
+  outfile_ts_og <- paste0(path_output,sample, "_CNV_TSG_OG.xlsx")
+  outfile_ideogram <- paste0(path_output, sample, "_ideogram.pdf")
+  cnvs <- cnv_panel(input_file = cnvsFile, outfile = outfile,
                     outfile_ts_og = outfile_ts_og, outfile_ideogram = outfile_ideogram,
-                    path_data = path_data, mode = manifest)
-  } else {
-    cnvs <- cnv_panel(input_file = cnvsFile, outfile = outfile,
-                      outfile_ts_og = outfile_ts_og, outfile_ideogram = outfile_ideogram,
-                      path_data = path_data, mode = manifest, protocol = protocol)
-  }
+                    path_data = path_data, sureselect = sureselect, targets_txt = targets_txt, protocol = protocol)
 }
 
 ###############################

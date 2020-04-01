@@ -35,8 +35,9 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
   assess_significance(ratio_file = ratio_file, cnvs_file = cnvs_file,
                       outfile = cnv_pvalue_txt)
   
-  make_cnv_graph(ratio_file = ratio_file, ploidity = "2", outfile_plot = cnv_plot,
-                outfile_ideogram = cnv_ideogram_plot)
+  #make_cnv_graph(ratio_file = ratio_file, ploidity = "2", outfile_plot = cnv_plot,
+  #              outfile_ideogram = cnv_ideogram_plot)
+  make_cnv_ideo_sig(ratio_file = cnv_pvalue_txt, outfile_ideogram = cnv_ideogram_plot)
   
   cnvs_annotated <- cnv_annotation(cnv_pvalue_txt = cnv_pvalue_txt,
                                    outfile = outfile,
@@ -61,6 +62,19 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
   ddr <- cnv_dna_damage(input = out, outfile_dna_damage = outfile_dna_damage,
                         db = paste(path_data, "DNA_Damage_Response.txt",
                                    sep = "/"))
+  pam <- cnv_pathways(input = out,
+                      db = paste(path_data, "PI3K_AKT_mTOR.txt",
+                                 sep = "/"))
+  rme <- cnv_pathways(input = out,
+                      db = paste(path_data, "RAF_MEK_ERK.txt",
+                                 sep = "/"))
+  tyk <- cnv_pathways(input = out,
+                      db = paste(path_data, "Tyrosine_Kinases.txt",
+                                 sep = "/"))
+  cec <- cnv_pathways(input = out,
+                      db = paste(path_data, "Cell_Cycle.txt",
+                                 sep = "/"))
+  impa <- list(ddr = ddr, pam = pam, rme = rme, tyk = tyk, cec = cec)
 return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
-       = cnv_analysis_results, out = out, ddr = ddr))
+       = cnv_analysis_results, out = out, impa = impa))
   }

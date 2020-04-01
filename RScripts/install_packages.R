@@ -3,7 +3,7 @@
 # Created by: Raphael Scheible
 # Created on: 10.07.19
 # Extended by: Patrick Metzger
-# Extended on: 23.01.2020
+# Extended on: 01.04.2020
 
 options(repos=structure(c(CRAN="http://cloud.r-project.org")))
 
@@ -34,3 +34,6 @@ BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
 BiocManager::install("gdata")
 BiocManager::install("stringi")
 BiocManager::install("tidyr")
+BiocManager::install("ensembldb")
+BiocManager::install("EnsDb.Hsapiens.v75")
+BiocManager::install("GenomicRanges")

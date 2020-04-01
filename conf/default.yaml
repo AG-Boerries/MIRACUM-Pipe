@@ -201,3 +201,4 @@ reference:
     captureGenes: V5UTR_Targets.txt
     # target region in Mega bases covered
     coveredRegion: 75
+    

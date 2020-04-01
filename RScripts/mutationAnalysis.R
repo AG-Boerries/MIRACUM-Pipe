@@ -5,7 +5,7 @@
 mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
                              outfile_reactome, outfile_consensus,
                              outfile_hallmarks, outfile_mtb_genesets, path_data,
-                             path_script, path_output, targets_txt){
+                             path_script, path_output, targets_txt, protocol, sureselect){
   #' Mutation Analysis
   #'
   #' @description Analysis and Annotation of Mutations
@@ -23,6 +23,8 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   #' @param path_script string. Directory of required scripts
   #' @param path_output string. Output directory
   #' @param targets_txt string. Path of the targets.txt file provided by the Capture Kit manufracturer
+  #' @param protocol string. Type of protocol used for analyses
+  #' @param sureselect string. Path to capture region bed file
   #'
   #' @return returns list of
   #' @return ts_og dataframe. Table of mutations in tumorsuppressor and
@@ -70,14 +72,18 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   
   source(paste(path_script, "MutAna_tools.R", sep = "/"))
 
-  x_loh <- loh
+  if (protocol != "panelTumor"){
+    x_loh <- loh
+  } else {
+    x_loh <- data.frame()
+  }
   x_somatic <- somatic
 # Take only exonic mutations
   x_somatic$Func.refGene <- as.character(x_somatic$Func.refGene)
   id_ex <- which(x_somatic$Func.refGene == "exonic")
   x_s <- x_somatic[id_ex, ]
   no_loh <- FALSE
-  if (is.null(x_loh)){
+  if (is.null(x_loh) | protocol == "panelTumor"){
     no_loh <- TRUE
   }
   if (!no_loh){
@@ -91,42 +97,66 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     }
   }
 # split lists into sublists
-  sub_lst <- div(x_s, x_l, no_loh)
+  sub_lst <- div(x_s, x_l, no_loh, protocol, sureselect)
 # Write/print summary of mutationsnumber, diverse tables
   mutation_table <- mut_tab(sub_lst$x_s_snp, sub_lst$x_s_indel, sub_lst$x_l_snp,
-                            sub_lst$x_l_indel)
+                            sub_lst$x_l_indel, protocol)
   if (!no_loh) {
-    mut_stats_res <- mut_stats(x_s, x_l, tumbu)
-    tbl <- tables(x_s, x_l)
-    all_mut <- write_all_mut(x_s = x_s, x_l = x_l)
+    mut_stats_res <- mut_stats(x_s, x_l, tumbu, protocol)
+    tbl <- tables(x_s, x_l, protocol)
+    all_mut <- write_all_mut(x_s = x_s, x_l = x_l, protocol)
   } else {
     mut_stats_res <- mut_stats(x_s = x_s, tumbu = tumbu)
-    tbl <- tables(x_s= x_s)
+    tbl <- tables(x_s= x_s, protocol)
     all_mut <- write_all_mut(x_s = x_s)
   }
 
 # produce circos plot
-  cc <- circos_colors(x_s_snp = sub_lst$x_s_snp, x_s_indel = sub_lst$x_s_indel,
-                      x_l_snp = sub_lst$x_l_snp,
-                      x_l_indel = sub_lst$x_l_indel, no_loh = sub_lst$no_loh,
-                      no_indel_somatic = sub_lst$no_indel_somatic,
-                      no_snp = sub_lst$no_snp,
-                      no_indel_loh = sub_lst$no_indel_loh)
-  omicCircosUni(listOfMap = as.matrix(cc$map_mat), label = NULL, 125,
-                outfile_circos, circosColors = as.vector(cc$circoscolors))
- # Pathway-Analysis
-  prep <- prep_pwa(targets, all_mut$mut)
-  result_go <- get_terms(go.bp, outfile_go, prep$de_genes, prep$universe)
-  result_re <- get_terms(reactome2, outfile_reactome, prep$de_genes,
-                         prep$universe)
-  result_co <- get_terms(cons2, outfile_consensus, prep$de_genes, prep$universe)
-  result_hm <- get_terms(hallmarksOfCancer, outfile_hallmarks, prep$de_genes,
-                         prep$universe)
-# Check for important pathways
-  check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets, outfile_mtb_genesetsprep)
-  importantpws <- imp_pws(check_mat, all_mut$all_muts)
+  if(sub_lst$no_snp & sub_lst$no_loh & sub_lst$no_indel_somatic) {
+    cat("No mutations to draw in CircosPlot!")
+    result_go <- NULL
+    result_re <- NULL
+    result_co <- NULL
+    result_hm <- NULL
+    
+    # Check for important pathways
+    check_mat <- NULL
+    importantpws <- NULL
+  
+    } else {
+    cc <- circos_colors(x_s_snp = sub_lst$x_s_snp, x_s_indel = sub_lst$x_s_indel,
+                        x_l_snp = sub_lst$x_l_snp,
+                        x_l_indel = sub_lst$x_l_indel, no_loh = sub_lst$no_loh,
+                        no_indel_somatic = sub_lst$no_indel_somatic,
+                        no_snp = sub_lst$no_snp,
+                        no_indel_loh = sub_lst$no_indel_loh,
+                        no_snp_loh = sub_lst$no_snp_loh)
+    omicCircosUni(listOfMap = as.matrix(cc$map_mat), label = NULL, 125,
+                  outfile_circos, circosColors = as.vector(cc$circoscolors),
+                  protocol = protocol, sureselect = sureselect)
 
-  return(list(ts_og = tbl$ts_og_table,
+    if (protocol != "panelTumor"){
+      # Pathway-Analysis
+      prep <- prep_pwa(targets, all_mut$mut)
+      result_go <- get_terms(go.bp, prep$de_genes, prep$universe)
+      result_re <- get_terms(reactome2, prep$de_genes,
+                             prep$universe)
+      result_co <- get_terms(cons2, prep$de_genes, prep$universe)
+      result_hm <- get_terms(hallmarksOfCancer, prep$de_genes, prep$universe)
+    } else {
+      result_go <- NULL
+      result_re <- NULL
+      result_co <- NULL
+      result_hm <- NULL
+    }
+
+  # Check for important pathways
+    check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets)
+    importantpws <- imp_pws(check_mat, all_mut$all_muts)
+}
+  
+  return(list(mut_tab = mutation_table,
+              ts_og = tbl$ts_og_table,
               go = result_go, reactome = result_re,
               consensus = result_co, hallmarks = result_hm,
               mtb_genesets = check_mat,
@@ -136,6 +166,5 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
               important_pathways = importantpws,
               som_mut_tab = tbl$sm_table,
               table_loh_mutations = tbl$lm_table,
-              all_mutations = all_mut$all_muts,
-              mutation_table = mutation_table))
+              all_mutations = all_mut$all_muts))
 }
