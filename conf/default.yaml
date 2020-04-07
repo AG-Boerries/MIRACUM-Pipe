@@ -201,4 +201,7 @@ reference:
     captureGenes: V5UTR_Targets.txt
     # target region in Mega bases covered
     coveredRegion: 75
-    
+    # target / capture region kit name
+    captureRegionName: V5UTR
+    # target capture correlation factors for mutation signature analysis
+    captureCorFactors : targetCapture_cor_factors.rda

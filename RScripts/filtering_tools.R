@@ -928,6 +928,19 @@ target_check <- function(input, sureselect){
 
 txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1], protocol, snv_vcf, indel_vcf){
   
+  #' Text to MAF Converter (cBioPortal Import)
+  #' 
+  #' @param input data.frame. Input data,frame from the pipeline. Output from the filtering scripts.
+  #' @param Center string. Name of the processing Center.
+  #' @param refBuild string. Reference genome version, e.g. GRCh37, GRCh38.
+  #' @param idCol string. Column name in the input file containing the Patient_ID.
+  #' @param id string. Patient_ID.
+  #' @param sep string. Separator for the outputfile. Should be "\t" for cBioPortal import.
+  #' @param Mutation_Status string. Kind of mutations about to process. Could either be T(umor), N(ormal) or LOH.
+  #' @param protocol string. Used protocol either panel/tumor only (panelTumor) or WES / tumor and normal (somaticGerlmine or somatic)
+  #' @param snv_vcf string. snpEff vcf output containing SNVs.
+  #' @param indel_vcf string. snpEff vcf output containing InDels.
+  
   if (protocol != "panelTumor"){
     if (Mutation_Status == "T") {
       Mutation_Status <- "Somatic"

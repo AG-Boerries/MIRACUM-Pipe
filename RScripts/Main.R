@@ -27,6 +27,9 @@ library(gdata)
 library(gtools)
 library(stringi)
 library(tidyr)
+library(dplyr)
+library(magritter)
+library(pracma)
 
 args <- commandArgs()
 
@@ -47,6 +50,9 @@ covered_region <- args[14]
 author <- args[15]
 center <- args[16]
 bed_file <- args[17]
+sureselect_type <- args[18]
+ref_genome <- args[19]
+targetCapture_cor_factors <- args[20]
 
 #############
 # Functions #
@@ -63,6 +69,7 @@ source(paste(path_script, "cnv_analysis.R", sep = "/"))
 source(paste(path_script, "cnv_ana_tools.R", sep = "/"))
 # Mutation Signature Analysis #
 source(paste(path_script, "mutationSignatureAnalysisFunction.R", sep = "/"))
+source(paste(path_script, "Mut_sig_tools.R", sep = "/"))
 
 ##################
 # FASTQC Reports #
@@ -306,7 +313,7 @@ if (protocol == "panelTumor"){
 print("Mutation Signature Analysis.")
 if( protocol != "panelTumor"){
   somaticVCF <- paste0(path_input, sample,"_vc.output.snp.Somatic.hc.fpfilter.vcf")
-  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect = , path_script = path_script)
+  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors)
 } else {
   vcf <- paste0(path_input, sample,"_vc.output.snp.hc.fpfilter.vcf")
   mut_sig_analysis <- mutation_signature_analysis(vcf_file = vcf,

@@ -30,6 +30,8 @@ readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.l
 readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureRegions "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_CAPTUREGENES="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureGenes "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.coveredRegion "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_CAPTUREREGIONNAME="$(get_config_value reference.sequencing.captureRegionName "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_CAPTURECORFACTORS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureCorFactors "${PARAM_DIR_PATIENT}")"
 
 
 # database for known variants
@@ -208,7 +210,10 @@ export FILE_GENOME
 export CFG_REFERENCE_LENGTH
 
 export CFG_REFERENCE_CAPTUREREGIONS
+export CFG_REFERENCE_CAPTUREGENES
 export CFG_REFERENCE_COVEREDREGION
+export CFG_REFERENCE_CAPTUREREGIONNAME
+export CFG_REFERENCE_CAPTURECORFACTORS
 
 export CFG_REFERENCE_DBSNP
 
