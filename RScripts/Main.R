@@ -152,7 +152,7 @@ if (protocol != "panelTumor"){
                                 path_data = path_data,
                                 path_script = path_script, covered_region = NULL,
                                 mode = "N", center = center, id = id,
-                                protocol = protocol, sureselect = )
+                                protocol = protocol, sureselect = bed_file)
     
     mutation_analysis_result_gd <- mutation_analysis(loh = NULL,
                                                      somatic = filt_result_td$table,
