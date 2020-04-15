@@ -1,11 +1,12 @@
 \documentclass[woside,a4paper,12pt]{article}
-\usepackage[sc]{mathpazo}
+\usepackage{mathptmx, helvet, courier}
+\renewcommand\familydefault{\sfdefault}
 \usepackage[german]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{float}
 \usepackage{graphicx}
-\usepackage{subcaption}
+\usepackage{caption}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
 \setcounter{secnumdepth}{2}
@@ -30,6 +31,8 @@
 \usepackage{threeparttable}
 \usepackage{fullpage}
 \usepackage{pdflscape}
+\usepackage{ifthen}
+\usepackage{subfig}
 
 \begin{document}
 
@@ -52,352 +55,633 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 \tableofcontents
 \clearpage
 
-\section{Qualität der Genomsequenzierung}
-\subsection{Raw Quality}
+%%%% Übersicht %%%%
+\section{\"{U}bersicht}
 
-\begin{figure}[H]
-  \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{\Sexpr{tumor}}
-      \caption{Tumor Qualität}
-      \label{fig:1}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{\Sexpr{germline}}
-      \caption{Keimbahn Qualität}
-      \label{fig:2}
-    \end{subfigure}
-\end{figure}
+% Übersicht über Schlüsselergebnisse der Analyse
+<<eval=TRUE, results="tex", echo=FALSE>>=
+helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
+if (length(helper) == 1){
+tmp1 <- data.frame(Eigenschaften = c("Mutationslast", "Anzahl somatischer Mutationen", "BRCAness", "Anzahl CNVs"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), " /Mb"), as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)), paste0(round(x = mut_sig_ana$output$Summary[helper, 3], digits = 2), " %"), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+} else {
+  tmp1 <- data.frame(Eigenschaften = c("Mutationslast", "Anzahl somatischer Mutationen", "BRCAness", "Anzahl CNV- Regionen"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), " /Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), "< 1.0%", round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0)))
+}
+                  
+kable(tmp1, booktabs = T, row.names = F, caption = "Schl\"usselergebnisse der Analyse") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12) %>% column_spec(1, width = "20em") %>% column_spec(2, width = "9em")
+@
 
-\subsection{Base Quality Score Recalibration (BQSR)}
+% Mutationsübersicht
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- mutation_analysis_result$mut_tab
+colnames(tmp) <- c("Mutationstyp", "Anzahl", "Zygosity", "TS", "OG", "HS")
+tmp2 <- data.frame(Mutationstyp = c("SNV", "InDel", "LoH"),
+                   Anzahl = c(sum(as.numeric(tmp[c(1:2), "Anzahl"])),
+                              sum(as.numeric(tmp[c(4:5), "Anzahl"])), 
+                              sum(as.numeric(tmp[c(3, 6), "Anzahl"]))),
+                   Tumorsuppressoren = c(sum(as.numeric(tmp[c(1:2), "TS"])),
+                                         sum(as.numeric(tmp[c(4:5), "TS"])),
+                                         sum(as.numeric(tmp[c(3, 6), "TS"]))),
+                   Onkogene = c(sum(as.numeric(tmp[c(1:2), "OG"])),
+                                sum(as.numeric(tmp[c(4:5), "OG"])),
+                                sum(as.numeric(tmp[c(3, 6), "OG"]))),
+                   Hotspots = c(sum(as.numeric(tmp[c(1:2), "HS"])),
+                                sum(as.numeric(tmp[c(4:5), "HS"])),
+                                sum(as.numeric(tmp[c(3, 6), "HS"]))))
+kable(tmp2, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12)
+@
 
-\begin{figure}[H]
-  \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{\Sexpr{tumor_bsqr}}
-      \caption{Tumor Qualität nach BQSR}
-      \label{fig:3}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{\Sexpr{germline_bsqr}}
-      \caption{Keimbahn Qualität nach BQSR}
-      \label{fig:4}
-    \end{subfigure}
-\end{figure}
-
-\subsection{Zusammenfassung}
-
-\begin{itemize}
-\item Agilent SureSelect V6
-\item Paired end 100bp
-\item TD: \Sexpr{stats$avreads$nRT} Mio. Reads
-\item GD: \Sexpr{stats$avreads$nRG} Mio. Reads
-\item Gute Qualität der Reads
-\end{itemize}
-
-\section{Coverage}
-
-\begin{figure}[H]
+% Grafiken zur Übersicht
+\begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{\Sexpr{coverage_out}}
+  \subfloat[\"Ubersicht aller somatischen Mutationen]{\includegraphics[height = 0.4\textwidth]{\Sexpr{outfile_circos}}}\quad %
+  \subfloat[\"Ubersicht aller CopyNumberVariations (CNVs)]{\includegraphics[height = 0.4\textwidth]{\Sexpr{cnv_ideogram_plot}}}
+  \caption{Darstellung aller identifizierten Mutationen}
+\end{figure}
+
+\clearpage
+
+%%%% QUALITÄT %%%%
+\section{Qualit\"{a}tskontrollen und Sequenzierungsstatistiken}
+
+Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität von mehr als 28 nach der \textit{Base Quality Score Recalibration} (BQSR) berücksichtigt. In Abbildung \ref{base_qual} sind die Basenqualitäten für jede Position in den Reads dargestellt. Für jede Probe einmal direkt aus dem Sequenzierer (Abb \ref{base_qual}, obere Reihe) und einmal nach der BQSR (Abb \ref{base_qual}, untere Reihe).
+
+\begin{figure}[h]
+\centering
+\subfloat[Tumor Qualit\"at]{\includegraphics[width = 0.4\textwidth]{\Sexpr{tumor}}} \quad %
+\subfloat[Keimbahn Qualit\"at]{\includegraphics[width = 0.4\textwidth]{\Sexpr{germline}}} \par %
+\subfloat[Tumor Qualit\"at nach BQSR]{\includegraphics[width = 0.4\textwidth]{\Sexpr{tumor_bsqr}}} \quad %
+\subfloat[Keimbahn Qualit\"at nach BQSR]{\includegraphics[width = 0.4\textwidth]{\Sexpr{germline_bsqr}}}
+\caption{Darstellung der Sequenzierung als Output aus dem Sequenzierer, (a) und (b), und nach der BQSR, (c) und (d)}
+\label{base_qual}
+\end{figure}
+\clearpage
+
+\subsection{Coverage}
+
+Die Mean-Coverage und die Gesamtcoverage der beiden Proben ist ein weiteres Qualitätsmerkmal. Sind die Werte zu niedrig, sind viele Stellen im Genom unzureichend abgedeckt. Abbildung \ref{cov_plot} zeigt die kummulative Verteilung, durch die der Anteil an targeted Basen, die von einer bestimmten Anzahl an Reads abgedeckt sind, beschrieben wird.
+
+\begin{table}[h]
+\centering
+\caption{Coverageinformation zu den Proben}
+\label{cov_mean}
+\begin{tabular}{lll}
+\hline Gewebe & Mean & Anzahl aller Reads \\\hline
+Tumor & \Sexpr{round(x =sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2)} Reads & \Sexpr{stats$avreads$nRT} Mio. Reads\\
+Keimbahn & \Sexpr{round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2)} Reads & \Sexpr{stats$avreads$nRG} Mio. Reads\\\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{\Sexpr{coverage_out}}
 \caption{Coverage}
-\label{fig:5}
+\label{cov_plot}
 \end{figure}
-
-\subsection{Mean Coverage}
-<<echo=FALSE, eval=TRUE>>=
-# Mean Coverage
-  for (i in 1:length(stats$cover$files)) {
-    print(paste("Mean Coverage", stats$cover$labs[i], ":",
-                sum(stats$cover$cov[[i]][, 2] * stats$cover$cov[[i]][, 5]),
-                sep = " "))
-  }
-@
-
 \clearpage
+
+%%%% MUTATIONSANALYSE %%%%
 \section{Mutationsanalyse}
-\subsection{Informationen zur Analyse}
+\subsection{Detaillierte \"Ubersicht}
+In der Analyse werden nur seltene Mutationen mit einer \textit{Variant Allele Frequency} (VAF) über 10\% betrachtet. Gezeigt werden Mutationen vom Typ \textit{single nucleotide variation} (SNV), \textit{Insertion and Deletions} (InDel) und \textit{Loss of Heterozygosity} (LoH). Letztere sind Mutationen, die in der Keimbahn heterozygot vorliegen, im Tumor allerdings homozygot.\\
+Im Weiteren werden die Ergebnisse der Mutationsanalyse in Tabellen dargestellt. Zunächst eine Übersicht über die Anzahl der Mutationen, aufgeteilt in verschiedene Mutationstypen (Tab \ref{mut_ana_ov}). Es wird gelistet, wieviele dieser Mutationen in einem sogenannten Cancergene nach OncoKB, aufgeteilt in Tumorsuppressoren und Onkogene, identifiziert wurden. Desweitern wird die Anzahl der sogenannten \textit{Cancer Hotspot Mutationen} (HS) nach cancerhotspots.org angegeben.\\
+Die Lage der Mutationen im Genom wird, aufgeteilt nach Mutationstyp (somatische SNV, somatische Indel, LoH SNV, LoH InDel), im Circosplot dargestellt (Abb \ref{cir_plot}).
 
-\begin{itemize}
-\item Aligned zum Referenzgenom UCSC hg19
-\item Einschlusskriterien der Mutation
-  \begin{itemize}
-    \item Mindestens 8 Reads pro Base
-    \item Seltene Mutationen (Minor-Allele Frequency (MAF) $< 0.001$, basierend auf gnomAD exome, ExAC, ESP6500 und 1000g)
-    \item Keine \grqq Black-listed\grqq{} Gene/Sequenzen
-    \item Variant Allele Frequency (VAF) $> 10\%$
-  \end{itemize}
-  \item Analyse der Mutationen
-  \begin{itemize}
-  \item Annotation bekannter Mutationen (Cosmic, Clinvar, dbSNP)
-  \item Ranking der Wichtigkeit (RVIS Score)
-  \item Strukturanalyse der mutierten Proteine (Condel, CADD)
-  \end{itemize}
-\end{itemize}
-
-\subsection{Somatische Mutationen und Loss of Heterozygosity (LoH)}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{\Sexpr{outfile_circos}}
-\caption{Circos Plot}
-\label{fig:6}
-\end{figure}
-
-\clearpage
-
-<<eval=TRUE, results='tex', echo=FALSE>>=
-#tmp <- read.delim('MutationTable.txt')
-tmp <- mutation_analysis_result$mutation_table
-colnames(tmp) <- c("Mutationstype", "Number of exonic", "Zygosity", "TS", "OG", "HS")
-kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen") %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = 12)
-tmp.exon <- tmp[,2]
-n_s <- sum(as.numeric(tmp.exon[c(1:2, 4:5)]))
-n_l <- sum(as.numeric(tmp.exon[c(3,6)]))
-n_a <- n_s + n_l
+<<mut_ana_ov, eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- mutation_analysis_result$mut_tab
+colnames(tmp) <- c("Mutationstyp", "Anzahl", "Zygosit\"at", "Tumorsuppressoren", "Onkogene", "Hotspots")
+tmp[c(1, 4), 3] <- "homozygot"
+tmp[c(2, 5), 3] <- "heterozygot"
+kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifizierten Mutationen \\label{mut_ana_ov}") %>% kable_styling(latex_options = c( "hold_position"), font_size = 9)
 @
 
-\begin{itemize}
-\item \Sexpr{n_s} somatische Mutationen (exonisch)
-\item \Sexpr{n_l} Loss of Heterozygosity (LoH)
-\item Insgesamt \Sexpr{n_a} Mutationen
-\item Mutationslast \Sexpr{round(filt_result_td$tmb, digits = 2)}/Mb
-\end{itemize}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-tmp <- mutation_analysis_result$ts_og
-if(dim(tmp)[1]!=0){
-tmp <- tmp[,c("Gene.refGene","GeneName","is_tumorsuppressor", "is_oncogene", "is_hotspot")]
-colnames(tmp) <- c('Symbol', 'Gene Name','TSG', 'OG', "HS")
-kable(tmp, format = "latex", caption = "Tumorsuppressoren und Onkogene - Überblick", booktabs = T, longtable = T,
-      digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 8) %>% column_spec(c(1, 3:5), width = "5em") %>% column_spec(2, width = "20em")
-  }else{print("No Tumorsuppressors or Oncogenes!")}
-@
-\clearpage
-
-\begin{landscape}
-\subsection{Tumorsuppressoren und Onkogene}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-tmp <- mutation_analysis_result$ts_og
-if(dim(tmp)[1]!=0){
-  colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF', 'Zygosity', 'Reads', 'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
-  tmp$MAF <- format(tmp$MAF,digits=3, scientific = TRUE)
-  tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
-  tmp$COSMIC <- gsub(",", ", ", tmp$COSMIC)
-  kable(tmp[,c(1:16)], format = "latex", caption = "Tumorsuppressoren und Onkogene", booktabs = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 8) %>% column_spec(c(2:4,10:11), width = "6em") %>% column_spec(c(1,5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
-}else {print("No Tumorsuppressors or Oncogenes!")}
-@
-\clearpage
-\subsection{Somatische Mutationen (top20 nach VAF)}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-tmp <- mutation_analysis_result$som_mut_tab
-colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF', 'Zygosity', 'Reads',
-                     'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
-tmp <- tmp[order(tmp$'VAF', decreasing =  TRUE), , drop = FALSE]
-if(dim(tmp)[1]!=0){
-  tmp$MAF <- format(tmp$MAF,digits=3, scientific = TRUE)
-  tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
-  tmp$COSMIC <- gsub("," , ", ", tmp$COSMIC)
-  if(dim(tmp)[1]>20){
-    kable(tmp[c(1:20),c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,10:11), width = "6em") %>% column_spec(c(5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)} else{
-     kable(tmp[ ,c(1:16)], format = "latex", caption = "somatische Mutationen", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 8) %>% column_spec(c(1:4,10:11), width = "6em") %>% column_spec(c(5:9, 12:15), width = "2em") %>% column_spec(16, width = "8em") %>% row_spec(0, angle = 45)
-    }
-}else {print("No somatic mutations!")}
-@
-\clearpage
-\subsection{LoH}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-if(dim(mutation_analysis_result$table_loh_mutations)[1]>0){
-  tmp <- mutation_analysis_result$table_loh_mutations
-  colnames(tmp) <- c('Symbol', 'Gene Name', 'Exonic Function', 'Aminoacid Change', 'VAF_Normal','VAF_Tumor','Reads_Normal','Reads_Tumor', 'TSG', 'OG', 'HS', 'TARGET', 'MAF', 'CADD', 'Condel','CLINSIG','COSMIC')
-  tmp$MAF <- format(tmp$MAF,digits=3, scientific = TRUE)
-  tmp$COSMIC <- sub(";.*", "", tmp$COSMIC)
-  tmp$COSMIC <- gsub("," , ", ", tmp$COSMIC)
-  kable(tmp[,c(1:17)], format = "latex", caption = "LoH", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 8) %>% column_spec(c(1, 3:4, 12), width = "6em") %>% column_spec(c(5:11, 13:16), width = "2em") %>% column_spec(c(2, 17), width = "8em") %>% row_spec(0, angle = 45)
-} else {print("No LoH!")}
-@
-\end{landscape}
-
-\begin{landscape}
-\subsection{Funktionelle Analysen}
-\subsubsection{GO}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-if(dim(mutation_analysis_result$go)[1] >= 20){
-  tmp <- mutation_analysis_result$go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse GO Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
-} else {
-  tmp <- mutation_analysis_result$go[1:dim(mutation_analysis_result$go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse GO Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
-}
-@
-\clearpage
-\subsubsection{Consensus}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-if(dim(mutation_analysis_result$consensus)[1] >= 20){
-  tmp <- mutation_analysis_result$consensus[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val","Symbol")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol', fixed=TRUE)
-  kable(tmp, format = "latex", caption = 'Ergebnisse Consensus Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 10) %>% column_spec(6, width = "10em")
-} else {
-  tmp <- mutation_analysis_result$consensus[1:dim(mutation_analysis_result$consensus)[1],c("Term","Count", "Size", "p-value", "adj.P.Val","Symbol")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  tmp$'Symbol' <- gsub("|", "| ", tmp$'Symbol', fixed=TRUE)
-  kable(tmp, format = "latex", caption = 'Ergebnisse Consensus Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"),  font_size = 10) %>% column_spec(6, width = "10em")
-}
-@
-
-\clearpage
-\subsubsection{Reactome}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-if(dim(mutation_analysis_result$reactome)[1] >= 20){
-  tmp <- mutation_analysis_result$reactome[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse Reactome Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "scale_down"))
-} else {
-  tmp <- mutation_analysis_result$reactome[1:dim(mutation_analysis_result$reactome)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse Reactome Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
-}
-
-@
-\clearpage
-\subsubsection{Hallmarks of Cancer}
-\thispagestyle{empty}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-if(dim(mutation_analysis_result$hallmarks)[1] >= 20){
-  tmp <- mutation_analysis_result$hallmarks[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse Hallmarks of Cancer Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "scale_down"))
-} else {
-  tmp <- mutation_analysis_result$hallmarks[1:dim(mutation_analysis_result$hallmarks)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
-  tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
-  tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = 'Ergebnisse Hallmarks Analyse, top 20', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
-}
-
-@
-\clearpage
-\subsection{Wichtige Signalwege}
-\thispagestyle{empty}
-<<echo=FALSE, eval=TRUE, results='tex'>>=
-options(knitr.kable.NA = 'None')
-importantPathways <- mutation_analysis_result$important_pathways
-if (length(importantPathways) == 0){
-  print("Keine Mutationen in wichtigen Signalwegen!")
-} else{
-  tbl <- importantPathways[ ,c('Pathway', 'Symbol', 'GeneName', 'ExonicFunc', 'VAF', 'Reads', 'AAChange', 'target', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')]
-  colnames(tbl) <- c('Pathway', 'Symbol', 'Gene Name', 'Exonic Function', 'VAF', 'Reads', 'Aminoacid Change', 'TARGET', 'MAF', 'CADD', 'Condel', 'CLINSIG', 'COSMIC')
-  tbl$COSMIC <- sub(";.*", "", tbl$COSMIC)
-  tbl$COSMIC <- gsub(",", ", ", tbl$COSMIC)
-
-  kable(tbl, caption = "Important Pathways", booktabs = F, align = "c", longtable = TRUE, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), full_width = FALSE, font_size = 6) %>% column_spec(c(2,4:6, 9:12), width = "3em") %>% column_spec(c(1,3,7), width = "10em") %>% column_spec(c(8,13), width = "15em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 45)
-}
-@
-\clearpage
-\end{landscape}
-
-\section{Copy Number Variation}
-\subsection{Anzahl CNVs}
-<<echo=FALSE, eval=TRUE>>=
-print(paste("#CNVs: ", dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], sep = ''))
-@
-\subsection{CNV Plots}
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{\Sexpr{cnv_plot}}
-\caption{Copy Number Variation}
-\label{fig:11}
+\includegraphics[width=0.53\textwidth]{\Sexpr{outfile_circos}}
+\caption{Circos Plot mit allen somatischen Mutationen}
+\label{cir_plot}
 \end{figure}
+\clearpage
+
+\subsection{Cancer Genes}
+\subsubsection{Somatische Mutationen}\label{som_mut_section}
+
+In folgenden Tabellen werden Gensymbol, Genname und der entsprechende Aminos\"aurenaustausch gelistet.
+Die Funktion der Mutationen werden durch Abkürzungen beschrieben: nsSNV - nonsynonymous SNV, SG - stopgain, nfsDel - nonframeshift deletion, fsDel - frameshift deletion, nfsIns - nonframeshift insertion fsIns - frameshift insertion.
+Die VAF wird gelistet, zusammen mit den zu Grunde liegenden Readcounts. Zunächst die Anzahl an Variantenreads, danach die Gesamtcoverage an dieser Stelle. 
+Außerdem werden nur seltene Mutationen gelistet. Selten bedeutet dabei, dass die \textit{Minor Allele Frequency} (MAF) unter 0.001 liegen muss, basierend auf den Datenbanken gnomAD exome.
+Desweiteren werden Strukturanalysen via Condel und CADD zu den entsprechend mutierten Proteinen durchgeführt. Diese Ergebnisse werden für Condel in den folgenden Tabellen durch eine Klassifizierung beschrieben: D - deleterious, N - neutral.
+Die Analyse beinhaltet zusätzliche Annotationen bekannter Mutationen wie Cosmic, Clinvar und dbSNP. Die Ergebnisse werden nur reduziert und übersichtlich dargestellt. Es werden für die Mutationen hier nur die entsprechenden Cosmic Nummern angegeben.
+Am Ende wird die Zuordnung des Gens als Cancergenes nach der Klassifikation von OncoKB dargestellt. Die folgende Tabelle \ref{som_mut_cg} enthält alle SNVs und InDels in Cancergenes für diese Probe.\\
+
+Die Tabelle für LoH Mutationen ist analog zur vorherigen aufgebaut (Tab \ref{loh_cg}). Da LoH Mutationen sowohl im Tumor als auch in der Keimbahn detektiert werden, gibt es hier zwei Spalten zur VAF. Zunächst wird die Frequenz im Tumor gelistet und auch nach dieser geordnet. Die folgende Spalte gibt die VAF in der Keimbahn an. Analog zu oben mit den ensprechenden Coverages.\\
+
+Im Anhang  befinden sich Tabellen zu allen detektierten somatischen, LoH und Keimbahnmutationen (Kap \ref{all_som_mut}, \ifthenelse{\equal{\detokenize{\Sexpr{modus}}}{\detokenize{SomaticGermline}}}{\ref{all_loh}}{}, \ref{all_germline}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über 10\% gelistet.
+
+<<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16)]
+if(dim(tmp)[1] == 0) {
+  kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+} else {
+  tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+  tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+  tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+  tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$condel.label[is.na(tmp$condel.label)] <- "."
+  tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+  tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
+  tmp <- tmp[, c(1:2, 4, 3, 14, 11:12, 15, 8, 7)]
+  colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
+  cap_1 <- "Alle identifizierten somatischen Mutationen in Cancergenes geordnet nach VAF.\\label{som_mut_cg}"
+  kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+}
+@
+
+\subsubsection{LoH}
+<<loh_cg, eval=TRUE, results="tex", echo=FALSE>>=
+if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
+  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:10, 12, 13, 15, 17)]
+  id <- which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1)
+  if (length(id) > 0) {
+    tmp <- tmp[id, c(1:8, 11:14, 9:10)]
+    tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
+    tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
+    tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+    tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+    tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+    tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
+    tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+    tmp <- tmp[order(tmp$VAF_tumor, decreasing =  TRUE), , drop = FALSE]
+    tmp <- tmp[, c(1:2, 4, 3, 14, 13, 10:11, 17, 16, 15)]
+    colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic", "OG", "TSG")
+    kable(tmp, format = "latex", caption = "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8, 10:11), width = "2em") %>% row_spec(0, angle = 60)
+  } else {
+    cap_1 <- "Es wurden keine LoH in Cancergenes identifiziert.\\label{loh_cg}"
+    kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8, 10:11), width = "2em") %>% row_spec(0, angle = 60)
+    }
+  } else {
+  cap_1 <- "Es wurden keine LoH in Cancergenes identifiziert.\\label{loh_cg}"
+  kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8, 10:11), width = "2em") %>% row_spec(0, angle = 60)
+  }
+n_cnv <- round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0)
+@
+\clearpage
+
+%%%% MUTATIONSANALYSE %%%%
+\section{Copy Number Variations}
+\subsection{\"Ubersicht}
+Im folgenden sind die \Sexpr{n_cnv} signifikanten Regionen mit \textit{Copy Number Variation} (CNV) als Ideogramm dargestellt (Abb \ref{ideogram}). Dabei wird über allen Chromosomen in den Zeilen die totale Anzahl an Kopien farbig markiert aufgetragen. Dabei wird  auf das Markieren von Regionen mit normaler Ploidität verzichtet. In blau dargestellt sind Verluste, je dunkler das Blau, desto weniger Kopien gibt es von dieser Region (1 oder 0). Regionen mit gesteigerten Kopien sind rot markiert, je dunkler das Rot, desto mehr Kopien gibt es in der Region (3 aufsteigend).
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{\Sexpr{cnv_ideogram_plot}}
-\caption{Copy Number Variation - Ideogram}
-\label{fig:12}
+\caption{Copy Number Variation - Ideogramm}
+\label{ideogram}
 \end{figure}
+\clearpage
 
-\subsection{Tumorsuppressoren}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-kable(cnv_analysis_results$cnvs_annotated$CNVTumorSuppressors, format = "latex", caption = "Tumorsuppressoren", booktabs = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+\subsection{Cancer Genes}
+
+Wie bei den somatischen Mutationen werden auch bei den CNVs betroffene Cancergenes (Onkogene und Tumorsuppressoren) genauer betrachtet und in folgenden Tabellen dargestellt. Dabei werden für Onkogene in Tabelle \ref{og_loss} Losse und in Tabelle \ref{og_gain} Gains von Kopien dargestellt. Das Gleiche ist analog für Tumorsuppressoren in Tabelle \ref{tsg_loss}, sowie Tabelle \ref{tsg_gain} zu sehen.
+
+\subsubsection{Onkogene}
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- cnv_analysis_results$cnvs_annotated$CNVOncogenes
+idl <- which(tmp$status == "loss")
+tmpo <- tmp[idl, c(1:2, 4)]
+tmpo$Oncogene <- gsub(pattern = ",", replacement = ", ", x = tmpo$Oncogene)
+colnames(tmpo) <- c("Chromosom", "Kopien", "Onkogene")
+if(dim(tmpo)[1]!=0){
+  kable(tmpo, format = "latex", caption = "Identifizierte Losse in Onkogenen\\label{og_loss}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+} else {
+  cap <- "Keine Losse in Onkogenen identifiziert.\\label{og_loss}"
+  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+}
 @
 
-\subsection{Onkogene}
-<<echo=FALSE, results='tex', eval=TRUE>>=
-kable(cnv_analysis_results$cnvs_annotated$CNVOncogenes, format = "latex", caption = "Onkogene", booktabs = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmpg <- tmp[-idl, c(1:2, 4)]
+tmpg$Oncogene <- gsub(pattern = ",", replacement = ", ", x = tmpg$Oncogene)
+colnames(tmpg) <- colnames(tmpo)
+if(dim(tmpg)[1]!=0){
+  kable(tmpg, format = "latex", caption = "Identifizierte Gains in Onkogenen\\label{og_gain}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+}else {
+  cap <- "Keine Gains in Onkogenen identifiziert.\\label{og_gain}"
+  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  }
+@
+
+\subsubsection{Tumorsuppressoren}
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- cnv_analysis_results$cnvs_annotated$CNVTumorSuppressors
+idl <- which(tmp$status == "loss")
+tmpo <- tmp[idl, c(1:2, 4)]
+tmpo$TumorSuppressor <- gsub(pattern = ",", replacement = ", ", x = tmpo$TumorSuppressor)
+colnames(tmpo) <- c("Chromosom", "Kopien", "Tumorsuppressor")
+if(dim(tmpo)[1]!=0){
+  kable(tmpo, format = "latex", caption = "Identifizierte Losse in Tumorsuppressoren\\label{tsg_loss}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "2em") %>% row_spec(0, angle = 60)
+}else {
+  cap <- "Keine Losse in Tumorsuppressoren identifiziert.\\label{tsg_loss}"
+  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  }
+@
+
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmpg <- tmp[-idl, c(1:2, 4)]
+tmpg$TumorSuppressor <- gsub(pattern = ",", replacement = ", ", x = tmpg$TumorSuppressor)
+colnames(tmpg) <- colnames(tmpo)
+if(dim(tmpg)[1]!=0){
+  kable(tmpg, format = "latex", caption = "Identifizierte Gains in Tumorsuppressoren\\label{tsg_gain}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "2em") %>% row_spec(0, angle = 60)
+}else {
+  cap <- "Keine Gains in Tumorsuppressoren identifiziert.\\label{tsg_gain}"
+  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  }
+@
+
+\clearpage
+\section{Wichtige Signalwege}\label{imp_pathways_section}
+Es werden fünf wichtige Signalwege betrachtet: \textit{RAF-MEK-ERK, PI3K-AKT-mTOR, DNA-Damage-Response, Cell Cycle} und \textit{Tyrosine Kinases}. Es wird untersucht, welche Gene in diesen Signalwege eine Mutation tragen. Diese Mutationen sind analog zu Kapitel \ref{som_mut_section} in Tabelle \ref{imp_ptws} dargestellt. Wenn in einem Signalweg keine Mutation identifiziert wurde, taucht er in der Tabelle nicht auf.\\
+Außerdem werden auch die CNVs auf ihre Zugehörigkeit zu den fünf wichtigen Signalwegen untersucht und in Tabelle \ref{imp_ptws_cnv} dargestellt. Dabei werden Gene mit der selben totalen Kopienanzahl in einer Zeile zusammengefasst.
+
+\subsection{Somatische Mutationen in wichtigen Signalwegen}
+<<som_mut_imp_pws, echo=FALSE, eval=TRUE, results="tex">>=
+options(knitr.kable.NA = ".")
+tmp <- mutation_analysis_result$important_pathways
+id_to <- which(tmp$Pathway == "Topart")
+if(length(id_to) != 0) {
+  tmp <- tmp[-c(id_to:dim(tmp)[1]), ]
+}
+if (length(tmp) == 0){
+  cap <- "Keine Mutationen in wichtigen Signalwegen identifiziert.\\label{imp_ptws}"
+  kable(data.frame(Signalweg = c("."), Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+} else{
+  tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC84")]
+  colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
+  tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
+  tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+  tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+  tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+  tmp <- tmp[, c(1:6, 8:9, 11)]
+  dup <- which(duplicated(tmp))
+  if (length(dup) > 0){
+    tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
+  }
+  colnames(tmp) <- c("Signalweg", "Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
+  kable(tmp, format = "latex", caption = "Identifizierte somatische Mutationen in wichtigen Signalwegen\\label{imp_ptws}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+}
+@
+\subsection{CNVs in wichtigen Signalwegen}
+
+<<echo=FALSE, eval=TRUE, results="tex">>=
+tmp <- cnv_analysis_results$impa
+if (length(tmp) == 0){
+  cap <- "Es wurden keine CNVs in wichtigen Signalwegen identifiziert.\\label{imp_ptws_cnv}"
+  kable(data.frame(Signalweg = c("."), Status = c("."), Kopien = c("."), Gene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+} else{
+  tmp <- lapply(1:length(tmp), function(id) {if(nrow(tmp[[id]])) {cbind(tmp[[id]], names(tmp)[id])}})
+  table_new <- lapply(tmp, function(x){
+    if (!is.null(x)) {
+      new_mat <- as.data.frame(matrix(nrow = length(unique(x[, 2])), ncol = 4, data = 0))
+      colnames(new_mat) <- c("Signalweg", "Status", "Kopien", "Gene")
+      new_mat[, 1] <- x[1, 4]
+      new_mat[, 3] <- unique(x[, 2])[order(unique(x[, 2]), decreasing = FALSE)]
+      for (i in 1:dim(new_mat)[1]){
+        new_mat[i, 4] <- paste(x[which(as.numeric(x[, 2]) == new_mat[i, 3]), 1], collapse = ", ")
+        new_mat[i, 2] <- ifelse(test = as.numeric(new_mat[i, 3]) < 2, yes = "Loss", no = "Gain")
+      }
+      return(new_mat)
+    }
+  })
+  tmp <- data.frame(rbind(table_new[[1]], table_new[[2]], table_new[[3]], table_new[[4]], table_new[[5]]))
+  tmp[which(duplicated(tmp$Signalweg)), 1] <- "."
+  tmp[which(tmp[, ] == "ddr"), 1] <- "DNA Damage Response"
+  tmp[which(tmp[, ] == "pam"), 1] <- "PI3K-AKT-mTOR"
+  tmp[which(tmp[, ] == "rme"), 1] <- "RAF-MEK-ERK"
+  tmp[which(tmp[, ] == "tyk"), 1] <- "Tyrosine Kinases"
+  tmp[which(tmp[, ] == "cec"), 1] <- "Cell Cycle"
+  kable(tmp[, ], format = "latex", caption = " Identifizierte CNVs in wichtigen Signalwegen\\label{imp_ptws_cnv}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+}
+@ 
+
+\clearpage
+\section{Weitere Analysen}
+\subsection{Mutationssignaturen}
+Untersucht werden die Mutationssignaturen basierend auf den COSMIC Mutation Signatures (V1) für alle somatischen Mutationen in der Probe. In der folgenden Tabelle \ref{mut_sig} werden nur Signaturen gelistet, die einen Anteil größer als 1\% haben. In der Tabelle sind außer dem Anteil auch noch die Konfidenzintervalle (KI) angegeben. Die Signatur AC3 wird als \textit{BRCAness} bezeichnet.\\
+Der TopArt-Score besteht aus vier verschiedenen Anteilen. Die ersten beiden Kategorien P1 und P2 sind phänotypische Kriterien. Für den TopArt-Score P1 ist wichtig, ob die \textit{BRCAness}-Signatur vorhanden ist. Ist sie nicht vorhanden, bekommt der Patient in dieser Kategorie null Punkte. Ist die Signatur vorhanden, das KI enthält aber die Null, erhält der Patietn einen Punkt. Enthält das KI die null nicht, so gibt es zwei Punkte. Das zweite phänotypische Kriterium P2 können wir nicht auswerten.
+
+<<mut_sig, echo=FALSE, eval=TRUE, results='tex'>>=
+tmp <- mut_sig_ana$output$Summary
+tmp$KI <- paste0("(", round(as.numeric(tmp[, 4]), digits = 2), ";", round(as.numeric(tmp[, 5]), digits = 2), ")")
+tmp <- tmp[, c(1:3, 6)]
+colnames(tmp) <- c("Signatur", "Beschreibung", "Anteil in %", "Konfidenzintervall in %")
+kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse\\label{mut_sig}", booktabs = T, row.names = F, digits = 2) %>% kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 9, full_width = T)
+@
+
+\subsection{TopArt Gene für G1}
+
+Die beiden anderen Kategorien G1 und G2 für den TopArt-Score sind genotypische Kriterien. Für die erste Kategorie werden die Gene mit somatischen Mutationen auf ihre Zugehörigkeit zu einer Liste aus 181 Genen geprüft. Wenn solche somatischen Mutationen detektiert werden, so sind sie in folgender Tabelle dargestellt (Tab \ref{top_art}). Gibt es in einem Gen eine homozygote Mutation, erhält der Patient in dieser Kategorie zwei Punkte. Gibt es eine heterozygote, so erhält er einen Punkt. Die zweite genotypische Kategorie G2 betrachtet Keimbahn-Mutationen. Diese können wir im Moment nicht auswerten.\\
+Hat der Patient insgesamt mehr als 3 Punkte und stammt mindestens einer dieser Punkte aus den genotypischen Kriterien, so ist der TopArt-Score positiv.
+
+<<top_art, echo=FALSE, eval=TRUE, results="tex">>=
+options(knitr.kable.NA = ".")
+tmp <- mutation_analysis_result$important_pathways
+id_to <- which(tmp$Pathway == "Topart")
+if(length(id_to) != 0) {
+  tmp <- tmp[c(id_to:dim(tmp)[1]), ]
+  tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC84")]
+  colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
+  tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
+  tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+  tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+  tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+  tmp <- tmp[, c(1:6, 8:9, 11)]
+  dup <- which(duplicated(tmp))
+  if (length(dup) > 0){
+    tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
+  }
+  colnames(tmp) <- c("Signalweg", "Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
+  kable(tmp, format = "latex", caption = "Somatische Mutationen in TOPART-G1-Genen\\label{top_art}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(1:3, 4, 9), width = "5em") %>% column_spec(c(5:6, 7), width = "3em") %>% column_spec(c(8), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+} else{
+  cap <- "Keine somatischen Mutationen in TOPART-G1-Genen.\\label{top_art}"
+    kable(data.frame(Signalweg = c("."), Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage)' = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(1:3, 4, 9), width = "5em") %>% column_spec(c(5:6, 7), width = "3em") %>% column_spec(c(8), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+  }
+@
+
+%% bei MASTER
+\ifthenelse{\equal{\detokenize{\Sexpr{modus}}}{\detokenize{SomaticGermline}}}{\subsection{Veränderungen in der Keimbahn}
+Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
+<<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
+if(length(grep(pattern = "MASTER", x = sample))>0){
+  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic84_coding", "is_oncogene", "is_tumorsuppressor")]
+  tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
+  tmp <- tmp[which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1), ]
+  if(dim(tmp)[1] != 0){
+    tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+    tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+    tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+    tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+    tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$condel.label[is.na(tmp$condel.label)] <- "."
+    tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+    tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
+    tmp <- tmp[, c(1:4, 12, 7:8, 13, 10:11)]
+    colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
+    cap_1 <- "Identifizierte Keimbahn Mutationen in Cancergenes.\\label{gl_cg}"
+    kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+  } else {
+    cap <- "Keine Mutationen in Cancergenes in der Keimbahn identifiziert.\\label{gl_cg}"
+    kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage)' = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)}
+  } else {
+      cap <- "\textbf{Es dürfen keine Keimbahnmutationen für diesen Patienten betrachtet werden.}\\label{gl_cg}"
+    kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage)' = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+}
+@
+
+\subsubsection{Keimbahnmutationen in wichtigen Signalwegen}
+Analog zu Kapitel \ref{imp_pathways_section}, Tabelle \ref{imp_ptws}, werden Keimbahnmutationen in den fünf genannten Signalwegen betrachtet (Tab \ref{gl_ip}).
+<<gl_ip, echo=FALSE, eval=TRUE, results='tex'>>=
+if(length(grep(pattern = "MASTER", x = sample))>0){
+  if(is.null(mutation_analysis_result_gd$important_pathways)) {
+    cap <- "Keine Keimbahnmutationen in wichtigen Signalwegen identifiziert.\\label{gl_ip}"
+    kable(data.frame(Signalweg = c("."), Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+  } else {
+    tmp <- mutation_analysis_result_gd$important_pathways
+    id_to <- which(tmp$Pathway == "Topart")
+    if(length(id_to) != 0) {
+      tmp <- tmp[-c(id_to:dim(tmp)[1]), ]
+    }
+    if (length(tmp) == 0){
+      cap <- "Keine Keimbahnmutationen in wichtigen Signalwegen identifiziert.\\label{gl_ip}"
+      kable(data.frame(Signalweg = c("."), Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+      } else {
+        tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC84")]
+        colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
+        tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
+        tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+        tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+        tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+        tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
+        tmp$ExonicFunction <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunction)
+        tmp$ExonicFunction <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunction)
+        tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
+        tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
+        tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+        tmp <- tmp[, c(1:6, 8:9, 11)]
+        dup <- which(duplicated(tmp))
+        if (length(dup) > 0){
+          tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
+        }
+        colnames(tmp) <- c("Signalweg", "Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
+        kable(tmp, format = "latex", caption = "Identifizierte somatische Mutationen in wichtigen Signalwegen\\label{gl_ip}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+      }
+    }
+} else {
+  cap <- "\textbf{Es dürfen keine Keimbahnmutationen für diesen Patienten betrachtet werden.}\\label{gl_ip}"
+    kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), 'VAF (Coverage)' = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)}
+@
+}{ }
+%%\subsection{Mircosatelliten}
+
+\section{Funktionelle Analysen}
+
+Für die SNVs und die CNVs werden funktionelle Analysen durchgeführt. Dabei wird untersucht, welche Signalwege aus den Hallmarks durch die Mutationen betroffen sind. Die Ergebnisse werden für die SNVs in Tabelle \ref{hm_snv} und für die CNVs in Tabellen \ref{hm_CNV_loss} für die Steigerungen und \ref{hm_CNV_gain} für die Verluste dargestellt.
+Es werden auch Analysen für Consensus, GO und Reactome durchgeführt. Diese werden im Report der Übersicht wegen allerdings nichts dargestellt. 
+
+\subsection{SNVs - Hallmarks}
+\thispagestyle{empty}
+<<hm_snv, echo=FALSE, results='tex', eval=TRUE>>=
+if(dim(mutation_analysis_result$hallmarks)[1] == 0) {
+  cap <- "Keine signifikant betroffene Signalwege identifiziert.\\label{hm_snv}"
+  kable(data.frame(Term = c("."), Count = c("."), Size = c("."), 'p-value' = c("."), 'adj. p-value' = c(".")), caption = cap, booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+} else {
+  if(dim(mutation_analysis_result$hallmarks)[1] >= 20){
+    tmp <- mutation_analysis_result$hallmarks[1:20,c("Term", "Count", "Size", "p-value", "adj. p-value")]
+    tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
+    tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
+    kable(tmp, caption = 'Ergebnisse Hallmarks of Cancer Analyse, top 20\\label{hm_snv}', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  } else {
+    tmp <- mutation_analysis_result$hallmarks[1:dim(mutation_analysis_result$hallmarks)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
+    tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
+    tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
+    kable(tmp, caption = 'Ergebnisse Hallmarks Analyse, top 20\\label{hm_snv}', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  }
+}
 @
 \clearpage
-\begin{landscape}
-\thispagestyle{empty}
-\subsection{Funktionelle Analyse der CNVs}
+
+\subsection{CNVs}
+
 \subsubsection{GAIN}
-<<echo=FALSE, results='tex',eval=TRUE>>=
+<<hm_CNV, echo=FALSE, results='tex',eval=TRUE>>=
 if(dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
+  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
   } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
+  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 }
 @
-\clearpage
+
 \subsubsection{LOSS}
 \thispagestyle{empty}
-<<echo=FALSE, results='tex',eval=TRUE>>=
+<<hm_CNV_gain, echo=FALSE, results='tex',eval=TRUE>>=
 if(dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
+  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em") 
 } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position")) %>% column_spec(1, width = "35em") %>% column_spec(c(2:3,5), width = "3em") %>% column_spec(4, width = "5em")
+  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 }
 @
 \clearpage
-\end{landscape}
+\appendix
+\section{Tabellen aller detektierten Mutationen}
+\subsection{Somatische Mutationen}\label{all_som_mut}
+%%
+%% TEXT
+%% include Explanation to table and additional tables that are available
+%%
 
-\section{Analyse der Mutationssignaturen}
-
-\begin{itemize}
-\item Nur somatische Mutationen werden berücksichtigt
-\item Nur Signaturen, die mehr als $1\%$ aller SNVs beinhalten, werden verwendet
-\item Die Signautren basieren auf den aktuellen \textit{COSMIC Mutation Signatures} \url{http://cancer.sanger.ac.uk/cosmic/signatures}
-\item \textit{AC3} wird als \textit{BRCAness} bezeichnet
-\end{itemize}
-
-<<echo=FALSE, eval=TRUE, results='tex'>>=
-tmp <- mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$norm_exposures
-tmp[,1] <- tmp[,1] * 100
-tmp <- cbind(mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$out_sig_ind_df,tmp)
-tmp <- tmp[,c(1,4,5)]
-colnames(tmp) <- c("Signature", "Process", "Percentage")
-kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse", booktabs = T, row.names = F, digits=2) %>% kable_styling(latex_options = c("striped", "HOLD_position"))
+<<eval=TRUE, results="tex", echo=FALSE>>=
+tmp <- mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16)]
+tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+tmp$condel.label[is.na(tmp$condel.label)] <- "."
+tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
+tmp <- tmp[, c(1:2, 4, 3, 11, 8:9, 12)]
+colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
+cap_1 <- "Alle identifizierten somatischen Mutationen geordnet nach VAF"
+if(dim(tmp)[1] != 0){
+  kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7), width = "2em") %>% row_spec(0, angle = 60)
+}else {cat("Keine somatischen Mutationen identifiziert.")}
 @
 
+\subsection{Loss of Heterozygosity}\label{all_loh}
+%%
+%% TEXT
+%% include Explanation to table and additional tables that are available
+%%
+
+<<eval=TRUE, results="tex", echo=FALSE>>=
+if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
+  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17)]
+  tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
+  tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
+  tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+  tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+  tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
+  tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+  tmp <- tmp[order(tmp$VAF_tumor, decreasing =  TRUE), , drop = FALSE]
+  tmp <- tmp[, c(1:2, 4, 3, 14, 13, 10:11, 15)]
+  colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic")
+  if(dim(tmp)[1] != 0){
+    kable(tmp, format = "latex", caption = "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8), width = "2em") %>% row_spec(0, angle = 60)
+  } else {cat("Keine Loss of Heterozygosity (LoH) identifiziert.")}
+} else {cat("Keine Loss of Heterozygosity (LoH) identifiziert.")}
+@
+
+%%% NUR FÜR MASTER PATIENTEN!! %%%
+\ifthenelse{\equal{\detokenize{\Sexpr{modus}}}{\detokenize{SomaticGermline}}}{\subsection{Keimbahn Mutationen}\label{all_germline}
+<<echo=FALSE, eval=TRUE, results='tex'>>=
+if (length(grep(pattern = "MASTER", x = sample)) == 0) {
+  cat("\textbf{Es d\"urfen f\"ur diesen Patienten keine Keimbahnmutationen betrachtet werden.")
+} else {
+  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic84_coding", "is_oncogene", "is_tumorsuppressor")]
+  tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
+  tmp <- tmp[-grep(pattern = ";", x = tmp$Gene.refGene, fixed = TRUE), ]
+  if(dim(tmp)[1] != 0){
+    tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+    tmp$cosmic <- lapply(strsplit(x = tmp$cosmic84_coding, split = "="), function(x){return(unlist(x)[2])})
+    tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+    tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+    tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$condel.label[is.na(tmp$condel.label)] <- "."
+    tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+    tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
+    tmp <- tmp[, c(1:4, 12, 7:8, 13, 10:11)]
+    colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
+    cap_1 <- "Identifizierte Keimbahnmutationen"
+    kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+  } else {
+    cat("Keine Mutationen in der Keimbahn identifiziert.")
+    }
+}
+@
+}{}
 \clearpage
 
-\section{Versionsinfo}
+\section{Informationen zu verwendeter Software und Paketen}
 
-\subsection{Genome}
+\subsection{Genom}
 \begin{itemize}
 \item UCSC hg19
 \end{itemize}
@@ -405,33 +689,30 @@ kable(tmp, caption = "Ergebnisse Mutationssignatur Analyse", booktabs = T, row.n
 \subsection{Programmversionen}
 \begin{itemize}
 \item FastQC: 0.11.5
-\item Trimmomatic: 0.38
-\item BWA: 0.7.17
+\item Trimmomatic: 0.36
+\item BWA: 0.7.15
 \item bam-readcount: 0.8.0
-\item samtools 1.9
-\item GATK: 3.8.1.0
-\item picard-tools: 2.18.15
+\item samtools 1.4.1
+\item GATK: 3.6
+\item picard-tools: 2.9.2
 \item VarScan: 2.4.3
-\item annovar 2018-04-16
-\item bedtools: 2.27.1
+\item annovar 2017-07-17
+\item bedtools: 2.26.0
 \item Control-FREEC: 11.0
-\item Java: 1.8.0\_152
-\item R: 3.4.1
+\item Java: 1.8.0\_121
 \end{itemize}
 
 \subsection{Annovar Datenbanken}
 \begin{itemize}
-\item refGene GRCh37
-\item esp6500siv2\_ea (ESP3500, European)
-\item avsnp150 (dbSNP)
-\item EU.sites.2015\_08 (1000Genome, European)
-\item cosmic86
-\item exac03 (ExAC)
-\item gnomad\_exome
-\item clinvar\_20180603
-\item intervar\_20180118
-\item dbnsfp35a
-\item cadd13
+\item refGene GRCh37 (20170601)
+\item esp6500siv2\_all (20141222)
+\item avsnp150 (dbSNP) (20170929)
+\item clinvar\_20170905 (20171003)
+\item 1000g2015aug\_all (20150824)
+\item cosmic84 (20180213)
+\item exac03 (20151129)
+\item gnomad\_exome (20170311)
+\item cadd13 (20170123)
 \end{itemize}
 
 \end{document}

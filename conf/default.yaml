@@ -53,7 +53,7 @@ tools:
 
   varscan:
   # minimum variant allele / tumor frequency to call a variant
-    minVAF: 0.10
+    minVAF: 0.05
 
     somatic:
       #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
@@ -134,6 +134,85 @@ tools:
       #--min-var-freq		Minimum variant allele frequency [0.05] -> tools.varscan.minVAF
       #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
       #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
+
+## Panel Parameter for varscan
+    panel:
+      minVAF: 0.05
+      minBaseQual: 28
+
+      mpileup2snp:
+        #--min-coverage  Minimum read depth at a position to make a call [8]
+        minCoverage: 20
+        #--min-reads2    Minimum supporting reads at a position to call variants [2]
+        minReads2: 2        
+        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+        minFreqForHom: 0.75
+        #--p-value       Default p-value threshold for calling variants [99e-02]
+        pValue: 0.99
+        #--strand-filter Ignore variants with >90% support on one strand [1]
+        strandFilter: 1
+
+        #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.minVAF
+        #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.general.minBaseQual
+    
+      mpileup2indel:
+        #--min-coverage  Minimum read depth at a position to make a call [8]
+        minCoverage: 20
+        #--min-reads2    Minimum supporting reads at a position to call variants [2]
+        minReads2: 2
+        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+        minFreqForHom: 0.75
+        #--p-value       Default p-value threshold for calling variants [99e-02]
+        pValue: 0.99
+        #--strand-filter Ignore variants with >90% support on one strand [1]
+        strandFilter: 1
+        
+        #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.panel.minVAF
+        #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.varscan.panel.minBaseQual
+
+      fpfilter:
+        #--min-var-count		Minimum number of variant-supporting reads [4]
+        minVarCount: 4
+        #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
+        minVarCountLC: 2
+        #--max-somatic-p		Maximum somatic p-value [0.05]
+        maxSomaticP: 0.05
+        #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
+        maxSomaticPDepth: 10
+        #--min-ref-readpos	Minimum average read position of ref-supporting reads [0.1]
+        minRefReadpos: 0.1
+        #--min-var-readpos	Minimum average read position of var-supporting reads [0.1]
+        minVarReadpos: 0.1
+        #--min-ref-dist3		Minimum average distance to effective 3' end (ref) [0.1]
+        minRefDist3: 0.1
+        #--min-var-dist3		Minimum average distance to effective 3' end (var) [0.1]
+        minVarDist3: 0.1
+        #--min-strandedness	Minimum fraction of variant reads from each strand [0.01]
+        minStrandedness: 0.01
+        #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
+        minStrandReads: 5
+        #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
+        maxBasequalDiff: 50
+        #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
+        minRefAVGRL: 90
+        #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
+        minVarAVGRL: 90
+        #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
+        maxRlDiff: 0.25
+        #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
+        maxRefMMQS: 100
+        #--max-var-mmqs		Maximum mismatch quality sum of variant-supporting reads [100]
+        maxVarMMQS: 100
+        #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
+        minMMQSDiff: 0
+        #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
+        maxMMQSDiff: 50
+        #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
+        minRefMapQual: 15
+        #--min-var-mapqual	Minimum average mapping quality for var allele [15]
+        minVarMapQual: 15
+        #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
+        maxMapQualDiff: 50
 
   annovar:
     # define annotation databases, together with their type, used. The databases have to be installed with annovar
