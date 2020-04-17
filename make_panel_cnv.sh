@@ -79,25 +79,24 @@ readonly DIR_CNV_OUTPUT="${DIR_WES}"
 
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
-# TODO: install cnvkit
-# TODO: install FlatReference
-if [ ${sureselect} = "TruSight_Tumor" ]
-then
-readonly FlatReference="/home/mhess/Panel/FlatReference2.cnn"
-fi
-if [ ${sureselect} = "TruSight_Amplicon" ]
-then
-readonly FlatReference="/home/mhess/Panel/FlatReference.cnn"
-fi
-if [ ${sureselect} = "V6" ]
-then
-readonly FlatReference="/home/mhess/Panel/FlatReferenceV6.cnn"
-fi
+# cnvkit Reference file has to be create and supplied externally
+#if [ ${sureselect} = "TruSight_Tumor" ]
+#then
+#readonly FlatReference="/home/mhess/Panel/FlatReference2.cnn"
+#fi
+#if [ ${sureselect} = "TruSight_Amplicon" ]
+#then
+#readonly FlatReference="/home/mhess/Panel/FlatReference.cnn"
+#fi
+#if [ ${sureselect} = "V6" ]
+#then
+#readonly FlatReference="/home/mhess/Panel/FlatReferenceV6.cnn"
+#fi
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
 readonly cnr=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.cnr
 readonly cns=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.cns
 
-${BIN_CNVKIT} batch -m amplicon -r ${FlatReference} $WES_DIR}/*.bam
+${BIN_CNVKIT} batch -m amplicon -r ${FILE_FLAT_REFERENCE} $WES_DIR}/*.bam
 ${BIN_CNVKIT} segment ${cnr} -o ${cns} --rscript-path ${BIN_RSCRIPT}
 

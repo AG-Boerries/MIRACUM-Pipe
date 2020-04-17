@@ -43,15 +43,14 @@ apt-get update
 
 # packages that are required for installation
 apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
-  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev\
+  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev \
   libncurses5-dev libxml2-dev \
   gfortran \
   default-jre \
   ant \
   perl-base \
-  r-base-core r-recommended r-cran-latticeextra r-cran-hmisc r-cran-rmysql\
-  python3 python3-pysam \
-  python3-pip \
+  r-base-core r-recommended r-cran-latticeextra r-cran-hmisc r-cran-rmysql \
+  python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas \
   libsnappy-java && \
   install_java8 && \
   apt-get -y purge  default-jre default-jdk-headless \
@@ -59,6 +58,8 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
                     openjdk-11-jre openjdk-11-jre-headless && \
   install_texlive && \
   pip3 install shyaml && \
-  apt-get purge -y python3-pip && \
+  pip3 install biopython pyfaidx pysam pyvcf --upgrade && \
+  #pip3 install cnvkit && \
+  #apt-get purge -y python3-pip && \
   apt-get -y autoremove
   #update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 

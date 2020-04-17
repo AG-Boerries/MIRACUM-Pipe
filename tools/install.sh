@@ -175,3 +175,9 @@ rm -f ${DIR_SCRIPT}/htslib/*.o
 # add lib folder system wide
 echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 
+##########
+# cnvkit #
+##########
+
+cd ${DIR_SCRIPT}/cnvkit
+pip3 install -e .

@@ -263,6 +263,12 @@ tools:
     # set TRUE to correct for contamination by normal cells.
     # If "contamination" is not provided, it will automatically evaluate the level of contamination
     contaminationAdjustment: TRUE
+  
+  cnvkit:
+    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
+    # only needed if no matched "normal" sample is available
+    # https://cnvkit.readthedocs.io/en/stable/index.html
+    flatReference: FlatReference.cnn
 
 reference:
   # define reference genome

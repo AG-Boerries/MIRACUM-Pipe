@@ -16,3 +16,6 @@
 [submodule "tools/htslib"]
 	path = tools/htslib
 	url = https://github.com/samtools/htslib
+[submodule "tools/cnvkit"]
+	path = tools/cnvkit
+	url = https://github.com/etal/cnvkit.git
