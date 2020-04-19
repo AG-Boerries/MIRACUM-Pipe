@@ -1,8 +1,9 @@
 FROM miracum_pipe_base:latest
 
-ENV http_proxy http://proxy.ibsm.uni-freiburg.de:8080
-ENV https_proxy http://proxy.ibsm.uni-freiburg.de:8080
+#ENV http_proxy http://proxy.ibsm.uni-freiburg.de:8080
+#ENV https_proxy http://proxy.ibsm.uni-freiburg.de:8080
 
 ADD . /opt/MIRACUM-Pipe
+COPY ./RScripts/install_packages.R /opt/MIRACUM-Pipe/RScripts/install_packages.R
 
 RUN Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R
