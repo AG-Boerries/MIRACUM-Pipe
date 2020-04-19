@@ -1,7 +1,7 @@
 # Title     : install_packages
 # Objective : installs all required R packages
 # Created by: Raphael Scheible
-# Created on: 10.07.19
+# Created on: 10.07.2019
 # Extended by: Patrick Metzger
 # Extended on: 18.04.2020
 
@@ -22,7 +22,7 @@ packages <- c("foreach", "doMC", "openxlsx", "circlize", "knitr", "kableExtra", 
               "Homo.sapiens", "RMySQL", "biomaRt", "Rsamtools", "gtrellis", "ComplexHeatmap",
               "YAPSA", "SomaticSignatures", "VariantAnnotation", "BSgenome.Hsapiens.UCSC.hg19",
               "TxDb.Hsapiens.UCSC.hg19.knownGene", "gdata", "stringi", "tidyr", "ensembldb",
-              "EnsDb.Hsapiens.v75", "GenomicRanges", "dplyr", "magrittRs", "pracma", "getopt", "IRanges", "DNAcopy")
+              "EnsDb.Hsapiens.v75", "GenomicRanges", "dplyr", "magrittr", "pracma", "getopt", "IRanges", "DNAcopy")
 BiocManager::install(pkgs = packages, update  = TRUE, ask = FALSE)
 
 #BiocManager::install("OmicCircos")
