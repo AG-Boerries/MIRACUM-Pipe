@@ -178,6 +178,7 @@ echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 ##########
 # cnvkit #
 ##########
+# installed with apt-get
 
-cd ${DIR_SCRIPT}/cnvkit
-pip3 install -e .
+#cd ${DIR_SCRIPT}/cnvkit
+#pip3 install -e .

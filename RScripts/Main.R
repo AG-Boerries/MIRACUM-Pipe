@@ -28,7 +28,7 @@ library(gtools)
 library(stringi)
 library(tidyr)
 library(dplyr)
-library(magritter)
+library(magrittr)
 library(pracma)
 
 args <- commandArgs()

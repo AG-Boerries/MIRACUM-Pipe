@@ -138,7 +138,7 @@ tools:
 ## Panel Parameter for varscan
     panel:
       minVAF: 0.05
-      minBaseQual: 28
+      minBaseQual: 20
 
       mpileup2snp:
         #--min-coverage  Minimum read depth at a position to make a call [8]
