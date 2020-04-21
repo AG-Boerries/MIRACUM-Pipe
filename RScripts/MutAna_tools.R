@@ -17,7 +17,7 @@ find_indel <- function(list){
   return(id)
 }
 
-div <- function(x_s, x_l, no_loh, protocol){
+div <- function(x_s, x_l, no_loh){
   #' Mutation separation
   #'
   #' @description Separate mutions
@@ -41,6 +41,11 @@ div <- function(x_s, x_l, no_loh, protocol){
   #' @details some logicals for existence of mutations at all.
 
   no_indel_somatic <- FALSE
+  #if (protocol == "Tumor_Only" & manifest == "V5UTR") {
+  #  indel_s <- find_indel_2(x_s)
+  #} else {
+  #  indel_s <- find_indel(x_s)
+  #}
   indel_s <- find_indel(x_s)
   if (length(indel_s) > 0){
     x_s_snp <- x_s[-indel_s, ]
@@ -51,13 +56,15 @@ div <- function(x_s, x_l, no_loh, protocol){
     cat("No Indels in Somatic!\n")
     no_indel_somatic <- TRUE
   }
+  
   if (dim(x_s_snp)[1] > 0){
     no_snp <- FALSE
   } else {
     no_snp <- TRUE
-    }
-
+  }
+  
   no_indel_loh <- FALSE
+  no_snp_loh <- FALSE
   if (!no_loh){
     indel_l <- find_indel(x_l)
     if (length(indel_l) == 0){
@@ -65,6 +72,10 @@ div <- function(x_s, x_l, no_loh, protocol){
       x_l_snp <- x_l
       x_l_indel <- data.frame()
       cat("No Indels in LOH!\n")
+      } else if (length(indel_l) == dim(x_l)[1]) {
+      no_snp_loh <- TRUE
+      x_l_snp <- data.frame()
+      x_l_indel <- x_l
       } else {
       x_l_snp <- x_l[-indel_l, ]
       x_l_indel <- x_l[indel_l, ]
@@ -76,7 +87,7 @@ div <- function(x_s, x_l, no_loh, protocol){
   return(list(x_s_snp = x_s_snp, x_s_indel = x_s_indel, x_l_snp = x_l_snp,
               x_l_indel = x_l_indel, no_loh = no_loh,
               no_indel_somatic = no_indel_somatic, no_snp = no_snp,
-              no_indel_loh = no_indel_loh))
+              no_indel_loh = no_indel_loh, no_snp_loh = no_snp_loh))
 }
 
 mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol){
@@ -243,27 +254,27 @@ tables <- function(x_s, x_l = NULL, protocol){
   ts_og_table <- x_s[x_s$is_tumorsuppressor == 1 |
                        x_s$is_oncogene == 1,
                      c("Gene.refGene", "GeneName",
-                       "ExonicFunc.refGene", "AAChange.SnpEff",
+                       "ExonicFunc.refGene", "AAChange",
                        "Variant_Allele_Frequency",
                        "Zygosity", "Variant_Reads", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic_coding"), drop = FALSE]
+                       "CLINSIG", "cosmic_coding"), drop = FALSE]
 
   sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                     "AAChange.SnpEff", "Variant_Allele_Frequency", "Zygosity",
+                     "AAChange", "Variant_Allele_Frequency", "Zygosity",
                      "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
                      "is_hotspot", "target", "gnomAD_exome_NFE",
-                     "CADD_phred", "condel.label", "CLINSIG.SnpEff",
+                     "CADD_phred", "condel.label", "CLINSIG",
                      "cosmic_coding"), drop = FALSE]
 
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                       "AAChange.SnpEff", "VAF_Normal", "VAF_Tumor",
+                       "AAChange", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG.SnpEff", "cosmic_coding"), drop = FALSE]
+                       "CLINSIG", "cosmic_coding"), drop = FALSE]
 
   }else{
     lm_table <- data.frame()
@@ -307,9 +318,7 @@ duplicate_first_raw <- function(mapping_matrix)
   return(new_matrix)
 }
 
-circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL,
-                          x_l_indel = NULL, no_loh,
-                          no_indel_somatic, no_snp, no_indel_loh){
+circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_indel = NULL, no_loh, no_indel_somatic, no_snp, no_indel_loh, no_snp_loh){
   #' Circos Colors
   #'
   #' @description Prepare List and colors for Circosplot
@@ -332,48 +341,44 @@ circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL,
   #' @details LoH InDel). So the corresponding colors can be chosen.
   #' @details Additionaly there is a matrix needed that includes all the
   #' @details mutations.
-  if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == FALSE
-     & no_indel_loh == FALSE){
+  # print(no_loh)
+  # print(no_indel_somatic)
+  # print(no_snp)
+  # print(no_indel_loh)
+  # print(no_snp_loh)
+  if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == FALSE & no_indel_loh == FALSE & no_snp_loh == FALSE){
     list1 <- list(x_s_snp, x_s_indel, x_l_snp, x_l_indel)
-    idxs <- list(1:nrow(x_s_snp), 1:nrow(x_s_indel), 1:nrow(x_l_snp),
-                 1:nrow(x_l_indel))
+    idxs <- list(1:nrow(x_s_snp), 1:nrow(x_s_indel), 1:nrow(x_l_snp), 1:nrow(x_l_indel))
     circoscolors <- c("#FF0000CC", "#008000CC", "#00FFFFCC", "#8000FFCC")
-  }
-  if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == FALSE
-     & no_indel_loh == TRUE){
+  } else if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == FALSE & no_indel_loh == FALSE & no_snp_loh == TRUE){
+    list1 <- list(x_s_snp, x_s_indel, x_l_indel)
+    idxs <- list(1:nrow(x_s_snp), 1:nrow(x_s_indel), 1:nrow(x_l_indel))
+    circoscolors <- c("#FF0000CC", "#008000CC", "#8000FFCC")
+  } else if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == FALSE & no_indel_loh == TRUE){
     list1 <- list(x_s_snp, x_s_indel, x_l_snp)
     idxs <- list(1:nrow(x_s_snp), 1:nrow(x_s_indel), 1:nrow(x_l_snp))
     circoscolors <- c("#FF0000CC", "#008000CC", "#00FFFFCC")
-  }
-  if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == TRUE){
+  } else if (no_indel_somatic == FALSE & no_snp == FALSE & no_loh == TRUE){
     list1 <- list(x_s_snp, x_s_indel)
     idxs <- list(1:nrow(x_s_snp), 1:nrow(x_s_indel))
     circoscolors <- c("#FF0000CC", "#008000CC")
-  }
-  if (no_indel_somatic == FALSE & no_snp == TRUE & no_loh == FALSE
-     & no_indel_loh == TRUE){
+  } else if (no_indel_somatic == FALSE & no_snp == TRUE & no_loh == FALSE & no_indel_loh == TRUE){
     list1 <- list(x_s_indel, x_l_snp)
     idxs <- list(1:nrow(x_s_indel), 1:nrow(x_l_snp))
     circoscolors <- c("#008000CC", "#00FFFFCC")
-  }
-  if (no_indel_somatic == FALSE & no_snp == TRUE & no_loh == TRUE){
+  } else if (no_indel_somatic == FALSE & no_snp == TRUE & no_loh == TRUE){
     list1 <- list(x_s_indel)
     idxs <- list(1:nrow(x_s_indel))
     circoscolors <- c("#008000CC")
-  }
-  if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == FALSE
-     & no_indel_loh == FALSE){
+  } else if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == FALSE & no_indel_loh == FALSE){
     list1 <- list(x_s_snp, x_l_snp, x_l_indel)
     idxs <- list(1:nrow(x_s_snp), 1:nrow(x_l_snp), 1:nrow(x_l_indel))
     circoscolors <- c("#FF0000CC", "#00FFFFCC", "#8000FFCC")
-  }
-  if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == FALSE
-     & no_indel_loh == TRUE){
+  } else if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == FALSE & no_indel_loh == TRUE){
     list1 <- list(x_s_snp, x_l_snp)
     idxs <- list(1:nrow(x_s_snp), 1:nrow(x_l_snp))
     circoscolors <- c("#FF0000CC", "#00FFFFCC")
-  }
-  if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == TRUE){
+  } else if (no_indel_somatic == TRUE & no_snp == FALSE & no_loh == TRUE){
     list1 <- list(x_s_snp)
     idxs <- list(1:nrow(x_s_snp))
     circoscolors <- c("#FF0000CC")
@@ -460,6 +465,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
              type = "b", col = circosColors[i], col.v = 4, lwd = 1.5)
       circosR <- circosR - 1.5 *circosW
     }
+  }
     # Label
   if (protocol != "panelTumor") {
     if (length(circosColors) == 4){
@@ -653,17 +659,17 @@ write_all_mut <- function(x_s, x_l = NULL){
 
   tmp1 <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                   "Variant_Allele_Frequency", "Variant_Reads",
-                  "AAChange.SnpEff", "is_tumorsuppressor",
+                  "AAChange", "is_tumorsuppressor",
                   "is_oncogene", "is_hotspot", "target", "gnomAD_exome_NFE",
-                  "CADD_phred", "condel.label", "CLINSIG.SnpEff",
+                  "CADD_phred", "condel.label", "CLINSIG",
                   "cosmic_coding"),
               drop = FALSE]
   if (!is.null(x_l)){
     tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                    "VAF_Tumor", "Count_Tumor", "AAChange.SnpEff",
+                    "VAF_Tumor", "Count_Tumor", "AAChange",
                     "is_tumorsuppressor", "is_oncogene",
                     "is_hotspot", "target", "gnomAD_exome_NFE", "CADD_phred",
-                    "condel.label", "CLINSIG.SnpEff", "cosmic_coding"),
+                    "condel.label", "CLINSIG", "cosmic_coding"),
                 drop = FALSE]
     }
   col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",

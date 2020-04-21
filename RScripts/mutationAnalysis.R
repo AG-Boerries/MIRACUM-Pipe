@@ -97,17 +97,17 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     }
   }
 # split lists into sublists
-  sub_lst <- div(x_s, x_l, no_loh, protocol, sureselect)
+  sub_lst <- div(x_s, x_l, no_loh)
 # Write/print summary of mutationsnumber, diverse tables
   mutation_table <- mut_tab(sub_lst$x_s_snp, sub_lst$x_s_indel, sub_lst$x_l_snp,
                             sub_lst$x_l_indel, protocol)
   if (!no_loh) {
-    mut_stats_res <- mut_stats(x_s, x_l, tumbu, protocol)
-    tbl <- tables(x_s, x_l, protocol)
-    all_mut <- write_all_mut(x_s = x_s, x_l = x_l, protocol)
+    mut_stats_res <- mut_stats(x_s = x_s, x_l = x_l, tumbu = tumbu, protocol = protocol)
+    tbl <- tables(x_s = x_s, x_l = x_l, protocol = protocol)
+    all_mut <- write_all_mut(x_s = x_s, x_l = x_l)
   } else {
-    mut_stats_res <- mut_stats(x_s = x_s, tumbu = tumbu)
-    tbl <- tables(x_s= x_s, protocol)
+    mut_stats_res <- mut_stats(x_s = x_s, tumbu = tumbu, protocol = protocol)
+    tbl <- tables(x_s = x_s, protocol = protocol)
     all_mut <- write_all_mut(x_s = x_s)
   }
 

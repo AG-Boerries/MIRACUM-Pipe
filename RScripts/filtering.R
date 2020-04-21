@@ -47,7 +47,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   require(openxlsx)
   require(Rsamtools)
   require(gdata)
-  requeire(GenomicRanges)
+  require(GenomicRanges)
 
   source(paste(path_script, "filtering_tools.R", sep = "/"))
 
@@ -122,24 +122,24 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       if (mode == "N" | mode == "T") {
         ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
         "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-        "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
+        "AAChange.refGene", "AAChange", "CChange",
         "gnomAD_exome_NFE", "ExAC_NFE",
         "esp6500siv2_ea", "EUR.sites.2015_08",
         "Variant_Allele_Frequency", "Variant_Reads",
         "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
         "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
-        "CLNSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CLNSIG", "CLINSIG", "InterVar_automated",
         "CADD_phred", "DANN_score", "SIFT_pred",
         "Polyphen2_HDIV_pred", "avsnp150", "rvis")
       } else if (mode == "LOH") {
         ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
         "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-        "AAChange.refGene", "AAChange.SnpEff", "CChange.SnpEff",
+        "AAChange.refGene", "AAChange", "CChange",
         "gnomAD_exome_NFE", "ExAC_NFE", "esp6500siv2_ea",
         "EUR.sites.2015_08", "VAF_Normal", "VAF_Tumor", "Count_Normal",
         "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
         "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
-        "CLNSIG", "CLINSIG.SnpEff", "InterVar_automated",
+        "CLNSIG", "CLINSIG", "InterVar_automated",
         "CADD_phred", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
         "avsnp150", "rvis")
       }

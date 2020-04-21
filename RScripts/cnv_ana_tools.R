@@ -315,9 +315,9 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
   x$Oncogene <- "."
   x$Length <- "."
   not.significant <- c()
-  te <- try(read.delim(file = sef_snp, sep = "\t", header = FALSE, comment.char = "#"), silent = TRUE)
-    if (inherits(te, 'try-error')) {
-  # Annotaion via MySQL database
+#  te <- try(read.delim(file = sef_snp, sep = "\t", header = FALSE, comment.char = "#"), silent = TRUE)
+#    if (inherits(te, 'try-error')) {
+#  # Annotaion via MySQL database
 #  for(i in 1:nrow(x)) {
 #    cat("Processing CNV#", i, "\n")
 #
@@ -342,7 +342,7 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
 #    }
 #  }
 
-# Annotation with biomaRt
+# Try annotation first with SQL server if this fails try with biomaRt
 
   ensembl=useMart("ensembl", dataset="hsapiens_gene_ensembl")
   
@@ -356,9 +356,9 @@ cnv_annotation <- function(cnv_pvalue_txt, outfile, outfile_onco, outfile_tumors
       if (inherits(query, 'try-error')){
         # try biomaRt next
         query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
-      }
-      if (inherits(query, 'try-error')){
-        error("Check your internet connection. Connection to USCS SQL and biomaRt server failed!")
+        if (inherits(query, 'try-error')){
+          error("Check your internet connection. Connection to USCS SQL and biomaRt server failed!")
+        }
       }
       query2 <- unlist(query)
       x$genes[i] <- paste(query2, collapse = ",")

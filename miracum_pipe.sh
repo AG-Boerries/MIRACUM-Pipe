@@ -99,8 +99,7 @@ function run_panel_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-  wait
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log)
 
   # use parallel shell scripting
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
@@ -144,7 +143,7 @@ function get_case() {
 while getopts d:t:p:fhs option; do
   case "${option}" in
   t) readonly PARAM_TASK=$OPTARG;;
-  p) readonly PARAM_PROTOCOL=$OPTARGS;;
+  p) readonly PARAM_PROTOCOL=$OPTARG;;
   d) readonly PARAM_DIR_PATIENT=$OPTARG;;
   f) readonly PARAM_FORCE=true;;
   s) readonly PARAM_SEQ=true;;
@@ -166,12 +165,12 @@ done
 
 # run script
 if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
-  if [[! " ${VALID_PROTOCOLS[@]} " =~ " ${PARAM_PROTOCOL} "]]; then
+  if [[ ! " ${VALID_PROTOCOLS[@]} " =~ " ${PARAM_PROTOCOL} " ]]; then
     echo "unknown protocol: ${PARAM_PROTOCOL}"
     echo "use one of the following values: $(join_by ' ' ${VALID_PROTOCOLS})"
     exit 1
   fi
-  if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" && -n "${PARAM_PROTOCOL}"]]; then
+  if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" && -n "${PARAM_PROTOCOL}" ]]; then
     for dir in "${DIR_SCRIPT}"/assets/input/*; do
       # get relative dir patient
       DIR_PATIENT=${dir##*/}

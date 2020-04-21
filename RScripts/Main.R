@@ -80,7 +80,7 @@ if( protocol != "panelTumor"){
 
   tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
   germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
-} else {
+} else {
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
   tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 }
@@ -142,10 +142,21 @@ if (protocol == "panelTumor"){
 }
 
 if (protocol != "panelTumor"){
+  # SOMATIC TUMOR
+  print("Filtering for Tumor.")
+  filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
+                              snpefffile_snp = snpefffile_snp,
+                              snpefffile_indel = snpefffile_indel,
+                              outfile = filter_out_td, outfile_maf = maf_td,
+                              path_data = path_data,
+                              path_script = path_script, covered_region = covered_region,
+                              mode ="T", center = center, id = id,
+                              protocol = protocol, sureselect = bed_file)
+
   if (protocol == "somaticGermline"){
     # GERMLINE NORMAL
     print("Filtering for Germline.")
-    filt_result_gd <- filtering(snpfile = snp_file_gd, indelfile =  indel_file_gd,
+    filt_result_gd <- filtering(snpfile = snp_file_gd, indelfile = indel_file_gd,
                                 snpefffile_snp = snpefffile_snp_gd,
                                 snpefffile_indel = snpefffile_indel_gd,
                                 outfile =  filter_out_gd, outfile_maf = maf_gd,
@@ -164,16 +175,7 @@ if (protocol != "panelTumor"){
                                                      protocol = "panelTumor",
                                                      sureselect = bed_file)
   }
-  # SOMATIC TUMOR
-  print("Filtering for Tumor.")
-  filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
-                              snpefffile_snp = snpefffile_snp,
-                              snpefffile_indel = snpefffile_indel,
-                              outfile = filter_out_td, outfile_maf = maf_td,
-                              path_data = path_data,
-                              path_script = path_script, covered_region = covered_region,
-                              mode ="T", center = center, id = id,
-                              protocol = protocol, sureselect = bed_file)
+  
   # LOH
   print("Filtering for LoH.")
   filt_result_loh <- filtering(snpfile = snp_file_loh, indelfile = indel_file_loh,

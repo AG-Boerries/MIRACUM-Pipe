@@ -63,6 +63,11 @@ case "$1" in
             docker build --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
             ;;
 
+        report_interface)
+            docker build --rm --no-cache -f ./Dockerfile_report -t miracum_pipe_report:latest ../
+            docker build --rm --no-cache -f ./Dockerfile_interface -t miracum_pipe:latest ../
+            ;;
+
         *)
             echo $"Usage: $0 {base|R|tools|report|interface|all} [args]"
             exit 1

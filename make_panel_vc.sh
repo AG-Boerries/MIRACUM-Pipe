@@ -84,7 +84,7 @@ readonly mpileup=${DIR_WES}/${NameD}_mpileup
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
-${BIN_MPILEUP} "${FLAGS_MPILEUP}" --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbam}" > "${mpileup}"
+${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINREADS2}" \
     --min-freq-for-hom "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_PANEL_MPILEUP2SNP_PVALUE}" \
     --strand-filter "${CFG_VARSCAN_PANEL_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
