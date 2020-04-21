@@ -483,6 +483,31 @@ cnv_table <- function(cnvs){
 }
 
 # check cnvs for dna damage response
+cnv_pathways <- function(input, db){
+  #' CNV DNA Damage Response
+  #'
+  #' @description Get DNA Damage Response genes with CNVs
+  #'
+  #' @param input dataframe. Table of genes with CNVs
+  #' @param outfile_pathways string. Filename for output file
+  #' @param db dataframe. Table of DNA Damage Response genes
+  #'
+  #' @return l dataframe. Table of DNA Damage Reponse genes affected by CNVs
+  #'
+  #' @details Genes with CNVs could play a role in the DNA Damage Response
+  #' @details pathway. This function extracts these genes and stores them
+  #' @details in the output file.
+  dnad <- read.delim(db, header = FALSE, sep = "\t", colClasses = "character")
+  idx <- which (input$Gene %in% dnad$V1)
+  l <-  list()
+  gene <- as.character(input$Gene[idx])
+  copynumber <- input$CopyNumber[idx]
+  status <- as.character(input$Status[idx])
+  l <- cbind(gene, copynumber, status)
+  return(l)
+}
+
+# check cnvs for dna damage response
 cnv_dna_damage<- function(input, outfile_dna_damage, db){
   #' CNV DNA Damage Response
   #'

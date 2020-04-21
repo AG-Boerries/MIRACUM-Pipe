@@ -138,11 +138,10 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     if (protocol != "panelTumor"){
       # Pathway-Analysis
       prep <- prep_pwa(targets, all_mut$mut)
-      result_go <- get_terms(go.bp, prep$de_genes, prep$universe)
-      result_re <- get_terms(reactome2, prep$de_genes,
-                             prep$universe)
-      result_co <- get_terms(cons2, prep$de_genes, prep$universe)
-      result_hm <- get_terms(hallmarksOfCancer, prep$de_genes, prep$universe)
+      result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
+      result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
+      result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
+      result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_hallmarks)
     } else {
       result_go <- NULL
       result_re <- NULL

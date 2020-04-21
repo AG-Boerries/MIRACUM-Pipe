@@ -70,6 +70,7 @@ source(paste(path_script, "cnv_ana_tools.R", sep = "/"))
 # Mutation Signature Analysis #
 source(paste(path_script, "mutationSignatureAnalysisFunction.R", sep = "/"))
 source(paste(path_script, "Mut_sig_tools.R", sep = "/"))
+source(paste(path_script, "mut_sig_ana.R", sep = "/"))
 
 ##################
 # FASTQC Reports #
@@ -98,7 +99,7 @@ if (protocol != "panelTumor"){
     filter_out_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.xlsx")
     snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
     snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
-    outfile_circos_gd <- paste0(path_input, sample, "_GD_circos.pdf")
+    outfile_circos_gd <- paste0(path_output, sample, "_GD_circos.pdf")
   }
   # SOMATIC TUMOR
   snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Somatic.hc.TUMOR.avinput.hg19_multianno.csv")
@@ -166,7 +167,7 @@ if (protocol != "panelTumor"){
                                 protocol = protocol, sureselect = bed_file)
     
     mutation_analysis_result_gd <- mutation_analysis(loh = NULL,
-                                                     somatic = filt_result_td$table,
+                                                     somatic = filt_result_gd$table,
                                                      tumbu = NULL,
                                                      outfile_circos = outfile_circos_gd,
                                                      path_data = path_data,
@@ -229,6 +230,7 @@ if (protocol == "panelTumor"){
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
                                                 protocol = protocol, sureselect = bed_file)
+}
   
 
 # Combine MAF files to obtain one complete maf per patient
@@ -254,7 +256,7 @@ if (protocol != "panelTumor"){
   stats_gd <- paste0(path_input, sample, "_td_stats.txt")
   ## Analysis
   stats <- stats(path = path_input, outfile_pdf = coverage_out,
-                 stats_td = stats_td, stats_gd = stats_gd, protocol =protocol)
+                 stats_td = stats_td, stats_gd = stats_gd, protocol = protocol)
 }
 if (protocol == "panelTumor"){
   stats_td <- paste0(path_input, sample, "_gd_stats.txt")
@@ -271,7 +273,7 @@ if (protocol != "panelTumor"){
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
 
   # Results
-  cnv_pvalue_txt <- paste0(path_output, sample, cnvs_file, ".p.value.txt")
+  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
   cnv_plot <- paste0(path_output, sample, "_CNV_Plot.pdf")
   cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
   cnv_annot_out <- paste0(path_output, sample, "_CNV.xlsx")
@@ -293,9 +295,10 @@ if (protocol != "panelTumor"){
                                        outfile_dna_damage = outfile_dna_damage,
                                        path_data = path_data,
                                        path_script = path_script,
-                                       targets_txt = targets_txt.
+                                       targets_txt = targets_txt,
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
-                                       id = id)
+                                       id = id,
+                                       protocol = protocol)
 }
 # TODO CNV Panel
 if (protocol == "panelTumor"){

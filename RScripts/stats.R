@@ -16,7 +16,7 @@ stats <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
   #' @return avreads vector. Total reads for germline and tumor
   #'
   #' @details Statistical numbers are extracted from alignment's statistics.
-  cover <- coverage_plot(path = path, outfilePDF = coverage_out)
+  cover <- coverage_plot(path = path, outfilePDF = coverage_out, protocol = protocol)
   if (protocol != "panelTumor"){
     avreads <- reads(stats_td, stats_gd)
   } else {

@@ -27,7 +27,7 @@
 cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                          outfile_ideogram, outfile, outfile_onco,
                          outfile_tumorsuppressors, outfile_loss, outfile_gain,
-                         outfile_dna_damage, path_data, path_script, targets_txt, id, outfile_cbioportal){
+                         outfile_dna_damage, path_data, path_script, targets_txt, id, outfile_cbioportal, protocol){
 
   load(paste(path_data, "GOGeneSets.RData", sep = "/"))
   targets <- read.table(targets_txt)
@@ -37,7 +37,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
   
   #make_cnv_graph(ratio_file = ratio_file, ploidity = "2", outfile_plot = cnv_plot,
   #              outfile_ideogram = cnv_ideogram_plot)
-  make_cnv_ideo_sig(ratio_file = cnv_pvalue_txt, outfile_ideogram = cnv_ideogram_plot)
+  make_cnv_ideo_sig(ratio_file = cnv_pvalue_txt, outfile_ideogram = cnv_ideogram_plot, protocol = protocol)
   
   cnvs_annotated <- cnv_annotation(cnv_pvalue_txt = cnv_pvalue_txt,
                                    outfile = outfile,
@@ -59,7 +59,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                                          path_script = path_script)
   
   out <- cnv_table(cnvs = cnvs_annotated$CNVsAnnotated)
-  ddr <- cnv_dna_damage(input = out, outfile_dna_damage = outfile_dna_damage,
+  ddr <- cnv_pathways(input = out,
                         db = paste(path_data, "DNA_Damage_Response.txt",
                                    sep = "/"))
   pam <- cnv_pathways(input = out,
