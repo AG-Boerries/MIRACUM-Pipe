@@ -1,4 +1,4 @@
-mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselect_type, path_script, ref_genome, targetCapture_cor_factors){
+mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselect_type, path_script, ref_genome, targetCapture_cor_factors, path_output){
   library(getopt)
   library(dplyr)
   library(magrittr)
@@ -254,7 +254,7 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   colnames(output$Normalized_Exposures) <- c(sample)
   colnames(output$Summary)[3] <- c(sample)
   
-  write.xlsx(output, paste0(sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
+  write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
              headerStyle = createStyle(textDecoration = 'bold'))
   
   # Is 0 in the CI in any?

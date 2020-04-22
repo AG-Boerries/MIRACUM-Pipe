@@ -319,7 +319,7 @@ print("Mutation Signature Analysis.")
 if( protocol != "panelTumor"){
   somaticVCF <- paste0(path_input, sample,"_vc.output.snp.Somatic.hc.fpfilter.vcf")
   targetCapture_cor_factors <- paste(path_data, "targetCapture_cor_factors.rda", sep = "/")
-  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors)
+  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output)
 } else {
   vcf <- paste0(path_input, sample,"_vc.output.snp.hc.fpfilter.vcf")
   mut_sig_analysis <- mutation_signature_analysis(vcf_file = vcf,
