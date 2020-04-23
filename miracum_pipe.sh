@@ -133,10 +133,16 @@ function run_panel_pipe_seq() {
 function get_case() {
   local dir_patient="${1}"
 
-  if [[ "$(get_config_value annotation.germline "${dir_patient}")" = "True" ]]; then
-    echo "somaticGermline"
-  else
-    echo "somatic"
+  if [[ "$(get_config_value common.protocol "${dir_patient}")" = "wes" ]]; then
+    if [[ "$(get_config_value annotation.germline "${dir_patient}")" = "True" ]]; then
+      echo "somaticGermline"
+    else
+      echo "somatic"
+    fi
+  fi
+
+  if [[ "$(get_config_value common.protocol "${dir_patient}")" = "panel" ]]; then
+    echo "panelTumor"
   fi
 }
 

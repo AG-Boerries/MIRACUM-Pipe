@@ -48,8 +48,8 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
-if [[ "${CFG_PROTOCOL}" == "panel" ]]; then
+#readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
+if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
   readonly CFG_CASE=panelTumor
 fi
 #if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
@@ -75,7 +75,7 @@ fi
 
 ##################################################################################################################
 
-readonly DIR_CNV_OUTPUT="${DIR_WES}"
+readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
@@ -94,9 +94,13 @@ readonly DIR_CNV_OUTPUT="${DIR_WES}"
 #fi
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
-readonly cnr=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.cnr
-readonly cns=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.cns
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+readonly bam=${DIR_WES}/${NameTD}_output.sort.filtered.realigned.fixed.recal.bam
+readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.filtered.realigned.fixed.cnr
+readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.filtered.realigned.fixed.cns
 
-${BIN_CNVKIT} batch -m amplicon -r ${FILE_FLAT_REFERENCE} $WES_DIR}/*.bam
-${BIN_CNVKIT} segment ${cnr} -o ${cns} --rscript-path ${BIN_RSCRIPT}
+echo ${FILE_FLAT_REFERENCE}
+
+cnvkit batch --method amplicon --reference "${FILE_FLAT_REFERENCE}" --output-dir "${DIR_CNV_OUTPUT}" "${bam}"
+cnvkit segment "${cnr}" -o "${cns}" --rscript-path "${BIN_RSCRIPT}"
 

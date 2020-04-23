@@ -303,7 +303,7 @@ if (protocol != "panelTumor"){
 # TODO CNV Panel
 if (protocol == "panelTumor"){
   ## Input Files
-  cnvsFile <- paste0(path_input, "_td_output.sort.filtered.rmdup.realigned.fixed.cnr")
+  cnvsFile <- paste0(path_input,"CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.cnr")
   ## Output Files
   outfile <- paste0(path_output, sample, "_CNV.xlsx")
   outfile_ts_og <- paste0(path_output,sample, "_CNV_TSG_OG.xlsx")

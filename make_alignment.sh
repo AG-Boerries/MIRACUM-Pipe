@@ -138,10 +138,10 @@ ${BIN_STATS} "${bam}" >"${statstxt}"
 ${BIN_SAMSORT} "${bam}" -T "${prefixsort}" -o "${sortbam}"
 
 # rmdup bam
-${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
+#${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
 
 # make bai
-${BIN_SAMINDEX} "${rmdupbam}" "${bai}"
+${BIN_SAMINDEX} "${sortbam}" "${bai}"
 
 # make bam list
 ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"

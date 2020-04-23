@@ -48,8 +48,8 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
-if [[ "${CFG_PROTOCOL}" == "panel" ]]; then
+# readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
+if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
   readonly CFG_CASE=panelTumor
 fi
 #if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
@@ -78,28 +78,28 @@ fi
 [[ -d "${DIR_ANALYSES}" ]] || mkdir -p "${DIR_ANALYSES}"
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
-readonly NamePanel=${CFG_CASE}_${PARAM_DIR_PATIENT}_panelTumor
-readonly recalbam=${DIR_WES}/${NamePanel}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+readonly recalbam=${DIR_WES}/${NameTD}_output.sort.filtered.realigned.fixed.recal.bam
 readonly mpileup=${DIR_WES}/${NameD}_mpileup
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbam}" > "${mpileup}"
-${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINREADS2}" \
-    --min-freq-for-hom "${CFG_VARSCAN_PANEL_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_PANEL_MPILEUP2SNP_PVALUE}" \
-    --strand-filter "${CFG_VARSCAN_PANEL_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
-${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_VARSCAN_PANEL_MPILEUP2INDEL_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_PANEL_MPILEUP2INDEL_MINREADS2}" \
-    --min-freq-for-hom "${CFG_VARSCAN_PANEL_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_PANEL_MPILEUP2INDEL_PVALUE}" \
-    --strand-filter "${CFG_VARSCAN_PANEL_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${indelvcf}"
+${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2SNP_MINREADS2}" \
+    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2SNP_PVALUE}" \
+    --strand-filter "${CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
+${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2INDEL_MINREADS2}" \
+    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2INDEL_PVALUE}" \
+    --strand-filter "${CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${indelvcf}"
 
 
 readonly names1="snp indel"
 for name1 in ${names1}; do
-  hc_vcf=${DIR_WES}/${NameD}.output.${name1}.hc.vcf
-  hc_avi=${DIR_WES}/${NameD}.output.${name1}.hc.avinput
-  hc_rci=${DIR_WES}/${NameD}.output.${name1}.hc.readcount.input
-  hc_rcs=${DIR_WES}/${NameD}.output.${name1}.hc.readcounts
-  hc_fpf=${DIR_WES}/${NameD}.output.${name1}.hc.fpfilter.vcf
+  hc_vcf=${DIR_WES}/${NameD}.output.${name1}.vcf
+  hc_avi=${DIR_WES}/${NameD}.output.${name1}.avinput
+  hc_rci=${DIR_WES}/${NameD}.output.${name1}.readcount.input
+  hc_rcs=${DIR_WES}/${NameD}.output.${name1}.readcounts
+  hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
     
     
   ${CONVERT2ANNOVAR2} "${hc_avi}" "${hc_vcf}"
@@ -123,10 +123,10 @@ done
 readonly data=${DIR_WES}
 for name1 in ${names1}; do
   # Annotation
-  hc_=${data}/${NameD}.output.${name1}.hc
-  hc_fpf=${data}/${NameD}.output.${name1}.hc.fpfilter.vcf
-  hc_T_avi=${data}/${NameD}.output.${name1}.hc.TUMOR.avinput
-  hc_T_avi_multi=${data}/${NameD}.output.${name1}.hc.TUMOR.avinput.hg19_multianno.csv
+  hc_=${data}/${NameD}.output.${name1}
+  hc_fpf=${data}/${NameD}.output.${name1}.fpfilter.vcf
+  hc_T_avi=${data}/${NameD}.output.${name1}.avinput
+  hc_T_avi_multi=${data}/${NameD}.output.${name1}.avinput.hg19_multianno.csv
   ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
   ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
       -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA

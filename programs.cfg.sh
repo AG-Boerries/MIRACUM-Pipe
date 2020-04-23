@@ -143,27 +143,27 @@ readonly CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM=$(get_config_value tools.varsca
 readonly CFG_VARSCAN_MPILEUP2INDEL_PVALUE=$(get_config_value tools.varscan.panel.mpileup2indel.pValue "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER=$(get_config_value tools.varscan.panel.mpileup2indel.strandFilter "${PARAM_DIR_PATIENT}")
 
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARCOUNT=$(get_config_value tools.varscan.pnael.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARCOUNTLC=$(get_config_value tools.varscan.pnael.fpfilter.minVarCountLC "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXSOMATICP=$(get_config_value tools.varscan.pnael.fpfilter.maxSomaticP "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXSOMATICPDEPTH=$(get_config_value tools.varscan.pnael.fpfilter.maxSomaticPDepth "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFREADPOS=$(get_config_value tools.varscan.pnael.fpfilter.minRefReadpos "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARREADPOS=$(get_config_value tools.varscan.pnael.fpfilter.minVarReadpos "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFDIST3=$(get_config_value tools.varscan.pnael.fpfilter.minRefDist3 "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARDIST3=$(get_config_value tools.varscan.pnael.fpfilter.minVarDist3 "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINSTRANDEDNESS=$(get_config_value tools.varscan.pnael.fpfilter.minStrandedness "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINSTRANDREADS=$(get_config_value tools.varscan.pnael.fpfilter.minStrandReads "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXBASEQUALDIFF=$(get_config_value tools.varscan.pnael.fpfilter.maxBasequalDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFAVGRL=$(get_config_value tools.varscan.pnael.fpfilter.minRefAVGRL "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARAVGRL=$(get_config_value tools.varscan.pnael.fpfilter.minVarAVGRL "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXRLDIFF=$(get_config_value tools.varscan.pnael.fpfilter.maxRlDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXREFMMQS=$(get_config_value tools.varscan.pnael.fpfilter.maxRefMMQS "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXVARMMQS=$(get_config_value tools.varscan.pnael.fpfilter.maxVarMMQS "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINMMQSDIFF=$(get_config_value tools.varscan.pnael.fpfilter.minMMQSDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXMMQSDIFF=$(get_config_value tools.varscan.pnael.fpfilter.maxMMQSDiff "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFMAPQUAL=$(get_config_value tools.varscan.pnael.fpfilter.minRefMapQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARMAPQUAL=$(get_config_value tools.varscan.pnael.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_PANEL_FPFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.pnael.fpfilter.maxMapQualDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARCOUNT=$(get_config_value tools.varscan.panel.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARCOUNTLC=$(get_config_value tools.varscan.panel.fpfilter.minVarCountLC "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXSOMATICP=$(get_config_value tools.varscan.panel.fpfilter.maxSomaticP "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXSOMATICPDEPTH=$(get_config_value tools.varscan.panel.fpfilter.maxSomaticPDepth "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFREADPOS=$(get_config_value tools.varscan.panel.fpfilter.minRefReadpos "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARREADPOS=$(get_config_value tools.varscan.panel.fpfilter.minVarReadpos "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFDIST3=$(get_config_value tools.varscan.panel.fpfilter.minRefDist3 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARDIST3=$(get_config_value tools.varscan.panel.fpfilter.minVarDist3 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINSTRANDEDNESS=$(get_config_value tools.varscan.panel.fpfilter.minStrandedness "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINSTRANDREADS=$(get_config_value tools.varscan.panel.fpfilter.minStrandReads "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXBASEQUALDIFF=$(get_config_value tools.varscan.panel.fpfilter.maxBasequalDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFAVGRL=$(get_config_value tools.varscan.panel.fpfilter.minRefAVGRL "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARAVGRL=$(get_config_value tools.varscan.panel.fpfilter.minVarAVGRL "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXRLDIFF=$(get_config_value tools.varscan.panel.fpfilter.maxRlDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXREFMMQS=$(get_config_value tools.varscan.panel.fpfilter.maxRefMMQS "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXVARMMQS=$(get_config_value tools.varscan.panel.fpfilter.maxVarMMQS "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINMMQSDIFF=$(get_config_value tools.varscan.panel.fpfilter.minMMQSDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXMMQSDIFF=$(get_config_value tools.varscan.panel.fpfilter.maxMMQSDiff "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINREFMAPQUAL=$(get_config_value tools.varscan.panel.fpfilter.minRefMapQual "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MINVARMAPQUAL=$(get_config_value tools.varscan.panel.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_PANEL_FPFILTER_MAXMAPQUALDIFF=$(get_config_value tools.varscan.panel.fpfilter.maxMapQualDiff "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value tools.annovar.protocol "${PARAM_DIR_PATIENT}")
@@ -231,6 +231,7 @@ readonly FILE_REFERENCE_MAPPABILITY="${DIR_REF}/mappability/$(get_config_value r
 
 # cnvkit
 readonly FILE_FLAT_REFERENCE="${DIR_REF}/cnvkit/$(get_config_value tools.cnvkit.flatReference "${PARAM_DIR_PATIENT}")"
+readonly BIN_CNVKIT=$(command -v cnvkit.py)
 
 # R
 readonly BIN_RSCRIPT=$(command -v Rscript)
@@ -402,5 +403,6 @@ export BIN_FREEC
 export FILE_REFERENCE_MAPPABILITY
 
 export FILE_FLAT_REFERENCE
+export BIN_CNVKIT
 
 export BIN_RSCRIPT

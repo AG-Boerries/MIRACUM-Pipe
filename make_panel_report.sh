@@ -46,8 +46,8 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
-if [[ "${CFG_PROTOCOL}" == "panel" ]]; then
+#readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
+if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
   readonly CFG_CASE=panelTumor
 fi
 #if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then

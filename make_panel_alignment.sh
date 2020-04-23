@@ -55,10 +55,12 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
-if [[ "${CFG_PROTOCOL}" == "panel" ]]; then
+#readonly CFG_PROTOCOL=$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")
+if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
+#if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
   readonly CFG_CASE=panelTumor
 fi
+
 #if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
 #  readonly CFG_CASE=somaticGermline
 #else
@@ -109,16 +111,16 @@ readonly fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
 readonly bam=${DIR_TMP}/${NameD}_output.bam
 readonly prefixsort=${DIR_TMP}/${NameD}_output.sort
 readonly sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-readonly rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
-readonly bai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bai
-readonly bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam.list
-readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bam
-readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.bai
-readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bam
-readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
-readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
+#readonly rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
+readonly bai=${DIR_TMP}/${NameD}_output.sort.filtered.bai
+readonly bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.bam.list
+readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.bam
+readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.bai
+readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.bam
+readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.bai
+readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.recal_data.csv
 
-recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+recalbam=${DIR_WES}/${NameD}_output.sort.filtered.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
@@ -164,10 +166,11 @@ ${BIN_FASTQC} "${FILE_FASTQ_2}" -o "${DIR_WES}"
 ${BIN_TRIM} "${FILE_FASTQ_1}" "${FILE_FASTQ_2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
 ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
 
+# fastqc
 ${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
 ${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
 
- make bam
+# make bam
 ${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
 "${fastq_o1_p_t}" "${fastq_o2_p_t}" | ${BIN_SAMVIEW} -bS - >"${bam}"
 
@@ -203,5 +206,5 @@ ${BIN_PRINT_READS} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 # coverage
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
 
-# zip
+# fastqc
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"
