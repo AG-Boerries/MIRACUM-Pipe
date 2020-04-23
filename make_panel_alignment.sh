@@ -111,7 +111,6 @@ readonly fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
 readonly bam=${DIR_TMP}/${NameD}_output.bam
 readonly prefixsort=${DIR_TMP}/${NameD}_output.sort
 readonly sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-#readonly rmdupbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.bam
 readonly bai=${DIR_TMP}/${NameD}_output.sort.filtered.bai
 readonly bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.bam.list
 readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.bam
@@ -152,10 +151,11 @@ readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 #	# sort bam
 #	${BIN_SAMSORT} ${tmpbam} -T ${prefixsort} -o ${tmpsortbam}
 #done 
-
+#
 # Merge BAMs
 #${BIN_SAMTOOLS} merge -f "${bam}" "${DIR_WES}/${NameD}_1.bam" "${DIR_WES}/${NameD}_2.bam" "${DIR_WES}/${NameD}_3.bam" "${DIR_WES}/${NameD}_4.bam"
 
+############
 # TODO
 # Alternative if only two files, one paired-end sample
 # fastqc zip to WES
@@ -182,16 +182,16 @@ ${BIN_STATS} "${bam}" >"${statstxt}"
 ${BIN_SAMSORT} "${bam}" -T "${prefixsort}" -o "${sortbam}"
 
 # rmdup bam
-${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
+#${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
 
 # make bai
-${BIN_SAMINDEX} "${rmdupbam}" "${bai}"
+${BIN_SAMINDEX} "${sortbam}" "${bai}"
 
 # make bam list
-${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"
+${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${sortbam}"
 
 # realign bam
-${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
+${BIN_INDEL_REALIGNER} -I "${sortbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
 
 # fix bam
 ${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
