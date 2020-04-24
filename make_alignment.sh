@@ -112,6 +112,7 @@ readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed
 readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.bai
 readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
+# keep
 recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt

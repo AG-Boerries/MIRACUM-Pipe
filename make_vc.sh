@@ -73,11 +73,16 @@ fi
 
 [[ -d "${DIR_ANALYSES}" ]] || mkdir -p "${DIR_ANALYSES}"
 
+# names
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_gd
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+
+# input
 readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+
+# keep
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
@@ -109,10 +114,13 @@ for name1 in ${names1}; do
   fi
 
   for name2 in ${names2}; do
+    # temp
+    hc_avi=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.avinput
+    hc_rci=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.readcount.input
+    hc_rcs=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.readcounts
+
+    # keep
     hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
-    hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
-    hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
-    hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
     hc_fpf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.fpfilter.vcf
     
     if [[ "${name2}" = "Somatic" ]]; then
@@ -144,42 +152,59 @@ readonly data=${DIR_WES}
 for name1 in ${names1}; do
   # Annotation snp.Somatic.hc $data/NameD.output.snp.Somatic.hc.fpfilter.vcf
   # Annotation indel.Somatic.hc $data/NameD.output.indel.Somatic.hc.fpfilter.vcf
-  hc_=${data}/${NameD}.output.${name1}.Somatic.hc
-  hc_fpf=${data}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
-  hc_T_avi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
-  hc_T_avi_multi=${data}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
-  ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
+  # temp
+  hc=${DIR_TMP}/${NameD}.output.${name1}.Somatic.hc
+  hc_T_avi=${DIR_TMP}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
+
+  # keep
+  hc_fpf=${DIR_WES}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
+  hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput.hg19_multianno.csv
+  hc_snpeff="${DIR_WES}/${NameD}.output.${name1}.Somatic.SnpEff.vcf"
+  
+  # annovar annotation
+  ${CONVERT2ANNOVAR} "${hc}" "${hc_fpf}" -allsample
   ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
       -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-  hc_snpeff="${data}/${NameD}.output.${name1}.Somatic.SnpEff.vcf"
+  # snpEff; identify canonical transcript 
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 
   if [[ "${CFG_CASE}" = somaticGermline ]]; then
     # Annotation snp.Germline.hc $data/NameD.output.snp.Germline.hc.fpfilter.vcf
     # Annotation indel.Germline.hc $data/NameD.output.indel.Germline.hc.fpfilter.vcf
-    hc_=${data}/${NameD}.output.${name1}.Germline.hc
-    hc_fpf=${data}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
-    hc_N_avi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
-    hc_N_avi_multi=${data}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
-    ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
+    # temp
+    hc=${DIR_TMP}/${NameD}.output.${name1}.Germline.hc
+    hc_N_avi=${DIR_TMP}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
+
+    # keep
+    hc_fpf=${DIR_WES}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
+    hc_N_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput.hg19_multianno.csv
+    hc_N_snpeff=${DIR_WES}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
+
+    # annovar annotation
+    ${CONVERT2ANNOVAR} "${hc}" "${hc_fpf}" -allsample
     ${TABLEANNOVAR} "${hc_N_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
         -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-    hc_N_snpeff=${data}/${NameD}.output.${name1}.NORMAL.SnpEff.vcf
+    # snpEff; identify canonical transcripts
     ${BIN_SNPEFF} "${hc_fpf}" > "${hc_N_snpeff}"
   fi
 
   # Annotation snp.LOH.hc
   # Annotation indel.LOH.hc
-  hc_vcf=${data}/${NameD}.output.${name1}.LOH.hc.vcf
-  hc_fpf=${data}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
-  hc_avi=${data}/${NameD}.output.${name1}.LOH.hc.avinput
-  hc_avi_multi=${data}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
+  # temp
+  hc_avi=${DIR_TMP}/${NameD}.output.${name1}.LOH.hc.avinput
+
+  # keep
+  hc_fpf=${DIR_WES}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf
+  hc_avi_multi=${DIR_WES}/${NameD}.output.${name1}.LOH.hc.avinput.hg19_multianno.csv
+  hc_L_snpeff=${DIR_WES}/${NameD}.output.${name1}.LOH.SnpEff.vcf
+
+  # annovar annotation
   ${CONVERT2ANNOVAR3} "${hc_avi}" "${hc_fpf}"
   ${TABLEANNOVAR} "${hc_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
       -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-  hc_L_snpeff=${data}/${NameD}.output.${name1}.LOH.SnpEff.vcf
+  # snpEff; identify canonical transcript
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_L_snpeff}"
 done

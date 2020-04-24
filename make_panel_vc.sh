@@ -77,28 +77,36 @@ fi
 
 [[ -d "${DIR_ANALYSES}" ]] || mkdir -p "${DIR_ANALYSES}"
 
+# names
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
-readonly recalbam=${DIR_WES}/${NameTD}_output.sort.filtered.realigned.fixed.recal.bam
-readonly mpileup=${DIR_WES}/${NameD}_mpileup
+
+# temp
+readonly mpileup=${DIR_TMP}/${NameD}_mpileup
+
+# keep
+readonly recalbam=${DIR_WES}/${NameTD}_output.sort.realigned.fixed.recal.bam
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2SNP_MINREADS2}" \
-    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2SNP_PVALUE}" \
+    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2SNP_PVALUE}" --min-avg-qual "${CFG_PANEL_MINBASEQUAL}" \
     --strand-filter "${CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
 ${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2INDEL_MINREADS2}" \
-    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2INDEL_PVALUE}" \
+    --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2INDEL_PVALUE}" --min-avg-qual "${CFG_PANEL_MINBASEQUAL}" \
     --strand-filter "${CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${indelvcf}"
 
 
 readonly names1="snp indel"
 for name1 in ${names1}; do
+  # temp
+  hc_avi=${DIR_TMP}/${NameD}.output.${name1}.avinput
+  hc_rci=${DIR_TMP}/${NameD}.output.${name1}.readcount.input
+  hc_rcs=${DIR_TMP}/${NameD}.output.${name1}.readcounts
+
+  # keep
   hc_vcf=${DIR_WES}/${NameD}.output.${name1}.vcf
-  hc_avi=${DIR_WES}/${NameD}.output.${name1}.avinput
-  hc_rci=${DIR_WES}/${NameD}.output.${name1}.readcount.input
-  hc_rcs=${DIR_WES}/${NameD}.output.${name1}.readcounts
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
     
     
@@ -120,17 +128,22 @@ for name1 in ${names1}; do
       --min-var-mapqual "${CFG_VARSCAN_PANEL_FPFILTER_MINVARMAPQUAL}" --max-mapqual-diff "${CFG_VARSCAN_PANEL_FPFILTER_MAXMAPQUALDIFF}"
 done
 
-readonly data=${DIR_WES}
 for name1 in ${names1}; do
   # Annotation
-  hc_=${data}/${NameD}.output.${name1}
-  hc_fpf=${data}/${NameD}.output.${name1}.fpfilter.vcf
-  hc_T_avi=${data}/${NameD}.output.${name1}.avinput
-  hc_T_avi_multi=${data}/${NameD}.output.${name1}.avinput.hg19_multianno.csv
-  ${CONVERT2ANNOVAR} "${hc_}" "${hc_fpf}" -allsample
+  # temp
+  hc=${DIR_TMP}/${NameD}.output.${name1}
+  hc_T_avi=${DIR_TMP}/${NameD}.output.${name1}.avinput
+
+  # keep
+  hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
+  hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.avinput.hg19_multianno.csv
+  hc_snpeff="${DIR_WES}/${NameD}.output.${name1}.SnpEff.vcf"
+  
+  # annovar annotation
+  ${CONVERT2ANNOVAR} "${hc}" "${hc_fpf}" -allsample
   ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
       -operation "${CFG_ANNOVAR_ARGOP}" -csvout -otherinfo -remove -nastring NA
 
-  hc_snpeff="${data}/${NameD}.output.${name1}.SnpEff.vcf"
+  # snpEff; identify canonical transcript
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 done

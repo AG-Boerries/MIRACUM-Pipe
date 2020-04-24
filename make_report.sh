@@ -72,19 +72,22 @@ fi
 
 cd "${DIR_ANALYSES}" || exit 1
 
+# execute Main.R, i.e. complete analyses in R
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
   "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" \
   "${CFG_AUTHOR}" "${CFG_CENTER}" "${CFG_REFERENCE_CAPTUREREGIONS}" "${CFG_REFERENCE_CAPTUREREGIONNAME}" "${FILE_GENOME}" "${CFG_REFERENZ_CAPTURECORFACTORS}"
-  
+
+# translate to tex
 ${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/MTB.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report.Rnw');"
 
+# PDF report
 mv "${DIR_ANALYSES}/Report.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex"
-
 pdflatex -interaction=nonstopmode "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
   --output-directory="${DIR_ANALYSES}"
 pdflatex -interaction=nonstopmode "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.tex" \
   --output-directory="${DIR_ANALYSES}"
 
+# clean up
 # remove aux files which are created while pdflatex
 rm -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.aux" \
       "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.toc" \

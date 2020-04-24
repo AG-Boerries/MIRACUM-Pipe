@@ -111,15 +111,16 @@ readonly fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
 readonly bam=${DIR_TMP}/${NameD}_output.bam
 readonly prefixsort=${DIR_TMP}/${NameD}_output.sort
 readonly sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-readonly bai=${DIR_TMP}/${NameD}_output.sort.filtered.bai
-readonly bamlist=${DIR_TMP}/${NameD}_output.sort.filtered.bam.list
-readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.bam
-readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.bai
-readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.bam
-readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.bai
-readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.realigned.fixed.recal_data.csv
+readonly bai=${DIR_TMP}/${NameD}_output.sort.bai
+readonly bamlist=${DIR_TMP}/${NameD}_output.sort.bam.list
+readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.realigned.bam
+readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.realigned.bai
+readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.bam
+readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.bai
+readonly csv=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.recal_data.csv
 
-recalbam=${DIR_WES}/${NameD}_output.sort.filtered.realigned.fixed.recal.bam
+# keep
+recalbam=${DIR_WES}/${NameD}_output.sort.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
 
