@@ -153,8 +153,8 @@ for name1 in ${names1}; do
   # Annotation snp.Somatic.hc $data/NameD.output.snp.Somatic.hc.fpfilter.vcf
   # Annotation indel.Somatic.hc $data/NameD.output.indel.Somatic.hc.fpfilter.vcf
   # temp
-  hc=${DIR_TMP}/${NameD}.output.${name1}.Somatic.hc
-  hc_T_avi=${DIR_TMP}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
+  hc=${DIR_WES}/${NameD}.output.${name1}.Somatic.hc
+  hc_T_avi=${DIR_WES}/${NameD}.output.${name1}.Somatic.hc.TUMOR.avinput
 
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.Somatic.hc.fpfilter.vcf
@@ -173,8 +173,8 @@ for name1 in ${names1}; do
     # Annotation snp.Germline.hc $data/NameD.output.snp.Germline.hc.fpfilter.vcf
     # Annotation indel.Germline.hc $data/NameD.output.indel.Germline.hc.fpfilter.vcf
     # temp
-    hc=${DIR_TMP}/${NameD}.output.${name1}.Germline.hc
-    hc_N_avi=${DIR_TMP}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
+    hc=${DIR_WES}/${NameD}.output.${name1}.Germline.hc
+    hc_N_avi=${DIR_WES}/${NameD}.output.${name1}.Germline.hc.NORMAL.avinput
 
     # keep
     hc_fpf=${DIR_WES}/${NameD}.output.${name1}.Germline.hc.fpfilter.vcf
@@ -193,7 +193,7 @@ for name1 in ${names1}; do
   # Annotation snp.LOH.hc
   # Annotation indel.LOH.hc
   # temp
-  hc_avi=${DIR_TMP}/${NameD}.output.${name1}.LOH.hc.avinput
+  hc_avi=${DIR_WES}/${NameD}.output.${name1}.LOH.hc.avinput
 
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.LOH.hc.fpfilter.vcf

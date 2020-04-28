@@ -131,8 +131,8 @@ done
 for name1 in ${names1}; do
   # Annotation
   # temp
-  hc=${DIR_TMP}/${NameD}.output.${name1}
-  hc_T_avi=${DIR_TMP}/${NameD}.output.${name1}.avinput
+  hc=${DIR_WES}/${NameD}.output.${name1}
+  hc_T_avi=${DIR_WES}/${NameD}.output.${name1}.avinput
 
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
