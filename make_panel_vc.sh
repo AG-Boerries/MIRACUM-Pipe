@@ -110,7 +110,7 @@ for name1 in ${names1}; do
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
     
     
-  ${CONVERT2ANNOVAR2} "${hc_avi}" "${hc_vcf}"
+  ${CONVERT2ANNOVAR3} "${hc_avi}" "${hc_vcf}"
   ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
   ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
   ${BIN_VAR_SCAN} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
@@ -132,11 +132,11 @@ for name1 in ${names1}; do
   # Annotation
   # temp
   hc=${DIR_WES}/${NameD}.output.${name1}
-  hc_T_avi=${DIR_WES}/${NameD}.output.${name1}.avinput
+  hc_T_avi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput
 
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
-  hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.avinput.hg19_multianno.csv
+  hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput.hg19_multianno.csv
   hc_snpeff="${DIR_WES}/${NameD}.output.${name1}.SnpEff.vcf"
   
   # annovar annotation
