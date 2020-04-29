@@ -101,9 +101,9 @@ ${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP
 readonly names1="snp indel"
 for name1 in ${names1}; do
   # temp
-  hc_avi=${DIR_TMP}/${NameD}.output.${name1}.avinput
-  hc_rci=${DIR_TMP}/${NameD}.output.${name1}.readcount.input
-  hc_rcs=${DIR_TMP}/${NameD}.output.${name1}.readcounts
+  hc_avi=${DIR_WES}/${NameD}.output.${name1}.avinput
+  hc_rci=${DIR_WES}/${NameD}.output.${name1}.readcount.input
+  hc_rcs=${DIR_WES}/${NameD}.output.${name1}.readcounts
 
   # keep
   hc_vcf=${DIR_WES}/${NameD}.output.${name1}.vcf

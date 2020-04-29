@@ -115,9 +115,9 @@ for name1 in ${names1}; do
 
   for name2 in ${names2}; do
     # temp
-    hc_avi=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.avinput
-    hc_rci=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.readcount.input
-    hc_rcs=${DIR_TMP}/${NameD}.output.${name1}.${name2}.hc.readcounts
+    hc_avi=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.avinput
+    hc_rci=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcount.input
+    hc_rcs=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.readcounts
 
     # keep
     hc_vcf=${DIR_WES}/${NameD}.output.${name1}.${name2}.hc.vcf
