@@ -82,14 +82,14 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 
 # temp
-readonly mpileup=${DIR_TMP}/${NameD}_mpileup
+readonly mpileup=${DIR_WES}/${NameD}_mpileup # TODO change back to DIR_TMP!
 
 # keep
 readonly recalbam=${DIR_WES}/${NameTD}_output.sort.realigned.fixed.recal.bam
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
-${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbam}" > "${mpileup}"
+${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2SNP_MINREADS2}" \
     --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2SNP_PVALUE}" --min-avg-qual "${CFG_PANEL_MINBASEQUAL}" \
     --strand-filter "${CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
@@ -136,7 +136,7 @@ for name1 in ${names1}; do
 
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
-  hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput.hg19_multianno.csv
+  #hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput.hg19_multianno.csv
   hc_snpeff="${DIR_WES}/${NameD}.output.${name1}.SnpEff.vcf"
   
   # annovar annotation
