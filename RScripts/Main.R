@@ -129,11 +129,11 @@ if (protocol != "panelTumor"){
 }
 if (protocol == "panelTumor"){
   # TUMOR
-  snp_file_td <- paste0(path_input, sample, "_vc.output.snp.avinput.hg19_multianno.csv")
-  indel_file_td <- paste0(path_input, sample, "_vc.output.indel.avinput.hg19_multianno.csv")
+  snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Sample1.avinput.hg19_multianno.csv")
+  indel_file_td <- paste0(path_input, sample, "_vc.output.indel.Sample1.avinput.hg19_multianno.csv")
   snpefffile_snp_td <- paste0(path_input, sample, "_vc.output.snp.SnpEff.vcf")
   snpefffile_indel_td <- paste0(path_input, sample, "_vc.output.indel.SnpEff.vcf")
-  filter_out_td <- paste0(sample, "_VC_TUMOR.xlsx")
+  filter_out_td <- paste0(path_output, sample, "_VC_TUMOR.xlsx")
   # Results
   outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
   coverage_out <- paste0(path_output, sample, "_coverage.pdf")
@@ -146,8 +146,8 @@ if (protocol != "panelTumor"){
   # SOMATIC TUMOR
   print("Filtering for Tumor.")
   filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
-                              snpefffile_snp = snpefffile_snp,
-                              snpefffile_indel = snpefffile_indel,
+                              snpefffile_snp = snpefffile_snp_td,
+                              snpefffile_indel = snpefffile_indel_td,
                               outfile = filter_out_td, outfile_maf = maf_td,
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,
@@ -205,8 +205,8 @@ if (protocol != "panelTumor"){
 if (protocol == "panelTumor"){
   print("Filtering for Tumor.")
   filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
-                              snpefffile_snp = snpefffile_snp,
-                              snpefffile_indel = snpefffile_indel,
+                              snpefffile_snp = snpefffile_snp_td,
+                              snpefffile_indel = snpefffile_indel_td,
                               outfile = filter_out_td, outfile_maf = maf_td,
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,

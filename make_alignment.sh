@@ -123,7 +123,7 @@ ${BIN_FASTQC} "${FILE_FASTQ_2}" -o "${DIR_WES}"
 
 # trim fastq
 ${BIN_TRIM} "${FILE_FASTQ_1}" "${FILE_FASTQ_2}" "${fastq_o1_p_t}" "${fastq_o1_u_t}" "${fastq_o2_p_t}" "${fastq_o2_u_t}" \
-ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:25
+ILLUMINACLIP:"${DIR_TRIMMOMATIC_ADAPTER}"/TruSeq3-PE-2.fa:2:30:10 HEADCROP:3 TRAILING:10 MINLEN:70
 
 ${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
 ${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
