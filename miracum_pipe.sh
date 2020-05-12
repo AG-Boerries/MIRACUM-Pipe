@@ -102,9 +102,10 @@ function run_panel_pipe() {
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log)
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-  ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
-  wait
+  ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) #&
+  # TODO CNV calling
+  #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  #wait
 
   # create report based on the results of the processes above
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
@@ -123,7 +124,7 @@ function run_panel_pipe_seq() {
 
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> ${dir_log}/vc.log)
-  ("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
+  #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
 
   cleanup "${dir_patient}"

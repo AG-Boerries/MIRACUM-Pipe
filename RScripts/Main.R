@@ -83,7 +83,7 @@ if( protocol != "panelTumor"){
   germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 } else {
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
-  tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
+  tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 }
 
 #####################
@@ -259,7 +259,7 @@ if (protocol != "panelTumor"){
                  stats_td = stats_td, stats_gd = stats_gd, protocol = protocol)
 }
 if (protocol == "panelTumor"){
-  stats_td <- paste0(path_input, sample, "_gd_stats.txt")
+  stats_td <- paste0(path_input, sample, "_td_stats.txt")
   stats <- stats(path = path_input, outfile_pdf = coverage_out,
                  stats_td = stats_td, protocol = protocol)
 }
@@ -300,18 +300,18 @@ if (protocol != "panelTumor"){
                                        id = id,
                                        protocol = protocol)
 }
-# TODO CNV Panel
-if (protocol == "panelTumor"){
-  ## Input Files
-  cnvsFile <- paste0(path_input,"CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.cnr")
-  ## Output Files
-  outfile <- paste0(path_output, sample, "_CNV.xlsx")
-  outfile_ts_og <- paste0(path_output,sample, "_CNV_TSG_OG.xlsx")
-  outfile_ideogram <- paste0(path_output, sample, "_ideogram.pdf")
-  cnvs <- cnv_panel(input_file = cnvsFile, outfile = outfile,
-                    outfile_ts_og = outfile_ts_og, outfile_ideogram = outfile_ideogram,
-                    path_data = path_data, sureselect = sureselect, targets_txt = targets_txt, protocol = protocol)
-}
+# # TODO CNV Panel
+# if (protocol == "panelTumor"){
+#   ## Input Files
+#   cnvsFile <- paste0(path_input,"CNV/", sample, "_td_output.sort.realigned.fixed.cnr")
+#   ## Output Files
+#   outfile <- paste0(path_output, sample, "_CNV.xlsx")
+#   outfile_ts_og <- paste0(path_output,sample, "_CNV_TSG_OG.xlsx")
+#   outfile_ideogram <- paste0(path_output, sample, "_ideogram.pdf")
+#   cnvs <- cnv_panel(input_file = cnvsFile, outfile = outfile,
+#                     outfile_ts_og = outfile_ts_og, outfile_ideogram = outfile_ideogram,
+#                     path_data = path_data, sureselect = sureselect, targets_txt = targets_txt, protocol = protocol)
+# }
 
 ###############################
 # Mutation Signature Analysis #
@@ -321,7 +321,7 @@ if( protocol != "panelTumor"){
   targetCapture_cor_factors <- paste(path_data, "targetCapture_cor_factors.rda", sep = "/")
   mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output)
 } else {
-  vcf <- paste0(path_input, sample,"_vc.output.snp.hc.fpfilter.vcf")
+  vcf <- paste0(path_input, sample,"_vc.output.snp.fpfilter.vcf")
   mut_sig_analysis <- mutation_signature_analysis(vcf_file = vcf,
                                                   cutoff = 0.01,
                                                   sample_name = NULL,

@@ -207,6 +207,7 @@ make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol){
   }
   colnames(ratio) <- c("chr", "start", "end", "CopyNumber", "status", "WRST", "KS")
   ratio_new <- ratio
+  # TODO
   ratio_new$chr <- paste('chr', ratio_new$chr, sep = '')
 
   col_fun = colorRamp2(c(0, 1, 3, 4, 5, 6), c("darkblue", "mediumblue",
@@ -599,7 +600,7 @@ cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path
   cnvs$length <- 0
   cnvs$length <- (cnvs$end - cnvs$start)
   #if (mode == "TruSight_Amplicon"){
-  #  genelist <- c("ABL1", "AKT1", "ALK", "APC", "ATM", "BRAF", "CDH1", "CDKN2A",
+  #  geneList <- c("ABL1", "AKT1", "ALK", "APC", "ATM", "BRAF", "CDH1", "CDKN2A",
   #                "CSF1R", "CTNNB1", "EGFR", "ERBB2", "ERBB4", "FBXW7", "FGFR1",
   #                "FGFR2", "FGFR3", "FLT3", "GNA11", "GNAQ", "GNAS", "HNF1A",
   #                "HRAS", "IDH1", "JAK2", "JAK3", "KDR", "KIT", "KRAS", "MET",
@@ -607,7 +608,7 @@ cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path
   #                "PTEN", "PTPN11", "RB1", "RET", "SMAD4", "SMARCB1", "SMO",
   #                "SRC", "STK11", "TP53", "VHL")
   #} else if (mode == "TruSight_Tumor"){
-  #  genelist <- c("AKT1", "BRIP1", "AKT2", "BTK", "AKT3", "CARD11", "ALK",
+  #  geneList <- c("AKT1", "BRIP1", "AKT2", "BTK", "AKT3", "CARD11", "ALK",
   #                "CCND1", "APC", "CCND2", "AR", "CCNE1", "ARID1A", "CD79A",
   #                "ATM", "CD79B", "ATR", "CDH1", "BAP1", "CDK12", "BARD1",
   #                "CDK4", "BCL2", "CDK6", "BCL6", "CDKN2A", "BRAF", "CEBPA",
@@ -638,7 +639,7 @@ cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path
                                   fixed = T), function(x) x[1])
   cnvs$genename<- lapply(strsplit(x = as.character(cnvs$genename), split = "_",
                                   fixed = T), function(x) x[1])
-  i <- which (cnvs$genename %in% genelist)
+  i <- which (cnvs$genename %in% geneList)
   cnvs$genename[-i] <- gsub("\\d+$", "", cnvs$genename[-i])
   
   # Find all tumorsuppressors and oncogenes with cnv
@@ -675,10 +676,12 @@ cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path
 
   lst2 <- list("CN-TSG" = cnvs_og, "CN-OG" = cnvs_ts)
   write.xlsx(lst2, file = outfile_ts_og)
-
-  if (mode == "TruSight_Tumor"){
-    make_cnv_ideo_sig(ratio_file = cnvs, outfile_ideogram = outfile_ideogram, protocol = "Tumor_Only")
-  }
-
+  
+  # TODO
+  # if (mode == "TruSight_Tumor"){
+  #   make_cnv_ideo_sig(ratio_file = cnvs, outfile_ideogram = outfile_ideogram, protocol = "Tumor_Only")
+  # }
+  make_cnv_ideo_sig(ratio_file = cnvs, outfile_ideogram = outfile_ideogram, protocol = protocol)
+  
   return(list(loss_gain = lst1, tsg_og = lst2))
 }
