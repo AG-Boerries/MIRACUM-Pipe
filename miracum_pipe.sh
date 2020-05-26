@@ -99,10 +99,10 @@ function run_panel_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log)
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) #&
+  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> ${dir_log}/vc.log) #&
   # TODO CNV calling
   #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
   #wait
@@ -189,6 +189,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
 
       if [[ "${PARAM_FORCE}" || ! -f "${DIR_TARGET}/.processed" ]]; then
         echo "computing ${DIR_PATIENT}"
+        echo "${PARAM_PROTOCOL}"
 
         if [[ "${PARAM_PROTOCOL}" == "wes" ]]; then
           echo "WES Protocol"
@@ -249,6 +250,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
         setup "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
 
         # possibility to comfortably run tasks separately
+        #echo "Protocol 253 ${PARAM_PROTOCOL}"
         case "${PARAM_PROTOCOL}" in
           wes)
             case "${PARAM_TASK}" in
@@ -315,19 +317,39 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
         cleanup "${PARAM_DIR_PATIENT}"
       else
         echo "computing ${PARAM_DIR_PATIENT}"
+        #echo "Protocol 320 ${PARAM_PROTOCOL}"
 
-        if [[ -z "${PARAM_SEQ}" ]]; then
-          run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
-        else
-          run_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+        if [[ ${PARAM_PROTOCOL} == "wes" ]]; then
+          echo "WES Protocol"
+          if [[ -z "${PARAM_SEQ}" ]]; then
+            run_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          else
+            run_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          fi
+
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${PARAM_DIR_PATIENT} finished"
+          else
+            echo "${PARAM_DIR_PATIENT} failed"
+          fi
         fi
+        if [[ ${PARAM_PROTOCOL} == "panel" ]]; then
+          echo "Panel Protocol"
+          if [[ -z "${PARAM_SEQ}" ]]; then
+            run_panel_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          else
+            run_panel_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          fi
 
-        # check if report was generated successfully
-        if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
-          touch "${DIR_TARGET}/.processed"
-          echo "${PARAM_DIR_PATIENT} finished"
-        else
-          echo "${PARAM_DIR_PATIENT} failed"
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${PARAM_DIR_PATIENT} finished"
+          else
+            echo "${PARAM_DIR_PATIENT} failed"
+          fi
         fi
       fi
     fi
