@@ -175,6 +175,9 @@ Am Ende wird die Zuordnung des Gens als Cancergenes nach der Klassifikation von 
 
 Die Tabelle für LoH Mutationen ist analog zur vorherigen aufgebaut (Tab \ref{loh_cg}). Da LoH Mutationen sowohl im Tumor als auch in der Keimbahn detektiert werden, gibt es hier zwei Spalten zur VAF. Zunächst wird die Frequenz im Tumor gelistet und auch nach dieser geordnet. Die folgende Spalte gibt die VAF in der Keimbahn an. Analog zu oben mit den ensprechenden Coverages.\\
 
+\definecolor{aquamarine}{rgb}{0, 1.0, 1.0}
+\textbf{Bei den Gensymbolen ist ein Link zur Mutation entsprechenden Seite von {\color{aquamarine}\textit{Genome Nexus}} hinterlegt. Dort wird ein Lollipop-Plot zur Lage der Mutation im Gen angezeigt sowie weitere Informationen. Bei dem Aminosäurenaustausch ist ein Link zum Eintrag der Mutation in der {\color{aquamarine}\textit{The Variant Interpretation for Cancer Consortium Meta-Knowledgebase}} verknüpft. Dieser Link funktioniert allerdings aufgrund eines Sonderzeichens in der URL nicht bei Verwendung des Dokuments mit der Vorschau von Apple, aber unter Verwendung von Acrobat Reader.}\\
+
 Im Anhang  befinden sich Tabellen zu allen detektierten somatischen, LoH und Keimbahnmutationen (Kap \ref{all_som_mut}, \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\ref{all_loh}}{}, \ref{all_germline}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über 10\% gelistet.
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
@@ -182,6 +185,13 @@ tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16)]
 if(dim(tmp)[1] == 0) {
   kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
+  # add a hyperlink to metaKB and one to GenomeNexus
+  tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+  tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+  tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+  tmp$Gene.refGene <- tmp$Gene.refGene_new
+  tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
@@ -210,6 +220,13 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
   tmp <- mutation_analysis_result$table_loh_mutations[, c(1:10, 12, 13, 15, 17)]
   id <- which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1)
   if (length(id) > 0) {
+    # add a hyperlink to metaKB and one to GenomeNexus
+    tmp <- tmp[id, ]
+    tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+    tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+    hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+    tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+    tmp$Gene.refGene <- tmp$Gene.refGene_new
     tmp <- tmp[id, c(1:8, 11:14, 9:10)]
     tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
     tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
@@ -220,9 +237,9 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
-  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
- tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
-  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
     tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
     tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -439,6 +456,10 @@ if(length(id_to) != 0) {
 Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
 <<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
 tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor")]
+tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
 tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
 tmp <- tmp[which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1), ]
 if(dim(tmp)[1] != 0){
@@ -576,13 +597,17 @@ if(dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1] >= 20){
 \appendix
 \section{Tabellen aller detektierten Mutationen}
 \subsection{Somatische Mutationen}\label{all_som_mut}
-%%
-%% TEXT
-%% include Explanation to table and additional tables that are available
-%%
 
 <<eval=TRUE, results="tex", echo=FALSE>>=
 tmp <- mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16)]
+# tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16:20)]
+# add a hyperlink to metaKB and one to GenomeNexus
+tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+tmp$Gene.refGene <- tmp$Gene.refGene_new
+tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
 tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
 tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
 tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
@@ -607,14 +632,17 @@ if(dim(tmp)[1] != 0){
 @
 
 \subsection{Loss of Heterozygosity}\label{all_loh}
-%%
-%% TEXT
-%% include Explanation to table and additional tables that are available
-%%
 
 <<eval=TRUE, results="tex", echo=FALSE>>=
 if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17)]
+  # tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17:21)]
+  tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+  # add a hyperlink to metaKB and one to GenomeNexus
+  tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+  tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+  tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
   tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
   tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
@@ -643,9 +671,15 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Keimbahn Mutationen}\label{all_germline}
 <<echo=FALSE, eval=TRUE, results='tex'>>=
   tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor")]
+  tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
+  tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+  tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+  tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
-  #tmp <- tmp[-grep(pattern = ";", x = tmp$Gene.refGene, fixed = TRUE), ] # not working if the grep result is zero because it then deletes all rows
+  # tmp <- tmp[-grep(pattern = ";", x = tmp$Gene.refGene, fixed = TRUE), ]# not working if the grep result is zero because it then deletes all rows
   if(dim(tmp)[1] != 0){
+    tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
     tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
     tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
     tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
@@ -679,31 +713,32 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 
 \subsection{Programmversionen}
 \begin{itemize}
-\item FastQC: 0.11.5
-\item Trimmomatic: 0.36
-\item BWA: 0.7.15
+\item FastQC: 0.11.9
+\item Trimmomatic: 0.39
+\item BWA: 0.7.17
 \item bam-readcount: 0.8.0
-\item samtools 1.4.1
-\item GATK: 3.6
-\item picard-tools: 2.9.2
-\item VarScan: 2.4.3
-\item annovar 2017-07-17
-\item bedtools: 2.26.0
-\item Control-FREEC: 11.0
-\item Java: 1.8.0\_121
+\item samtools 1.10
+\item GATK: 3.8.1.0
+\item picard-tools: 2.20.6
+\item VarScan: 2.4.4
+\item annovar 2019Oct24
+\item bedtools: 2.28.0
+\item Control-FREEC: 11.6
+\item Java: openjdk-8-hotspot
 \end{itemize}
 
 \subsection{Annovar Datenbanken}
 \begin{itemize}
-\item refGene GRCh37 (20170601)
-\item esp6500siv2\_all (20141222)
-\item avsnp150 (dbSNP) (20170929)
-\item clinvar\_20170905 (20171003)
-\item 1000g2015aug\_all (20150824)
-\item cosmic84 (20180213)
-\item exac03 (20151129)
-\item gnomad\_exome (20170311)
-\item cadd13 (20170123)
+\item refGene GRCh37
+\item dbnsfp35a
+\item esp6500siv2\_all
+\item avsnp150 (dbSNP)
+\item clinvar\_20180603
+\item intervar\_20180118
+\item 1000g2015aug\_all
+\item cosmic90
+\item exac03
+\item gnomad\_exome
 \end{itemize}
 
 \end{document}

@@ -150,12 +150,17 @@ Außerdem werden nur seltene Mutationen gelistet. Selten bedeutet dabei, dass di
 Desweiteren werden Strukturanalysen via Condel und CADD zu den entsprechend mutierten Proteinen durchgeführt. Diese Ergebnisse werden für Condel in den folgenden Tabellen durch eine Klassifizierung beschrieben: D - deleterious, N - neutral.
 Die Analyse beinhaltet zusätzliche Annotationen bekannter Mutationen wie Cosmic, Clinvar und dbSNP. Die Ergebnisse werden nur reduziert und übersichtlich dargestellt. Es werden für die Mutationen hier nur die entsprechenden Cosmic Nummern angegeben.
 Am Ende wird die Zuordnung des Gens als Cancergenes nach der Klassifikation von OncoKB dargestellt. \textbf{Mutationen in einem HS} sind fett markiert. Die folgende Tabelle \ref{som_mut_cg} enthält alle SNVs und InDels in Cancergenes für diese Probe.\\
+Bei den Gensymbolen ist ein Link zur Mutation entsprechenden Seite von \textit{Genome Nexus} hinterlegt. Dort wird ein Lollipop-Plot zur Lage der Mutation im Gen angezeigt sowie weitere Informationen. Bei dem Aminosäurenaustausch ist ein Link zum Eintrag der Mutation in der \textit{The Variant Interpretation for Cancer Consortium Meta-Knowledgebase} verknüpft. Dieser Link funktioniert allerdings aufgrund eines Sonderzeichens in der URL nicht bei Verwendung des Dokuments mit der Vorschau von Apple.
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
 tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16)]
 if(dim(tmp)[1] == 0) {
   kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
+  tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+  tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+  tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
@@ -190,6 +195,11 @@ In folgender Tabelle werden analog zur obigen alle weiteren Mutationen gelistet,
 <<eval=TRUE, results="tex", echo=FALSE>>=
 tmp <- mutation_analysis_result$som_mut_tab[, c(1:5, 7:12, 14, 16)]
 id <- which(tmp$is_tumorsuppressor != 1 & tmp$is_oncogene != 1)
+# add a hyperlink to metaKB and one to GenomeNexus
+tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
+tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
+tmp$Gene.refGene <- tmp$Gene.refGene_new
 tmp <- tmp[id, -c(7:8) ]
 if(dim(tmp)[1] == 0) {
   kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine weiteren Mutationen identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
@@ -270,9 +280,10 @@ if (length(tmp) == 0){
 
 \clearpage
 
- % TODO Fusionen
-% \subsection{Fusionen}
-% In folgender Tabelle \ref{fs_ov} werden übersichtlich alle detektierten Fusionen mit vier wichtigen Eigenschaften (bekannt, reziprok, readthrough und Cosmic-Annotation dieser Genkombination) dargestellt. Dabei muss immer nur eines der beiden Fusionsgene in der vorgegebenen Genliste stehen. Je höher die Fusion in der Tabelle steht, desto öfter wurde die Fusion in der Probe detektiert. In der zweiten Tabelle \ref{fs_bp} werden zu den Fusionen alle möglichen Bruchpunkte in genomischen Koordinaten beschrieben.
+% TODO
+%\subsection{Fusionen}
+%In folgender Tabelle \ref{fs_ov} werden übersichtlich alle detektierten Fusionen mit vier wichtigen Eigenschaften (bekannt, reziprok, readthrough und Cosmic-Annotation dieser Genkombination) dargestellt. Dabei muss immer nur eines der beiden Fusionsgene in der vorgegebenen Genliste stehen. Je höher die Fusion in der Tabelle steht, desto öfter wurde die Fusion in der Probe detektiert. In der zweiten Tabelle \ref{fs_bp} werden zu den Fusionen alle möglichen Bruchpunkte in genomischen Koordinaten bezüglich \textit{hg19} beschrieben.\\
+%Die dritte Tabelle zeigt für Fusionen, bei denen jeweils beide Bruchpunkte in einer codierenden Region liegen, einen Plot des Fusionsprodukten mit den erhaltenen Proteindomainen. Das sind \textit{in-frame} und \textit{out-of-frame} Fusionen. Die letzte Tabelle \ref{fs_sq} gibt die Sequenz um den Bruchpunkt an. Dabei wird aus Übersichtlichkeitsgründen die Sequenz für jedes, an der Fusion beteiligte, Gen getrennt angegeben.
 
 <<echo=FALSE, results='tex', eval=FALSE>>=
 tmp <- fusions$Fusion_OV
@@ -284,9 +295,51 @@ if (is.null(tmp)) {
 @
 
 <<echo=FALSE, results='tex', eval=FALSE>>=
-tmp <- fusions$Table
+tmp <- fusions$Table[, c(1:4, 6)]
 if (!is.null(tmp)) {
-  kable(tmp, format = "latex", caption = "Identifizierte Fusionen \\label{fs_bp}", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 10)
+  kable(tmp, format = "latex", caption = "Bruchpunkte der identifizierten Fusionen \\label{fs_bp}", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 10)
+}
+@
+
+<<echo=FALSE, results='tex', eval=FALSE>>=
+tmp <- fusions$Plots
+
+if(!is.null(tmp)){
+  id <- which(is.na(tmp$file))
+  if(length(id) > 0) {
+    tmp$Gen1 <- as.character(tmp$Gen1)
+    tmp$Gen1[-id] <- paste0("\\multirow{1}{*}[2cm]{", tmp$Gen1[-id], "}")
+    tmp$Gen2 <- as.character(tmp$Gen2)
+    tmp$Gen2[-id] <- paste0("\\multirow{1}{*}[2cm]{", tmp$Gen2[-id], "}")
+    tmp$plots <- "Kein Plot verfügbar."
+    tmp$plots[-id] <- paste0("\\includegraphics[height=4cm]{", tmp$file[-id], "}")
+  } else {
+    tmp$plots <- sprintf('![Alt text](%s)', tmp$file)
+    tmp$Gen1 <- paste0("\\multirow{1}{*}[2cm]{", as.character(tmp$Gen1), "}")
+    tmp$Gen2 <- paste0("\\multirow{1}{*}[2cm]{", as.character(tmp$Gen2), "}")
+  }
+  tmp <- tmp[, c(1:2, 5)]
+  colnames(tmp)[3] <- "Ansicht des Fusionsprodukt mit Angabe der Domainen"
+  kable(tmp, format = "latex", escape = FALSE, caption = "Plot  identifizierten Fusionen. Der senkrechte Strich markiert den Bruchpunkt.", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("striped", "HOLD_position", "repeat_header"), font_size = 10) %>% column_spec(1,extra_css = "vertical-align:middle;")
+  }
+@
+
+<<echo=FALSE, results='tex', eval=FALSE>>=
+tmp <- fusions$Table[, c(1, 3, 5)]
+if (!is.null(tmp)) {
+  seq <- strsplit(x = as.character(tmp$Sequenz), split = "*", fixed = TRUE)
+  seq1 <- unlist(lapply(seq, function(x){return(x[[1]])}))
+  seq2 <- unlist(lapply(seq, function(x){return(x[[2]])}))
+  k <- dim(tmp)[1]
+  new_tmp <- as.data.frame(matrix(NA, ncol = 3, nrow = 2*k))
+  new_tmp[seq(from = 1, to = 2*k - 1, by = 2), 1] <- paste(tmp$Gen1, tmp$Gen2, sep = "--")
+  new_tmp[seq(from = 2, to = 2*k, by = 2), 1] <- paste(tmp$Gen1, tmp$Gen2, sep = "--")
+  new_tmp[seq(from = 1, to = 2*k - 1, by = 2), 2] <- as.character(tmp$Gen1)
+  new_tmp[seq(from = 1, to = 2*k - 1, by = 2), 3] <- paste0(seq1, "*")
+  new_tmp[seq(from = 2, to = 2*k, by = 2), 2] <- as.character(tmp$Gen2)
+  new_tmp[seq(from = 2, to = 2*k, by = 2), 3] <- paste0("*", seq2)
+  colnames(new_tmp) <- c("Fusion", "Gen", "Sequenz")  
+collapse_rows(kable(new_tmp, format = "latex", caption = "Sequenzen der identifizierten Fusionen. Der * markiert den Bruchpunkt. \\label{fs_sq}", booktabs = T, longtable = T, digits = 3, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 8))
 }
 @
 % \clearpage
@@ -300,30 +353,31 @@ if (!is.null(tmp)) {
 
 \subsection{Programmversionen}
 \begin{itemize}
-\item FastQC: 0.11.5
-\item Trimmomatic: 0.36
-\item BWA: 0.7.15
+\item FastQC: 0.11.9
+\item Trimmomatic: 0.39
+\item BWA: 0.7.17
 \item bam-readcount: 0.8.0
-\item samtools 1.4.1
-\item GATK: 3.6
-\item picard-tools: 2.9.2
-\item VarScan: 2.4.3
-\item annovar 2017-07-17
-\item bedtools: 2.26.0
-\item Java: 1.8.0\_121
+\item samtools 1.10
+\item GATK: 3.8.1.0
+\item picard-tools: 2.20.6
+\item VarScan: 2.4.4
+\item annovar 2019Oct24
+\item bedtools: 2.28.0
+\item Java: openjdk-8-hotspot
 \end{itemize}
 
 \subsection{Annovar Datenbanken}
 \begin{itemize}
-\item refGene GRCh37 (20170601)
-\item esp6500siv2\_all (20141222)
-\item avsnp150 (dbSNP) (20170929)
-\item clinvar\_20170905 (20171003)
-\item 1000g2015aug\_all (20150824)
-\item cosmic (20180213)
-\item exac03 (20151129)
-\item gnomad\_exome (20170311)
-\item cadd13 (20170123)
+\item refGene GRCh37
+\item dbnsfp35a
+\item esp6500siv2\_all
+\item avsnp150 (dbSNP)
+\item clinvar\_20180603
+\item intervar\_20180118
+\item 1000g2015aug\_all
+\item cosmic90
+\item exac03
+\item gnomad\_exome
 \end{itemize}
 
 \end{document}
