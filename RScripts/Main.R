@@ -39,8 +39,8 @@ args <- commandArgs()
 sample <- paste(args[6:7], collapse = "_")
 protocol <- args[6]
 id <- args[7]
-tumor <- args[8]
-germline <- args[9]
+germline <- args[8]
+tumor <- args[9]
 path_output <- paste(args[10], "Analyses/", sep = "/")
 path_input <- paste(args[10], "WES/", sep = "/")
 path_script <- args[11]
@@ -242,10 +242,11 @@ if (protocol != "panelTumor"){
     maf_comb <- smartbind(filt_result_td$maf, filt_result_loh$maf)
     write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
   }
-} else {
-  maf_comb <- maf_td
-  write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
 }
+#} else {
+#  maf_comb <- maf_td
+#  write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
+#}
 
 ###
 # STATISTICS

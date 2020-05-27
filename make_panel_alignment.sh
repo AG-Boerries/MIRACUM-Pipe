@@ -189,13 +189,16 @@ ${BIN_SAMSORT} "${bam}" -T "${prefixsort}" -o "${sortbam}"
 ${BIN_SAMINDEX} "${sortbam}" "${bai}"
 
 # make bam list
-${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${sortbam}"
+# ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${sortbam}"
 
 # realign bam
-${BIN_INDEL_REALIGNER} -I "${sortbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
+# ${BIN_INDEL_REALIGNER} -I "${sortbam}" -targetIntervals "${bamlist}" -o "${realignedbam}" # not working with panels due to the many reads per position
 
 # fix bam
-${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+# ${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+
+# fix bam
+${BIN_FIX_MATE} INPUT="${sortbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
 
 # make csv
 ${BIN_BASE_RECALIBRATOR} -I "${fixedbam}" \
