@@ -162,6 +162,8 @@ if(dim(tmp)[1] == 0) {
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+  tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
+  #tmp$VAF <- gsub(pattern = "%", replacement = "", x = tmp$VAF)
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
@@ -180,9 +182,9 @@ if(dim(tmp)[1] == 0) {
   tmp <- tmp[, c(1:2, 4, 3, 18, 12, 14, 19, 9:8)]
   colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
   cap_1 <- "Alle identifizierten Mutationen in Cancergenes geordnet nach VAF.\\label{som_mut_cg}"
-if(length(id) > 0) {
+  if(length(id) > 0) {
   kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60) %>% row_spec(id, bold = TRUE)
-} else {
+  } else {
   kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
   }
 }
@@ -204,29 +206,30 @@ tmp <- tmp[id, -c(7:8) ]
 if(dim(tmp)[1] == 0) {
   kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine weiteren Mutationen identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
-tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
-tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
-tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
-tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
-tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
-tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
-tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
-tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
-tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
-tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
-tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
-tmp$condel.label[is.na(tmp$condel.label)] <- "."
-tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
-tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]
-id_hs <- which(tmp$is_hotspot != 0)
-tmp <- tmp[, c(1:2, 4, 3, 16, 10, 12, 17)]
-colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
-cap_1 <- "Alle identifizierten Mutationen geordnet nach VAF"
-if(dim(tmp)[1] != 0 & length(id_hs) > 0){
-  kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7), width = "2em") %>% row_spec(0, angle = 60) %>% row_spec(id_hs, bold = TRUE)
+  tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
+  tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
+  tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
+  tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "stopgain", replacement = "SG", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement = "nfsDel", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$condel.label[is.na(tmp$condel.label)] <- "."
+  tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
+  tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]
+  id_hs <- which(tmp$is_hotspot != 0)
+  tmp <- tmp[, c(1:2, 4, 3, 16, 10, 12, 17)]
+  colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
+  cap_1 <- "Alle identifizierten Mutationen geordnet nach VAF"
+  if(dim(tmp)[1] != 0 & length(id_hs) > 0){
+    kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7), width = "2em") %>% row_spec(0, angle = 60) %>% row_spec(id_hs, bold = TRUE)
   } else if (dim(tmp)[1] != 0) {
-    kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7), width = "2em") %>% row_spec(0, angle = 60)
+      kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7), width = "2em") %>% row_spec(0, angle = 60)
   } else {cat("Keine Mutationen identifiziert.")}
 }
 @
