@@ -146,8 +146,8 @@ if (protocol != "panelTumor"){
   # SOMATIC TUMOR
   print("Filtering for Tumor.")
   filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
-                              snpefffile_snp = snpefffile_snp_td,
-                              snpefffile_indel = snpefffile_indel_td,
+                              snpefffile_snp = snpefffile_snp,
+                              snpefffile_indel = snpefffile_indel,
                               outfile = filter_out_td, outfile_maf = maf_td,
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,

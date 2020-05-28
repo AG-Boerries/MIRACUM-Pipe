@@ -29,20 +29,44 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
   
   ## Loading Siganture Info
-  Alex_signatures_path <- paste(path_data, "signatures.txt", sep = "/")
-  AlexInitialArtif_sig_df <- read.csv(Alex_signatures_path, header=TRUE,
-                                      sep="\t")
-  Alex_rownames <- paste(AlexInitialArtif_sig_df[, 1],
-                         AlexInitialArtif_sig_df[, 2], sep=" ")
-  select_ind <- grep("Signature", names(AlexInitialArtif_sig_df))
-  AlexInitialArtif_sig_df <- AlexInitialArtif_sig_df[, select_ind]
-  number_of_Alex_sigs <- dim(AlexInitialArtif_sig_df)[2]
-  names(AlexInitialArtif_sig_df) <- gsub("Signature\\.","A",
-                                         names(AlexInitialArtif_sig_df))
-  rownames(AlexInitialArtif_sig_df) <- Alex_rownames
-  AlexInitialValid_sig_df <- AlexInitialArtif_sig_df[,grep("^A[0-9]+",
-                             names(AlexInitialArtif_sig_df))]
-  number_of_Alex_validated_sigs <- dim(AlexInitialValid_sig_df)[2]
+  # "old" Alexandrov Signatures
+  #Alex_signatures_path <- paste(path_data, "signatures.txt", sep = "/")
+  #AlexInitialArtif_sig_df <- read.csv(Alex_signatures_path, header=TRUE,
+  #                                    sep="\t")
+  #Alex_rownames <- paste(AlexInitialArtif_sig_df[, 1],
+  #                       AlexInitialArtif_sig_df[, 2], sep=" ")
+  #select_ind <- grep("Signature", names(AlexInitialArtif_sig_df))
+  #AlexInitialArtif_sig_df <- AlexInitialArtif_sig_df[, select_ind]
+  #number_of_Alex_sigs <- dim(AlexInitialArtif_sig_df)[2]
+  #names(AlexInitialArtif_sig_df) <- gsub("Signature\\.","A",
+  #                                       names(AlexInitialArtif_sig_df))
+  #rownames(AlexInitialArtif_sig_df) <- Alex_rownames
+  #AlexInitialValid_sig_df <- AlexInitialArtif_sig_df[,grep("^A[0-9]+",
+  #                           names(AlexInitialArtif_sig_df))]
+  #number_of_Alex_validated_sigs <- dim(AlexInitialValid_sig_df)[2]
+  #signature_colour_vector <- c("darkgreen", "green", "pink", "goldenrod",
+  #                             "lightblue", "blue", "orangered", "yellow",
+  #                             "orange", "brown", "purple", "red",
+  #                             "darkblue", "magenta", "maroon", "yellowgreen",
+  #                             "violet", "lightgreen", "sienna4", "deeppink",
+  #                             "darkorchid", "seagreen", "grey10", "grey30",
+  #                             "grey50", "grey70", "grey90")
+  #bio_process_vector <- c("spontaneous deamination", "spontaneous deamination",
+  #                        "APOBEC", "BRCA1_2", "Smoking", "unknown",
+  #                        "defect DNA MMR", "UV light exposure", "unknown",
+  #                        "IG hypermutation", "POL E mutations",
+  #                        "temozolomide", "unknown", "APOBEC", "unknown",
+  #                        "unknown", "unknown", "unknown", "unknown",
+  #                        "unknown", "unknown", "unknown",
+  #                        "nonvalidated", "nonvalidated", "nonvalidated",
+  #                        "nonvalidated", "nonvalidated")
+  #AlexInitialArtif_sigInd_df <- data.frame(
+  #                              sig = colnames(AlexInitialArtif_sig_df))
+  #AlexInitialArtif_sigInd_df$index <- seq_len(dim(AlexInitialArtif_sigInd_df)[1])
+  #AlexInitialArtif_sigInd_df$colour <- signature_colour_vector
+  #AlexInitialArtif_sigInd_df$process <- bio_process_vector
+
+  # COSMIC Signatures
   Alex_COSMIC_signatures_path <- paste(path_data,
                                        "signatures_probabilities.txt",
                                        sep = "/")
@@ -59,27 +83,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   COSMIC_order_ind <- match(Alex_rownames,Alex_COSMIC_rownames)
   AlexCosmicValid_sig_df <- AlexCosmicValid_sig_df[COSMIC_order_ind, ]
   
-  signature_colour_vector <- c("darkgreen", "green", "pink", "goldenrod",
-                               "lightblue", "blue", "orangered", "yellow",
-                               "orange", "brown", "purple", "red",
-                               "darkblue", "magenta", "maroon", "yellowgreen",
-                               "violet", "lightgreen", "sienna4", "deeppink",
-                               "darkorchid", "seagreen", "grey10", "grey30",
-                               "grey50", "grey70", "grey90")
-  bio_process_vector <- c("spontaneous deamination", "spontaneous deamination",
-                          "APOBEC", "BRCA1_2", "Smoking", "unknown",
-                          "defect DNA MMR", "UV light exposure", "unknown",
-                          "IG hypermutation", "POL E mutations",
-                          "temozolomide", "unknown", "APOBEC", "unknown",
-                          "unknown", "unknown", "unknown", "unknown",
-                          "unknown", "unknown", "unknown",
-                          "nonvalidated", "nonvalidated", "nonvalidated",
-                          "nonvalidated", "nonvalidated")
-  AlexInitialArtif_sigInd_df <- data.frame(
-                                sig = colnames(AlexInitialArtif_sig_df))
-  AlexInitialArtif_sigInd_df$index <- seq_len(dim(AlexInitialArtif_sigInd_df)[1])
-  AlexInitialArtif_sigInd_df$colour <- signature_colour_vector
-  AlexInitialArtif_sigInd_df$process <- bio_process_vector
+  
   
   COSMIC_signature_colour_vector <- c("green", "pink", "goldenrod",
                                       "lightblue", "blue", "orangered",
