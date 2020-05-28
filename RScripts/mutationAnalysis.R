@@ -5,7 +5,7 @@
 mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
                              outfile_reactome, outfile_consensus,
                              outfile_hallmarks, outfile_mtb_genesets, path_data,
-                             path_script, path_output, targets_txt, protocol, sureselect){
+                             path_script, path_output, targets_txt, protocol, sureselect, sureselect_type){
   #' Mutation Analysis
   #'
   #' @description Analysis and Annotation of Mutations
@@ -133,7 +133,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
                         no_snp_loh = sub_lst$no_snp_loh)
     omicCircosUni(listOfMap = as.matrix(cc$map_mat), label = NULL, 125,
                   outfile_circos, circosColors = as.vector(cc$circoscolors),
-                  protocol = protocol, sureselect = sureselect)
+                  protocol = protocol, sureselect = sureselect, sureselect_type)
 
     if (protocol != "panelTumor"){
       # Pathway-Analysis

@@ -174,7 +174,8 @@ if (protocol != "panelTumor"){
                                                      path_script = path_script,
                                                      targets_txt = targets_txt,
                                                      protocol = "panelTumor",
-                                                     sureselect = bed_file)
+                                                     sureselect = bed_file,
+                                                     sureselect_type = sureselect_type)
   }
   
   # LOH
@@ -200,7 +201,8 @@ if (protocol != "panelTumor"){
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
-                                                protocol = protocol, sureselect = bed_file)
+                                                protocol = protocol, sureselect = bed_file,
+                                                sureselect_type = sureselect_type)
 }
 if (protocol == "panelTumor"){
   print("Filtering for Tumor.")
@@ -229,7 +231,8 @@ if (protocol == "panelTumor"){
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
-                                                protocol = protocol, sureselect = bed_file)
+                                                protocol = protocol, sureselect = bed_file,
+                                                sureselect_type = sureselect_type)
 }
   
 

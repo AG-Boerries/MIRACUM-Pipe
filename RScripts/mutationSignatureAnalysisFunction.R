@@ -83,8 +83,6 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   COSMIC_order_ind <- match(Alex_rownames,Alex_COSMIC_rownames)
   AlexCosmicValid_sig_df <- AlexCosmicValid_sig_df[COSMIC_order_ind, ]
   
-  
-  
   COSMIC_signature_colour_vector <- c("green", "pink", "goldenrod",
                                       "lightblue", "blue", "orangered",
                                       "yellow", "orange", "brown", "purple",
@@ -110,8 +108,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                                  "aflatoxin", "unknown", "defect DNA MMR",
                                  "unknown", "unknown", "tobacco chewing",
                                  "unknown")
-  AlexCosmicValid_sigInd_df <- data.frame(
-    sig = colnames(AlexCosmicValid_sig_df))
+  AlexCosmicValid_sigInd_df <- data.frame(sig = colnames(AlexCosmicValid_sig_df))
   AlexCosmicValid_sigInd_df$index <- seq_len(dim(AlexCosmicValid_sigInd_df)[1])
   AlexCosmicValid_sigInd_df$colour <- COSMIC_signature_colour_vector
   AlexCosmicValid_sigInd_df$process <- COSMIC_bio_process_vector

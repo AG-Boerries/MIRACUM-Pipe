@@ -395,7 +395,7 @@ circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_
 }
 
 omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
-                          circosColors = NULL, protocol, sureselect) {
+                          circosColors = NULL, protocol, sureselect, sureselect_type) {
   #' omic Circos Uni
   #'
   #' @description Create the Circosplot
@@ -428,7 +428,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   circosW <- floor((chrR - minR) / length(listOfMap))
   circosR <- chrR - 1.5 * circosW
   
-  if (protocol == "panelTumor") {
+  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR"))) {
     tg <- read.delim(file = sureselect, header = FALSE)
 
     hili <- as.data.frame(matrix(NA, nrow = nrow(tg), ncol = 7))
@@ -450,7 +450,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
        main = "")
   circos(R = chrR, cir = db, type = "chr", col = colors, print.chr.lab = TRUE,
          W = 2, scale = TRUE, lwd=1.5)
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR"))){
     for (i in 1:dim(hili)[1]){
           circos(R=chrR, cir=db, W=40, mapping=hili[i, ], type = "hl", lwd=1.5)
         }
