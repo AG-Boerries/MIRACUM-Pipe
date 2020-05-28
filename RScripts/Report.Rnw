@@ -232,17 +232,10 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
     tmp$Gene.refGene <- tmp$Gene.refGene_new
     tmp <- tmp[id, c(1:8, 11:14, 9:10)]
-<<<<<<< HEAD
-    tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
-    tmp$VAF_normal <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF_normal, fixed = TRUE)
-    tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
-    tmp$VAF_tumor <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF_tumor, fixed = TRUE)
-=======
     tmp$VAF_Normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
     tmp$VAF_Normal <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Normal, fixed = TRUE)
     tmp$VAF_Tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
     tmp$VAF_Tumor <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Tumor, fixed = TRUE)
->>>>>>> 70adc5e1f5fc7b04b1fb225049759f8d31a0ca3b
     tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
     tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
     tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
@@ -479,11 +472,7 @@ tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
 tmp <- tmp[which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1), ]
 if(dim(tmp)[1] != 0){
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
-<<<<<<< HEAD
   tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
-=======
-  tmp$VAF <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF, fixed = TRUE)
->>>>>>> 70adc5e1f5fc7b04b1fb225049759f8d31a0ca3b
   tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
@@ -666,17 +655,10 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
-<<<<<<< HEAD
-  tmp$VAF_normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
-  tmp$VAF_normal <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF_normal, fixed = TRUE)
-  tmp$VAF_tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
-  tmp$VAF_tumor <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF_tumor, fixed = TRUE)
-=======
   tmp$VAF_Normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
   tmp$VAF_Normal <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Normal, fixed = TRUE)
   tmp$VAF_Tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
   tmp$VAF_Tumor <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Tumor, fixed = TRUE)
->>>>>>> 70adc5e1f5fc7b04b1fb225049759f8d31a0ca3b
   tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
