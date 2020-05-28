@@ -192,7 +192,6 @@ if(dim(tmp)[1] == 0) {
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
-  tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
   tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
@@ -693,7 +692,6 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
   # tmp <- tmp[-grep(pattern = ";", x = tmp$Gene.refGene, fixed = TRUE), ]# not working if the grep result is zero because it then deletes all rows
   if(dim(tmp)[1] != 0){
-    tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
     tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
     tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
     tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
