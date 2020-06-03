@@ -259,14 +259,16 @@ tables <- function(x_s, x_l = NULL, protocol){
                        "Zygosity", "Variant_Reads", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding"), drop = FALSE]
+                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
+                       "Alt"), drop = FALSE]
 
   sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                      "AAChange", "Variant_Allele_Frequency", "Zygosity",
                      "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
                      "is_hotspot", "target", "gnomAD_exome_NFE",
                      "CADD_phred", "condel.label", "CLINSIG",
-                     "cosmic_coding"), drop = FALSE]
+                     "cosmic_coding", "Chr", "Start", "Ref",
+                     "Alt"), drop = FALSE]
 
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
@@ -274,7 +276,8 @@ tables <- function(x_s, x_l = NULL, protocol){
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
                        "gnomAD_exome_NFE", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding"), drop = FALSE]
+                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
+                       "Alt"), drop = FALSE]
 
   }else{
     lm_table <- data.frame()

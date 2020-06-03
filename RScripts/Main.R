@@ -53,6 +53,8 @@ bed_file <- args[17]
 sureselect_type <- args[18]
 ref_genome <- args[19]
 targetCapture_cor_factors <- args[20]
+vaf <- args[21]*100
+min_var_count <- args[22]
 
 #############
 # Functions #
@@ -152,7 +154,7 @@ if (protocol != "panelTumor"){
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,
                               mode ="T", center = center, id = id,
-                              protocol = protocol, sureselect = bed_file)
+                              protocol = protocol, sureselect = bed_file, vaf = vaf, min_var_count = min_var_count)
 
   if (protocol == "somaticGermline"){
     # GERMLINE NORMAL
@@ -164,7 +166,7 @@ if (protocol != "panelTumor"){
                                 path_data = path_data,
                                 path_script = path_script, covered_region = NULL,
                                 mode = "N", center = center, id = id,
-                                protocol = protocol, sureselect = bed_file)
+                                protocol = protocol, sureselect = bed_file, vaf = vaf, min_var_count = min_var_count)
     
     mutation_analysis_result_gd <- mutation_analysis(loh = NULL,
                                                      somatic = filt_result_gd$table,
@@ -186,7 +188,7 @@ if (protocol != "panelTumor"){
                                outfile = loh_out, outfile_maf = maf_loh,
                                path_data = path_data, path_script = path_script,
                                covered_region = NULL, mode = "LOH", center = center, id = id,
-                               protocol = protocol, sureselect = bed_file)
+                               protocol = protocol, sureselect = bed_file, vaf = vaf, min_var_count = min_var_count)
   # Analyses
   print("Variant Analyses.")
   mutation_analysis_result <- mutation_analysis(loh = filt_result_loh$table,
@@ -213,7 +215,7 @@ if (protocol == "panelTumor"){
                               path_data = path_data,
                               path_script = path_script, covered_region = covered_region,
                               mode ="T", center = center, id = id,
-                              protocol = protocol, sureselect = bed_file)
+                              protocol = protocol, sureselect = bed_file, vaf = vaf, min_var_count = min_var_count)
 
   filt_result_loh <- list(table = NULL, tmb = NULL)
 

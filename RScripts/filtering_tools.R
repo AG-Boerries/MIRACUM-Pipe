@@ -114,6 +114,16 @@ vrz <- function(x, mode, protocol){
   return(x)
 }
 
+mrc <- function(x, min_var_count){
+  vrc <- strsplit(x = as.character(x$Variant_Reads), split = "|", fixed = TRUE)
+  vrc <- unlist(lapply(vrc, function(x){return(x[[1]])}))
+  id_np <- which(as.numeric(vrc) < min_var_count)
+  if (length(id_np) > 0){
+    x <- x[-id_np, ]
+  }
+  return(x)
+}
+
 ### Database Queries
 isflag <- function(x, dbfile){
   #' Flags
@@ -1206,4 +1216,14 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann.maf <- subset(ann.maf, select = -c(uid))
   
   return(ann.maf)
+}
+
+exclude <- function(x, vaf = 10){
+  variant_freq <- substr(as.character(x$Variant_Allele_Frequency), start = 1,
+                         stop = nchar(as.character(x$Variant_Allele_Frequency))-1)
+  id <- which(as.numeric(variant_freq) >= vaf)
+  if(length(id) > 0) {
+    x <- x[id, ]
+  }
+  return(x)
 }
