@@ -219,7 +219,7 @@ tools:
     # define annotation databases, together with their type, used. The databases have to be installed with annovar
     #protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
     #argop: 'g,f,f,f,f,f,f,f,f,f,f'
-    protocol: 'refGene,gnomad_genome,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
+    protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
     argop: 'g,f,f,f,f,f,f,f'
   
   ControlFREEC:
