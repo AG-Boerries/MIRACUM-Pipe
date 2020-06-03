@@ -21,6 +21,7 @@ tools:
   general:
     # minimum base quality to call a variant
     minBaseQual: 28
+    maf_cutoff: 0.001
 
   samtools:
     mpileup:
@@ -216,9 +217,11 @@ tools:
 
   annovar:
     # define annotation databases, together with their type, used. The databases have to be installed with annovar
-    protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
-    argop: 'g,f,f,f,f,f,f,f,f,f,f'
-
+    #protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
+    #argop: 'g,f,f,f,f,f,f,f,f,f,f'
+    protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
+    argop: 'g,f,f,f,f,f,f,f'
+  
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
     # 0: the "unknown" region is attached to the "known" region on the right

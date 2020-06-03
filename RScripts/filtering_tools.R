@@ -114,6 +114,16 @@ vrz <- function(x, mode, protocol){
   return(x)
 }
 
+mrc <- function(x, min_var_count){
+  vrc <- strsplit(x = as.character(x$Variant_Reads), split = "|", fixed = TRUE)
+  vrc <- unlist(lapply(vrc, function(x){return(x[[1]])}))
+  id_np <- which(as.numeric(vrc) < min_var_count)
+  if (length(id_np) > 0){
+    x <- x[-id_np, ]
+  }
+  return(x)
+}
+
 ### Database Queries
 isflag <- function(x, dbfile){
   #' Flags
@@ -554,7 +564,7 @@ gene_name <- function(x){
   return(x)
 }
 
-rare <- function(x){
+rare <- function(x, maf = 0.001){
   #' rare
   #'
   #' @description Filters for rare mutations
@@ -563,39 +573,15 @@ rare <- function(x){
   #'
   #' @return returns x, dataframe. Table of Mutations
   #'
-  #' @details Check the MAF-Score of the mutations. Firstly the gnomAD score
+  #' @details Check the MAF-Score of the mutations. gnomAD score
   #' @details has to be lower than 0.001.
-  #' @details In case it does not exist the ExAC, the esp6500siv2 and the 
-  #' @details 1000 Genome scores are checked.
   #' @details Only the rare mutations are kept. 
   keep <- c()
-  gnomad <- as.numeric(x$gnomAD_exome_NFE)
+  gnomad <- as.numeric(x$AF_nfe)
   for (n in 1:length(gnomad)){
-    if (!is.na(gnomad[n]) & gnomad[n] <= 0.001){
+    if (!is.na(gnomad[n]) & gnomad[n] <= maf){
       keep <- c(keep, n)
       next
-    }
-    if (is.na(gnomad[n])){
-      if (as.numeric(as.character(x[n, "ExAC_NFE"])) < 0.001
-          & !is.na(as.numeric(as.character(x[n, "ExAC_NFE"])))) {
-        keep <- c(keep, n)
-        next
-      }
-      if (as.numeric(as.character(x[n, "esp6500siv2_ea"])) < 0.01 &
-          !is.na(as.numeric(as.character(x[n, "esp6500siv2_ea"])))) {
-        keep <- c(keep, n)
-        next
-      }
-      if (as.numeric(as.character(x[n, "EUR.sites.2015_08"])) < 0.01
-          & !is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
-        keep <- c(keep, n)
-        next
-      }
-      if (is.na(as.numeric(as.character(x[n, "esp6500siv2_ea"])))
-          & is.na(as.numeric(as.character(x[n, "EUR.sites.2015_08"])))) {
-        keep <- c(keep, n)
-        next
-      }
     }
   }
   x <- x[keep, ]
@@ -1206,4 +1192,14 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann.maf <- subset(ann.maf, select = -c(uid))
   
   return(ann.maf)
+}
+
+exclude <- function(x, vaf = 10){
+  variant_freq <- substr(as.character(x$Variant_Allele_Frequency), start = 1,
+                         stop = nchar(as.character(x$Variant_Allele_Frequency))-1)
+  id <- which(as.numeric(variant_freq) >= vaf)
+  if(length(id) > 0) {
+    x <- x[id, ]
+  }
+  return(x)
 }

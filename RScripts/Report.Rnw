@@ -181,8 +181,8 @@ Die Tabelle für LoH Mutationen ist analog zur vorherigen aufgebaut (Tab \ref{lo
 Im Anhang  befinden sich Tabellen zu allen detektierten somatischen, LoH und Keimbahnmutationen (Kap \ref{all_som_mut}, \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\ref{all_loh}}{}, \ref{all_germline}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über 10\% gelistet.
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
-#tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16:20)]
-tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16)]
+tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16:20)]
+#tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16)]
 if(dim(tmp)[1] == 0) {
   kable(data.frame(Gen = c("."), Genname = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
@@ -204,12 +204,12 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
-  #tmp <- tmp[, c(18, 2, 4, 3, 19, 11:12, 20, 8:7)]
-  tmp <- tmp[, c(1:2, 4, 3, 14, 11:12, 15, 8, 7)]
+  tmp <- tmp[, c(18, 2, 4, 3, 19, 11:12, 20, 8:7)]
+  #tmp <- tmp[, c(1:2, 4, 3, 14, 11:12, 15, 8, 7)]
   colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
   cap_1 <- "Alle identifizierten somatischen Mutationen in Cancergenes geordnet nach VAF.\\label{som_mut_cg}"
   kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "6em") %>% column_spec(c(1, 6), width = "4em") %>% column_spec(c(4:5), width = "4em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
@@ -219,8 +219,8 @@ if(dim(tmp)[1] == 0) {
 \subsubsection{LoH}
 <<loh_cg, eval=TRUE, results="tex", echo=FALSE>>=
 if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
-  #tmp <- mutation_analysis_result$table_loh_mutations[, c(1:11, 13, 15, 17:21)]
-  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:10, 12, 13, 15, 17)]
+  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:11, 13, 15, 17:21)]
+  #tmp <- mutation_analysis_result$table_loh_mutations[, c(1:10, 12, 13, 15, 17)]
   id <- which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1)
   if (length(id) > 0) {
     # add a hyperlink to metaKB and one to GenomeNexus
@@ -245,12 +245,12 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
     tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
     tmp <- tmp[order(tmp$VAF_Tumor, decreasing =  TRUE), , drop = FALSE]
-    #tmp <- tmp[, c(19, 2, 4, 3, 21:20, 12:13, 22, 10:9)]
-    tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10:11, 15, 14, 13)]
+    tmp <- tmp[, c(19, 2, 4, 3, 21:20, 12:13, 22, 10:9)]
+    #tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10:11, 15, 14, 13)]
     colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic", "OG", "TSG")
     kable(tmp, format = "latex", caption = "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}", booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8, 10:11), width = "2em") %>% row_spec(0, angle = 60)
   } else {
@@ -461,7 +461,7 @@ if(length(id_to) != 0) {
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Veränderungen in der Keimbahn}
 Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
 <<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
-tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor")]
+tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
 hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
@@ -482,11 +482,12 @@ if(dim(tmp)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
-  tmp <- tmp[, c(1:4, 13, 7:8, 14, 10:11)]
+  #tmp <- tmp[, c(1:4, 13, 7:8, 14, 10:11)]
+  tmp <- tmp[, c(16, 2:4, 17, 7:8, 18, 10:11)]
   colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
   cap_1 <- "Identifizierte Keimbahn Mutationen in Cancergenes.\\label{gl_cg}"
   kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
@@ -607,8 +608,8 @@ if(dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1] >= 20){
 \subsection{Somatische Mutationen}\label{all_som_mut}
 
 <<eval=TRUE, results="tex", echo=FALSE>>=
-#tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16:20)]
-tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16)]
+tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16:20)]
+#tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16)]
 # add a hyperlink to metaKB and one to GenomeNexus
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
@@ -627,12 +628,12 @@ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement =
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
 tmp$condel.label[is.na(tmp$condel.label)] <- "."
 tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
 tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
-#tmp <- tmp[, c(15, 2, 4, 3, 16, 8:9, 17)]
-tmp <- tmp[, c(1:2, 4, 3, 12, 8:9, 13)]
+tmp <- tmp[, c(15, 2, 4, 3, 16, 8:9, 17)]
+#tmp <- tmp[, c(1:2, 4, 3, 12, 8:9, 13)]
 colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
 cap_1 <- "Alle identifizierten somatischen Mutationen geordnet nach VAF"
 if(dim(tmp)[1] != 0){
@@ -644,8 +645,8 @@ if(dim(tmp)[1] != 0){
 
 <<eval=TRUE, results="tex", echo=FALSE>>=
 if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
-  #tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17:21)]
-  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17)]
+  tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17:21)]
+  #tmp <- mutation_analysis_result$table_loh_mutations[, c(1:8, 12, 13, 15, 17)]
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   # add a hyperlink to metaKB and one to GenomeNexus
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
@@ -666,12 +667,12 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$VAF_Tumor, decreasing =  TRUE), , drop = FALSE]
-  #tmp <- tmp[, c(1:2, 4, 3, 19:18, 10:11, 20)]
-  tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10:11, 14)]
+  tmp <- tmp[, c(1:2, 4, 3, 19:18, 10:11, 20)]
+  #tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10:11, 14)]
   colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic")
   if(dim(tmp)[1] != 0){
     kable(tmp, format = "latex", caption = "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe", booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 9), width = "6em") %>% column_spec(c(1, 3), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(8), width = "2em") %>% row_spec(0, angle = 60)
@@ -682,7 +683,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Keimbahn Mutationen}\label{all_germline}
 <<echo=FALSE, eval=TRUE, results='tex'>>=
-  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor")]
+  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
@@ -703,11 +704,12 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
     tmp$condel.label[is.na(tmp$condel.label)] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
     tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
-    tmp <- tmp[, c(1:4, 13, 7:8, 14, 10:11)]
+    #tmp <- tmp[, c(1:4, 13, 7:8, 14, 10:11)]
+    tmp <- tmp[, c(1:4, 17, 7:8, 18, 10:11)]
     colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
     cap_1 <- "Identifizierte Keimbahnmutationen"
     kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(1, 6), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
@@ -743,14 +745,11 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 \begin{itemize}
 \item refGene GRCh37
 \item dbnsfp35a
-\item esp6500siv2\_all
 \item avsnp150 (dbSNP)
 \item clinvar\_20180603
 \item intervar\_20180118
-\item 1000g2015aug\_all
 \item cosmic90
-\item exac03
-\item gnomad\_exome
+\item gnomad\_genome Version 2.1.1
 \end{itemize}
 
 \end{document}

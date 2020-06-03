@@ -3,7 +3,8 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg", id = id, protocol, sureselect){
+                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg",
+                      id = id, protocol, sureselect, vaf = 10, min_var_count = 4, maf = 0.001){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -54,8 +55,6 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   # Read Data
   x.snp <- read.csv(file  = snpfile, stringsAsFactors = FALSE, comment.char = "#", header = TRUE)
   x.indel <- read.csv(file = indelfile, stringsAsFactors = FALSE, comment.char = "#", header = TRUE)
-  #x.snp <- x.snp[- c(1 : 25),]
-  #x.indel <- x.indel[- c(1 : 25),]
   x <- rbind(x.snp, x.indel)
 
   # ANNOVAR changed name of "Otherinfo" column in latest release to "Otherinfo1"
@@ -69,11 +68,17 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     stop("No variant passed quality filter!")
   }
 
+  # Extract VAF, Readcounts (and Zygosity)
+  x <- vrz(x, mode, protocol = protocol)
+  
   # Filter for targets region in panels
   if (protocol == "panelTumor"){
     x <- target_check(x, sureselect)
   }
-
+  
+  # Additional Filter for VAF
+  x <- exclude(x, vaf = vaf)
+  
   if (mode == "T") {
     # TumorMutationBurden
     tmb <- tumbu(x, covered_region)
@@ -93,10 +98,10 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- x[- syn.snv,]
   }
   # Filter for rare mutations
-  x <- rare(x)
+  x <- rare(x, maf)
 
-  # Extract VAF, Readcounts (and Zygosity)
-  x <- vrz(x, mode, protocol = protocol)
+  # Remove Variants with Variant Read Count below 4
+  x <- mrc(x = x, min_var_count = min_var_count)
 
   if (dim(x)[1] != 0) {
     # Include GeneName
@@ -115,56 +120,56 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- trgt(x, paste(path_data, "TARGET_db.txt", sep = "/"))
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))
     x <- oncokb(x, paste(path_data, "oncokb_biomarker_drug_associations.tsv", sep = "/"))
-    if (dim(x)[1] != 0) {
-      x <- snpeff(x, snpefffile_snp, snpefffile_indel, protocol)
-      x.condel <- addCondel(x, paste(path_data, "fannsdb.tsv.gz", sep = "/"))
+    x <- snpeff(x, snpefffile_snp, snpefffile_indel, protocol)
+    x.condel <- addCondel(x, paste(path_data, "fannsdb.tsv.gz", sep = "/"))
 
-      if (mode == "N" | mode == "T") {
-        ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
-        "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-        "AAChange.refGene", "AAChange", "CChange",
-        "gnomAD_exome_NFE", "ExAC_NFE",
-        "esp6500siv2_ea", "EUR.sites.2015_08",
-        "Variant_Allele_Frequency", "Variant_Reads",
-        "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
-        "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
-        "CLNSIG", "CLINSIG", "InterVar_automated",
-        "CADD_phred", "DANN_score", "SIFT_pred",
-        "Polyphen2_HDIV_pred", "avsnp150", "rvis")
-      } else if (mode == "LOH") {
-        ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
-        "Gene.refGene", "GeneName", "ExonicFunc.refGene",
-        "AAChange.refGene", "AAChange", "CChange",
-        "gnomAD_exome_NFE", "ExAC_NFE", "esp6500siv2_ea",
-        "EUR.sites.2015_08", "VAF_Normal", "VAF_Tumor", "Count_Normal",
-        "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
-        "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
-        "CLNSIG", "CLINSIG", "InterVar_automated",
-        "CADD_phred", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
-        "avsnp150", "rvis")
-      }
-      idx <- match(ids, colnames(x.condel))
-      tot <- seq(1, ncol(x.condel))
-      idx2 <- setdiff(tot, idx)
-
-      x <- x.condel[, c(idx, idx2)]
-      write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      out.maf <- txt2maf(input = x, Center = center, refBuild = 'GRCh37',
-                         id = id, sep = '\t', idCol = NULL,
-                         Mutation_Status = mode, protocol = protocol, snv_vcf = snpefffile_snp, indel_vcf = snpefffile_indel)
-      write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
-                  sep = '\t', col.names = T, row.names = F)
-      return(list(table = x, tmb = tmb, maf = out.maf))
-    } else if (mode == "N" | mode == "T") {
-      print("No SNVs passed filter!")
-      write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      out.maf <- data.frame()
-      return(list(table = x, tmb = tmb, maf = out.maf))
+    if (mode == "N" | mode == "T") {
+      ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
+      "Gene.refGene", "GeneName", "ExonicFunc.refGene",
+      "AAChange.refGene", "AAChange", "CChange",
+      "AF_nfe",
+      "Variant_Allele_Frequency", "Variant_Reads",
+      "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
+      "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
+      "CLNSIG", "CLINSIG", "InterVar_automated",
+      "CADD_phred", "DANN_score", "SIFT_pred",
+      "Polyphen2_HDIV_pred", "avsnp150", "rvis")
+    
     } else if (mode == "LOH") {
-      print("No LOH passed filter!")
-      write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
-      out.maf <- data.frame()
-      return(list(table = x, tmb = tmb, maf = out.maf))
+      ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
+      "Gene.refGene", "GeneName", "ExonicFunc.refGene",
+      "AAChange.refGene", "AAChange", "CChange",
+      "AF_nfe", "VAF_Normal", "VAF_Tumor", "Count_Normal",
+      "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
+      "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
+      "CLNSIG", "CLINSIG", "InterVar_automated",
+      "CADD_phred", "DANN_score", "SIFT_pred", "Polyphen2_HDIV_pred",
+      "avsnp150", "rvis")
     }
+    idx <- match(ids, colnames(x.condel))
+    tot <- seq(1, ncol(x.condel))
+    idx2 <- setdiff(tot, idx)
+
+    x <- x.condel[, c(idx, idx2)]
+    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    out.maf <- txt2maf(input = x, Center = center, refBuild = 'GRCh37',
+                       id = id, sep = '\t', idCol = NULL,
+                       Mutation_Status = mode, protocol = protocol, snv_vcf = snpefffile_snp, indel_vcf = snpefffile_indel)
+    write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
+                sep = '\t', col.names = T, row.names = F)
+    
+    return(list(table = x, tmb = tmb, maf = out.maf))
+    
+  } else if (mode == "N" | mode == "T") {
+    print("No SNVs passed filter!")
+    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    out.maf <- data.frame()
+    return(list(table = x, tmb = tmb, maf = out.maf))
+    
+  } else if (mode == "LOH") {
+    print("No LOH passed filter!")
+    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    out.maf <- data.frame()
+    return(list(table = x, tmb = tmb, maf = out.maf))
   }
 }
