@@ -3,7 +3,8 @@
 ############################
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
-                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg", id = id, protocol, sureselect, vaf = 10, min_var_count = 4){
+                      outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg",
+                      id = id, protocol, sureselect, vaf = 10, min_var_count = 4, maf = 0.001){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -97,7 +98,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- x[- syn.snv,]
   }
   # Filter for rare mutations
-  x <- rare(x)
+  x <- rare(x, maf)
 
   # Remove Variants with Variant Read Count below 4
   x <- mrc(x = x, min_var_count = min_var_count)
@@ -126,8 +127,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
       "Gene.refGene", "GeneName", "ExonicFunc.refGene",
       "AAChange.refGene", "AAChange", "CChange",
-      "gnomAD_exome_NFE", "ExAC_NFE",
-      "esp6500siv2_ea", "EUR.sites.2015_08",
+      "gnomAD_genome_NFE",
       "Variant_Allele_Frequency", "Variant_Reads",
       "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
       "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
@@ -139,8 +139,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
       ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
       "Gene.refGene", "GeneName", "ExonicFunc.refGene",
       "AAChange.refGene", "AAChange", "CChange",
-      "gnomAD_exome_NFE", "ExAC_NFE", "esp6500siv2_ea",
-      "EUR.sites.2015_08", "VAF_Normal", "VAF_Tumor", "Count_Normal",
+      "gnomAD_genome_NFE", "VAF_Normal", "VAF_Tumor", "Count_Normal",
       "Count_Tumor", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
       "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
       "CLNSIG", "CLINSIG", "InterVar_automated",

@@ -174,7 +174,7 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]
@@ -218,7 +218,7 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]
@@ -372,14 +372,11 @@ collapse_rows(kable(new_tmp, format = "latex", caption = "Sequenzen der identifi
 \begin{itemize}
 \item refGene GRCh37
 \item dbnsfp35a
-\item esp6500siv2\_all
 \item avsnp150 (dbSNP)
 \item clinvar\_20180603
 \item intervar\_20180118
-\item 1000g2015aug\_all
 \item cosmic90
-\item exac03
-\item gnomad\_exome
+\item gnomad\_genome Version 2.1.1
 \end{itemize}
 
 \end{document}

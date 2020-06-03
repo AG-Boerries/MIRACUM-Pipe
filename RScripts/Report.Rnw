@@ -204,7 +204,7 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
@@ -245,7 +245,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
     tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
     tmp <- tmp[order(tmp$VAF_Tumor, decreasing =  TRUE), , drop = FALSE]
@@ -461,7 +461,7 @@ if(length(id_to) != 0) {
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Veränderungen in der Keimbahn}
 Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
 <<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
-tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
+tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_genome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
 hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
@@ -482,7 +482,7 @@ if(dim(tmp)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
@@ -628,7 +628,7 @@ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement =
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
 tmp$condel.label[is.na(tmp$condel.label)] <- "."
 tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
 tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
@@ -667,7 +667,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
   tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$VAF_Tumor, decreasing =  TRUE), , drop = FALSE]
@@ -683,7 +683,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Keimbahn Mutationen}\label{all_germline}
 <<echo=FALSE, eval=TRUE, results='tex'>>=
-  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_exome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
+  tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "gnomAD_genome_NFE", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
@@ -704,7 +704,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-    tmp$gnomAD_exome_NFE[is.na(tmp$gnomAD_exome_NFE)] <- "."
+    tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
     tmp$condel.label[is.na(tmp$condel.label)] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
     tmp <- tmp[order(tmp$Variant_Allele_Frequency, decreasing =  TRUE), , drop = FALSE]
@@ -745,14 +745,11 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 \begin{itemize}
 \item refGene GRCh37
 \item dbnsfp35a
-\item esp6500siv2\_all
 \item avsnp150 (dbSNP)
 \item clinvar\_20180603
 \item intervar\_20180118
-\item 1000g2015aug\_all
 \item cosmic90
-\item exac03
-\item gnomad\_exome
+\item gnomad\_genome Version 2.1.1
 \end{itemize}
 
 \end{document}
