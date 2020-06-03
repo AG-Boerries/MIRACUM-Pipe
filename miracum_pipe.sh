@@ -54,17 +54,17 @@ function run_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-  ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> "${dir_log}/td.log") &
+  ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> "${dir_log}/gd.log") &
   wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-  ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> "${dir_log}/vc.log") &
+  ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
   wait
 
   # create report based on the results of the processes above
-  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
 }
@@ -78,11 +78,11 @@ function run_pipe_seq() {
 
   setup "${dir_patient}" "${dir_target}"
 
-  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
-  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> ${dir_log}/gd.log)
-  ("${DIR_SCRIPT}"/make_vc.sh  -d "${dir_patient}" &> ${dir_log}/vc.log)
-  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
-  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+  ("${DIR_SCRIPT}"/make_alignment.sh -t gd -d "${dir_patient}" &> "${dir_log}/gd.log")
+  ("${DIR_SCRIPT}"/make_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
+  ("${DIR_SCRIPT}"/make_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
+  ("${DIR_SCRIPT}"/make_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
 }
@@ -99,16 +99,16 @@ function run_panel_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> ${dir_log}/vc.log) #&
+  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") #&
   # TODO CNV calling
   #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
   #wait
 
   # create report based on the results of the processes above
-  ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
 }
@@ -122,10 +122,10 @@ function run_panel_pipe_seq() {
 
   setup "${dir_patient}" "${dir_target}"
 
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> ${dir_log}/td.log)
-  ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> ${dir_log}/vc.log)
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+  ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
   #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
-  ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> ${dir_log}/report.log)
+  ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
 }
@@ -274,13 +274,15 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               td_gd_parallel)
-                ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
-                ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${dir_patient}" &> ${dir_log}/gd.log) &
+                ("${DIR_SCRIPT}"/make_alignment.sh -p -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log") &
+                ("${DIR_SCRIPT}"/make_alignment.sh -p -t gd -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/gd.log") &
+                wait
               ;;
 
               vc_cnv_parallel)
-                ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-                ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+                ("${DIR_SCRIPT}"/make_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
+                ("${DIR_SCRIPT}"/make_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &
+                wait
               ;;
             esac
           ;;
@@ -303,12 +305,13 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               td_gd_parallel)
-                ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${dir_patient}" &> ${dir_log}/td.log) &
+                ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log") &
               ;;
 
               vc_cnv_parallel)
-                ("${DIR_SCRIPT}"/make_pnale_vc.sh  -p -d "${dir_patient}" &> ${dir_log}/vc.log) &
-                ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+                ("${DIR_SCRIPT}"/make_pnale_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
+                ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &
+                wait
               ;;
             esac
           ;;
