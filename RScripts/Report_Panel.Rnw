@@ -174,7 +174,7 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
+  tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]
@@ -218,7 +218,7 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
-  tmp$gnomAD_genome_NFE[is.na(tmp$gnomAD_genome_NFE)] <- "."
+  tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(as.numeric(substr(as.character(tmp$Variant_Allele_Frequency), start = 1, stop = nchar(as.character(tmp$Variant_Allele_Frequency))-1)), decreasing = TRUE), , drop = FALSE]

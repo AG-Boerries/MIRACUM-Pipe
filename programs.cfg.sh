@@ -55,6 +55,7 @@ readonly CFG_COMMON_MEMORY="$(("${tmp_memory//[^0-9.]/}"/${TMP_PROCESSES}))${tmp
 
 # general tool parameters
 readonly CFG_GENERAL_MINBASEQUAL=$(get_config_value tools.general.minBaseQual "${PARAM_DIR_PATIENT}")
+readonly CFG_GENERAL_MAFCUTOFF=$(get_config_value tools.general.maf_cutoff "${PARAM_DIR_PATIENT}")
 
 # sametools mpileup
 readonly CFG_SAMTOOLS_MPILEUP_MINMQ=$(get_config_value tools.samtools.mpileup.minMQ "${PARAM_DIR_PATIENT}")
@@ -279,6 +280,7 @@ export CFG_SAMTOOLS_MPILEUP_IGNOREOVERLAPS
 export CFG_SAMTOOLS_FLAGS_MPILEUP
 
 export CFG_GENERAL_MINBASEQUAL
+export CFG_GENERAL_MAFCUTOFF
 
 export CFG_VARSCAN_MINVAF
 

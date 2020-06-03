@@ -21,6 +21,7 @@ tools:
   general:
     # minimum base quality to call a variant
     minBaseQual: 28
+    maf_cutoff: 0.001
 
   samtools:
     mpileup:

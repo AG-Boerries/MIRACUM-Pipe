@@ -258,14 +258,14 @@ tables <- function(x_s, x_l = NULL, protocol){
                        "Variant_Allele_Frequency",
                        "Zygosity", "Variant_Reads", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "gnomAD_genome_NFE", "CADD_phred", "condel.label",
+                       "AF_nfe", "CADD_phred", "condel.label",
                        "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
   sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                      "AAChange", "Variant_Allele_Frequency", "Zygosity",
                      "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
-                     "is_hotspot", "target", "gnomAD_genome_NFE",
+                     "is_hotspot", "target", "AF_nfe",
                      "CADD_phred", "condel.label", "CLINSIG",
                      "cosmic_coding", "Chr", "Start", "Ref",
                      "Alt"), drop = FALSE]
@@ -275,7 +275,7 @@ tables <- function(x_s, x_l = NULL, protocol){
                        "AAChange", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "gnomAD_genome_NFE", "CADD_phred", "condel.label",
+                       "AF_nfe", "CADD_phred", "condel.label",
                        "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
@@ -663,7 +663,7 @@ write_all_mut <- function(x_s, x_l = NULL){
   tmp1 <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                   "Variant_Allele_Frequency", "Variant_Reads",
                   "AAChange", "is_tumorsuppressor",
-                  "is_oncogene", "is_hotspot", "target", "gnomAD_genome_NFE",
+                  "is_oncogene", "is_hotspot", "target", "AF_nfe",
                   "CADD_phred", "condel.label", "CLINSIG",
                   "cosmic_coding"),
               drop = FALSE]
@@ -671,7 +671,7 @@ write_all_mut <- function(x_s, x_l = NULL){
     tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                     "VAF_Tumor", "Count_Tumor", "AAChange",
                     "is_tumorsuppressor", "is_oncogene",
-                    "is_hotspot", "target", "gnomAD_genome_NFE", "CADD_phred",
+                    "is_hotspot", "target", "AF_nfe", "CADD_phred",
                     "condel.label", "CLINSIG", "cosmic_coding"),
                 drop = FALSE]
     }
