@@ -671,7 +671,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(tmp$VAF_Tumor, decreasing =  TRUE), , drop = FALSE]
-  tmp <- tmp[, c(1:2, 4, 3, 19:18, 10:11, 20)]
+  tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10, 11, 18)]
   #tmp <- tmp[, c(1:2, 4, 3, 6, 5, 10:11, 14)]
   colnames(tmp) <- c("Gen", "Genname", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic")
   if(dim(tmp)[1] != 0){
