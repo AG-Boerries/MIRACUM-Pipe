@@ -1,5 +1,12 @@
 # Changelog
 
+## Release v2.0.0
+
+* MIRACUM-Pipe extended to tNGS
+* gnomAD database updated to gnomAD_genome v2.1.1
+* UCSC SQL server is now used to annotate CNV regions per default
+* Report extended and revised to include links to genome nexus and The Variant Interpretation for Cancer Consortium Meta-Knowledgebase
+
 ## Release v1.2.0
 
 * Added export of copy number alterations for later import into cBioPortal
