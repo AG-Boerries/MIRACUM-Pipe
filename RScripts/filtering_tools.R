@@ -579,7 +579,7 @@ rare <- function(x, maf = 0.001){
   keep <- c()
   gnomad <- as.numeric(x$AF_nfe)
   for (n in 1:length(gnomad)){
-    if (!is.na(gnomad[n]) & gnomad[n] <= maf){
+    if (is.na(gnomad[n]) | gnomad[n] <= maf){
       keep <- c(keep, n)
       next
     }
