@@ -53,9 +53,9 @@ bed_file <- args[17]
 sureselect_type <- args[18]
 ref_genome <- args[19]
 targetCapture_cor_factors <- args[20]
-vaf <- args[21]*100
-min_var_count <- args[22]
-maf_cutoff <- args[23]
+vaf <- as.numeric(args[21])*100
+min_var_count <- as.numeric(args[22])
+maf_cutoff <- as.numeric(args[23])
 
 #############
 # Functions #
