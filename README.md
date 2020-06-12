@@ -2,6 +2,10 @@
 
 MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs), insertions and deletions (InDels), loss of heterozygosity (LoH), copy number variations (CNVs) as well as quality statistics including the coverage on WES data. Various functional prediction and annotation databases are integrated to automatically annotate the identi-fied variants. The workflow is designed as a fully automated “one-click” solution from the raw sequencing files to the PDF report containing quality assessments, the identified and annotated variants (SNVs, InDels and LoH), copy number variations as well as a functional enrichment of the SNVs and CNVs respectively.
 
+## Disclaimer
+
+MIRACUM-Pipe is intended for research use only!
+
 ## Getting Started
 
 This repo is intended to be run as docker (see [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker)). Alternatively, you can pick a [Galaxy version](https://github.com/AG-Boerries/MIRACUM-Pipe-galaxy).
