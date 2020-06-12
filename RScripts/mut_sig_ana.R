@@ -17,6 +17,8 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
     targetCapture <- "Agilent6withUTRs"
   } else if (sureselect_type == "V5UTR"){
     targetCapture <- "Agilent5withUTRs"
+  } else if (sureselect_type %in% names(targetCapture_cor_factors)){
+    targetCapture <- sureselect_type
   } else {
       error("Unsupported Capture Region Kit.")
   }

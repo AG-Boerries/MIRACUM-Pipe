@@ -304,10 +304,6 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
                 "${DIR_SCRIPT}"/make_panel_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
               ;;
 
-              td_gd_parallel)
-                ("${DIR_SCRIPT}"/make_panel_alignment.sh -p -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log") &
-              ;;
-
               vc_cnv_parallel)
                 ("${DIR_SCRIPT}"/make_pnale_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
                 ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &

@@ -2,7 +2,7 @@
 
 ## Release v2.0.0
 
-* MIRACUM-Pipe extended to tNGS
+* MIRACUM-Pipe extended to tNGS (tested with Illumina TruSight Tumor 170 panel)
 * gnomAD database updated to gnomAD_genome v2.1.1
 * UCSC SQL server is now used to annotate CNV regions per default
 * Report extended and revised to include links to genome nexus and The Variant Interpretation for Cancer Consortium Meta-Knowledgebase
