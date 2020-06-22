@@ -9,9 +9,13 @@ options(repos=structure(c(CRAN="http://cloud.r-project.org")))
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(version = "3.8")
-
-# TODO package install in a more efficient way
+BiocManager::install("Biobase")
+#BiocManager::install(version = "3.8")
+#BiocManager::install(pkgs = "devtools", update  = TRUE, ask = FALSE)
+#url_1 <- "https://cran.rstudio.com/src/contrib/GetoptLong_1.0.0.tar.gz"
+#devtools::install_url(url_1)
+# package install in a more efficient way
+#install.packages("GetoptLong", type = "source", repos=NULL)
 packages <- c("foreach", "doMC", "openxlsx", "circlize", "knitr", "kableExtra", "OmicCircos", "rtracklayer", "org.Hs.eg.db",
               "Homo.sapiens", "RMySQL", "biomaRt", "Rsamtools", "gtrellis", "ComplexHeatmap",
               "VariantAnnotation", "BSgenome.Hsapiens.UCSC.hg19", "devtools",
@@ -26,4 +30,4 @@ url <- "https://cran.r-project.org/src/contrib/Archive/lsei/lsei_1.2-0.1.tar.gz"
 #unlink(pkgFile)
 
 devtools::install_url(url)
-BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = TRUE, ask = FALSE)
+BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = FALSE, ask = FALSE)

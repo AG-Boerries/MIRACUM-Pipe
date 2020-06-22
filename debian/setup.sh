@@ -38,6 +38,14 @@ function install_texlive()
     preprint
   tlmgr init-usertree
 }
+
+function install_R()
+{
+  echo "deb http://cloud.r-project.org/bin/linux/debian buster-cran40/" >> /etc/apt/sources.list && \
+  apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
+  apt-get update && apt-get install -y -t buster-cran40 r-base
+}
+
 # update packages
 apt-get update
 
@@ -49,11 +57,11 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
   default-jre \
   ant \
   perl-base \
-  r-base-core r-recommended r-cran-latticeextra r-cran-hmisc r-cran-rmysql \
   python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas python3-biopython python3-pyfaidx python3-pyvcf cython \
   cnvkit \
   libsnappy-java && \
   install_java8 && \
+  install_R && \
   apt-get -y purge  default-jre default-jdk-headless \
                     openjdk-11-jdk openjdk-11-jdk-headless \
                     openjdk-11-jre openjdk-11-jre-headless && \
@@ -62,3 +70,4 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
   #apt-get purge -y python3-pip && \
   apt-get -y autoremove
   #update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 
+#r-base-core r-recommended r-cran-latticeextra r-cran-hmisc r-cran-rmysql \
