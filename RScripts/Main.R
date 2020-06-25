@@ -267,8 +267,8 @@ if (protocol != "panelTumor"){
 ## Input Files
 print("Statistics.")
 if (protocol != "panelTumor"){
-  stats_td <- paste0(path_input, sample, "_gd_stats.txt")
-  stats_gd <- paste0(path_input, sample, "_td_stats.txt")
+  stats_td <- paste0(path_input, sample, "_td_stats.txt")
+  stats_gd <- paste0(path_input, sample, "_gd_stats.txt")
   ## Analysis
   stats <- stats(path = path_input, outfile_pdf = coverage_out,
                  stats_td = stats_td, stats_gd = stats_gd, protocol = protocol)
