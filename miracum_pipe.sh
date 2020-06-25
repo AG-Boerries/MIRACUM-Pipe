@@ -87,7 +87,7 @@ function run_pipe_seq() {
   cleanup "${dir_patient}"
 }
 
-# TODO
+
 # Panel protocol
 # run_pipe_panel relative_patient_dir dir_target
 function run_panel_pipe() {
@@ -177,6 +177,9 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
     echo "use one of the following values: $(join_by ' ' ${VALID_PROTOCOLS})"
     exit 1
   fi
+  if [[ ! "${PARAM_FORCE}" || -f "${DIR_TARGET}/.processed" ]]; then
+        echo "Analyses already exist. If you want to re-analze it, it has to be forced (-f)."
+  fi
   if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" && -n "${PARAM_PROTOCOL}" ]]; then
     for dir in "${DIR_SCRIPT}"/assets/input/*; do
       # get relative dir patient
@@ -250,7 +253,6 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
         setup "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
 
         # possibility to comfortably run tasks separately
-        #echo "Protocol 253 ${PARAM_PROTOCOL}"
         case "${PARAM_PROTOCOL}" in
           wes)
             case "${PARAM_TASK}" in
@@ -271,6 +273,12 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
 
               report)
                 "${DIR_SCRIPT}"/make_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
+                if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+                  touch "${DIR_TARGET}/.processed"
+                  echo "${PARAM_DIR_PATIENT} Report finished"
+                else
+                  echo "${PARAM_DIR_PATIENT} failed"
+                fi
               ;;
 
               td_gd_parallel)
@@ -302,6 +310,12 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
 
               report)
                 "${DIR_SCRIPT}"/make_panel_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
+                if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.pdf" ]]; then
+                  touch "${DIR_TARGET}/.processed"
+                  echo "${PARAM_DIR_PATIENT} Report finished"
+                else
+                  echo "${PARAM_DIR_PATIENT} failed"
+                fi
               ;;
 
               vc_cnv_parallel)
@@ -316,8 +330,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
         cleanup "${PARAM_DIR_PATIENT}"
       else
         echo "computing ${PARAM_DIR_PATIENT}"
-        #echo "Protocol 320 ${PARAM_PROTOCOL}"
-
+        
         if [[ ${PARAM_PROTOCOL} == "wes" ]]; then
           echo "WES Protocol"
           if [[ -z "${PARAM_SEQ}" ]]; then
