@@ -194,7 +194,7 @@ if(dim(tmp)[1] == 0) {
   tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
-  tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
   tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
@@ -235,7 +235,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$VAF_Normal <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Normal, fixed = TRUE)
     tmp$VAF_Tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
     tmp$VAF_Tumor <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Tumor, fixed = TRUE)
-    tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+    tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
     tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
     tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
     tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
@@ -356,7 +356,7 @@ if (length(tmp) == 0){
   tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
   colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
   tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
-  tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$COSMIC), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
   tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
@@ -435,7 +435,7 @@ if(length(id_to) != 0) {
   tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
   colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
   tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
-  tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$COSMIC), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
   tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
@@ -472,7 +472,7 @@ tmp <- tmp[which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1), ]
 if(dim(tmp)[1] != 0){
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
-  tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
   tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
@@ -519,7 +519,7 @@ if(is.null(mutation_analysis_result_gd$important_pathways)) {
       tmp <- tmp[ ,c("Pathway", "Symbol", "GeneName", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
       colnames(tmp) <- c("Pathway", "Symbol", "Gene Name", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
       tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
-      tmp$cosmic <- lapply(strsplit(x = tmp$COSMIC, split = "="), function(x){return(unlist(x)[2])})
+      tmp$cosmic <- lapply(strsplit(x = as.character(tmp$COSMIC), split = "="), function(x){return(unlist(x)[2])})
       tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
       tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
       tmp$ExonicFunction <- gsub(pattern = "nonsynonymous SNV", replacement = "nsSNV", x = tmp$ExonicFunction)
@@ -618,7 +618,7 @@ tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
 tmp$Gene.refGene <- tmp$Gene.refGene_new
 tmp$Variant_Allele_Frequency <- gsub(pattern = "%",replacement = "\\%", x = tmp$Variant_Allele_Frequency, fixed = TRUE)
 tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
-tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
 tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
 tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
 tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
@@ -657,7 +657,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$VAF_Normal <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Normal, fixed = TRUE)
   tmp$VAF_Tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
   tmp$VAF_Tumor <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Tumor, fixed = TRUE)
-  tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+  tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
   tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
   tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
@@ -694,7 +694,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   if(dim(tmp)[1] != 0){
     tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
     tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
-    tmp$cosmic <- lapply(strsplit(x = tmp$cosmic_coding, split = "="), function(x){return(unlist(x)[2])})
+    tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
     tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
     tmp$cosmic <- gsub(pattern = ",", replacement = ", ", x = tmp$cosmic)
     tmp$cosmic[which(is.na(tmp$cosmic))] <- "."
