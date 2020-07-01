@@ -699,7 +699,10 @@ t2o <- function(vec_aac){
     a1_alt <- aa_short[aa_alt]
     vec_aa <- paste0("p.", a1_ref, aa_pos, a1_alt)
   }
-  vec_aac[-union(id_na, id_del)] <- vec_aa
+  if (length(union(id_na, id_del)) > 0) {
+    vec_aac[-union(id_na, id_del)] <- vec_aa
+  } else
+    vec_aac <- vec_aa
   if(length(id_del) > 0){
     vec_aa <- vec_aac[id_del]
     if (length(grep(pattern = "p.", x = vec_aa) > 0)){
