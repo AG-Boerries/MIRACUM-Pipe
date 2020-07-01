@@ -649,7 +649,7 @@ o2t <- function(vec_aac) {
       aa.num = as.numeric(gsub("[^\\d]+", "", vec_aa, perl=TRUE))
       aa.split = strsplit(vec_aa,
                           split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
-                          perl=T)
+                          perl = T)
       
       aa_ref <- unlist(lapply(aa.split, function(x){return(x[1])}))
       aa_alt <- unlist(lapply(aa.split, function(x){return(x[3])}))
@@ -671,28 +671,63 @@ o2t <- function(vec_aac) {
 }
 
 t2o <- function(vec_aac){
+  aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "del")
+  aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X", "del")
+  names(aa_short) <- aa_long
   if (length(vec_aac) != 0) {
-    id_na <- which(is.na(vec_aac))
-    vec_aa <- vec_aac[-id_na]
-    
+    id_na <- union(which(is.na(vec_aac)), which(vec_aac %in% c("", " ")))
+    id_del <- grep("_", vec_aac)
+    if (length(union(id_na, id_del)) > 0){
+      vec_aa <- vec_aac[-union(id_na, id_del)]
+    } else {
+      vec_aa <- vec_aac
+    }
+    if (length(grep(pattern = "p.", x = vec_aa) > 0)){
+      vec_aa <- gsub(x = vec_aa, pattern = "p.", replacement = "", fixed = TRUE)
+    }
+    vec_aa <- gsub(vec_aa, pattern = "*", replacement = "X", fixed = TRUE)
     aa.num = as.numeric(gsub("[^\\d]+", "", vec_aa, perl=TRUE))
     aa.split = strsplit(vec_aa,
                         split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
-                        perl=T)
+                        perl = T)
     
     aa_ref <- unlist(lapply(aa.split, function(x){return(x[1])}))
     aa_alt <- unlist(lapply(aa.split, function(x){return(x[3])}))
     aa_pos <- aa.num
     
-    aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
-    aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "*")
-    names(aa_short) <- aa_long
-    
     a1_ref <- aa_short[aa_ref]
     a1_alt <- aa_short[aa_alt]
     vec_aa <- paste0("p.", a1_ref, aa_pos, a1_alt)
   }
-  vec_aac[-id_na] <- vec_aa
+  vec_aac[-union(id_na, id_del)] <- vec_aa
+  if(length(id_del) > 0){
+    vec_aa <- vec_aac[id_del]
+    if (length(grep(pattern = "p.", x = vec_aa) > 0)){
+      vec_aa <- gsub(x = vec_aa, pattern = "p.", replacement = "", fixed = TRUE)
+    }
+    split_aac <- strsplit(x = vec_aa, split = "_", fixed = TRUE)
+    first_aac <- unlist(lapply(split_aac, function(x){return(x[[1]])}))
+    second_aac <- unlist(lapply(split_aac, function(x){return(x[[2]])}))
+    aa.num_second = as.numeric(gsub("[^\\d]+", "", second_aac, perl=TRUE))
+    aa.num_first = as.numeric(gsub("[^\\d]+", "", first_aac, perl=TRUE))
+    
+    aa.split_first = strsplit(first_aac,
+                      split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
+                      perl = T)
+    aa.split_second = strsplit(second_aac,
+                              split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
+                              perl = T)
+    aa_ref_second <- unlist(lapply(aa.split_second, function(x){return(x[1])}))
+    aa_ref_first <- unlist(lapply(aa.split_first, function(x){return(x[1])}))
+    aa_alt_second <- unlist(lapply(aa.split_second, function(x){return(x[3])}))
+
+    a2_ref <- aa_short[aa_ref_second]
+    a2_alt <- aa_short[aa_alt_second]
+    a1_ref <- aa_short[aa_ref_first]
+  vec_aa <- paste0("p.", a1_ref, aa.num_first, "_",
+                   a2_ref, aa.num_second, a2_alt)
+  vec_aac[id_del] <- vec_aa
+  }
   return(vec_aac)
 }
 
@@ -748,14 +783,14 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
   for (i in 1:nrow(x)){
     j <- intersect (which (se_snp$CHROM == as.character(x$Chr[i])),
                     which (se_snp$POS == as.character(x$Start[i])))
-# TODO snpEff coordinate system!
-#    if(manifest == "V5UTR" & protocol == "Tumor_Only"){
-#      l <- intersect (which (se_indel$CHROM == as.character(x$Chr[i])),
-#                      which (se_indel$POS == as.character((x$Start[i]))))
-#    } else {
+  # TODO snpEff coordinate system!
+  #    if(manifest == "V5UTR" & protocol == "Tumor_Only"){
+  #      l <- intersect (which (se_indel$CHROM == as.character(x$Chr[i])),
+  #                      which (se_indel$POS == as.character((x$Start[i]))))
+  #    } else {
       l <- intersect (which (se_indel$CHROM == as.character(x$Chr[i])),
                       which (se_indel$POS == as.character((x$Start[i]) - 1)))
-#      }
+  #      }
     res_snp <- rep("", times = 0)
     res_ind <- rep("", times = 0)
     if (length(j) > 0){
@@ -765,32 +800,37 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
       x$CChange[i] <- paste(res_snp$cc[id], collapse = ";")
       x$Ensembl[i] <- paste(res_snp$e[id], collapse = ";")
       x$Transcript[i] <- paste(res_snp$t[id], collapse = ";")
-      x$CLINSIG[i] <- paste(x$CLINSIG[i], res_snp$cl[1],
-                                   collapse = ";")
+      x$CLINSIG[i] <- paste(x$CLINSIG[i], res_snp$cl[1], collapse = ";")
     }
     if (length(l) > 0){
       res_ind <- helper_se(x, i, l, se_indel)
       id <- which (!is.na(res_ind$b))
-      x$AAChange[i] <- paste(x$AAChange[i], res_ind$b[id],
-                                    collapse = ";")
-      x$CChange[i] <- paste(x$CChange[i], res_ind$cc[id],
-                                   collapse = ";")
-      x$Ensembl[i] <- paste(x$Ensembl[i], res_ind$e[id],
-                                   collapse = ";")
-      x$Transcript[i] <- paste(x$Transcript[i], res_ind$t[id],
-                                      collapse = ";")
-      x$CLINSIG[i] <- paste(x$CLINSIG[i], res_ind$cl[1],
-                                   collapse = ";")
+      if(length(res_ind$b[id]) > 0 &
+         !(x$Ref[i] %in% c("A", "T", "G", "C") &
+           x$Alt[i] %in% c("A", "T", "G", "C"))){
+        x$AAChange[i] <- res_ind$b[id]
+        x$CChange[i] <- res_ind$cc[id]
+        x$Ensembl[i] <- res_ind$e[id]
+        x$Transcript[i] <- res_ind$t[id]
+        x$CLINSIG[i] <- res_ind$cl[1]
+      }
     }
   }
-  id <- which(x$AAChange == " " | x$AAChange == "")
+id_na <- grep(pattern = ";", x = x$AAChange)
+  if(length(id_na) > 0) {
+    doppel <- strsplit(x = x$AAChange[id_na], split = ";")
+    x$AAChange[id_na] <- unlist(lapply(doppel, function(x) {return(x[[1]])}))
+  }
+
+  x$AAChange <- t2o(x$AAChange)
+  id <- union(which(x$AAChange == ""), grep(pattern = " ", x = x$AAChange, fixed = TRUE))
   if (length(id) > 0) {
     ## Get information if available
     hs <- x$is_hotspot[id]
     id_hs <- which(hs != "0")
     ref_Gen <- x$AAChange.refGene[id]
     split_rg <- strsplit(x = as.character(ref_Gen), split = ":")
-    if (length(id_hs) >0){
+    if (length(id_hs) > 0){
       for (i in 1:length(id_hs)){
         info <- split_rg[id_hs[i]]
         l_id <- grep(pattern = hs[id_hs[i]], x = info[[1]])
@@ -800,10 +840,12 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
     
     ## AACode transformation to be consistent
     ref_Gen_AA <- unlist(lapply(split_rg, function(x){ return(x[5])}))
+    if(length(grep(pattern = "p.", x = ref_Gen_AA)) < length(ref_Gen_AA)){
+      ref_Gen_AA[-grep(pattern = "p.", x = ref_Gen_AA)] <- NA
+    }
     split2 <- strsplit(x = ref_Gen_AA, split = ",", fixed = TRUE)
     ref_Gen_AA <- unlist(lapply(split2, function(x) { return(x[1])}))
-    ref_Gen_AA <- substr(start = 3, stop = nchar(ref_Gen_AA), x = ref_Gen_AA)
-    AAChange <- o2t(vec_aac = ref_Gen_AA)
+    AAChange <- ref_Gen_AA
     ## C-Code transformation to be consistent
     ref_Gen_CC <- unlist(lapply(split_rg, function(x){ return(x[4])}))
     CChange <- substr(start = 3, stop = nchar(ref_Gen_CC), x = ref_Gen_CC)
@@ -812,12 +854,10 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
     ref_Gen_Ens <- unlist(lapply(split_rg, function(x){ return(x[1])}))
     gID <- genes(EnsDb.Hsapiens.v75)
     Gen_Ens <- gID$gene_id[match(ref_Gen_Ens, gID$symbol)]
-
     x$AAChange[id] <- AAChange
     x$CChange[id] <- CChange
     x$Ensembl[id] <- Gen_Ens
   }
-  
   return(x)
 }
 
@@ -1071,30 +1111,31 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ensembl[idx] <- unlist(lapply(mget(as.character(entrez[idx]), org.Hs.egENSEMBL, ifnotfound = NA), function(x){x[1]}))
   
   # Protine Change HGVSp
-  aa <- unlist(lapply(strsplit(x = as.character(ann$AAChange), split = ";", fixed = T), function(x) x[1]))
-  aa_short <- c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
-  aa_long <- c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X")
-  names(aa_short) <- aa_long
-  aa <- gsub(aa, pattern = '*', replacement = 'X',fixed = T)
-  aa <- unlist(lapply(strsplit(aa , split = '.', fixed = T), function(s) s[2]))
-  aa <- gsub(aa, pattern = ' p', replacement ="", fixed = T)
-  aa.num <- as.numeric(gsub("[^\\d]+", "", aa, perl=TRUE))
-  aa.split <- strsplit(aa, split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=T)
-  aa.split <- lapply(aa.split, function(c) {aa_short[c]})
-  aa.short <- do.call(rbind, aa.split)
+  #aa <- unlist(lapply(strsplit(x = as.character(ann$AAChange), split = ";", fixed = T), function(x) x[1]))
+  #aa_short <- c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X")
+  #aa_long <- c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X")
+  #names(aa_short) <- aa_long
+  #aa <- gsub(aa, pattern = '*', replacement = 'X',fixed = T)
+  #aa <- unlist(lapply(strsplit(aa , split = '.', fixed = T), function(s) s[2]))
+  #aa <- gsub(aa, pattern = ' p', replacement ="", fixed = T)
+  #aa.num <- as.numeric(gsub("[^\\d]+", "", aa, perl=TRUE))
+  #aa.split <- strsplit(aa, split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])", perl=T)
+  #aa.split <- lapply(aa.split, function(c) {aa_short[c]})
+  #aa.short <- do.call(rbind, aa.split)
   
-  if(length(which(is.na(aa.num))) != length(aa.num)) {
-    aa.short[, 2] <- aa.num
-  } else {
-    aa.short <-  NA
-  }
-  if(any(!is.na(aa.short))){
-    proteinChange <- paste0("p.", aa.short[, 1], aa.short[, 2], aa.short[, 3])
-  } else {
-    proteinChange <- NA
-  }
-  proteinChange[proteinChange == "p.NANANA"] <- NA
-  
+  #if(length(which(is.na(aa.num))) != length(aa.num)) {
+  #  aa.short[, 2] <- aa.num
+  #} else {
+  #  aa.short <-  NA
+  #}
+  #if(any(!is.na(aa.short))){
+  #  proteinChange <- paste0("p.", aa.short[, 1], aa.short[, 2], aa.short[, 3])
+  #} else {
+  #  proteinChange <- NA
+  #}
+  #proteinChange[proteinChange == "p.NANANA"] <- NA
+  proteinChange <- as.character(ann$AAChange)
+
   # ENSEMBL Trancript ID
   Transcript_Id <- ann$Transcript
   Transcript_Id <- gsub(Transcript_Id, pattern = " ", replacement = "")
