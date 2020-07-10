@@ -557,7 +557,7 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   # how to deal with multiple copy number variations for a single gene?
   # keep only the maximal CNA
   # cnvs.out <- cnvs.out[!duplicated(cnvs.out$Hugo_Symbol),]
-  cnvs.out <- as.data.table(cnvs.out)
+  cnvs.out <- data.table::as.data.table(cnvs.out)
   cnvs.out <- cnvs.out[cnvs.out[, .I[which.max(Sample_ID)], by=Hugo_Symbol]$V1]
   
   # set sample specific column name
