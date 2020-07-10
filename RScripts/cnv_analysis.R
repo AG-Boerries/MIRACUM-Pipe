@@ -75,6 +75,9 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt, outfile_plot,
                       db = paste(path_data, "Cell_Cycle.txt",
                                  sep = "/"))
   impa <- list(ddr = ddr, pam = pam, rme = rme, tyk = tyk, cec = cec)
+
+  cnvs2cbioportal(out, id, outfile_cbioportal)
+
 return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
        = cnv_analysis_results, out = out, impa = impa))
   }

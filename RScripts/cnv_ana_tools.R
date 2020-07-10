@@ -546,12 +546,13 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   require(stringi)
   require(org.Hs.eg.db)
   
-  cnvs.sub <- subset(cnvs, select = c("copy.number", "genes"))
-  cnvs.sub.extended <- data.frame(separate_rows(cnvs.sub,genes,sep=","))
+  cnvs.sub <- subset(cnvs, select = c("CopyNumber", "Gene"))
+  #cnvs.sub.extended <- data.frame(separate_rows(cnvs.sub,g,sep=","))
+  cnvs.sub.extended <- cnvs.sub
   # remove empty genes
-  cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$genes),]
-  cnvs.sub.extended$Entrez <- unlist(lapply(mget(cnvs.sub.extended$genes, org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
-  cnvs.out <- data.frame(Hugo_Symbol = cnvs.sub.extended$genes, Entrez_Gene_Id = cnvs.sub.extended$Entrez, Sample_ID = cnvs.sub.extended$copy.number)
+  cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$Gene),]
+  cnvs.sub.extended$Entrez <- unlist(lapply(mget(cnvs.sub.extended$Gene, org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
+  cnvs.out <- data.frame(Hugo_Symbol = cnvs.sub.extended$Gene, Entrez_Gene_Id = cnvs.sub.extended$Entrez, Sample_ID = cnvs.sub.extended$CopyNumber)
   
   # how to deal with multiple copy number variations for a single gene?
   # keep only the maximal CNA
@@ -563,11 +564,11 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   colnames(cnvs.out)[3] <- paste(id,"TD",sep = "_")
   # convert total copy numbers from Control-FREEC to allowed values
   # allowed values -2, -1, 0, 1, 2, NA
-  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 0] <- -2
-  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 1] <- -1
-  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 2] <- 0
-  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD == 3] <- 1
-  cnvs.out$SLGFSK_TD[cnvs.out$SLGFSK_TD > 3] <- 2
+  cnvs.out[,3][cnvs.out[,3] == 0] <- -2
+  cnvs.out[,3][cnvs.out[,3] == 1] <- -1
+  cnvs.out[,3][cnvs.out[,3] == 2] <- 0
+  cnvs.out[,3][cnvs.out[,3] == 3] <- 1
+  cnvs.out[,3][cnvs.out[,3] > 3] <- 2
   
   write.table(x = cnvs.out, file = outfile_cbioportal, quote = F, sep = "\t", col.names = T, row.names = F)
 }
