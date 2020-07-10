@@ -548,7 +548,7 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   
   cnvs.sub <- subset(cnvs, select = c("CopyNumber", "Gene"))
   #cnvs.sub.extended <- data.frame(separate_rows(cnvs.sub,g,sep=","))
-  cnvs.sub.extended <- cnvs.sub
+  cnvs.sub.extended <- na.omit(cnvs.sub)
   # remove empty genes
   cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$Gene),]
   cnvs.sub.extended$Entrez <- unlist(lapply(mget(cnvs.sub.extended$Gene, org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
