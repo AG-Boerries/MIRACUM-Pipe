@@ -177,9 +177,11 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
     echo "use one of the following values: $(join_by ' ' ${VALID_PROTOCOLS})"
     exit 1
   fi
-  if [[ ! "${PARAM_FORCE}" || -f "${DIR_TARGET}/.processed" ]]; then
-        echo "Analyses already exist. If you want to re-analze it, it has to be forced (-f)."
+
+  if [[ !("${PARAM_FORCE}") && -e "${DIR_TARGET}/.processed" ]]; then
+    echo "Analyses already exist. If you want to re-analyze it, it has to be forced (-f)."
   fi
+
   if [[ -z "${PARAM_DIR_PATIENT}" && -z "${PARAM_TASK}" && -n "${PARAM_PROTOCOL}" ]]; then
     for dir in "${DIR_SCRIPT}"/assets/input/*; do
       # get relative dir patient

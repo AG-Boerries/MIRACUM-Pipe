@@ -42,7 +42,9 @@ function install_texlive()
 function install_R()
 {
   echo "deb http://cloud.r-project.org/bin/linux/debian buster-cran40/" >> /etc/apt/sources.list && \
-  apt-key adv --keyserver keys.gnupg.net --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
+  #apt-key adv --keyserver keyserver.ubuntu.com --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
+  #wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe19f5f87128899b192b1a2c2ad5f960a256a04af | apt-key add - &&
+  apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
   apt-get update && apt-get install -y -t buster-cran40 r-base
 }
 
