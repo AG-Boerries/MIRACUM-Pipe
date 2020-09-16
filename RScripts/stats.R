@@ -17,7 +17,7 @@ stats <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
   #'
   #' @details Statistical numbers are extracted from alignment's statistics.
   cover <- coverage_plot(path = path, outfilePDF = coverage_out, protocol = protocol)
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     avreads <- reads(stats_td, stats_gd)
   } else {
     avreads <- treads(stats_td)

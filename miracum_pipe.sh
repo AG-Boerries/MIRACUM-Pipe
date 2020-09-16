@@ -10,7 +10,7 @@ readonly DIR_SCRIPT=$(
 . "${DIR_SCRIPT}"/common.cfg.sh
 
 readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel")
-readonly VALID_PROTOCOLS=("wes panel")
+readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 function usage() {
   echo "usage: miracum_pipe.sh [-d dir] [-t task] [-p protocol] [-f] [-h]"
@@ -130,6 +130,47 @@ function run_panel_pipe_seq() {
   cleanup "${dir_patient}"
 }
 
+# tumorOnly protocol
+# run_pipe_panel relative_patient_dir dir_target
+function run_tumorOnly_pipe() {
+  local dir_patient="${1}"
+  local dir_target="${2}"
+
+  local dir_log="${dir_target}/log"
+
+  setup "${dir_patient}" "${dir_target}"
+
+  # use parallel shell scripting
+  ("${DIR_SCRIPT}"/make_tumorOnly_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+
+  # use parallel shell scripting
+  ("${DIR_SCRIPT}"/make_tumorOnly_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") &
+  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  wait
+
+  # create report based on the results of the processes above
+  ("${DIR_SCRIPT}"/make_tumorOnly_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
+
+  cleanup "${dir_patient}"
+}
+
+# run_pipe_seq relative_patient_dir dir_target
+function run_tumorOnly_pipe_seq() {
+  local dir_patient="${1}"
+  local dir_target="${2}"
+
+  local dir_log="${dir_target}/log"
+
+  setup "${dir_patient}" "${dir_target}"
+
+  ("${DIR_SCRIPT}"/make_tumorOnly_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+  ("${DIR_SCRIPT}"/make_tumorOnly_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
+  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
+  ("${DIR_SCRIPT}"/make_tumorOnly_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
+
+  cleanup "${dir_patient}"
+}
+
 # get_case relative_patient_dir
 function get_case() {
   local dir_patient="${1}"
@@ -144,6 +185,10 @@ function get_case() {
 
   if [[ "$(get_config_value common.protocol "${dir_patient}")" = "panel" ]]; then
     echo "panelTumor"
+  fi
+
+  if [[ "$(get_config_value common.protocol "${dir_patient}")" = "tumorOnly" ]]; then
+    echo "tumorOnly"
   fi
 }
 
@@ -213,6 +258,16 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
             run_panel_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
           else
             run_panel_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
+          fi
+        fi
+
+        if [[ "${PARAM_PROTOCOL}" == "tumorOnly" ]]; then
+          echo "tumorOnly Protocol"
+
+          if [[ -z "${PARAM_SEQ}" ]]; then
+            run_tumorOnly_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
+          else
+            run_tumorOnly_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
           fi
         fi
         
@@ -321,8 +376,39 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               vc_cnv_parallel)
-                ("${DIR_SCRIPT}"/make_pnale_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
+                ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
                 ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &
+                wait
+              ;;
+            esac
+          ;;
+          tumorOnly)
+            case "${PARAM_TASK}" in
+              td)
+                "${DIR_SCRIPT}"/make_tumorOnly_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log"
+              ;;
+
+              cnv)
+                "${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+              ;;
+
+              vc)
+                "${DIR_SCRIPT}"/make_tumorOnly_vc.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log"
+              ;;
+
+              report)
+                "${DIR_SCRIPT}"/make_tumorOnly_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
+                if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_tumorOnly.pdf" ]]; then
+                  touch "${DIR_TARGET}/.processed"
+                  echo "${PARAM_DIR_PATIENT} Report finished"
+                else
+                  echo "${PARAM_DIR_PATIENT} failed"
+                fi
+              ;;
+
+              vc_cnv_parallel)
+                ("${DIR_SCRIPT}"/make_tumorOnly_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
+                ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &
                 wait
               ;;
             esac
@@ -358,7 +444,23 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
           fi
 
           # check if report was generated successfully
-          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report.pdf" ]]; then
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${PARAM_DIR_PATIENT} finished"
+          else
+            echo "${PARAM_DIR_PATIENT} failed"
+          fi
+        fi
+        if [[ ${PARAM_PROTOCOL} == "tumorOnly" ]]; then
+          echo "tumorOnly Protocol"
+          if [[ -z "${PARAM_SEQ}" ]]; then
+            run_tumorOnly_pipe "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          else
+            run_tumorOnly_pipe_seq "${PARAM_DIR_PATIENT}" "${DIR_TARGET}"
+          fi
+
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_tumorOnly.pdf" ]]; then
             touch "${DIR_TARGET}/.processed"
             echo "${PARAM_DIR_PATIENT} finished"
           else

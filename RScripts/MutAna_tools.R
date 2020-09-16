@@ -104,8 +104,8 @@ mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol){
   #'
   #' @details A summary table is build that shows the number of mutations
   #' @details separating SNVs/InDels, somatic/LoH and Zygosity.
-  if (protocol != "panelTumor") {
-  muta_tab <- matrix(data = "-", nrow = 6, ncol = 6)
+  if (protocol == "somaticGermline" | protocol == "somatic") {
+    muta_tab <- matrix(data = "-", nrow = 6, ncol = 6)
     colnames(muta_tab) <- c("Mutationtype", "Number of exonic", "Zygosity",
                                  "Tumorsuppressor", "Oncogene", "Hotspot")
     muta_tab[, 1] <- c("somatic SNV", "somatic SNV", "LoH SNV",
@@ -210,7 +210,7 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, protocol) {
   #' @return loh_mut numerical. Number of all LoH mutations
   #'
   #' @details Statistical number are calculated and printed. Furthermore
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     print(paste(dim(x_s)[1], "somatic mutations", sep = " "))
   } else {
     print(paste(dim(x_s)[1], "mutations", sep = " "))
@@ -431,7 +431,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   circosW <- floor((chrR - minR) / length(listOfMap))
   circosR <- chrR - 1.5 * circosW
   
-  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR"))) {
+  if (protocol == "panelTumor") {
     tg <- read.delim(file = sureselect, header = FALSE)
 
     hili <- as.data.frame(matrix(NA, nrow = nrow(tg), ncol = 7))
@@ -453,7 +453,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
        main = "")
   circos(R = chrR, cir = db, type = "chr", col = colors, print.chr.lab = TRUE,
          W = 2, scale = TRUE, lwd=1.5)
-  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR"))){
+  if (protocol == "panelTumor"){
     for (i in 1:dim(hili)[1]){
           circos(R=chrR, cir=db, W=40, mapping=hili[i, ], type = "hl", lwd=1.5)
         }
@@ -470,7 +470,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
     }
   }
     # Label
-  if (protocol != "panelTumor") {
+  if (protocol == "somaticGermline" | protocol == "somatic") {
     if (length(circosColors) == 4){
       text(0,75, "Somatic SNV", adj = 0, col = "#FF0000CC")
       text(0,50, "Somatic InDel", adj = 0, col = "#008000CC")

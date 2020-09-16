@@ -94,7 +94,7 @@ if( protocol != "panelTumor"){
 #####################
 # DEFINE FILES
 print("Preparations.")
-if (protocol != "panelTumor"){
+if (protocol == "somatic" | protocol == "somaticGermline"){
   if (protocol == "somaticGermline"){
     # GERMLINE NORMAL
     snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
@@ -130,7 +130,7 @@ if (protocol != "panelTumor"){
   maf_loh <- paste0(path_output, sample, "_LoH.maf")
   maf_complete <- paste0(path_output, sample, ".maf")
 }
-if (protocol == "panelTumor"){
+if (protocol == "panelTumor" | protocol == "tumorOnly"){
   # TUMOR
   snp_file_td <- paste0(path_input, sample, "_vc.output.snp.Sample1.avinput.hg19_multianno.csv")
   indel_file_td <- paste0(path_input, sample, "_vc.output.indel.Sample1.avinput.hg19_multianno.csv")
@@ -145,7 +145,7 @@ if (protocol == "panelTumor"){
   maf_complete <- paste0(path_output, sample, ".maf")
 }
 
-if (protocol != "panelTumor"){
+if (protocol == "somatic" | protocol == "somaticGermline"){
   # SOMATIC TUMOR
   print("Filtering for Tumor.")
   filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
@@ -213,7 +213,7 @@ if (protocol != "panelTumor"){
                                                 protocol = protocol, sureselect = bed_file,
                                                 sureselect_type = sureselect_type)
 }
-if (protocol == "panelTumor"){
+if (protocol == "panelTumor" | protocol == "tumorOnly"){
   print("Filtering for Tumor.")
   filt_result_td <- filtering(snpfile = snp_file_td, indelfile = indel_file_td,
                               snpefffile_snp = snpefffile_snp_td,
@@ -248,7 +248,7 @@ if (protocol == "panelTumor"){
   
 
 # Combine MAF files to obtain one complete maf per patient
-if (protocol != "panelTumor"){
+if (protocol == "somaticGermline" | protocol == "somatic"){
   if (protocol == "somaticGermline"){
       maf_comb <- smartbind(filt_result_td$maf,filt_result_gd$maf, filt_result_loh$maf)
       write.table(x = maf_comb, file = maf_complete , append = F, quote = F, sep = '\t', col.names = T, row.names = F)
@@ -266,14 +266,14 @@ if (protocol != "panelTumor"){
 # STATISTICS
 ## Input Files
 print("Statistics.")
-if (protocol != "panelTumor"){
+if (protocol == "somaticGermline" | protocol == "somatic"){
   stats_td <- paste0(path_input, sample, "_td_stats.txt")
   stats_gd <- paste0(path_input, sample, "_gd_stats.txt")
   ## Analysis
   stats <- stats(path = path_input, outfile_pdf = coverage_out,
                  stats_td = stats_td, stats_gd = stats_gd, protocol = protocol)
 }
-if (protocol == "panelTumor"){
+if (protocol == "panelTumor" | protocol == "tumorOnly"){
   stats_td <- paste0(path_input, sample, "_td_stats.txt")
   stats <- stats(path = path_input, outfile_pdf = coverage_out,
                  stats_td = stats_td, protocol = protocol)
@@ -282,32 +282,61 @@ if (protocol == "panelTumor"){
 ########################
 # Copy Number Analysis #
 print("CNV Analyses.")
-if (protocol != "panelTumor"){
+if (protocol == "somaticGermline" | protocol == "somatic"){
   ## Input/Output Files
   ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
-  cnv_plot <- paste0(path_output, sample, "_CNV_Plot.pdf")
+  # cnv_plot <- paste0(path_output, sample, "_CNV_Plot.pdf")
   cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
-  cnv_annot_out <- paste0(path_output, sample, "_CNV.xlsx")
-  outfile_onco <- paste0(path_output, sample, "_CNV_Oncogene.xlsx")
-  outfile_ts <- paste0(path_output, sample, "_CNV_TumorSuppressors.xlsx")
-  outfile_loss <- paste0(path_output, sample, "_CNV_loss_GO.xlsx")
-  outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
-  outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
+  # cnv_annot_out <- paste0(path_output, sample, "_CNV.xlsx")
+  # outfile_onco <- paste0(path_output, sample, "_CNV_Oncogene.xlsx")
+  # outfile_ts <- paste0(path_output, sample, "_CNV_TumorSuppressors.xlsx")
+  # outfile_loss <- paste0(path_output, sample, "_CNV_loss_GO.xlsx")
+  # outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
+  # outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
+  outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+
+  #   cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+  #                                      outfile_plot = cnv_plot,
+  #                                      outfile_ideogram = cnv_ideogram_plot,
+  #                                      outfile = cnv_annot_out,
+  #                                      outfile_onco = outfile_onco,
+  #                                      outfile_tumorsuppressors = outfile_ts,
+  #                                      outfile_loss = outfile_loss,
+  #                                      outfile_gain = outfile_gain,
+  #                                      outfile_dna_damage = outfile_dna_damage,
+  #                                      path_data = path_data,
+  #                                      path_script = path_script,
+  #                                      targets_txt = targets_txt,
+  #                                      outfile_cbioportal = outfile_cnvs_cbioportal,
+  #                                      id = id,
+  #                                      protocol = protocol)
+
+  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+                                       outfile_ideogram = cnv_ideogram_plot,
+                                       path_data = path_data,
+                                       path_script = path_script,
+                                       targets_txt = targets_txt,
+                                       outfile_cbioportal = outfile_cnvs_cbioportal,
+                                       id = id,
+                                       protocol = protocol)
+}
+
+if (protocol == "tumorOnly"){
+  ## Input/Output Files
+  ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt")
+  cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs")
+
+  # Results
+  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
+  cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
 
   cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
-                                       outfile_plot = cnv_plot,
                                        outfile_ideogram = cnv_ideogram_plot,
-                                       outfile = cnv_annot_out,
-                                       outfile_onco = outfile_onco,
-                                       outfile_tumorsuppressors = outfile_ts,
-                                       outfile_loss = outfile_loss,
-                                       outfile_gain = outfile_gain,
-                                       outfile_dna_damage = outfile_dna_damage,
                                        path_data = path_data,
                                        path_script = path_script,
                                        targets_txt = targets_txt,
@@ -328,10 +357,11 @@ if (protocol != "panelTumor"){
 #                     path_data = path_data, sureselect = sureselect, targets_txt = targets_txt, protocol = protocol)
 # }
 
+
 ###############################
 # Mutation Signature Analysis #
 print("Mutation Signature Analysis.")
-if( protocol != "panelTumor"){
+if( protocol == "somaticGermline" | protocol == "somatic"){
   somaticVCF <- paste0(path_input, sample,"_vc.output.snp.Somatic.hc.fpfilter.vcf")
   targetCapture_cor_factors <- paste(path_data, "targetCapture_cor_factors.rda", sep = "/")
   mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output)

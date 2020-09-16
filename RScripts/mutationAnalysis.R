@@ -72,7 +72,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   
   source(paste(path_script, "MutAna_tools.R", sep = "/"))
 
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     x_loh <- loh
   } else {
     x_loh <- data.frame()
@@ -83,7 +83,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   id_ex <- which(x_somatic$Func.refGene == "exonic")
   x_s <- x_somatic[id_ex, ]
   no_loh <- FALSE
-  if (is.null(x_loh) | protocol == "panelTumor"){
+  if (is.null(x_loh) | protocol == "panelTumor" | protocol == "tumorOnly"){
     no_loh <- TRUE
   }
   if (!no_loh){
@@ -135,7 +135,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
                   outfile_circos, circosColors = as.vector(cc$circoscolors),
                   protocol = protocol, sureselect = sureselect, sureselect_type)
 
-    if (protocol != "panelTumor"){
+    if (protocol == "somaticGermline" | protocol == "somatic"){
       # Pathway-Analysis
       prep <- prep_pwa(targets, all_mut$mut)
       result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)

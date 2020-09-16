@@ -65,7 +65,7 @@ vrz <- function(x, mode, protocol){
     zygosity <- c()
     for (j in 1:dim(x)[1]) {
       other <- as.character(x[j, "Otherinfo"])
-      if (protocol != "panelTumor"){
+      if (protocol == "somaticGermline" | protocol == "somati"){
           zygosity <- c(zygosity, substr(other, 1, 3))
           split <- strsplit(other, split = ":", fixed = TRUE)
           variant_frequency <- c(variant_frequency, split[[1]][12])
@@ -751,11 +751,11 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
   
   require(ensembldb)
   require(EnsDb.Hsapiens.v75)
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     se_snp <- read.delim(file = sef_snp, sep = "\t", header = FALSE, comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "NORMAL", "TUMOR"))
     se_indel <- read.delim(file = sef_indel, sep = "\t", header = FALSE, comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "NORMAL", "TUMOR"))
   }
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" | protocol == "tumorOnly"){
     te <- try(read.delim(file = sef_snp, sep = "\t", header = FALSE, comment.char = "#"), silent = TRUE)
     if (inherits(te, 'try-error')) {
       se_snp <- data.frame(CHROM = 0, POS = 0, ID = 0, REF = 0,
@@ -972,7 +972,7 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   #' @param snv_vcf string. snpEff vcf output containing SNVs.
   #' @param indel_vcf string. snpEff vcf output containing InDels.
   
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     if (Mutation_Status == "T") {
       Mutation_Status <- "Somatic"
     } else if (Mutation_Status == "N") {
@@ -981,16 +981,16 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
       Mutation_Status <- "LoH"
     }
   }
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" | protocol == "tumorOnly"){
     Mutation_Status = "Tumor"
   }
 
   # Read vcf files
-  if (protocol != "panelTumor"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
     indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
   }
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" | protocol == "tumorOnly"){
     snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
     indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
   }
@@ -1167,13 +1167,13 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   
   # t_alt_count, t_ref_count, n_alt_count, n_ref_count
   tmp_ids_vcf <- paste(variants$CHROM, variants$POS, sep = "_")
-  if( protocol != "panelTumor"){
+  if( protocol == "somaticGermline" | protocol == "somatic"){
     tmp_counts <- data.frame(t_ref_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[4])),
                              t_alt_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[5])),
                              n_ref_count = unlist(lapply(strsplit(variants$NORMAL, split = ":"), function(x) x[4])),
                              n_alt_count = unlist(lapply(strsplit(variants$NORMAL, split = ":"), function(x) x[5])))
   }
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" | protocol == "tumorOnly"){
     tmp_counts <- data.frame(t_ref_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[4])),
                              t_alt_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[5])),
                              n_ref_count = "",
@@ -1238,7 +1238,7 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   return(ann.maf)
 }
 
-exclude <- function(x, vaf = 10){
+exclude <- function(x, vaf = 5){
   variant_freq <- substr(as.character(x$Variant_Allele_Frequency), start = 1,
                          stop = nchar(as.character(x$Variant_Allele_Frequency))-1)
   id <- which(as.numeric(variant_freq) >= vaf)

@@ -82,7 +82,7 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 
 # temp
-readonly mpileup=${DIR_WES}/${NameD}_mpileup # TODO change back to DIR_TMP!
+readonly mpileup=${DIR_TMP}/${NameD}_mpileup # DIR_WES
 
 # keep
 readonly recalbam=${DIR_WES}/${NameTD}_output.sort.realigned.fixed.recal.bam
