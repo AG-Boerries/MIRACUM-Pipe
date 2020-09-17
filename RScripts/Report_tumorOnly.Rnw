@@ -237,6 +237,10 @@ if(dim(tmp)[1] == 0) {
  
 % %%%% MUTATIONSANALYSE %%%%
 \section{Copy Number Variations}
+<<eval=TRUE, results="tex", echo=FALSE>>=
+n_cnv <- round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0)
+@
+
 \subsection{\"Ubersicht}
 Im folgenden sind die \Sexpr{n_cnv} signifikanten Regionen mit \textit{Copy Number Variation} (CNV) als Ideogramm dargestellt (Abb \ref{ideogram}). Dabei wird über allen Chromosomen in den Zeilen die totale Anzahl an Kopien farbig markiert aufgetragen. Dabei wird  auf das Markieren von Regionen mit normaler Ploidität verzichtet. In blau dargestellt sind Verluste, je dunkler das Blau, desto weniger Kopien gibt es von dieser Region (1 oder 0). Regionen mit gesteigerten Kopien sind rot markiert, je dunkler das Rot, desto mehr Kopien gibt es in der Region (3 aufsteigend).
 
