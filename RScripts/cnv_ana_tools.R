@@ -709,7 +709,7 @@ assess_significance <- function(ratio_file, cnvs_file){
   ratio.bed = GRanges(ratio$Chromosome, IRanges(ratio$Start, ratio$Start),
                       score=ratio$Ratio)
   overlaps <- subsetByOverlaps(ratio.bed, cnvs.bed)
-  normals <- setdiff(ratio.bed, cnvs.bed)
+  normals <- GenomicRanges::setdiff(ratio.bed, cnvs.bed)
   normals <- subsetByOverlaps(ratio.bed, normals)
   numberOfCol=length(cnvs)
   for (i in c(1:length(cnvs[,1]))) {
@@ -1056,7 +1056,7 @@ cnv_processing <- function(cnv_file, targets, go.bp,
   cnv.genes <- unique(cnv.genes)
   cnv.genes <- cnv.genes[!is.na(cnv.genes)]
   prep <- prep_pwa(targets, cnv.genes)
-  loss_go <- get_terms(go.bp, prep$de_genes, prep$universe)
+  loss_go <- get_terms(dataset = go.bp, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = NULL)
   ########
   # GAIN #
   cnv.genes <- c()
@@ -1069,7 +1069,7 @@ cnv_processing <- function(cnv_file, targets, go.bp,
   cnv.genes <- unique(cnv.genes)
   cnv.genes <- cnv.genes[!is.na(cnv.genes)]
   prep <- prep_pwa(targets, cnv.genes)
-  gain_go <- get_terms(go.bp, prep$de_genes, prep$universe)
+  gain_go <- get_terms(dataset = go.bp, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = NULL)
   return(list(loss_go = loss_go, gain_go = gain_go))
 }
 

@@ -78,7 +78,7 @@ source(paste(path_script, "mut_sig_ana.R", sep = "/"))
 ##################
 # FASTQC Reports #
 
-if( protocol != "panelTumor"){
+if( protocol == "somaticGermline" | protocol == "somatic"){
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
   germline <- paste0(path_input, strsplit(x = germline, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
 

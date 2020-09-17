@@ -831,8 +831,10 @@ get_terms <- function(dataset, outfile, mut.entrez, t2.entrez){
                     universe = t2.entrez, org.library = "org.Hs.eg.db",
                     cutoff = 0.05, mincount = 3, parallel = T, adj.P.Val = F)
   if (nrow(ds_test) > 0){
-    write.xlsx(ds_test, outfile, keepNA = FALSE, rowNames = FALSE,
-               firstRow = TRUE)
+    if (!is.null(outfile)){
+      write.xlsx(ds_test, outfile, keepNA = FALSE, rowNames = FALSE,
+                firstRow = TRUE)
+    }
   }
   return(ds_res = ds_test)
 }
