@@ -84,9 +84,14 @@ if( protocol == "somaticGermline" | protocol == "somatic"){
 
   tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
   germline_bsqr <- paste0(path_input, sample, "_gd_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
-} else {
+}
+if (protocol == "panelTumor"){
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
   tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
+}
+if (protocol == "tumorOnly"){
+  tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
+  tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 }
 
 #####################
