@@ -104,7 +104,7 @@ function run_panel_pipe() {
   # use parallel shell scripting
   ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") #&
   # TODO CNV calling
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
   #wait
 
   # create report based on the results of the processes above
@@ -124,7 +124,7 @@ function run_panel_pipe_seq() {
 
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
+  #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
@@ -145,7 +145,7 @@ function run_tumorOnly_pipe() {
 
   # use parallel shell scripting
   ("${DIR_SCRIPT}"/make_tumorOnly_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") &
-  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -p -d "${dir_patient}" &> ${dir_log}/cnv.log) &
+  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
   wait
 
   # create report based on the results of the processes above
@@ -165,7 +165,7 @@ function run_tumorOnly_pipe_seq() {
 
   ("${DIR_SCRIPT}"/make_tumorOnly_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
   ("${DIR_SCRIPT}"/make_tumorOnly_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
-  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${dir_patient}" &> ${dir_log}/cnv.log)
+  ("${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
   ("${DIR_SCRIPT}"/make_tumorOnly_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
@@ -249,6 +249,13 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
           else
             run_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
           fi
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${DIR_PATIENT}_Report.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${DIR_PATIENT} finished"
+          else
+            echo "${DIR_PATIENT} failed"
+          fi
         fi
 
         if [[ "${PARAM_PROTOCOL}" == "panel" ]]; then
@@ -258,6 +265,13 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
             run_panel_pipe "${DIR_PATIENT}" "${DIR_TARGET}"
           else
             run_panel_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
+          fi
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${DIR_PATIENT}_Report_Panel.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${DIR_PATIENT} finished"
+          else
+            echo "${DIR_PATIENT} failed"
           fi
         fi
 
@@ -269,14 +283,13 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
           else
             run_tumorOnly_pipe_seq "${DIR_PATIENT}" "${DIR_TARGET}"
           fi
-        fi
-        
-        # check if report was generated successfully
-        if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${DIR_PATIENT}_Report.pdf" ]]; then
-          touch "${DIR_TARGET}/.processed"
-          echo "${DIR_PATIENT} finished"
-        else
-          echo "${DIR_PATIENT} failed"
+          # check if report was generated successfully
+          if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${DIR_PATIENT}_Report_tumorOnly.pdf" ]]; then
+            touch "${DIR_TARGET}/.processed"
+            echo "${DIR_PATIENT} finished"
+          else
+            echo "${DIR_PATIENT} failed"
+          fi
         fi
       fi
     done
