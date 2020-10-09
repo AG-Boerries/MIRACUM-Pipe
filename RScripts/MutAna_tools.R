@@ -431,7 +431,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   circosW <- floor((chrR - minR) / length(listOfMap))
   circosR <- chrR - 1.5 * circosW
   
-  if (protocol == "panelTumor") {
+  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR","V6UTR"))) {
     tg <- read.delim(file = sureselect, header = FALSE)
 
     hili <- as.data.frame(matrix(NA, nrow = nrow(tg), ncol = 7))
@@ -453,7 +453,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
        main = "")
   circos(R = chrR, cir = db, type = "chr", col = colors, print.chr.lab = TRUE,
          W = 2, scale = TRUE, lwd=1.5)
-  if (protocol == "panelTumor"){
+  if (protocol == "panelTumor" & !(sureselect_type %in% c("V6","V5UTR","V6UTR"))){
     for (i in 1:dim(hili)[1]){
           circos(R=chrR, cir=db, W=40, mapping=hili[i, ], type = "hl", lwd=1.5)
         }
