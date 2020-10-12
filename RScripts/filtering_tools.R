@@ -1216,7 +1216,7 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
                                     Score = "",
                                     BAM_File = "",
                                     Sequencer = "",
-                                    HGSVp_Short = proteinChange,
+                                    HGVSp_Short = proteinChange,
                                     Amino_Acid_Change = proteinChange,
                                     TxChange = TxChange,
                                     Transcript_Id = Transcript_Id,
