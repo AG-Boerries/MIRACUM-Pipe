@@ -1,5 +1,14 @@
 # Changelog
 
+## Release v3.0.0
+
+* Interation of a "tumorOnly" Pipeline
+* Implementation of a tNGS Pipeline
+
+## Release v2.0.1
+
+* minor bugfixes
+
 ## Release v2.0.0
 
 * MIRACUM-Pipe extended to tNGS (tested with Illumina TruSight Tumor 170 panel)
