@@ -31,7 +31,7 @@ readonly CFG_REFERENCE_CAPTUREREGIONS="${DIR_SEQUENCING}/$(get_config_value refe
 readonly CFG_REFERENCE_CAPTUREGENES="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureGenes "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.coveredRegion "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_CAPTUREREGIONNAME="$(get_config_value reference.sequencing.captureRegionName "${PARAM_DIR_PATIENT}")"
-readonly CFG_REFERENCE_CAPTURECORFACTORS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.captureCorFactors "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_CAPTURECORFACTORS="${DIR_DATABASE}/$(get_config_value reference.sequencing.captureCorFactors "${PARAM_DIR_PATIENT}")"
 
 
 # database for known variants
