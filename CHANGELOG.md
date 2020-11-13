@@ -1,5 +1,14 @@
 # Changelog
 
+## Minor Updates
+
+* Update of several annovar databases; re-start of ./setup.sh -t setup_tools from the MIRACUM-Pipe-docker repository recommended or manual installation of the updated annovar databases:
+```bash
+# annovar databases
+./annotate_variation.pl -buildver hg19 -downdb -webfrom annovar dbnsfp41a humandb/
+./annotate_variation.pl -buildver hg19 -downdb -webfrom annovar clinvar_20200316 humandb/
+```
+
 ## Release v3.0.0
 
 * Interation of a "tumorOnly" Pipeline
