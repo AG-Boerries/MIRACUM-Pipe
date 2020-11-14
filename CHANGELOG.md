@@ -3,6 +3,7 @@
 ## Minor Updates
 
 * Update of several annovar databases; re-start of ./setup.sh -t setup_tools from the MIRACUM-Pipe-docker repository recommended or manual installation of the updated annovar databases:
+
 ```bash
 # annovar databases
 ./annotate_variation.pl -buildver hg19 -downdb -webfrom annovar dbnsfp41a humandb/
