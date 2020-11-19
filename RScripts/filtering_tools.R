@@ -65,7 +65,7 @@ vrz <- function(x, mode, protocol){
     zygosity <- c()
     for (j in 1:dim(x)[1]) {
       other <- as.character(x[j, "Otherinfo"])
-      if (protocol == "somaticGermline" | protocol == "somati"){
+      if (protocol == "somaticGermline" | protocol == "somatic"){
           zygosity <- c(zygosity, substr(other, 1, 3))
           split <- strsplit(other, split = ":", fixed = TRUE)
           variant_frequency <- c(variant_frequency, split[[1]][12])
