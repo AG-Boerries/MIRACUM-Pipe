@@ -355,15 +355,15 @@ collapse_rows(kable(new_tmp, format = "latex", caption = "Sequenzen der identifi
 
 \subsection{Programmversionen}
 \begin{itemize}
-\item FastQC: 0.11.9
+\item FastQC: 0.11.10.devel
 \item Trimmomatic: 0.39
-\item BWA: 0.7.17
-\item bam-readcount: 0.8.0
+\item BWA: 0.7.17-r1198-dirty
+\item bam-readcount: 0.8.0-unstable-7-625eea2
 \item samtools 1.10
-\item GATK: 3.8.1.0
+\item GATK: 3.8-1-0-gf15c1c3ef
 \item picard-tools: 2.20.6
 \item VarScan: 2.4.4
-\item annovar 2019Oct24
+\item annovar: 2020Jun08
 \item bedtools: 2.28.0
 \item Java: openjdk-8-hotspot
 \end{itemize}
@@ -371,11 +371,11 @@ collapse_rows(kable(new_tmp, format = "latex", caption = "Sequenzen der identifi
 \subsection{Annovar Datenbanken}
 \begin{itemize}
 \item refGene GRCh37
-\item dbnsfp35a
+\item dbnsfp41a
 \item avsnp150 (dbSNP)
-\item clinvar\_20180603
+\item clinvar\_20200316
 \item intervar\_20180118
-\item cosmic90
+\item cosmic91
 \item gnomad\_genome Version 2.1.1
 \end{itemize}
 
