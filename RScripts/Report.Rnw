@@ -321,7 +321,7 @@ if (length(tmp) == 0){
 } else{
   tmp <- tmp[ ,c("Pathway", "Symbol", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
   colnames(tmp) <- c("Pathway", "Symbol", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
-  tmp$VAF <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF, fixed = TRUE)
+  #tmp$VAF <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF, fixed = TRUE)
   tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$COSMIC), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
