@@ -331,7 +331,7 @@ if (length(tmp) == 0){
   tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
-  tmp <- tmp[, c(1:6, 8:9, 11)]
+  tmp <- tmp[, c(1:6, 8:9, 10)]
   dup <- which(duplicated(tmp))
   if (length(dup) > 0){
     tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
