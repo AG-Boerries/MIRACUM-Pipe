@@ -321,6 +321,7 @@ if (length(tmp) == 0){
 } else{
   tmp <- tmp[ ,c("Pathway", "Symbol", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
   colnames(tmp) <- c("Pathway", "Symbol", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
+  tmp$VAF <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF, fixed = TRUE)
   tmp$VAF <- paste0(tmp$VAF, " (", tmp$Reads, ")")
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$COSMIC), split = "="), function(x){return(unlist(x)[2])})
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic), split = ";"), function(x){return(unlist(x)[1])})
@@ -331,7 +332,7 @@ if (length(tmp) == 0){
   tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
-  tmp <- tmp[, c(1:6, 8:9, 10)]
+  tmp <- tmp[, c(1:5, 7:8, 10)]
   dup <- which(duplicated(tmp))
   if (length(dup) > 0){
     tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
