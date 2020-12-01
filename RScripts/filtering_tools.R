@@ -608,11 +608,12 @@ helper_se <- function(x, i, id, db){
   #' @details Split string of snpeff data and extract information.
     aa <- as.character(db$INFO[id])
     aa <- unlist(strsplit(aa, split = ",", fixed = TRUE))
-    b <- cc <- e <- t <- cl <- rep(NA, times = length(aa))
+    b <- cc <- e <- t <- cl <- fub <- rep(NA, times = length(aa))
     for (k in 1:length(aa)){
       b2 <- unlist(strsplit(aa[k], split = "|", fixed = TRUE))
       if (length(b2) > 10){
         if ( (nchar(b2[10]) > 0) & (nchar(b2[11]) > 0)){
+          fun[k] <- b2[2]
           b[k] <- b2[11]
           cc[k] <- b2[10]
           e[k] <- b2[5]
@@ -783,6 +784,7 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
   x$CLINSIG <- ""
   x$Ensembl <- ""
   x$Transcript <- ""
+  x$Consequence_snpEff <- ""
   for (i in 1:nrow(x)){
     j <- intersect (which (se_snp$CHROM == as.character(x$Chr[i])),
                     which (se_snp$POS == as.character(x$Start[i])))
@@ -804,6 +806,7 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
       x$Ensembl[i] <- paste(res_snp$e[id], collapse = ";")
       x$Transcript[i] <- paste(res_snp$t[id], collapse = ";")
       x$CLINSIG[i] <- paste(x$CLINSIG[i], res_snp$cl[1], collapse = ";")
+      x$Consequence_snpEff[i] <- paste(res_snp$fun[id], collapse = ";")
     }
     if (length(l) > 0){
       res_ind <- helper_se(x, i, l, se_indel)
@@ -816,6 +819,7 @@ snpeff <- function(x, sef_snp, sef_indel, protocol){
         x$Ensembl[i] <- res_ind$e[id]
         x$Transcript[i] <- res_ind$t[id]
         x$CLINSIG[i] <- res_ind$cl[1]
+        x$Consequence_snpEff[i] <- paste(res_ind$fun[id], collapse = ";")
       }
     }
   }

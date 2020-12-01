@@ -78,30 +78,57 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   
   # Additional Filter for VAF
   x <- exclude(x, vaf = vaf)
+
+  # Remove Variants with Variant Read Count below 4
+  x <- mrc(x = x, min_var_count = min_var_count)
   
-  if (mode == "T") {
-    # TumorMutationBurden
-    tmb <- tumbu(x, covered_region)
-  } else {
-    tmb <- 0
+  # snpEff
+  x <- snpeff(x, snpefffile_snp, snpefffile_indel, protocol)
+
+  # replace synonymous entries from refGene with snpEff consequence
+  test <- as.character(x$ExonicFunc.refGene)
+  syn.snv <- which(test == "synonymous SNV")
+  if (length(syn.snv) > 0) {
+    x$ExonicFunc.refGene[syn.snv] <- x[syn.snv, "Consequence_snpEff"]
   }
+  
+
 
   # Filter for function
   x <- filt(x, "intergenic")
   x <- filt(x, "intronic")
   x <- filt(x, "ncRNA_exonic")
   x <- filt(x, "UTR")
+  x <- filt(x, "upstream")
+  x <- filt(x, "downstream")
+
+  # TumorMutationBurden
+  if (mode == "T") {
+    if (protocol %in% c("somatic", "somaticGermline")) {
+      tmb <- tumbu(x, 30)
+    } else {
+      tmb <- tumbu(x, covered_region)
+    }
+  } else {
+    tmb <- 0
+  }
+  
   # Filter for exonic function
   test <- as.character(x$ExonicFunc.refGene)
-  syn.snv <- which(test == "synonymous SNV")
+  syn.snv <- which(test %in% c("synonymous SNV", "synonymous_variant", "unknown", "synonymous_variant;synonymous_variant", ""))
   if (length(syn.snv) > 0) {
     x <- x[- syn.snv,]
   }
+
+  # Filter for synonymous_variants from snpEff
+  test <- as.character(x$Consequence_snpEff)
+  syn.snv <- which(test == "synonymous_variant")
+  if (length(syn.snv) > 0) {
+    x <- x[- syn.snv,]
+  }
+
   # Filter for rare mutations
   x <- rare(x, maf)
-
-  # Remove Variants with Variant Read Count below 4
-  x <- mrc(x = x, min_var_count = min_var_count)
 
   if (dim(x)[1] != 0) {
     # Include GeneName
@@ -120,7 +147,6 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x <- trgt(x, paste(path_data, "TARGET_db.txt", sep = "/"))
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))
     x <- oncokb(x, paste(path_data, "oncokb_biomarker_drug_associations.tsv", sep = "/"))
-    x <- snpeff(x, snpefffile_snp, snpefffile_indel, protocol)
     x.condel <- addCondel(x, paste(path_data, "fannsdb.tsv.gz", sep = "/"))
 
     if (mode == "N" | mode == "T") {
