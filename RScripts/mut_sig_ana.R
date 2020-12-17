@@ -8,7 +8,6 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   library(IRanges)
   library(data.table)
   
-#  source(paste0(path_script, "/Mut_sig_tools.R"))
   load(targetCapture_cor_factors)
 
   if (sureselect_type == "V6"){

@@ -123,11 +123,11 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
   snpefffile_indel_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.SnpEff.vcf")
   # Results
   outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
-  outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
-  outfile_reactome <- paste0(path_output, sample, "_TD_hyperGTest_Reactome.xlsx")
-  outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus.xlsx")
-  outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx")
-  outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
+  #outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
+  #outfile_reactome <- paste0(path_output, sample, "_TD_hyperGTest_Reactome.xlsx")
+  #outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus.xlsx")
+  #outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx")
+  #outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
   coverage_out <- paste0(path_output, sample, "_coverage.pdf")
   # MAFs
   maf_gd <- paste0(path_output, sample, "_Germline.maf")
@@ -207,11 +207,11 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
                                                 somatic = filt_result_td$table,
                                                 tumbu = filt_result_td$tmb,
                                                 outfile_circos = outfile_circos,
-                                                outfile_go = outfile_go,
-                                                outfile_reactome = outfile_reactome,
-                                                outfile_consensus = outfile_consensus,
-                                                outfile_hallmarks = outfile_hallmarks,
-                                                outfile_mtb_genesets = outfile_mtb_genesets,
+                                                #outfile_go = outfile_go,
+                                                #outfile_reactome = outfile_reactome,
+                                                #outfile_consensus = outfile_consensus,
+                                                #outfile_hallmarks = outfile_hallmarks,
+                                                #outfile_mtb_genesets = outfile_mtb_genesets,
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
@@ -239,11 +239,11 @@ if (protocol == "panelTumor" | protocol == "tumorOnly"){
                                                 somatic = filt_result_td$table,
                                                 tumbu = filt_result_td$tmb,
                                                 outfile_circos = outfile_circos,
-                                                outfile_go = outfile_go,
-                                                outfile_reactome = outfile_reactome,
-                                                outfile_consensus = outfile_consensus,
-                                                outfile_hallmarks = outfile_hallmarks,
-                                                outfile_mtb_genesets = outfile_mtb_genesets,
+                                                #outfile_go = outfile_go,
+                                                #outfile_reactome = outfile_reactome,
+                                                #outfile_consensus = outfile_consensus,
+                                                #outfile_hallmarks = outfile_hallmarks,
+                                                #outfile_mtb_genesets = outfile_mtb_genesets,
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
@@ -377,6 +377,26 @@ if( protocol == "somaticGermline" | protocol == "somatic"){
                                                   only_coding = FALSE,
                                                   path_data = path_data,
                                                   path_output = path_output)
+}
+
+# Write Excel File
+if (protocol == "somaticGermline"){
+  output <- list(Somatic_Mutations = filt_result_td$table,
+                 LoH_Mutations = filt_result_loh$table,
+                 Germline_Mutations = filt_result_gd$table,
+                 Mutation_Signatures = mut_sig_ana$output$Summary,
+                 CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
+  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
+} else if (protocol == "somatic"){
+  output <- list(Somatic_Mutations = filt_result_td$table,
+                 LoH_Mutations = filt_result_loh$table,
+                 Mutation_Signatures = mut_sig_ana$output$Summary,
+                 CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
+  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
+} else {
+  output <- list(Somatic_Mutations = filt_result_td$table,
+                 CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
+  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
 }
 
 save.image(file = "MTB.RData")

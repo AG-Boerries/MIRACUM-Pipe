@@ -60,19 +60,25 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 
 % Übersicht über Schlüsselergebnisse der Analyse
 <<eval=TRUE, results="tex", echo=FALSE>>=
+if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
+  sureselect_type <- paste("Agilent SureSelect", sureselect_type, sep = " ")
+} else if (sureselect_type %in% c("TSO500", "TruSight_Tumor")) {
+  sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
+}
+
 helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
 if (length(helper) == 1 &mut_sig_ana$output$Summary["AC3", 3] < 1.0) {helper <- c()}
 if (protocol == "SomaticGermline"){
   if (length(helper) == 1){
-    tmp1 <- data.frame(Eigenschaften = c("Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Anzahl CN- Regionen", "Anzahl seltener Keimbahnmutationen (VAF > 10%)"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)), paste0(round(x = mut_sig_ana$output$Summary[helper, 3], digits = 2), " %"), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"), length(which(as.numeric(gsub(pattern = "%", replacement = "", x = filt_result_gd$table$Variant_Allele_Frequency[-which(is.na(filt_result_gd$table$ExonicFunc.refGene))])) > 10))))
+    tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Mikrosatelliten Status", "Anzahl CN- Regionen", "Anzahl seltener Keimbahnmutationen (VAF > 10%)"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)), paste0(round(x = mut_sig_ana$output$Summary[helper, 3], digits = 2), " %"), as.character(filt_result_td$msi$MSI_status[1]), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"), length(which(as.numeric(gsub(pattern = "%", replacement = "", x = filt_result_gd$table$Variant_Allele_Frequency[-which(is.na(filt_result_gd$table$ExonicFunc.refGene))])) > 10))))
     } else {
-      tmp1 <- data.frame(Eigenschaften = c("Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Anzahl CNV- Regionen", "Anzahl seltener Keimbahnmutationen (VAF > 10%)"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), "< 1.0%", paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"), length(which(as.numeric(gsub(pattern = "%", replacement = "", x = filt_result_gd$table$Variant_Allele_Frequency[-which(is.na(filt_result_gd$table$ExonicFunc.refGene))])) > 10))))
+      tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Mikrosatelliten Status", "Anzahl CNV- Regionen", "Anzahl seltener Keimbahnmutationen (VAF > 10%)"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), "< 1.0%", as.character(filt_result_td$msi$MSI_status[1]), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"), length(which(as.numeric(gsub(pattern = "%", replacement = "", x = filt_result_gd$table$Variant_Allele_Frequency[-which(is.na(filt_result_gd$table$ExonicFunc.refGene))])) > 10))))
     }
 } else {
     if (length(helper) == 1){
-      tmp1 <- data.frame(Eigenschaften = c("Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Anzahl CNV Regionen"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)), paste0(round(x = mut_sig_ana$output$Summary[helper, 3], digits = 2), " %"), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+      tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Mikrosatelliten Status", "Anzahl CNV Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)), paste0(round(x = mut_sig_ana$output$Summary[helper, 3], digits = 2), " %"), as.character(filt_result_td$msi$MSI_status[1]), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
     } else {
-      tmp1 <- data.frame(Eigenschaften = c("Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Anzahl CNV- Regionen"), Wert = c(paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), "< 1.0%", paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+      tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl somatischer Mutationen (VAF > 10%)", "BRCAness", "Mikrosatelliten Status" ,"Anzahl CNV- Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), "< 1.0%", as.character(filt_result_td$msi$MSI_status[1]), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
     }
 }
                   
@@ -136,7 +142,19 @@ kable(tmp, booktabs = T, row.names = F, caption = "Zusammenfassung der identifiz
 \subsubsection{Somatische Mutationen}\label{som_mut_section}
 
 In folgenden Tabellen werden Gensymbol, Genname und der entsprechende Aminos\"aurenaustausch gelistet.
-Die Funktion der Mutationen werden durch Abkürzungen beschrieben: nsSNV - nonsynonymous SNV, SG - stopgain, nfsDel - nonframeshift deletion, fsDel - frameshift deletion, nfsIns - nonframeshift insertion fsIns - frameshift insertion.
+Die Funktion der Mutationen werden durch Abkürzungen beschrieben:
+\begin{itemize}
+  \item nsSNV - nonsynonymous SNV
+  \item SG - stopgain
+  \item SL - startloss
+  \item nfsDel - nonframeshift deletion
+  \item nfsSub - nonframeshift substitution
+  \item fsDel - frameshift deletion
+  \item nfsIns - nonframeshift insertion
+  \item fsIns - frameshift insertion
+  \item splice - splice region variant
+\end{itemize}
+
 Die VAF wird gelistet, zusammen mit den zu Grunde liegenden Readcounts. Zunächst die Anzahl an Variantenreads, danach die Gesamtcoverage an dieser Stelle. 
 Außerdem werden nur seltene Mutationen gelistet. Selten bedeutet dabei, dass die \textit{Minor Allele Frequency} (MAF) unter 0.001 liegen muss, basierend auf den Datenbanken gnomAD exome.
 Desweiteren werden Strukturanalysen via Condel und CADD zu den entsprechend mutierten Proteinen durchgeführt. Diese Ergebnisse werden für Condel in den folgenden Tabellen durch eine Klassifizierung beschrieben: D - deleterious, N - neutral.
@@ -173,6 +191,9 @@ if(dim(tmp)[1] == 0) {
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
   tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -212,6 +233,9 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
     tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
     tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -333,6 +357,9 @@ if (length(tmp) == 0){
   tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunction)
   tmp <- tmp[, c(1:5, 7:8, 10)]
   dup <- which(duplicated(tmp))
   if (length(dup) > 0){
@@ -412,6 +439,9 @@ if(length(id_to) != 0) {
   tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
   tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunction)
+  tmp$ExonicFunction <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunction)
   tmp <- tmp[, c(1:6, 8:9, 11)]
   dup <- which(duplicated(tmp))
   if (length(dup) > 0){
@@ -450,6 +480,9 @@ if(dim(tmp)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
   tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -492,6 +525,9 @@ if(is.null(mutation_analysis_result_gd$important_pathways)) {
       tmp$ExonicFunction <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunction)
       tmp$ExonicFunction <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunction)
       tmp$ExonicFunction <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunction)
+      tmp$ExonicFunction <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunction)
+      tmp$ExonicFunction <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunction)
+      tmp$ExonicFunction <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunction)
       tmp <- tmp[, c(1:2, 4:6, 8:9, 11)]
       dup <- which(duplicated(tmp))
       if (length(dup) > 0){
@@ -541,12 +577,12 @@ if(dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  kable(tmp, caption = "Ergebnisse Hallmarks Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
   } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  kable(tmp, caption = "Ergebnisse Hllmarks Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 }
 @
 
@@ -557,12 +593,12 @@ if(dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:20,c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em") 
+  kable(tmp, caption = "Ergebnisse HAllmarks Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em") 
 } else {
   tmp <- cnv_analysis_results$cnv_analysis_results$loss_go[1:dim(cnv_analysis_results$cnv_analysis_results$loss_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse GO Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  kable(tmp, caption = "Ergebnisse Hallmarks Analyse - LOSS, top 20\\label{hm_CNV_gain}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 }
 @
 \clearpage
@@ -630,6 +666,9 @@ tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift deletion", replacement =
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
 tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
 tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
 tmp$condel.label[is.na(tmp$condel.label)] <- "."
 tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -673,6 +712,9 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
   tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+  tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
   tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -715,6 +757,9 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift deletion", replacement = "fsDel", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift insertion", replacement = "nfsIns", x = tmp$ExonicFunc.refGene)
     tmp$ExonicFunc.refGene <- gsub(pattern = "frameshift insertion", replacement = "fsIns", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunc.refGene)
+    tmp$ExonicFunc.refGene <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunc.refGene)
     tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
     tmp$condel.label[is.na(tmp$condel.label)] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
@@ -744,15 +789,15 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 
 \subsection{Programmversionen}
 \begin{itemize}
-\item FastQC: 0.11.9
+\item FastQC: 0.11.10.devel
 \item Trimmomatic: 0.39
-\item BWA: 0.7.17
-\item bam-readcount: 0.8.0
+\item BWA: 0.7.17-r1198-dirty
+\item bam-readcount: 0.8.0-unstable-7-625eea2
 \item samtools 1.10
-\item GATK: 3.8.1.0
+\item GATK: 3.8-1-0-gf15c1c3ef
 \item picard-tools: 2.20.6
 \item VarScan: 2.4.4
-\item annovar 2020-06-07
+\item annovar: 2020Jun08
 \item bedtools: 2.28.0
 \item Control-FREEC: 11.6
 \item Java: openjdk-8-hotspot
@@ -765,7 +810,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
 \item avsnp150 (dbSNP)
 \item clinvar\_20200316
 \item intervar\_20180118
-\item cosmic v91
+\item cosmic91
 \item gnomad\_genome Version 2.1.1
 \end{itemize}
 

@@ -63,9 +63,9 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   require(Homo.sapiens)
   require(stringr)
 
-  load(paste(path_data, "GOGeneSets.RData", sep = "/"))
-  load(paste(path_data, "Reactome.rda", sep = "/"))
-  load(paste(path_data, "Consensus.RData", sep = "/"))
+  #load(paste(path_data, "GOGeneSets.RData", sep = "/"))
+  #load(paste(path_data, "Reactome.rda", sep = "/"))
+  #load(paste(path_data, "Consensus.RData", sep = "/"))
   load(paste(path_data, "hallmarksOfCancer_GeneSets.RData", sep = "/"))
   load(paste(path_data, "MTB_Genesets.rda", sep = "/"))
   targets <- read.table(targets_txt)
@@ -138,10 +138,14 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     if (protocol == "somaticGermline" | protocol == "somatic"){
       # Pathway-Analysis
       prep <- prep_pwa(targets, all_mut$mut)
-      result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
-      result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
-      result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
-      result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_hallmarks)
+      #result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
+      #result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
+      #result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
+      #result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_hallmarks)
+      #result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
+      #result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
+      #result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
+      result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = NULL)
     } else {
       result_go <- NULL
       result_re <- NULL

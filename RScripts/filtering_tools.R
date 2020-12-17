@@ -1251,3 +1251,54 @@ exclude <- function(x, vaf = 5){
   }
   return(x)
 }
+
+msistatus <- function(maf, sample, path_data) {
+  require(MSIseq)
+  # load required database containing repeats for hg19; http://steverozen.net/data/Hg19repeats.rda
+  load(paste(path_data,"Hg19repeats.rda", sep = "/"))
+
+  msi.input <- data.frame(Chrom = maf$Chromosome,
+                        Start_Position = maf$Start_Position,
+                        End_Position = maf$End_Position,
+                        Variant_Type = maf$Variant_Type,
+                        Tumor_Sample_Barcode = maf$Tumor_Sample_Barcode)
+
+  seq.length <- data.frame(Tumor_Sample_Barcode = paste(sample, "TD", sep = "_"), Sequence_Length = 1.97)
+  test.mutationNum<-Compute.input.variables(msi.input, repeats = Hg19repeats, seq.len = seq.length)
+  result <- MSIseq.classify(mutationNum = test.mutationNum, cancerType = NULL)
+  return(result)
+}
+
+loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){
+  filt_loh$table$VAF_Tumor <- as.character(filt_loh$table$VAF_Tumor)
+  filt_loh$table$VAF_Normal <- as.character(filt_loh$table$VAF_Normal)
+  id_loss <- which(as.numeric(substr(filt_loh$table$VAF_Tumor, start = 1,
+                          stop = nchar(filt_loh$table$VAF_Tumor) - 1)) <  20)
+  filt_loh_loss <- filt_loh$table[id_loss, ]
+  filt_loh$table <- filt_loh$table[-id_loss, ]
+  if (modus == "SomaticGermline"){
+    filt_loh_loss$Variant_Reads <- filt_loh_loss$Count_Normal
+    filt_loh_loss$Variant_Allele_Frequency <- filt_loh_loss$VAF_Normal
+    filt_loh_loss$Zygosity <- rep(x = "het", times = dim(filt_loh_loss)[1])
+    id_hom <- which(as.numeric(substr(filt_loh_loss$VAF_Normal, start = 1,
+                           stop = nchar(filt_loh_loss$VAF_Normal) - 1)) > 75)
+    id_exclude <- which(as.numeric(substr(filt_loh_loss$VAF_Normal, start = 1,
+                               stop = nchar(filt_loh_loss$VAF_Normal) - 1)) < 10)
+    if (length(id_hom) > 0){
+      filt_loh_loss$Zygosity[id_hom] <- "hom"
+    }
+    if (length(id_exclude) > 0){
+      filt_loh_loss <- filt_loh_loss[-id_exclude, ]
+    }
+    id_ex2 <- which(colnames(filt_loh_loss) %in% c("VAF_Normal", "VAF_Tumor", "Count_Normal", "Count_Tumor"))
+    filt_loh_loss <- filt_loh_loss[, -id_ex2]
+    filt_gd$table$Type <- rep("Germline", times = dim(filt_gd$table)[1])
+    filt_loh_loss$Type <- rep("LoH", times = dim(filt_loh_loss)[1])
+    if(dim(filt_loh_loss)[1] > 0) {
+      filt_gd$table <- rbind(filt_gd$table, filt_loh_loss)
+    }
+  } else {
+    filt_gd = filt_gd
+  }
+  return(list(loh = filt_loh, gd = filt_gd))
+}

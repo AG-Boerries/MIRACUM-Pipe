@@ -177,25 +177,30 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     idx2 <- setdiff(tot, idx)
 
     x <- x.condel[, c(idx, idx2)]
-    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    # write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
     out.maf <- txt2maf(input = x, Center = center, refBuild = 'GRCh37',
                        id = id, sep = '\t', idCol = NULL,
                        Mutation_Status = mode, protocol = protocol, snv_vcf = snpefffile_snp, indel_vcf = snpefffile_indel)
     write.table(x = out.maf, file = outfile_maf , append = F, quote = F,
                 sep = '\t', col.names = T, row.names = F)
+
+    # mico satellite stability
+    msi <- msistatus(out.maf, sample = sample, path_data = path_data)
     
-    return(list(table = x, tmb = tmb, maf = out.maf))
+    return(list(table = x, tmb = tmb, maf = out.maf, msi = msi))
     
   } else if (mode == "N" | mode == "T") {
     print("No SNVs passed filter!")
-    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    #write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
     out.maf <- data.frame()
-    return(list(table = x, tmb = tmb, maf = out.maf))
+    msi <- data.frame()
+    return(list(table = x, tmb = tmb, maf = out.maf, msi = msi))
     
   } else if (mode == "LOH") {
     print("No LOH passed filter!")
-    write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
+    #write.xlsx(x, outfile, keepNA = FALSE, rowNames = FALSE, firstRow = TRUE)
     out.maf <- data.frame()
-    return(list(table = x, tmb = tmb, maf = out.maf))
+    msi <- data.frame()
+    return(list(table = x, tmb = tmb, maf = out.maf, msi = msi))
   }
 }

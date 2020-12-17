@@ -102,7 +102,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt,
 #' @return ddr dataframe. Genes with CNVs in the DNA Damage Response pathway
 #' 
 #' @details Analysis of the genomic regions with CNVs.
-  load(paste(path_data, "GOGeneSets.RData", sep = "/"))
+  load(paste(path_data, "hallmarksOfCancer_GeneSets.RData", sep = "/"))
   targets <- read.table(targets_txt)
   
   pvalue_txt <- assess_significance(ratio_file = ratio_file,
@@ -119,7 +119,7 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt,
   
   cnv_analysis_results <- cnv_processing(cnv_file = cnvs_annotated$CNVsAnnotated,
                                          targets = targets,
-                                         go.bp = go.bp,
+                                         db = hallmarksOfCancer,
                                          path_data = path_data,
                                          path_script = path_script)
   
