@@ -45,7 +45,7 @@ function install_R()
   #apt-key adv --keyserver keyserver.ubuntu.com --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
   #wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe19f5f87128899b192b1a2c2ad5f960a256a04af | apt-key add - &&
   apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
-  apt-get update && apt-get install -y -t buster-cran40 r-base
+  apt-get update && apt-get install -y -t buster-cran40 r-base-dev
 }
 
 # update packages
@@ -54,7 +54,7 @@ apt-get update
 # packages that are required for installation
 apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
   autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev \
-  libncurses5-dev libxml2-dev \
+  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev\
   gfortran \
   default-jre \
   ant \
@@ -69,7 +69,4 @@ apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cm
                     openjdk-11-jre openjdk-11-jre-headless && \
   install_texlive && \
   pip3 install shyaml && \
-  #apt-get purge -y python3-pip && \
   apt-get -y autoremove
-  #update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 
-#r-base-core r-recommended r-cran-latticeextra r-cran-hmisc r-cran-rmysql \
