@@ -348,7 +348,6 @@ Es werden fünf wichtige Signalwege betrachtet: \textit{RAF-MEK-ERK, PI3K-AKT-mT
 Außerdem werden auch die CNVs auf ihre Zugehörigkeit zu den fünf wichtigen Signalwegen untersucht und in Tabelle \ref{imp_ptws_cnv} dargestellt. Dabei werden Gene mit der selben totalen Kopienanzahl in einer Zeile zusammengefasst.
 
 \subsection{Somatische Mutationen in wichtigen Signalwegen}
-# TODO
 <<som_mut_imp_pws, echo=FALSE, eval=TRUE, results="tex">>=
 options(knitr.kable.NA = ".")
 tmp <- mutation_analysis_result$important_pathways
@@ -379,7 +378,7 @@ if (length(tmp) == 0){
   tmp <- tmp[, c(1:5, 7:8, 10)]
   dup <- which(duplicated(tmp))
   if (length(dup) > 0){
-    tmp[dup, 8] <- paste0(tmp[dup, 8], ".")
+    tmp[dup, 7] <- paste0(tmp[dup, 7], ".")
   }
   colnames(tmp) <- c("Signalweg", "Gen", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic")
   kable(tmp, format = "latex", caption = "Identifizierte somatische Mutationen in wichtigen Signalwegen\\label{imp_ptws}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
