@@ -412,8 +412,7 @@ cnv_table <- function(cnvs){
       output <- rbind(output, tmp)
     }
   }
-  #write.xlsx(output, file = "CNV_Table.xlsx", keepNA = FALSE, rowNames = FALSE,
-             firstRow = TRUE)
+  #write.xlsx(output, file = "CNV_Table.xlsx", keepNA = FALSE, rowNames = FALSE,firstRow = TRUE)
   return(output)
 }
 

@@ -387,17 +387,17 @@ if (protocol == "somaticGermline"){
                  Germline_Mutations = filt_result_gd$table,
                  Mutation_Signatures = mut_sig_ana$output$Summary,
                  CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
-  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
+  write.xlsx(x = output, file = paste0(path_output, "/", sample, "_results.xlsx"))
 } else if (protocol == "somatic"){
   output <- list(Somatic_Mutations = filt_result_td$table,
                  LoH_Mutations = filt_result_loh$table,
                  Mutation_Signatures = mut_sig_ana$output$Summary,
                  CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
-  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
+  write.xlsx(x = output, file = paste0(path_output, "/", sample, "_results.xlsx"))
 } else {
   output <- list(Somatic_Mutations = filt_result_td$table,
                  CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated)
-  write.xlsx(x = output, file = paste0(output_path, "/", sample, "_results.xlsx"))
+  write.xlsx(x = output, file = paste0(path_output, "/", sample, "_results.xlsx"))
 }
 
 save.image(file = "MTB.RData")

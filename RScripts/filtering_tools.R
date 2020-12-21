@@ -608,7 +608,7 @@ helper_se <- function(x, i, id, db){
   #' @details Split string of snpeff data and extract information.
     aa <- as.character(db$INFO[id])
     aa <- unlist(strsplit(aa, split = ",", fixed = TRUE))
-    b <- cc <- e <- t <- cl <- fub <- rep(NA, times = length(aa))
+    b <- cc <- e <- t <- cl <- fun <- rep(NA, times = length(aa))
     for (k in 1:length(aa)){
       b2 <- unlist(strsplit(aa[k], split = "|", fixed = TRUE))
       if (length(b2) > 10){
@@ -657,10 +657,10 @@ o2t <- function(vec_aac) {
       aa_pos <- aa.num
       
       aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S",
-                   "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "delins")
+                   "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "delins", "?")
       aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala",
                   "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn",
-                  "Lys", "Thr", "Ile", "Met", "fs", "*", "delins")
+                  "Lys", "Thr", "Ile", "Met", "fs", "*", "delins", "?")
       names(aa_long) <- aa_short
       
       a3_ref <- aa_long[aa_ref]
@@ -672,8 +672,8 @@ o2t <- function(vec_aac) {
 }
 
 t2o <- function(vec_aac){
-  aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "del")
-  aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X", "del")
+  aa_short = c("H", "Q", "P", "R", "L", "D", "E", "A", "G", "V", "Y", "S", "C", "W", "F", "N", "K", "T", "I", "M", "fs", "X", "del", "?")
+  aa_long = c("His", "Gln", "Pro", "Arg", "Leu", "Asp", "Glu", "Ala", "Gly", "Val", "Tyr", "Ser", "Cys", "Trp", "Phe", "Asn", "Lys", "Thr", "Ile", "Met", "fs", "X", "del", "STL")
   names(aa_short) <- aa_long
   if (length(vec_aac) != 0) {
     id_na <- union(which(is.na(vec_aac)), which(vec_aac %in% c("", " ")))
@@ -684,9 +684,11 @@ t2o <- function(vec_aac){
       vec_aa <- vec_aac
     }
     if (length(grep(pattern = "p.", x = vec_aa) > 0)){
+      vec_aa <- gsub(x = vec_aa, pattern = " p.", replacement = "", fixed = TRUE)
       vec_aa <- gsub(x = vec_aa, pattern = "p.", replacement = "", fixed = TRUE)
     }
     vec_aa <- gsub(vec_aa, pattern = "*", replacement = "X", fixed = TRUE)
+    vec_aa <- gsub(vec_aa, pattern = "?", replacement = "STL", fixed = TRUE)
     aa.num = as.numeric(gsub("[^\\d]+", "", vec_aa, perl=TRUE))
     aa.split = strsplit(vec_aa,
                         split = "(?=[A-Za-z])(?<=[0-9])|(?=[0-9])(?<=[A-Za-z])",
