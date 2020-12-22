@@ -57,7 +57,6 @@ sample <- paste(unlist(strsplit(sample, split = "_")), collapse = " ")
 
 %%%% Übersicht %%%%
 \section{\"{U}bersicht}
-
 % Übersicht über Schlüsselergebnisse der Analyse
 <<eval=TRUE, results="tex", echo=FALSE>>=
 if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
