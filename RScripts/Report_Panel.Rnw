@@ -66,7 +66,8 @@ if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
 } else if (sureselect_type %in% c("TSO500", "TruSight_Tumor")) {
   sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
 }
-tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl Mutationen (VAF > 10%)", "Anzahl CNV- Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+# tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl Mutationen (VAF > 10%)", "Anzahl CNV- Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl Mutationen (VAF > 10%)"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 3])), digits = 0)))
 kable(tmp1, booktabs = T, row.names = F, caption = "Schl\"usselergebnisse der Analyse") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12) %>% column_spec(1, width = "25em") %>% column_spec(2, width = "9em")
 @
 
@@ -89,7 +90,7 @@ kable(tmp2, booktabs = T, row.names = F, caption = "Zusammenfassung der identifi
 % Grafiken zur Übersicht
 \begin{figure}[h]
 \centering
-  \subfloat{\includegraphics[height = 0.8\textwidth]{\Sexpr{outfile_circos}}}
+  \subfloat{\includegraphics[height = 0.4\textwidth]{\Sexpr{outfile_circos}}}
   \caption{Darstellung aller identifizierten Mutationen aus DNA und Fusionen aus RNA (im inneren Kreis). In Gelb ist der abgedeckte Breich dargestellt.}
 \end{figure}
 

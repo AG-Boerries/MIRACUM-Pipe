@@ -92,8 +92,6 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
     x$ExonicFunc.refGene[syn.snv] <- x[syn.snv, "Consequence_snpEff"]
   }
   
-
-
   # Filter for function
   x <- filt(x, "intergenic")
   x <- filt(x, "intronic")
@@ -104,7 +102,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
 
   # TumorMutationBurden
   if (mode == "T") {
-    if (protocol %in% c("somatic", "somaticGermline")) {
+    if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
       tmb <- tumbu(x, 30)
     } else {
       tmb <- tumbu(x, covered_region)
