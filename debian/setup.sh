@@ -54,7 +54,8 @@ apt-get update
 # packages that are required for installation
 apt-get install -y build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
   autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev \
-  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev\
+  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev \
+  python python-dev python-numpy python-biopython python-xlrd python-openpyxl \
   gfortran \
   default-jre \
   ant \

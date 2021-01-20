@@ -13,10 +13,14 @@ readonly CFG_FILE_TUMOR_R2=$(get_config_value common.files.tumor_R2 "${PARAM_DIR
 readonly CFG_FILE_GERMLINE_R1=$(get_config_value common.files.germline_R1 "${PARAM_DIR_PATIENT}")
 readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PARAM_DIR_PATIENT}")
 
+readonly CFG_FOLDER_RNA=$(get_config_value common.rna.folder "${PARAM_DIR_PATIENT}")
+
 # folder containing patient output
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
 readonly DIR_WES="${DIR_TARGET}/WES"
 readonly DIR_ANALYSES="${DIR_TARGET}/Analyses"
+readonly DIR_RNA="${DIR_TARGET}/RNA"
+readonly DIR_FUSIONS="${DIR_RNA}/fusioncatcher"
 
 # end paths
 
@@ -237,6 +241,10 @@ readonly BIN_CNVKIT=$(command -v cnvkit.py)
 # R
 readonly BIN_RSCRIPT=$(command -v Rscript)
 
+# fusioncatcher
+readonly FUSIONCATCHER_DB=${DIR_TOOLS}/fusioncatcher/current"
+readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSION_DB} "
+
 # export parameters
 export CFG_AUTHOR
 export CFG_CENTER
@@ -247,9 +255,13 @@ export CFG_FILE_TUMOR_R2
 export CFG_FILE_GERMLINE_R1
 export CFG_FILE_GERMLINE_R2
 
+export CFG_FOLDER_RNA
+
 export DIR_TARGET
 export DIR_WES
 export DIR_ANALYSES
+export DIR_RNA
+export DIR_FUSIONS
 
 export FILE_GENOME
 export CFG_REFERENCE_LENGTH
@@ -408,3 +420,6 @@ export FILE_FLAT_REFERENCE
 export BIN_CNVKIT
 
 export BIN_RSCRIPT
+
+export FUSIONCATCHER_DB
+export BIN_FUSIONCATCHER

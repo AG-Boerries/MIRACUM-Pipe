@@ -117,7 +117,7 @@ chmod +x src/freec
 mv src/freec bin
 
 # add module
-cd cd ${DIR_SCRIPT}/FREEC/mappability
+cd ${DIR_SCRIPT}/FREEC/mappability
 wget https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
 tar -xzf hg19_len100bp.tar.gz
 rm -f hg19_len100bp.tar.gz
@@ -180,5 +180,10 @@ echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 ##########
 # installed with apt-get
 
-#cd ${DIR_SCRIPT}/cnvkit
-#pip3 install -e .
+
+#################
+# fusioncatcher #
+#################
+cd ${DIR_SCRIPT}
+wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
+python bootstrap.py --prefix=${DIR_SCRIPT}/fusioncatcher -t -y
