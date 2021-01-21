@@ -9,7 +9,7 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
-readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel")
+readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel rna_fusions")
 readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 function usage() {
@@ -106,6 +106,8 @@ function run_panel_pipe() {
   # TODO CNV calling
   #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
   #wait
+  #("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log") &
+  #wait
 
   # create report based on the results of the processes above
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
@@ -125,6 +127,7 @@ function run_panel_pipe_seq() {
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
   #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
+  #("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log")
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
@@ -364,6 +367,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
             esac
           ;;
+
           panel)
             case "${PARAM_TASK}" in
               td)
@@ -371,11 +375,15 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               cnv)
-                "${DIR_SCRIPT}"/make_panel_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+                "${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
               ;;
 
               vc)
                 "${DIR_SCRIPT}"/make_panel_vc.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log"
+              ;;
+
+              rna_fusions)
+                "${DIR_SCRIPT}"/make_rna_fusions.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/fusions.log"
               ;;
 
               report)
@@ -395,6 +403,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
             esac
           ;;
+
           tumorOnly)
             case "${PARAM_TASK}" in
               td)
