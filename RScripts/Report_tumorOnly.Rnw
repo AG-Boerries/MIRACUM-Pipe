@@ -93,6 +93,41 @@ kable(tmp2, booktabs = T, row.names = F, caption = "Zusammenfassung der identifi
   \caption{Darstellung aller identifizierten Mutationen aus DNA und Fusionen aus RNA (im inneren Kreis). In Gelb ist der abgedeckte Breich dargestellt.}
 \end{figure}
 
+# TODO
+<<eval=TRUE, results="tex", echo=FALSE>>=
+q_t <- c()
+if (round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2) < 80){
+  q_t[1] <- "Akzeptabel"} else if (round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2) < 100){
+    q_t[1] <- "Gut"
+  } else {q_t[1] <- "Sehr gut"}
+if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 90){
+  q_t[2] <- "Sehr gut"
+} else { q_t[2] <- "Akzeptabel"}
+if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 90){
+  q_t[3] <- "Sehr gut"
+} else {q_t[3] <- "Akzeptabel"}
+if (as.numeric(stats$avreads$tin) > 100){
+  q_t[4] <- "Sehr gut"
+} else {q_t[4] <- "Akzeptabel"}
+if (as.numeric(stats$qc_check$gc_content[[1]]) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60){
+  q_t[5] <- "Sehr gut"
+} else {q_t[5] <- "Akzeptabel"}
+if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30){
+  q_t[6] <- "Sehr gut"
+} else {q_t[6] <- "Akzeptabel"}
+qp_t <- c(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"), paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100 , "%"), as.numeric(stats$avreads$tin) , as.numeric(stats$qc_check$gc_content[[1]]), round(stats$qc_check$mean_QC[[1]], digits = 2))
+names(qp_t) <- c("Mittlere Coverage", "Coverage > 8", "Coverage > 40", "Insertlänge", "GC-Anteil", "Mittlere Qualität")        
+if(length(which(q_t != "Sehr gut") > 0)){
+  warn_t <- paste0(names(qp_t)[which(q_t != "Sehr gut")], ": ", qp_t[which(q_t != "Sehr gut")])
+  q_t1 <- paste0(warn_t, collapse = ", ")
+} else {
+  q_t1 <- "Keine."
+}
+tab <- rbind(c("Tumor", q_t1))
+colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+kable(tab, booktabs = T, row.names = F, caption = "Auff\"alligkeiten in Qualit\"atsmerkmalen der Proben") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12)
+@
+
 \clearpage
 
 %%%% MUTATIONSANALYSE %%%%
@@ -409,6 +444,25 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \caption{Darstellung der Sequenzierung (a) als Output aus dem Sequenzierer und (b) nach der BQSR}
 \label{base_qual}
 \end{figure}
+
+# TODO 
+\begin{table}[h]
+  \centering
+  \caption{Qualit\"atsparameter zu den Proben}
+  \label{qual}
+  \begin{tabular}{p{0.2\textwidth}p{0.25\textwidth}p{0.25\textwidth}p{0.25\textwidth}}
+  \hline Gewebe & Tumor & Soll \\\hline
+  Mittlere Coverage & \Sexpr{round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2)} Reads & Sehr gut >100, gut: 80-100 \\
+  Anteil der Basen > 8 Reads & \Sexpr{round(stats$cover$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
+  Anteil der Basen > 40 Reads & \Sexpr{round(stats$cover$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
+  Anteil der exonischen Basen > 8 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
+  Anteil der exonischen Basen > 40 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% Sehr gut: >90\%, akzeptabel: >60\% \\
+  Insertgröße & \Sexpr{stats$avreads$tin} $\pm$  \Sexpr{stats$avreads$tin_sd}bp & >100 bp \\
+  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[2]]} \% & 40-60 \% \\
+  Mittlere Qualität pro Base & \Sexpr{round(stats$qc_check$mean_QC[[1]], digits = 2) } & > 0 \\\hline
+  
+  \end{tabular}
+  \end{table}
 
 \subsection{Coverage}
 Die Mean-Coverage und die Gesamtcoverage der Tumorprobe ist ein weiteres Qualitätsmerkmal. Sind die Werte zu niedrig, sind viele Stellen im Genom unzureichend abgedeckt. Abbildung \ref{cov_plot} zeigt die kummulative Verteilung, durch die der Anteil an targeted Basen, die von einer bestimmten Anzahl an Reads abgedeckt sind, beschrieben wird.
