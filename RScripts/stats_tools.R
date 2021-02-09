@@ -146,3 +146,81 @@ treads <- function(tfile){
 
 return(list(nRT = ntreads, nRG = NULL))
 }
+
+coverage_exon <- function(path, protocol = protocol){
+  #' Coverage Exons
+  #'
+  #' @description Coverage Exons
+  #'
+  #' @param path string. Path to data
+  #' @param protocol string. Tumor_Normal oder Tumor_Only
+  #'
+  #' @return list of
+  #' @return cov numerical. Mean coverage
+  #' @return labs vector of strings. IDs for coverage files
+  #' @return perc vector. Vector containing percentage of targeted exons with at least
+  #' @return 8 or 40 reads for Tumor_Normal, 20 or 100 reads for Tumor_Only.
+  #' 
+  #' 
+
+  # Get a list of the bedtools output files you'd like to read in
+  print(files <- list.files(path = path, pattern = "exons.txt$"))
+  print(labs <- gsub("_coverage.exons.txt", "", files, perl = TRUE))
+  files <- paste(path, files, sep = "/")
+  
+  # Create lists to hold coverage and cumulative coverage for each alignment,
+  # and read the data into these lists.
+  cov <- list()
+  cov_cumul <- list()
+  for (i in 1:length(files)) {
+    cov[[i]] <- read.table(files[i])
+    cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
+  }
+  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
+  if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
+    min_cov <- 8
+    mit_cov <- 40
+  } else {
+    min_cov <- 20
+    mit_cov <- 100
+  }
+  perc <- list()
+  for (i in 1:length(files)) {
+    perc_mc <- 1 - sum(cov[[i]][which(cov[[i]][, 2] < min_cov), 5])
+    perc_min <- 1 - sum(cov[[i]][which(cov[[i]][, 2] < mit_cov), 5])
+    perc[[i]] <- c(perc_mc, perc_min)
+  }
+return(list(cov = cov, labs = labs, perc = perc))
+}
+
+quality_check <- function(path, nsamples, protocol){
+  gc_content <- rep(0, times = length(nsamples))
+  mean_QC <- rep(0, times = length(nsamples))
+  for (i in 1:length(nsamples)){
+    if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")){
+      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
+                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
+                              skip = 2 , nrows = 7, sep = "\t")
+      gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
+      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
+                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
+                              skip = 12 , nrows = 54, sep = "\t")
+      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
+                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
+      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+    }
+    if (protocol == "panelTumor") {
+      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
+                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
+                              skip = 2 , nrows = 7, sep = "\t")
+      gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
+      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
+                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
+                              skip = 12 , nrows = 54, sep = "\t")
+      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
+                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
+      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+    }
+  }
+ return(list(labs = nsamples, gc_content = gc_content, mean_QC = mean_QC)) 
+}

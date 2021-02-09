@@ -128,6 +128,70 @@ kable(tmp2, booktabs = T, row.names = F, caption = "Zusammenfassung der identifi
   \caption{Darstellung aller identifizierten Mutationen}
 \end{figure}
 
+# TODO
+<<eval=TRUE, results="tex", echo=FALSE>>=
+q_t <- c()
+if (round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2) < 80){
+  q_t[1] <- "Akzeptabel"} else if (round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2) < 100){
+    q_t[1] <- "Gut"
+  } else {q_t[1] <- "Sehr gut"}
+if (round(stats$cover$perc[[2]][1], digits = 2) * 100 > 90){
+  q_t[2] <- "Sehr gut"
+} else { q_t[2] <- "Akzeptabel"}
+if (round(stats$cover$perc[[2]][2], digits = 2) * 100 > 90){
+  q_t[3] <- "Sehr gut"
+} else {q_t[3] <- "Akzeptabel"}
+if (as.numeric(stats$avreads$tin) > 100){
+  q_t[4] <- "Sehr gut"
+} else {q_t[4] <- "Akzeptabel"}
+if (as.numeric(stats$qc_check$gc_content[[2]]) >= 40 && as.numeric(stats$qc_check$gc_content[[2]]) <= 60){
+  q_t[5] <- "Sehr gut"
+} else {q_t[5] <- "Akzeptabel"}
+if (round(stats$qc_check$mean_QC[[2]], digits = 2) > 30){
+  q_t[6] <- "Sehr gut"
+} else {q_t[6] <- "Akzeptabel"}
+qp_t <- c(round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), paste0(round(stats$cover$perc[[2]][1], digits = 2) * 100 , "%"), paste0(round(stats$cover$perc[[2]][2], digits = 2) * 100 , "%"), as.numeric(stats$avreads$tin) , as.numeric(stats$qc_check$gc_content[[2]]), round(stats$qc_check$mean_QC[[2]], digits = 2))
+names(qp_t) <- c("Mittlere Coverage", "Coverage > 8", "Coverage > 40", "Insertlänge", "GC-Anteil", "Mittlere Qualität")        
+if(length(which(q_t != "Sehr gut") > 0)){
+  warn_t <- paste0(names(qp_t)[which(q_t != "Sehr gut")], ": ", qp_t[which(q_t != "Sehr gut")])
+  q_t1 <- paste0(warn_t, collapse = ", ")
+} else {
+  q_t1 <- "Keine."
+}
+q_n <- c()
+if (round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2) < 80){
+  q_n[1] <- "Akzeptabel"} else if (round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2) < 100){
+    q_n[1] <- "Gut"
+  } else {q_n[1] <- "Sehr gut"}
+if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 90){
+  q_n[2] <- "Sehr gut"
+} else { q_n[2] <- "Akzeptabel"}
+if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 90){
+  q_n[3] <- "Sehr gut"
+} else {q_n[3] <- "Akzeptabel"}
+if (as.numeric(stats$avreads$tin) > 100){
+  q_n[4] <- "Sehr gut"
+} else {q_n[4] <- "Akzeptabel"}
+if (as.numeric(stats$qc_check$gc_content[[1]]) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60){
+  q_n[5] <- "Sehr gut"
+} else {q_n[5] <- "Akzeptabel"}
+if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30){
+  q_n[6] <- "Sehr gut"
+} else {q_n[6] <- "Akzeptabel"}
+qp_n <- c(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"), paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"), as.numeric(stats$avreads$tin) , as.numeric(stats$qc_check$gc_content[[1]]), round(stats$qc_check$mean_QC[[1]], digits = 2))
+names(qp_n) <- c("Mittlere Coverage", "Coverage > 8", "Coverage > 40", "Insertlänge", "GC-Anteil", "Mittlere Qualität")        
+if(length(which(q_n != "Sehr gut") > 0)){
+  warn_n <- paste0(names(qp_n)[which(q_n != "Sehr gut")], ": ", qp_n[which(q_n != "Sehr gut")])
+  q_n1 <- paste0(warn_n, collapse = ", ")
+} else {
+  q_n1 <- "Keine."
+}
+tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
+colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+kable(tab, booktabs = T, row.names = F, caption = "Auff\"alligkeiten in Qualit\"atsmerkmalen der Proben") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12)
+@
+
+
 \clearpage
 
 %%%% MUTATIONSANALYSE %%%%
@@ -631,6 +695,25 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \label{base_qual}
 \end{figure}
 \clearpage
+
+# TODO
+\begin{table}[h]
+  \centering
+  \caption{Qualit\"atsparameter zu den Proben}
+  \label{qual}
+  \begin{tabular}{p{0.2\textwidth}p{0.25\textwidth}p{0.25\textwidth}p{0.25\textwidth}}
+  \hline Gewebe & Tumor & Keimbahn & Soll \\\hline
+  Mittlere Coverage & \Sexpr{round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2)} Reads & \Sexpr{round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2)} Reads & Sehr gut >100, gut: 80-100 \\
+  Anteil der Basen > 8 Reads & \Sexpr{round(stats$cover$perc[[2]][1], digits = 2) * 100} \% &  \Sexpr{round(stats$cover$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
+  Anteil der Basen > 40 Reads & \Sexpr{round(stats$cover$perc[[2]][2], digits = 2) * 100} \% & \Sexpr{round(stats$cover$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
+  Anteil der exonischen Basen > 8 Reads & \Sexpr{round(stats$cover_exons$perc[[2]][1], digits = 2) * 100} \% &  \Sexpr{round(stats$cover_exons$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
+  Anteil der exonischen Basen > 40 Reads & \Sexpr{round(stats$cover_exons$perc[[2]][2], digits = 2) * 100} \% & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
+  Insertgröße & \Sexpr{stats$avreads$tin} $\pm$  \Sexpr{stats$avreads$tin_sd}bp & \Sexpr{stats$avreads$gin} $\pm$  \Sexpr{stats$avreads$gin_sd} bp & >100 bp \\
+  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[2]]} \% & \Sexpr{stats$qc_check$gc_content[[1]]} \% & 40-60 \% \\
+  Mittlere Qualität pro Base & \Sexpr{round(stats$qc_check$mean_QC[[2]], digits = 2) } & \Sexpr{round(stats$qc_check$mean_QC[[1]], digits = 2)} & > 0 \\\hline
+  
+  \end{tabular}
+  \end{table}
 
 \subsection{Coverage}
 

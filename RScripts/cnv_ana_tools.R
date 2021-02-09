@@ -457,7 +457,7 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   cnvs.sub.extended <- na.omit(cnvs.sub)
   # remove empty genes
   cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$Gene),]
-  cnvs.sub.extended$Entrez <- unlist(lapply(mget(cnvs.sub.extended$Gene, org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
+  cnvs.sub.extended$Entrez <- unlist(lapply(mget(as.character(cnvs.sub.extended$Gene), org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
   cnvs.out <- data.frame(Hugo_Symbol = cnvs.sub.extended$Gene, Entrez_Gene_Id = cnvs.sub.extended$Entrez, Sample_ID = cnvs.sub.extended$CopyNumber)
   
   # how to deal with multiple copy number variations for a single gene?

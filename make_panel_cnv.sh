@@ -84,9 +84,9 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 
 # keep
-readonly bam=${DIR_WES}/${NameTD}_output.sort.realigned.fixed.recal.bam
-readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.realigned.fixed.cnr
-readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.realigned.fixed.cns
+readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
+readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cnr
+readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cns
 
 # cnv calling
 cnvkit batch --method amplicon --reference "${FILE_FLAT_REFERENCE}" --output-dir "${DIR_CNV_OUTPUT}" "${bam}"

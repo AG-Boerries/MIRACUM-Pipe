@@ -113,9 +113,10 @@ readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed
 readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
 # keep
-recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+readonly recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
+readonly coverageexons=${DIR_WES}/${NameD}_coverage.exons.txt
 
 # fastqc zip to WES
 ${BIN_FASTQC} "${FILE_FASTQ_1}" -o "${DIR_WES}"
@@ -162,6 +163,9 @@ ${BIN_PRINT_READS} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 
 # coverage
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
+
+# advanced qc / coverage of exonic regions
+${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_COVERED_EXONS}" | grep '^all' > "${coverageexons}"
 
 # zip
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"

@@ -111,18 +111,20 @@ readonly fastq_o2_u_t=${DIR_TMP}/${NameD}_output2_unpaired_trimmed.fastq.gz
 readonly bam=${DIR_TMP}/${NameD}_output.bam
 readonly prefixsort=${DIR_TMP}/${NameD}_output.sort
 readonly sortbam=${DIR_TMP}/${NameD}_output.sort.bam
-readonly bai=${DIR_TMP}/${NameD}_output.sort.bai
-readonly bamlist=${DIR_TMP}/${NameD}_output.sort.bam.list
-readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.realigned.bam
-readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.realigned.bai
-readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.bam
-readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.bai
-readonly csv=${DIR_TMP}/${NameD}_output.sort.realigned.fixed.recal_data.csv
+readonly rmdupbam=${DIR_TMP}/${NameD}_output.sort.rmdup.bam
+readonly bai=${DIR_TMP}/${NameD}_output.sort.rmdup.bai
+readonly bamlist=${DIR_TMP}/${NameD}_output.sort.rmdup.bam.list
+readonly realignedbam=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.bam
+readonly realignedbai=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.bai
+readonly fixedbam=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.fixed.bam
+readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.fixed.bai
+readonly csv=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.fixed.recal_data.csv
 
 # keep
-recalbam=${DIR_WES}/${NameD}_output.sort.realigned.fixed.recal.bam
+readonly recalbam=${DIR_WES}/${NameD}_output.sort.rmdup.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
+readonly coverageexons=${DIR_WES}/${NameD}_coverage.exons.txt
 
 # TODO
 # Panel Files are spread over multiple files, e.g. 4
@@ -183,22 +185,22 @@ ${BIN_STATS} "${bam}" >"${statstxt}"
 ${BIN_SAMSORT} "${bam}" -T "${prefixsort}" -o "${sortbam}"
 
 # rmdup bam
-#${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
+${BIN_SAMVIEW} -b -f 0x2 -q "${CFG_SAMTOOLS_MPILEUP_MINMQ}" "${sortbam}" | ${BIN_SAMRMDUP} - "${rmdupbam}"
 
 # make bai
-${BIN_SAMINDEX} "${sortbam}" "${bai}"
+${BIN_SAMINDEX} "${rmdupbam}" "${bai}"
 
 # make bam list
-# ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${sortbam}"
+${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"
 
 # realign bam
-# ${BIN_INDEL_REALIGNER} -I "${sortbam}" -targetIntervals "${bamlist}" -o "${realignedbam}" # not working with panels due to the many reads per position
+${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}" # not working with panels due to the many reads per position
 
 # fix bam
-# ${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
 
 # fix bam
-${BIN_FIX_MATE} INPUT="${sortbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+# ${BIN_FIX_MATE} INPUT="${sortbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
 
 # make csv
 ${BIN_BASE_RECALIBRATOR} -I "${fixedbam}" \
@@ -209,6 +211,9 @@ ${BIN_PRINT_READS} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 
 # coverage
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
+
+# advanced qc / coverage of exonic regions
+${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_COVERED_EXONS}" | grep '^all' > "${coverageexons}"
 
 # fastqc
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"

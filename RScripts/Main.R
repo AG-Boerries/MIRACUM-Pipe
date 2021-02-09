@@ -88,7 +88,7 @@ if( protocol == "somaticGermline" | protocol == "somatic"){
 }
 if (protocol == "panelTumor"){
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
-  tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
+  tumor_bsqr <- paste0(path_input, sample, "_td_output.sort.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png")
 }
 if (protocol == "tumorOnly"){
   tumor <- paste0(path_input, strsplit(x = tumor, split = ".", fixed=T)[[1]][1], "_fastqc/Images/per_base_quality.png")
@@ -105,7 +105,7 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
     # GERMLINE NORMAL
     snp_file_gd <- paste0(path_input, sample, "_vc.output.snp.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
     indel_file_gd <- paste0(path_input, sample, "_vc.output.indel.Germline.hc.NORMAL.avinput.hg19_multianno.csv")
-    filter_out_gd <- paste0(path_output, sample, "_VC_Germline_NORMAL.xlsx")
+    filter_out_gd <- paste0(path_output, sample, "_vc_Germline_NORMAL.xlsx")
     snpefffile_snp_gd <- paste0(path_input, sample, "_vc.output.snp.NORMAL.SnpEff.vcf")
     snpefffile_indel_gd <- paste0(path_input, sample, "_vc.output.indel.NORMAL.SnpEff.vcf")
     outfile_circos_gd <- paste0(path_output, sample, "_GD_circos.pdf")
@@ -119,16 +119,11 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
   # LOH
   snp_file_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.hc.avinput.hg19_multianno.csv")
   indel_file_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.hc.avinput.hg19_multianno.csv")
-  loh_out <- paste0(path_output, sample, "_VC_LOH.xlsx")
+  loh_out <- paste0(path_output, sample, "_vc_LOH.xlsx")
   snpefffile_snp_loh <- paste0(path_input, sample, "_vc.output.snp.LOH.SnpEff.vcf")
   snpefffile_indel_loh <- paste0(path_input, sample, "_vc.output.indel.LOH.SnpEff.vcf")
   # Results
   outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
-  #outfile_go <- paste0(path_output, sample, "_TD_hyperGTest_GO.xlsx")
-  #outfile_reactome <- paste0(path_output, sample, "_TD_hyperGTest_Reactome.xlsx")
-  #outfile_consensus <- paste0(path_output, sample, "_TD_hyperGTest_Consensus.xlsx")
-  #outfile_hallmarks <- paste0(path_output, sample, "_TD_hyperGTest_Hallmarks.xlsx")
-  #outfile_mtb_genesets <- paste0(path_output, sample, "_TD_Genesets.xlsx")
   coverage_out <- paste0(path_output, sample, "_coverage.pdf")
   # MAFs
   maf_gd <- paste0(path_output, sample, "_Germline.maf")
@@ -208,11 +203,6 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
                                                 somatic = filt_result_td$table,
                                                 tumbu = filt_result_td$tmb,
                                                 outfile_circos = outfile_circos,
-                                                #outfile_go = outfile_go,
-                                                #outfile_reactome = outfile_reactome,
-                                                #outfile_consensus = outfile_consensus,
-                                                #outfile_hallmarks = outfile_hallmarks,
-                                                #outfile_mtb_genesets = outfile_mtb_genesets,
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
@@ -240,11 +230,6 @@ if (protocol == "panelTumor" | protocol == "tumorOnly"){
                                                 somatic = filt_result_td$table,
                                                 tumbu = filt_result_td$tmb,
                                                 outfile_circos = outfile_circos,
-                                                #outfile_go = outfile_go,
-                                                #outfile_reactome = outfile_reactome,
-                                                #outfile_consensus = outfile_consensus,
-                                                #outfile_hallmarks = outfile_hallmarks,
-                                                #outfile_mtb_genesets = outfile_mtb_genesets,
                                                 path_data = path_data,
                                                 path_script = path_script,
                                                 targets_txt = targets_txt,
