@@ -11,18 +11,7 @@ function install_java8()
   apt-get install -y --no-install-recommends apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
   wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
   add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install adoptopenjdk-8-hotspot
-}
-
-function install_jdk8()
-{
-  ## install jre8
-   apt-get install -y --no-install-recommends apt-transport-https ca-certificates wget curl dirmngr gnupg software-properties-common && \
-   cp /etc/apt/sources.list /etc/apt/sources.list.bak && \
-   echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list && \
-   apt-get update && apt-get -y install openjdk-8-jdk java8-runtime-headless ant && \
-   mv /etc/apt/sources.list.bak /etc/apt/sources.list && \
-   apt-get update
+  apt-get update && apt-get install -y --no-install-recommends adoptopenjdk-8-hotspot
 }
 
 function install_texlive()
