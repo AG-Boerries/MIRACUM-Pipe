@@ -169,7 +169,7 @@ if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 90){
 if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 90){
   q_n[3] <- "Sehr gut"
 } else {q_n[3] <- "Akzeptabel"}
-if (as.numeric(stats$avreads$tin) > 100){
+if (as.numeric(stats$avreads$gin) > 100){
   q_n[4] <- "Sehr gut"
 } else {q_n[4] <- "Akzeptabel"}
 if (as.numeric(stats$qc_check$gc_content[[1]]) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60){
@@ -178,7 +178,7 @@ if (as.numeric(stats$qc_check$gc_content[[1]]) >= 40 && as.numeric(stats$qc_chec
 if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30){
   q_n[6] <- "Sehr gut"
 } else {q_n[6] <- "Akzeptabel"}
-qp_n <- c(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"), paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"), as.numeric(stats$avreads$tin) , as.numeric(stats$qc_check$gc_content[[1]]), round(stats$qc_check$mean_QC[[1]], digits = 2))
+qp_n <- c(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"), paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"), as.numeric(stats$avreads$gin) , as.numeric(stats$qc_check$gc_content[[1]]), round(stats$qc_check$mean_QC[[1]], digits = 2))
 names(qp_n) <- c("Mittlere Coverage", "Coverage > 8", "Coverage > 40", "Insertlänge", "GC-Anteil", "Mittlere Qualität")        
 if(length(which(q_n != "Sehr gut") > 0)){
   warn_n <- paste0(names(qp_n)[which(q_n != "Sehr gut")], ": ", qp_n[which(q_n != "Sehr gut")])
@@ -696,7 +696,7 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \end{figure}
 \clearpage
 
-# TODO
+% TODO 
 \begin{table}[h]
   \centering
   \caption{Qualit\"atsparameter zu den Proben}
