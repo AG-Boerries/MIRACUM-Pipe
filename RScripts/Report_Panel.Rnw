@@ -66,8 +66,8 @@ if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
 } else if (sureselect_type %in% c("TSO500", "TruSight_Tumor")) {
   sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
 }
-# tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl Mutationen (VAF > 10%)", "Anzahl CNV- Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
-tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", "Mutationslast (VAF > 10%)", "Anzahl Mutationen (VAF > 10%)"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 3])), digits = 0)))
+# tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", paste0("Mutationslast (VAF > ", vaf, "%)"), paste0("Anzahl Mutationen (VAF > ", vaf, "%)"), "Anzahl CNV- Regionen"), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0), paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen")))
+tmp1 <- data.frame(Eigenschaften = c("Capture Kit", "Abgedeckte Region", paste0("Mutationslast (VAF > ", vaf, "%)"), paste0("Anzahl Mutationen (VAF > ", vaf, "%)")), Wert = c(as.character(sureselect_type), paste(covered_region, "Mb", sep = ""), paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"), round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 3])), digits = 0)))
 kable(tmp1, booktabs = T, row.names = F, caption = "Schl\"usselergebnisse der Analyse") %>% kable_styling(latex_options = c( "hold_position"), font_size = 12) %>% column_spec(1, width = "25em") %>% column_spec(2, width = "9em")
 @
 
@@ -134,7 +134,7 @@ kable(tab, booktabs = T, row.names = F, caption = "Auff\"alligkeiten in Qualit\"
 %%%% MUTATIONSANALYSE %%%%
 \section{Mutationsanalyse}
 \subsection{Detaillierte \"Ubersicht}
-In der Analyse werden nur seltene Mutationen mit einer \textit{Variant Allele Frequency} (VAF) über 10\% betrachtet. Gezeigt werden Mutationen vom Typ \textit{single nucleotide variation} (SNV) und \textit{Insertion and Deletions} (InDel).\\
+In der Analyse werden nur seltene Mutationen mit einer \textit{Variant Allele Frequency} (VAF) über \Sexpr{vaf}\% betrachtet. Gezeigt werden Mutationen vom Typ \textit{single nucleotide variation} (SNV) und \textit{Insertion and Deletions} (InDel).\\
 Im Weiteren werden die Ergebnisse der Mutationsanalyse in Tabellen dargestellt. Zunächst eine Übersicht über die Anzahl der Mutationen, aufgeteilt in verschiedene Mutationstypen (Tab \ref{mut_ana_ov}). Es wird gelistet, wieviele dieser Mutationen in einem sogenannten Cancergene nach OncoKB, aufgeteilt in Tumorsuppressoren und Onkogene, identifiziert wurden. Desweiteren wird die Anzahl der sogenannten \textit{Cancer Hotspot Mutationen} (HS) nach cancerhotspots.org angegeben.\\
 Die Lage der Mutationen im Genom wird, aufgeteilt nach Mutationstyp (SNVs, Indel), im Circosplot dargestellt (Abb \ref{cir_plot}). Die gelben Bereiche sind die Regionen, die das Panel abdeckt. Wenn Fusionen in der Probe identifiziert wurden, werde diese im inneren Kreis abgebildet.
 
@@ -178,7 +178,7 @@ Am Ende wird die Zuordnung des Gens als Cancergenes nach der Klassifikation von 
 \definecolor{aquamarine}{rgb}{0, 1.0, 1.0}
 \textbf{Bei den Gensymbolen ist ein Link zur Mutation entsprechenden Seite von {\color{aquamarine}\textit{Genome Nexus}} hinterlegt. Dort wird ein Lollipop-Plot zur Lage der Mutation im Gen angezeigt sowie weitere Informationen. Bei dem Aminosäurenaustausch ist ein Link zum Eintrag der Mutation in der {\color{aquamarine}\textit{The Variant Interpretation for Cancer Consortium Meta-Knowledgebase}} verknüpft. Dieser Link funktioniert allerdings aufgrund eines Sonderzeichens in der URL nicht bei Verwendung des Dokuments mit der Vorschau von Apple, aber unter Verwendung von Acrobat Reader.}\\
 
-Im Anhang  befinden sich Tabellen zu allen detektierten Mutationen (Kap \ref{all_som_mut}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über 10\% gelistet.
+Im Anhang  befinden sich Tabellen zu allen detektierten Mutationen (Kap \ref{all_som_mut}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über \Sexpr{vaf}\% gelistet.
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
 tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16:20)]
