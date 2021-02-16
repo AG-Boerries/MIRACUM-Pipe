@@ -295,5 +295,5 @@ reference:
     # target capture correlation factors for mutation signature analysis
     captureCorFactors : targetCapture_cor_factors.rda
     # covered exons by capture kit; basically intersection of exome with capture regions
-    # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed
+    # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed -u
     coveredExons: exons_5UTR.bed
