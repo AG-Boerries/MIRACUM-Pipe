@@ -68,12 +68,12 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
 # FASTQC
 for f in ${input}/*.fastq.gz; do
-    "${BIN_FASTQC} ${f} -o ${DIR_RNA}"
+    ${BIN_FASTQC} "${f}" -o "${DIR_RNA}"
 done
 
 # Pseudoalignment
 #	${KALLISTO} -o ${Out} --plaintext -t 12 ${InputPath}/${fastq1} ${InputPath}/${fastq2}
 
 # Fusioncatcher
-	${FUSION} -i ${input} -o ${DIR_FUSIONS}
+	${BIN_FUSIONCATCHER} -i "${input}" -o "${DIR_FUSIONS}"
 	
