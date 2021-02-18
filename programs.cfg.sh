@@ -242,8 +242,8 @@ readonly BIN_CNVKIT=$(command -v cnvkit.py)
 readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # fusioncatcher
-readonly FUSIONCATCHER_DB="${DIR_TOOLS}/fusioncatcher/current"
-readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSION_DB} "
+readonly FUSIONCATCHER_DB="${DIR_TOOLS}/fusioncatcher/data/current"
+readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSIONCATCHER_DB} "
 
 # export parameters
 export CFG_AUTHOR
