@@ -629,10 +629,10 @@ Für die SNVs und die CNVs werden funktionelle Analysen durchgeführt. Dabei wir
 <<hm_snv, echo=FALSE, results='tex', eval=TRUE>>=
 if(dim(mutation_analysis_result$hallmarks)[1] == 0) {
   cap <- "Keine signifikant betroffene Signalwege identifiziert.\\label{hm_snv}"
-  kable(data.frame('Term' = c("."), 'Count' = c("."), 'Size' = c("."), 'p-value' = c("."), 'adj. p-value' = c(".")), caption = cap, booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  kable(data.frame('Term' = c("."), 'Count' = c("."), 'Size' = c("."), 'p-value' = c("."), 'adj.P.Val' = c(".")), caption = cap, booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 } else {
   if(dim(mutation_analysis_result$hallmarks)[1] >= 20){
-    tmp <- mutation_analysis_result$hallmarks[1:20,c("Term", "Count", "Size", "p-value", "adj. p-value")]
+    tmp <- mutation_analysis_result$hallmarks[1:20,c("Term", "Count", "Size", "p-value", "adj.P.Val")]
     tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
     tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
     kable(tmp, caption = 'Ergebnisse Hallmarks of Cancer Analyse, top 20\\label{hm_snv}', booktabs = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
