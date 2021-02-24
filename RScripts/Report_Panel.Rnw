@@ -94,7 +94,6 @@ kable(tmp2, booktabs = T, row.names = F, caption = "Zusammenfassung der identifi
   \caption{Darstellung aller identifizierten Mutationen aus DNA und Fusionen aus RNA (im inneren Kreis). In Gelb ist der abgedeckte Breich dargestellt.}
 \end{figure}
 
-# TODO
 <<eval=TRUE, results="tex", echo=FALSE>>=
 q_t <- c()
 if (round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2) < 80){
@@ -343,7 +342,6 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \label{base_qual}
 \end{figure}
 
-# TODO 
 \begin{table}[h]
   \centering
   \caption{Qualit\"atsparameter zu den Proben}
