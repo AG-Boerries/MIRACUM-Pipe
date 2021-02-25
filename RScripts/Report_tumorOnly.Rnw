@@ -182,7 +182,7 @@ Im Anhang  befinden sich Tabellen zu allen detektierten Mutationen (Kap \ref{all
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
 tmp <- mutation_analysis_result$ts_og[, c(1:5, 7:12, 14, 16:20)]
 if(dim(tmp)[1] == 0) {
-  kable(data.frame(Gen = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c("."), OG = c("."), TSG = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
+  kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   # add a hyperlink to metaKB and one to GenomeNexus
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
@@ -248,7 +248,7 @@ if(dim(tmpo)[1]!=0){
   kable(tmpo, format = "latex", caption = "Identifizierte Losse in Onkogenen\\label{og_loss}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
 } else {
   cap <- "Keine Losse in Onkogenen identifiziert.\\label{og_loss}"
-  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
 }
 @
 
@@ -260,7 +260,7 @@ if(dim(tmpg)[1]!=0){
   kable(tmpg, format = "latex", caption = "Identifizierte Gains in Onkogenen\\label{og_gain}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
 }else {
   cap <- "Keine Gains in Onkogenen identifiziert.\\label{og_gain}"
-  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
   }
 @
 
@@ -275,7 +275,7 @@ if(dim(tmpo)[1]!=0){
   kable(tmpo, format = "latex", caption = "Identifizierte Losse in Tumorsuppressoren\\label{tsg_loss}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "2em") %>% row_spec(0, angle = 60)
 }else {
   cap <- "Keine Losse in Tumorsuppressoren identifiziert.\\label{tsg_loss}"
-  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
   }
 @
 
@@ -287,7 +287,7 @@ if(dim(tmpg)[1]!=0){
   kable(tmpg, format = "latex", caption = "Identifizierte Gains in Tumorsuppressoren\\label{tsg_gain}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "2em") %>% row_spec(0, angle = 60)
 }else {
   cap <- "Keine Gains in Tumorsuppressoren identifiziert.\\label{tsg_gain}"
-  kable(data.frame(Chromosom = c("."), Kopien = c("."), Onkogene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
   }
 @
 
@@ -307,7 +307,7 @@ if(length(id_to) != 0) {
 }
 if (length(tmp) == 0){
   cap <- "Keine Mutationen in wichtigen Signalwegen identifiziert.\\label{imp_ptws}"
-  kable(data.frame(Signalweg = c("."), Gen = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+  kable(data.frame('Signalweg' = c("."), 'Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3, 4, 9), width = "5em") %>% column_spec(c(1:2, 5:6, 7), width = "3em") %>% column_spec(c(8), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else{
   tmp <- tmp[ ,c("Pathway", "Symbol", "AAChange", "ExonicFunc", "VAF", "Reads", "MAF", "Condel", "COSMIC")]
   colnames(tmp) <- c("Pathway", "Symbol", "Aminoacid Change", "ExonicFunction", "VAF", "Reads", "MAF", "Condel", "COSMIC")
@@ -340,7 +340,7 @@ if (length(tmp) == 0){
 tmp <- cnv_analysis_results$impa
 if (any(unlist(lapply(lapply(tmp,length), function(x){x == 0})))){
   cap <- "Es wurden keine CNVs in wichtigen Signalwegen identifiziert.\\label{imp_ptws_cnv}"
-  kable(data.frame(Signalweg = c("."), Status = c("."), Kopien = c("."), Gene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
+  kable(data.frame('Signalweg' = c("."), 'Status' = c("."), 'Kopien' = c("."), 'Gene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else{
   tmp <- lapply(1:length(tmp), function(id) {if(nrow(tmp[[id]])) {cbind(tmp[[id]], names(tmp)[id])}})
   table_new <- lapply(tmp, function(x){
