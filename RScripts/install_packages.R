@@ -5,7 +5,7 @@
 # Extended by: Patrick Metzger
 # Extended on: 14.05.2020
 
-options(repos=structure(c(CRAN="http://cloud.r-project.org")))
+options(repos=structure(c(CRAN="http://cloud.r-project.org")), timeout = 600)
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
