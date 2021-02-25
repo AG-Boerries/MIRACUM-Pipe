@@ -169,7 +169,6 @@ treads <- function(tfile){
   return(list(nRT = ntreads, tin = tin_size, tin_sd = tin_sd,
               nRG = NULL, gin = NULL, gin_sd = NULL))
 }
-}
 
 coverage_exon <- function(path, protocol = protocol){
   #' Coverage Exons
