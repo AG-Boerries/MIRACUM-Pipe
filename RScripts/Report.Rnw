@@ -317,7 +317,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
     tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
     tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
-    tmp <- tmp[order(as.numeric(gsub('%', '', tmp$VAF_Tumor)), decreasing =  TRUE), , drop = FALSE]
+    tmp <- tmp[order(as.numeric(gsub('\\\\%.*', '', tmp$VAF_Tumor)), decreasing =  TRUE), , drop = FALSE]
     tmp <- tmp[, c(1, 4, 3, 6, 5, 10:11, 15, 14, 13)]
     colnames(tmp) <- c("Gen", "AA-Austausch", "Funktion", "VAF (Coverage) Tumor", "VAF (Coverage) Keimbahn", "MAF", "Condel", "Cosmic", "OG", "TSG")
     kable(tmp, format = "latex", caption = "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}", booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(3:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
@@ -813,7 +813,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp$AF_nfe[is.na(tmp$AF_nfe)] <- "."
   tmp$condel.label[which(is.na(tmp$condel.label))] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
-  tmp <- tmp[order(as.numeric(gsub('%', '', tmp$VAF_Tumor)), decreasing =  TRUE), , drop = FALSE]
+  tmp <- tmp[order(as.numeric(gsub('\\\\%.*', '', tmp$VAF_Tumor)), decreasing =  TRUE), , drop = FALSE]
   tmp$Cancergene <- ""
   tmp$Cancergene[which(tmp$is_tumorsuppressor == 1)] <- "TSG"
   tmp$Cancergene[which(tmp$is_oncogene == 1)] <- paste0("OG", tmp$Cancergene[which(tmp$is_oncogene == 1)])
