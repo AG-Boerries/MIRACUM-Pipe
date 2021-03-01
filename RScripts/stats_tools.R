@@ -226,9 +226,9 @@ quality_check <- function(path, nsamples, protocol){
       fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
       fastq_data <- read.table(file = filename, skip = 12 , nrows = sectionEndings[2]-14, sep = "\t")
-      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
-                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
-      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+      readlength <- convert_readlength(fastq_data$V1)
+      sum_QC <- sum(readlength * fastq_data$V2)
+      mean_QC[i] <- sum_QC/sum(readlength)
     }
     if (protocol == "panelTumor") {
       filename <- paste0(path, "/", nsamples[i], "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt")
@@ -236,10 +236,18 @@ quality_check <- function(path, nsamples, protocol){
       fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
       fastq_data <- read.table(file = filename, skip = 12 , nrows = sectionEndings[2]-14, sep = "\t")
-      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
-                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
-      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+      readlength <- convert_readlength(fastq_data$V1)
+      sum_QC <- sum(readlength * fastq_data$V2)
+      mean_QC[i] <- sum_QC/sum(readlength)
     }
   }
- return(list(labs = nsamples, gc_content = gc_content, mean_QC = mean_QC)) 
+  return(list(labs = nsamples, gc_content = gc_content, mean_QC = mean_QC)) 
+}
+
+convert_readlength <- function(x) {
+  split <- str_split(x, "-", simplify = T)
+  start <- as.numeric(split[,1])
+  end <- as.numeric(split[,2])
+  end[is.na(end)] = start[is.na(end)]
+  return((end-start)+1)
 }
