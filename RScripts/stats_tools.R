@@ -225,9 +225,11 @@ quality_check <- function(path, nsamples, protocol){
                                             "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
                               skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
+      readlength <- as.numeric(strsplit(as.character(fastq_data[which(fastq_data$V1 == "Sequence length"), 2]), split = "-")[[1]][2])
+      rows2read <- 10+(readlength-10)/2
       fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
                                             "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = 54, sep = "\t")
+                              skip = 12 , nrows = rows2read, sep = "\t")
       sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
                 sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
       mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
@@ -237,9 +239,11 @@ quality_check <- function(path, nsamples, protocol){
                                             "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
                               skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
+      readlength <- as.numeric(strsplit(as.character(fastq_data[which(fastq_data$V1 == "Sequence length"), 2]), split = "-")[[1]][2])
+      rows2read <- 10+(readlength-10)/2
       fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
                                             "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = 54, sep = "\t")
+                              skip = 12 , nrows = rows2read, sep = "\t")
       sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
                 sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
       mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
