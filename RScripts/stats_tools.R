@@ -221,29 +221,21 @@ quality_check <- function(path, nsamples, protocol){
   mean_QC <- rep(0, times = length(nsamples))
   for (i in 1:length(nsamples)){
     if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")){
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 2 , nrows = 7, sep = "\t")
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
+      sectionEndings <- which(str_detect(readLines(file(filename, "r", blocking = F)), ">>END_MODULE") == TRUE)
+      fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
-      readlength <- as.numeric(strsplit(as.character(fastq_data[which(fastq_data$V1 == "Sequence length"), 2]), split = "-")[[1]][2])
-      rows2read <- 10+(readlength-10)/2
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = rows2read, sep = "\t")
+      fastq_data <- read.table(file = filename, skip = 12 , nrows = sectionEndings[2]-14, sep = "\t")
       sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
                 sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
       mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
     }
     if (protocol == "panelTumor") {
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 2 , nrows = 7, sep = "\t")
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt")
+      sectionEndings <- which(str_detect(readLines(file(filename, "r", blocking = F)), ">>END_MODULE") == TRUE)
+      fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")
       gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
-      readlength <- as.numeric(strsplit(as.character(fastq_data[which(fastq_data$V1 == "Sequence length"), 2]), split = "-")[[1]][2])
-      rows2read <- 10+(readlength-10)/2
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = rows2read, sep = "\t")
+      fastq_data <- read.table(file = filename, skip = 12 , nrows = sectionEndings[2]-14, sep = "\t")
       sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
                 sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
       mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
