@@ -122,13 +122,13 @@ reads <- function(tfile, gfile){
   #' 
   #' @details The statistics files contain information about properly paired
   #' @details reads. The information is extracted for the report.
-  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
+  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
   id <- which (as.character(treads$V2) == "reads properly paired:")
   treads <- as.character(treads$V3[id])
   treads <- as.numeric(treads)/1000000
   ntreads <- round(treads)
   
-  greads <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 31)
+  greads <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
   id <- which (as.character(greads$V2) == "reads properly paired:")
   greads <- as.character(greads$V3[id])
   greads <- as.numeric(greads)/1000000
@@ -138,7 +138,7 @@ reads <- function(tfile, gfile){
 }
 
 treads <- function(tfile){
-  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
+  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
   id <- which (as.character(treads$V2) == "reads properly paired:")
   treads <- as.character(treads$V3[id])
   treads <- as.numeric(treads)/1000000
