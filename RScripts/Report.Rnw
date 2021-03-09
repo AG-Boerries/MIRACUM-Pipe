@@ -564,7 +564,7 @@ if(dim(tmp)[1] != 0){
   tmp$condel.label[is.na(tmp$condel.label)] <- "."
   tmp$AAChange <- gsub(pattern = ";", replacement = "; ", x = tmp$AAChange)
   tmp <- tmp[order(as.numeric(gsub('%', '', tmp$Variant_Allele_Frequency)), decreasing =  TRUE), , drop = FALSE]
-  tmp <- tmp[, c(16, 4, 17, 7:8, 18, 10:11)]
+  tmp <- tmp[, c(15, 2:3, 16,  6:7, 17, 9:10)]
   colnames(tmp) <- c("Gen", "AA-Austausch", "Funktion", "VAF (Coverage)", "MAF", "Condel", "Cosmic", "OG", "TSG")
   cap_1 <- "Identifizierte Keimbahn Mutationen in Cancergenes.\\label{gl_cg}"
   kable(tmp, format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 7), width = "5em") %>% column_spec(c(1, 5), width = "5em") %>% column_spec(c(3:4), width = "3em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
@@ -605,7 +605,7 @@ if(is.null(mutation_analysis_result_gd$important_pathways)) {
       tmp$ExonicFunction <- gsub(pattern = "startloss", replacement = "SL", x = tmp$ExonicFunction)
       tmp$ExonicFunction <- gsub(pattern = "splice_region_variant&synonymous_variant", replacement = "splice", x = tmp$ExonicFunction)
       tmp$ExonicFunction <- gsub(pattern = "nonframeshift substitution", replacement = "nfsSub", x = tmp$ExonicFunction)
-      tmp <- tmp[, c(1:2, 4:6, 8:9, 11)]
+      tmp <- tmp[, c(1:5, 7:8, 10)]
       dup <- which(duplicated(tmp))
       if (length(dup) > 0){
         tmp[dup, 7] <- paste0(tmp[dup, 7], ".")
