@@ -136,7 +136,7 @@ reads <- function(tfile, gfile){
   #' 
   #' @details The statistics files contain information about properly paired
   #' @details reads. The information is extracted for the report.
-  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 38)
+  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 38, fill = TRUE)
   id <- which (as.character(treads_tab$V2) == "reads properly paired:")
   treads <- as.character(treads_tab$V3[id])
   treads <- as.numeric(treads)/1000000
@@ -144,7 +144,7 @@ reads <- function(tfile, gfile){
   tin_size <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size average:")])
   tin_sd <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size standard deviation:")])
 
-  greads_tab <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 38)
+  greads_tab <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 38, fill = TRUE)
   id <- which (as.character(greads_tab$V2) == "reads properly paired:")
   greads <- as.character(greads_tab$V3[id])
   greads <- as.numeric(greads)/1000000
@@ -158,7 +158,7 @@ reads <- function(tfile, gfile){
 }
 
 treads <- function(tfile){
-  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
+  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
   id <- which (as.character(treads_tab$V2) == "reads properly paired:")
   treads <- as.character(treads_tab$V3[id])
   treads <- as.numeric(treads)/1000000
