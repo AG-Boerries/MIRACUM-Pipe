@@ -57,6 +57,7 @@ targetCapture_cor_factors <- args[20]
 vaf <- as.numeric(args[21])*100
 min_var_count <- as.numeric(args[22])
 maf_cutoff <- as.numeric(args[23])
+actionable_genes <- args[24]
 
 #############
 # Functions #
@@ -172,7 +173,7 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
                                 mode = "N", center = center, id = id,
                                 protocol = protocol, sureselect = bed_file,
                                 vaf = vaf, min_var_count = min_var_count,
-                                maf = maf_cutoff)
+                                maf = maf_cutoff, actionable_genes = actionable_genes)
     
     mutation_analysis_result_gd <- mutation_analysis(loh = NULL,
                                                      somatic = filt_result_gd$table,
