@@ -454,9 +454,9 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
   Anteil der Basen > 8 Reads & \Sexpr{round(stats$cover$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
   Anteil der Basen > 40 Reads & \Sexpr{round(stats$cover$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
   Anteil der exonischen Basen > 8 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
-  Anteil der exonischen Basen > 40 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% Sehr gut: >90\%, akzeptabel: >60\% \\
+  Anteil der exonischen Basen > 40 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
   Insertgröße & \Sexpr{stats$avreads$tin} $\pm$  \Sexpr{stats$avreads$tin_sd}bp & >100 bp \\
-  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[2]]} \% & 40-60 \% \\
+  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[1]]} \% & 40-60 \% \\
   Mittlere Qualität pro Base & \Sexpr{round(stats$qc_check$mean_QC[[1]], digits = 2) } & > 0 \\\hline
   
   \end{tabular}
