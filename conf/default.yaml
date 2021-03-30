@@ -298,4 +298,4 @@ reference:
     # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed -u
     coveredExons: exons_5UTR.bed
     # whitelist for genes in germline to be reported (e.g. by ACMG)
-    actionableGenes: actionable_genes.txt
+    # actionableGenes: actionable_genes.txt
