@@ -254,6 +254,14 @@ if(dim(tmp)[1] == 0) {
   # add a hyperlink to metaKB and one to GenomeNexus
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  id_del <- which(tmp$Alt == "-")
+  id_ins <- which(tmp$Ref == "-")
+  if (length(id_del) > 0) {
+    tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+  }
+  if (length(id_ins) > 0) {
+    tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+  }
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
@@ -293,6 +301,14 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     tmp <- tmp[id, ,drop=F]
     tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
     tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+    id_del <- which(tmp$Alt == "-")
+    id_ins <- which(tmp$Ref == "-")
+    if (length(id_del) > 0) {
+      tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+    }
+    if (length(id_ins) > 0) {
+      tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+    }
     hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
     tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
     tmp$Gene.refGene <- tmp$Gene.refGene_new
@@ -539,6 +555,14 @@ Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die
 tmp <- filt_result_gd$table[, c("Gene.refGene", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+id_del <- which(tmp$Alt == "-")
+id_ins <- which(tmp$Ref == "-")
+if (length(id_del) > 0) {
+  tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+}
+if (length(id_ins) > 0) {
+  tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+}
 hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
 tmp$Gene.refGene <- tmp$Gene.refGene_new
 tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
@@ -746,6 +770,14 @@ tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16:20, 8:9)]
 # add a hyperlink to metaKB and one to GenomeNexus
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+id_del <- which(tmp$Alt == "-")
+id_ins <- which(tmp$Ref == "-")
+if (length(id_del) > 0) {
+  tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+}
+if (length(id_ins) > 0) {
+  tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+}
 hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
 tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
 tmp$Gene.refGene <- tmp$Gene.refGene_new
@@ -790,6 +822,14 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
     tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   # add a hyperlink to metaKB and one to GenomeNexus
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  id_del <- which(tmp$Alt == "-")
+  id_ins <- which(tmp$Ref == "-")
+  if (length(id_del) > 0) {
+    tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+  }
+  if (length(id_ins) > 0) {
+    tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+  }
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
@@ -834,11 +874,17 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0){
   tmp <- filt_result_gd$table[, c("Gene.refGene", "GeneName", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  id_del <- which(tmp$Alt == "-")
+  id_ins <- which(tmp$Ref == "-")
+  if (length(id_del) > 0) {
+    tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+  }
+  if (length(id_ins) > 0) {
+    tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+  }
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
-  # tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
-  # tmp <- tmp[-grep(pattern = ";", x = tmp$Gene.refGene, fixed = TRUE), ]# not working if the grep result is zero because it then deletes all rows
   if(dim(tmp)[1] != 0){
     tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
     tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)

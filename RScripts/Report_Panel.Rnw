@@ -187,6 +187,14 @@ if(dim(tmp)[1] == 0) {
   # add a hyperlink to metaKB and one to GenomeNexus
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+  id_del <- which(tmp$Alt == "-")
+  id_ins <- which(tmp$Ref == "-")
+  if (length(id_del) > 0) {
+    tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+  }
+  if (length(id_ins) > 0) {
+    tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+  }
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
   tmp$Gene.refGene <- tmp$Gene.refGene_new
@@ -352,9 +360,9 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
   Anteil der Basen > 20 Reads & \Sexpr{round(stats$cover$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
   Anteil der Basen > 100 Reads & \Sexpr{round(stats$cover$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
   Anteil der exonischen Basen > 20 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][1], digits = 2) * 100} \% & >90\% \\
-  Anteil der exonischen Basen > 100 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% Sehr gut: >90\%, akzeptabel: >60\% \\
+  Anteil der exonischen Basen > 100 Reads & \Sexpr{round(stats$cover_exons$perc[[1]][2], digits = 2) * 100} \% & Sehr gut: >90\%, akzeptabel: >60\% \\
   Insertgröße & \Sexpr{stats$avreads$tin} $\pm$  \Sexpr{stats$avreads$tin_sd}bp & >100 bp \\
-  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[2]]} \% & 40-60 \% \\
+  GC-Anteil & \Sexpr{stats$qc_check$gc_content[[1]]} \% & 40-60 \% \\
   Mittlere Qualität pro Base & \Sexpr{round(stats$qc_check$mean_QC[[1]], digits = 2) } & > 0 \\\hline
   
   \end{tabular}
@@ -389,6 +397,14 @@ tmp <-  mutation_analysis_result$som_mut_tab[, c(1:5, 7, 11:12, 14, 16:20, 8:9)]
 # add a hyperlink to metaKB and one to GenomeNexus
 tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
 tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
+id_del <- which(tmp$Alt == "-")
+id_ins <- which(tmp$Ref == "-")
+if (length(id_del) > 0) {
+  tmp$Gene.refGene_new[id_del] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_del], ":g.", tmp$Start[id_del], tmp$Ref[id_del], "\\%3Edel}{", tmp$Gene.refGene[id_del], "}}")
+}
+if (length(id_ins) > 0) {
+  tmp$Gene.refGene_new[id_ins] <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr[id_ins], ":g.", tmp$Start[id_ins], "_", (tmp$Start[id_ins] + nchar(tmp$Alt[id_ins])), "ins\\%3El", tmp$Alt[id_ins], "}{", tmp$Gene.refGene[id_ins], "}}")
+}
 hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
 tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
 tmp$Gene.refGene <- tmp$Gene.refGene_new
