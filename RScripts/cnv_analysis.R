@@ -82,18 +82,24 @@
 #        = cnv_analysis_results, out = out, impa = impa))
 # }
 
-cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt,
-                         outfile_ideogram, path_data, path_script, targets_txt, id, outfile_cbioportal, protocol){
+cnv_analysis <- function(ratio_file, cnvs_file, cpn_file, cnv_pvalue_txt, outfile_ideogram, path_data,
+                         path_script, targets_txt, id, outfile_cbioportal, outfile_seg, protocol){
 #' CNV Analysis
 #'
 #' @description Analyse the
 #'
 #' @param ratio_file string. Filename for ratio
 #' @param cnvs_file string. Filename for CNVs
+#' @param cpn_file string. Filename for CPN
 #' @param cnv_pvalue_txt string. Filename of CNV regions file
 #' @param outfile_ideogram string. Filename of ideogram
 #' @param path_data string. Directory of the databases
 #' @param path_script string. Directory of required scripts
+#' @param targets_txt string. Path of the targets.txt file provided by the Capture Kit manufracturer
+#' @param id string. Sample ID
+#' @param outfile_cbioportal string. Name of the outputfile
+#' @param outfile_seg string. Name of the outputfile
+#' @param protocol string. Type of protocol used for analyses
 #' 
 #' @return returns list of
 #' @return cnvs_annotated dataframe. Table of annotated CNVs
@@ -142,6 +148,8 @@ cnv_analysis <- function(ratio_file, cnvs_file, cnv_pvalue_txt,
   impa <- list(ddr = ddr, pam = pam, rme = rme, tyk = tyk, cec = cec)
   
   cnvs2cbioportal(out, id, outfile_cbioportal)
+
+  freec2seg(cnvs_file, cpn_file, id, outfile_seg)
 
   return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
        = cnv_analysis_results, out = out, impa = impa))

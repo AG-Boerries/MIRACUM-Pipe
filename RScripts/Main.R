@@ -277,6 +277,7 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   ## Input/Output Files
   ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
+  cpn_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_sample.cpn")
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
@@ -289,6 +290,7 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   # outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
   # outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
 
   #   cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
   #                                      outfile_plot = cnv_plot,
@@ -306,12 +308,16 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   #                                      id = id,
   #                                      protocol = protocol)
 
-  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file,
+                                       cnvs_file = cnvs_file,
+                                       cpn_file = cpn_file,
+                                       cnv_pvalue_txt = cnv_pvalue_txt,
                                        outfile_ideogram = cnv_ideogram_plot,
                                        path_data = path_data,
                                        path_script = path_script,
                                        targets_txt = targets_txt,
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
+                                       outfile_seg = outfile_cnvs_seg,
                                        id = id,
                                        protocol = protocol)
 }
@@ -320,18 +326,24 @@ if (protocol == "tumorOnly"){
   ## Input/Output Files
   ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt")
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs")
+  cpn_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn")
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
   cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
 
-  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file,
+                                       cnvs_file = cnvs_file,
+                                       cpn_file = cpn_file,
+                                       cnv_pvalue_txt = cnv_pvalue_txt,
                                        outfile_ideogram = cnv_ideogram_plot,
                                        path_data = path_data,
                                        path_script = path_script,
                                        targets_txt = targets_txt,
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
+                                       outfile_seg = outfile_cnvs_seg,
                                        id = id,
                                        protocol = protocol)
 }
