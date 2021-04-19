@@ -553,8 +553,8 @@ if(length(id_to) != 0) {
 Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
 <<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
 
-if(dim(filt_result_gd$table)[1] != 0){
-  tmp <- filt_result_gd$table[, c("Gene.refGene", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
+if(dim(mutation_analysis_result_gd$ts_og)[1] != 0){
+  tmp <- mutation_analysis_result_gd$ts_og[, c("Gene.refGene", "AAChange", "ExonicFunc.refGene", "Variant_Allele_Frequency", "Variant_Reads", "AF_nfe", "condel.label", "cosmic_coding", "is_oncogene", "is_tumorsuppressor", "Chr", "Start", "Ref", "Alt")]
   tmp$AAChange <- gsub(pattern = "_", replacement = "\\_", x = tmp$AAChange, fixed = TRUE)
   tmp$Gene.refGene_new <- paste0("{\\href{https://www.genomenexus.org/variant/", tmp$Chr, ":g.", tmp$Start, tmp$Ref, "\\%3E", tmp$Alt, "}{", tmp$Gene.refGene, "}}")
   id_del <- which(tmp$Alt == "-")
@@ -568,8 +568,6 @@ if(dim(filt_result_gd$table)[1] != 0){
   hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
   tmp$Gene.refGene <- tmp$Gene.refGene_new
   tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
-  tmp <- tmp[-which(is.na(tmp$ExonicFunc.refGene)), ]
-  tmp <- tmp[which(tmp$is_oncogene == 1 | tmp$is_tumorsuppressor == 1), ]
   tmp$VAF <- paste0(tmp$Variant_Allele_Frequency, " (", tmp$Variant_Reads, ")")
   tmp$VAF <- gsub(pattern = "%", replacement = "\\%", x = tmp$VAF, fixed = TRUE)
   tmp$cosmic <- lapply(strsplit(x = as.character(tmp$cosmic_coding), split = "="), function(x){return(unlist(x)[2])})
