@@ -10,7 +10,7 @@ options(repos=structure(c(CRAN="http://cloud.r-project.org")), timeout = 600)
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("Biobase")
-packages <- c("foreach", "doMC", "openxlsx", "circlize", "knitr", "kableExtra", "OmicCircos", "rtracklayer", "org.Hs.eg.db",
+packages <- c("foreach", "doMC", "openxlsx", "circlize", "kableExtra", "OmicCircos", "rtracklayer", "org.Hs.eg.db",
               "Homo.sapiens", "RMySQL", "biomaRt", "Rsamtools", "gtrellis", "ComplexHeatmap",
               "VariantAnnotation", "BSgenome.Hsapiens.UCSC.hg19",
               "TxDb.Hsapiens.UCSC.hg19.knownGene", "gdata", "stringi", "tidyr", "ensembldb",
@@ -19,6 +19,8 @@ BiocManager::install(pkgs = packages, update  = TRUE, ask = FALSE)
 
 BiocManager::install("devtools")
 url <- "https://cran.r-project.org/src/contrib/Archive/lsei/lsei_1.2-0.1.tar.gz"
+devtools::install_url(url)
+url <- "https://cran.r-project.org/src/contrib/Archive/knitr/knitr_1.31.tar.gz"
 devtools::install_url(url)
 BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = FALSE, ask = FALSE)
 
