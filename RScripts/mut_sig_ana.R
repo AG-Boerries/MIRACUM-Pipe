@@ -260,7 +260,7 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   
   # Is 0 in the CI in any?
   CI <- length(which(output$Confidence_Intervals$lower[which(output$Confidence_Intervals$sig == "AC3")] < 0))
-  mutsig2cbioportal(signatures = out, all_signatures = AlexCosmicValid_sigInd_df, sample_name = id, outfile_cbioportal = outfile_cbioportal)
+  mutsig2cbioportal_wes(signatures = out, all_signatures = AlexCosmicValid_sigInd_df, sample_name = id, outfile_cbioportal = outfile_cbioportal)
 
   return(list(output = output, CI = CI))
 }

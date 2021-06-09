@@ -1,6 +1,6 @@
 mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
                                       sample_name = NULL, only_coding = FALSE,
-                                      path_data, path_output){
+                                      path_data, path_output, outfile_cbioportal){
   #' Mutation Signature Analysis
   #'
   #' @description Mutation Signature Analysis adopted from YAPSA package
@@ -185,6 +185,9 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
         "Signatures_Identified" = CosmicValid_cutoffGen_LCDlist$out_sig_ind_df,
         "Normalized_Exposures" = CosmicValid_cutoffGen_LCDlist$norm_exposures,
         Summary = out)
+
+  mutsig2cbioportal(signatures = CosmicValid_cutoffGen_LCDlist, id = sample_name, outfile_cbioportal = outfile_cbioportal)
+
   write.xlsx(output, paste0(path_output, sample_name, "_Mutation_Signature_cutoff_",
              cutoffPerc, "Percent.xlsx"), rowNames = T, firstRow = T,
              headerStyle = createStyle(textDecoration = 'bold'))
