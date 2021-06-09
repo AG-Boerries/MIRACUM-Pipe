@@ -367,15 +367,18 @@ if (protocol == "tumorOnly"){
 print("Mutation Signature Analysis.")
 if( protocol == "somaticGermline" | protocol == "somatic"){
   somaticVCF <- paste0(path_input, sample,"_vc.output.snp.Somatic.hc.fpfilter.vcf")
-  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output)
+  outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
+  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output, sample_name = id, outfile_cbioportal = outfile_mutsig_cbioportal)
 } else {
   vcf <- paste0(path_input, sample,"_vc.output.snp.fpfilter.vcf")
+  outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
   mut_sig_analysis <- mutation_signature_analysis(vcf_file = vcf,
                                                   cutoff = 0.01,
                                                   sample_name = NULL,
                                                   only_coding = FALSE,
                                                   path_data = path_data,
-                                                  path_output = path_output)
+                                                  path_output = path_output,
+                                                  outfile_cbioportal = outfile_mutsig_cbioportal)
 }
 
 # Write Excel File

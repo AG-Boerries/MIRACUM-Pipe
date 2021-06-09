@@ -1,4 +1,4 @@
-mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselect_type, path_script, ref_genome, targetCapture_cor_factors, path_output){
+mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselect_type, path_script, ref_genome, targetCapture_cor_factors, path_output, sample_name, outfile_cbioportal){
   library(getopt)
   library(dplyr)
   library(magrittr)
@@ -260,6 +260,7 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   
   # Is 0 in the CI in any?
   CI <- length(which(output$Confidence_Intervals$lower[which(output$Confidence_Intervals$sig == "AC3")] < 0))
-  
+  mutsig2cbioportal_wes(signatures = out, all_signatures = AlexCosmicValid_sigInd_df, sample_name = id, outfile_cbioportal = outfile_cbioportal)
+
   return(list(output = output, CI = CI))
 }
