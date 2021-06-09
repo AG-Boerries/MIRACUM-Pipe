@@ -124,6 +124,15 @@ mrc <- function(x, min_var_count){
   return(x)
 }
 
+actionable <- function(x, actionable_genes) {
+  if(is.na(actionable_genes) | actionable_genes == "") {
+    return(x)
+  }
+  genes <- read.table(actionable_genes, header = F)
+  actionable_matches <- which(x$Gene.refGene %in% genes$V1)
+  return(x[actionable_matches,])
+}
+
 ### Database Queries
 isflag <- function(x, dbfile){
   #' Flags
