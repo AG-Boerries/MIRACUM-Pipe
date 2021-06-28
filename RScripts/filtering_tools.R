@@ -22,6 +22,26 @@ tumbu <- function(x, covered_region){
   return(tmb)
 }
 
+tmb_ex <- function(x, coveredExons, mode = "T", cov_t) {
+  require(GenomicRanges)
+  if (mode != "T") {
+    tmb <- NULL
+  } else if {
+    bed <- read.delim(coveredExons, header = FALSE)
+    mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
+                       ranges = IRanges(start = bed$V2, end = bed$V3))
+    mani_gr <- reduce(mani_gr)
+    mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
+                      ranges = IRanges(start = x$Start , end = x$Start))
+    tmb <- (length(findOverlaps(mut_gr, mani_gr))/sum(width(mani_gr))*1000000)/cov_t
+    tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
+    } else {
+    print("Please provide a bed file containing the regions to be taken into account for TMB calculation!")
+    tmb <- NULL
+  }
+  return(tmb)
+}
+
 filt <- function(x, func){
   #' Filter for function
   #'

@@ -249,7 +249,7 @@ tools:
     # set TRUE for target resequencing data (e.g., exome-seq) to avoid false positive predictions due to non-uniform capture
     noisyData: TRUE
     # genome ploidy; In case of doubt, you can set different values and Control-FREEC will select the one that explains most observed CNAs
-    ploidy: 2,3
+    ploidy: 2
     # set FALSE to avoid printing "-1" to the _ratio.txt files. Useful for exome-seq or targeted sequencing data
     printNA: FALSE
     # threshold on the minimal number of reads per window in the control sample

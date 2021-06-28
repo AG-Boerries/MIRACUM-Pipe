@@ -147,3 +147,39 @@ for name1 in ${names1}; do
   # snpEff; identify canonical transcript
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_snpeff}"
 done
+
+# GATK4 Mutect2
+# names
+readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+
+# keep
+readonly INPUT=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
+readonly OUTPUT_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2.vcf.gz
+readonly OUTPUT_FILTERED_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered.vcf.gz
+readonly OUTPUT=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered
+readonly ANNOVAR_OUTPUT=${DIR_WES}/${NameTD}.hg19_multianno.vcf
+
+# ANNOVAR
+CODINGARG="--includesnp --onlyAltering --mrnaseq --tolerate"
+CONVERTARG="--includeinfo"
+
+# Mutect2
+${BIN_GATK4} Mutect2 -R ${GENOME} -I ${INPUT} -O ${OUTPUT_GZ}
+
+# Filter
+${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${GENOME} -O ${OUTPUT_FILTERED_GZ}
+gunzip "${OUTPUT_FILTERED_GZ}"
+
+# Annovar
+${TABLEANNOVAR} "${OUTPUT}.vcf" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" \
+ --buildver hg19 --outfile "${OUTPUT}" --operation "${argop}" \
+ --nastring . --vcfinput --thread "${nCore}" --maxgenethread "${nCore}" \
+ --otherinfo --remove --verbose --polish \
+ --convertarg "${CONVERTARG}"
+rm "${OUTPUT}.avinput"
+
+# snpEff
+${BIN_SNPEFF} "${OUTPUT}.vcf" > "${OUTPUT}_SnpEff.vcf"
+
+#eo VC

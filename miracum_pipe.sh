@@ -99,15 +99,14 @@ function run_panel_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log") &
+  ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log") &
+  wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") #&
-  # TODO CNV calling
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
-  #wait
-  #("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log") &
-  #wait
+  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") &
+  ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
+  wait
 
   # create report based on the results of the processes above
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
@@ -126,8 +125,8 @@ function run_panel_pipe_seq() {
 
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
-  #("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log")
+  ("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
+  ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log")
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
@@ -394,6 +393,12 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
                 else
                   echo "${PARAM_DIR_PATIENT} failed"
                 fi
+              ;;
+
+              td_rna_fusions_parallel)
+                ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log") &
+                ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/fusions.log") &
+                wait
               ;;
 
               vc_cnv_parallel)

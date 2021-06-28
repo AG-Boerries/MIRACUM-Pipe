@@ -92,14 +92,8 @@ rm -f trimmomatic.zip
 mv Trimmomatic* Trimmomatic
 mv Trimmomatic/trimmomatic-${VERSION_TRIMMOMATIC}.jar Trimmomatic/trimmomatic.jar
 
-###############
-# Trimmomatic #
-###############
-cd ${DIR_SCRIPT}
-
 
 ###### COMPILE SUBMODULES #######
-
 
 #########
 # FREEC #
