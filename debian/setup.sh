@@ -35,6 +35,7 @@ function install_R()
   #wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe19f5f87128899b192b1a2c2ad5f960a256a04af | apt-key add - &&
   apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
   apt-get update && apt-get install -y --no-install-recommends -t buster-cran40 r-base-dev
+  R CMD javareconf
 }
 
 # update packages
@@ -53,10 +54,10 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
   cnvkit \
   libsnappy-java && \
   install_java8 && \
-  install_R && \
   apt-get -y purge  default-jre default-jdk-headless \
                     openjdk-11-jdk openjdk-11-jdk-headless \
                     openjdk-11-jre openjdk-11-jre-headless && \
+  install_R && \
   install_texlive && \
   pip3 install shyaml && \
   apt-get -y autoremove
