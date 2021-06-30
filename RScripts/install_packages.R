@@ -22,5 +22,5 @@ url <- "https://cran.r-project.org/src/contrib/Archive/lsei/lsei_1.2-0.1.tar.gz"
 devtools::install_url(url)
 BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = FALSE, ask = FALSE)
 
-#url2 <- "https://cran.r-project.org/src/contrib/Archive/MSIseq/MSIseq_1.0.0.tar.gz"
-#devtools::install_url(url2)
+url2 <- "https://cran.r-project.org/src/contrib/Archive/MSIseq/MSIseq_1.0.0.tar.gz"
+devtools::install_url(url2)
