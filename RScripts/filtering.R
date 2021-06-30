@@ -201,8 +201,7 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
                 sep = '\t', col.names = T, row.names = F)
 
     # mico satellite stability
-    #msi <- msistatus(out.maf, sample = sample, path_data = path_data)
-    msi <- data.frame()
+    msi <- msistatus(out.maf, sample = id, path_data = path_data)
     return(list(table = x, tmb = tmb, maf = out.maf, msi = msi))
     
   } else if (mode == "N" | mode == "T") {

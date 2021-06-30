@@ -30,7 +30,7 @@ library(tidyr)
 library(dplyr)
 library(magrittr)
 library(pracma)
-#library(MSIseq)
+library(MSIseq)
 
 args <- commandArgs()
 
