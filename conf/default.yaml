@@ -143,7 +143,8 @@ tools:
     panel:
       minVAF: 0.05
       minBaseQual: 20
-
+      
+      # VarScan
       mpileup2snp:
         #--min-coverage  Minimum read depth at a position to make a call [8]
         minCoverage: 20
