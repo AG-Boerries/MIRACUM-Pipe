@@ -1277,7 +1277,7 @@ msistatus <- function(maf, sample, path_data) {
  seq.length <- data.frame(Tumor_Sample_Barcode = paste(sample, "TD", sep = "_"), Sequence_Length = as.numeric(covered_region))
  test.mutationNum<-Compute.input.variables(msi.input, repeats = Hg19repeats, seq.len = seq.length)
  result <- MSIseq.classify(mutationNum = test.mutationNum, cancerType = NULL)
- return(result)
+ return(list(result = result, scores = test.mutationNum))
 }
 
 loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){
