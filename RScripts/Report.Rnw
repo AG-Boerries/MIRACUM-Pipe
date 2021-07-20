@@ -667,7 +667,7 @@ if(dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1] >= 20){
   tmp <- cnv_analysis_results$cnv_analysis_results$gain_go[1:dim(cnv_analysis_results$cnv_analysis_results$gain_go)[1],c("Term","Count", "Size", "p-value", "adj.P.Val")]
   tmp$`p-value` <- format(tmp$`p-value`,digits=3, scientific = TRUE)
   tmp$adj.P.Val <- format(tmp$adj.P.Val,digits=3, scientific = TRUE)
-  kable(tmp, caption = "Ergebnisse Hllmarks Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
+  kable(tmp, caption = "Ergebnisse Hallmarks Analsye - GAIN, top 20\\label{hm_CNV_loss}", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(1, width = "15em") %>% column_spec(c(2:5), width = "5em")
 }
 @
 
