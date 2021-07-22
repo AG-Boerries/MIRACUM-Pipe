@@ -479,6 +479,32 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal){
   write.table(x = cnvs.out, file = outfile_cbioportal, quote = F, sep = "\t", col.names = T, row.names = F)
 }
 
+freec2seg <- function(cnvs_file, cpn_file, id, outfile_seg){
+  #' Export annotated CNVs to a seg file
+  #' 
+  #' @describtion Export annotated CNVs to a seg file compliant to the GISTIC syntax
+  #' 
+  #' @param cnvs_file string. Filename for CNVs
+  #' @param cpn_file string. Filename for CPN
+  #' @param id string. Sample ID
+  #' @param outfile_seg string. Name of the outputfile
+
+  bam <- read.table(cnvs_file, header = F)
+  cpn <- read.table(cpn_file, header = F)
+  bam$V4 <- log2(bam$V4) - 1
+  bam$V5 <- paste(id,"TD",sep = "_")
+  bam$V6 <- 0
+  bam <- bam[c(5,1:3,6,4)]
+  colnames(bam) <- c("ID", "chrom", "loc.start", "loc.end", "num.mark", "seg.mean")
+
+  for (i in 1:nrow(bam)) {
+    entry <- bam[i,]
+    bam[i,]$num.mark <- sum(cpn[cpn$V1 == entry$chrom & (cpn$V2 >= entry$loc.end & cpn$V2 <= entry$loc.end | cpn$V3 >= entry$loc.start & cpn$V3 <= entry$loc.end),]$V4)
+  }
+
+  write.table(bam, outfile_seg, sep='\t', quote = F, row.names = F)
+}
+
 # TODO
 cnv_panel <- function(input_file, outfile, outfile_ts_og, outfile_ideogram, path_data, sureselect, targets_txt, protocol) {
   #' CNV Analysis for Tumor-Only Data

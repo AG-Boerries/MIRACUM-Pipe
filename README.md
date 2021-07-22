@@ -4,7 +4,7 @@ MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs),
 
 ## Disclaimer
 
-MIRACUM-Pipe is intended for research use only!
+MIRACUM-Pipe is intended for research use only and not for patient treatment, diagnosis and/or medical records!
 
 ## Getting Started
 

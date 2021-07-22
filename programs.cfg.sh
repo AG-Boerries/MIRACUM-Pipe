@@ -37,6 +37,7 @@ readonly CFG_REFERENCE_COVEREDREGION="$(get_config_value reference.sequencing.co
 readonly CFG_REFERENCE_CAPTUREREGIONNAME="$(get_config_value reference.sequencing.captureRegionName "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_CAPTURECORFACTORS="${DIR_DATABASE}/$(get_config_value reference.sequencing.captureCorFactors "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_COVERED_EXONS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.coveredExons "${PARAM_DIR_PATIENT}")"
+readonly CFG_REFERENCE_ACTIONABLEGENES="${DIR_DATABASE}/$(get_config_value reference.sequencing.actionableGenes "${PARAM_DIR_PATIENT}")"
 
 # database for known variants
 ## dbSNP vcf File
@@ -208,7 +209,7 @@ readonly BIN_BASE_RECALIBRATOR="${BIN_GATK} -T BaseRecalibrator -l INFO -R ${FIL
 readonly BIN_PRINT_READS="${BIN_GATK} -T PrintReads -R ${FILE_GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
 # PICARD
-readonly BIN_FIX_MATE="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
+readonly BIN_FIX_MATE="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -Dpicard.useLegacyParser=false -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
 
 # VARSCAN
 readonly BIN_VAR_SCAN="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/varscan/VarScan.jar"
@@ -242,7 +243,7 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # fusioncatcher
 readonly FUSIONCATCHER_DB="${DIR_TOOLS}/fusioncatcher/data/current"
-readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSIONCATCHER_DB}"
+readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSIONCATCHER_DB} "
 
 # export parameters
 export CFG_AUTHOR
@@ -271,6 +272,7 @@ export CFG_REFERENCE_COVEREDREGION
 export CFG_REFERENCE_CAPTUREREGIONNAME
 export CFG_REFERENCE_CAPTURECORFACTORS
 export CFG_REFERENCE_COVERED_EXONS
+export CFG_REFERENCE_ACTIONABLEGENES
 
 export CFG_REFERENCE_DBSNP
 

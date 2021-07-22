@@ -40,6 +40,20 @@ coverage_plot <- function(path, outfilePDF, protocol){
     cov[[i]] <- read.table(files[i])
     cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
   }
+  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
+  if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
+    min_cov <- 8
+    mit_cov <- 40
+  } else {
+    min_cov <- 20
+    mit_cov <- 100
+  }
+  perc <- list()
+  for (i in 1:length(files)) {
+    perc_mc <- 1 - sum(cov[[i]][which(cov[[i]][, 2] < min_cov), 5])
+    perc_min <- 1 - sum(cov[[i]][which(cov[[i]][, 2] < mit_cov), 5])
+    perc[[i]] <- c(perc_mc, perc_min)
+  }
   
   # Pick some colors
   # Ugly:
@@ -104,7 +118,7 @@ if (protocol != "panelTumor"){
     print(paste('Mean Coverage', labs[i], ':',
                 sum(cov[[i]][,2] * cov[[i]][, 5]), sep = " "))
   }
-  return(list(cov = cov,labs = labs, files = files))
+  return(list(cov = cov, perc = perc, labs = labs, files = files))
 }
 
 reads <- function(tfile, gfile){
@@ -122,29 +136,38 @@ reads <- function(tfile, gfile){
   #' 
   #' @details The statistics files contain information about properly paired
   #' @details reads. The information is extracted for the report.
-  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
-  id <- which (as.character(treads$V2) == "reads properly paired:")
-  treads <- as.character(treads$V3[id])
+  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 38, fill = TRUE)
+  id <- which (as.character(treads_tab$V2) == "reads properly paired:")
+  treads <- as.character(treads_tab$V3[id])
   treads <- as.numeric(treads)/1000000
   ntreads <- round(treads)
-  
-  greads <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 31)
-  id <- which (as.character(greads$V2) == "reads properly paired:")
-  greads <- as.character(greads$V3[id])
+  tin_size <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size average:")])
+  tin_sd <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size standard deviation:")])
+
+  greads_tab <- read.table(file = gfile, sep = "\t", skip = 7, nrows = 38, fill = TRUE)
+  id <- which (as.character(greads_tab$V2) == "reads properly paired:")
+  greads <- as.character(greads_tab$V3[id])
   greads <- as.numeric(greads)/1000000
   ngreads <- round(greads)
+  gin_size <- as.character(greads_tab$V3[which(as.character(greads_tab$V2) == "insert size average:")])
+  gin_sd <- as.character(greads_tab$V3[which(as.character(greads_tab$V2) == "insert size standard deviation:")])
   
-  return(list(nRT = ntreads, nRG = ngreads))
+  
+  return(list(nRT = ntreads, tin = tin_size, tin_sd = tin_sd,
+              nRG = ngreads, gin = gin_size, gin_sd = gin_sd))
 }
 
 treads <- function(tfile){
-  treads <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31)
-  id <- which (as.character(treads$V2) == "reads properly paired:")
-  treads <- as.character(treads$V3[id])
+  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
+  id <- which (as.character(treads_tab$V2) == "reads properly paired:")
+  treads <- as.character(treads_tab$V3[id])
   treads <- as.numeric(treads)/1000000
   ntreads <- round(treads)
-
-return(list(nRT = ntreads, nRG = NULL))
+  tin_size <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size average:")])
+  tin_sd <- as.character(treads_tab$V3[which(as.character(treads_tab$V2) == "insert size standard deviation:")])
+  
+  return(list(nRT = ntreads, tin = tin_size, tin_sd = tin_sd,
+              nRG = NULL, gin = NULL, gin_sd = NULL))
 }
 
 coverage_exon <- function(path, protocol = protocol){
@@ -197,30 +220,30 @@ quality_check <- function(path, nsamples, protocol){
   gc_content <- rep(0, times = length(nsamples))
   mean_QC <- rep(0, times = length(nsamples))
   for (i in 1:length(nsamples)){
-    if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")){
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 2 , nrows = 7, sep = "\t")
-      gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = 54, sep = "\t")
-      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
-                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
-      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+    if (protocol %in% c("somatic", "somaticGermline")){
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
+    }
+    if (protocol == "tumorOnly") {
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
     if (protocol == "panelTumor") {
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 2 , nrows = 7, sep = "\t")
-      gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
-      fastq_data <- read.table(file = paste0(path, "/", nsamples[i],
-                                            "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt"),
-                              skip = 12 , nrows = 54, sep = "\t")
-      sum_QC <- 2 * sum(fastq_data$V2[grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)]) + 
-                sum(fastq_data$V2[-grep(x = fastq_data$V1, pattern = "-", fixed = TRUE)])
-      mean_QC[i] <- sum_QC/as.integer(as.character(fastq_data$V1[dim(fastq_data)[1]]))
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
+    sectionEndings <- which(str_detect(readLines(file(filename, "r", blocking = F)), ">>END_MODULE") == TRUE)
+    fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")
+    gc_content[i] <- as.character(fastq_data[which(fastq_data$V1 == "%GC"), 2])
+    fastq_data <- read.table(file = filename, skip = 12 , nrows = sectionEndings[2]-14, sep = "\t")
+    readlength <- convert_readlength(fastq_data$V1)
+    sum_QC <- sum(readlength * fastq_data$V2)
+    mean_QC[i] <- sum_QC/sum(readlength)
   }
- return(list(labs = nsamples, gc_content = gc_content, mean_QC = mean_QC)) 
+  return(list(labs = nsamples, gc_content = gc_content, mean_QC = mean_QC)) 
+}
+
+convert_readlength <- function(x) {
+  split <- str_split(x, "-", simplify = T)
+  start <- as.numeric(split[,1])
+  end <- as.numeric(split[,2])
+  end[is.na(end)] = start[is.na(end)]
+  return((end-start)+1)
 }

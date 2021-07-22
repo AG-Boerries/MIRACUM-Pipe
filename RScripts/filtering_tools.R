@@ -124,6 +124,15 @@ mrc <- function(x, min_var_count){
   return(x)
 }
 
+actionable <- function(x, actionable_genes) {
+  if(is.na(actionable_genes) | actionable_genes == "") {
+    return(x)
+  }
+  genes <- read.table(actionable_genes, header = F)
+  actionable_matches <- which(x$Gene.refGene %in% genes$V1)
+  return(x[actionable_matches,])
+}
+
 ### Database Queries
 isflag <- function(x, dbfile){
   #' Flags
@@ -1254,22 +1263,22 @@ exclude <- function(x, vaf = 5){
   return(x)
 }
 
-#msistatus <- function(maf, sample, path_data) {
-#  require(MSIseq)
-#  # load required database containing repeats for hg19; http://steverozen.net/data/Hg19repeats.rda
-#  load(paste(path_data,"Hg19repeats.rda", sep = "/"))#
+msistatus <- function(maf, sample, path_data) {
+ require(MSIseq)
+ # load required database containing repeats for hg19; http://steverozen.net/data/Hg19repeats.rda
+ load(paste(path_data,"Hg19repeats.rda", sep = "/"))#
 
-#  msi.input <- data.frame(Chrom = maf$Chromosome,
-#                        Start_Position = maf$Start_Position,
-#                        End_Position = maf$End_Position,
-#                        Variant_Type = maf$Variant_Type,
-#                        Tumor_Sample_Barcode = maf$Tumor_Sample_Barcode)
+ msi.input <- data.frame(Chrom = maf$Chromosome,
+                       Start_Position = maf$Start_Position,
+                       End_Position = maf$End_Position,
+                       Variant_Type = maf$Variant_Type,
+                       Tumor_Sample_Barcode = maf$Tumor_Sample_Barcode)
 
- # seq.length <- data.frame(Tumor_Sample_Barcode = paste(sample, "TD", sep = "_"), Sequence_Length = 1.97)
- # test.mutationNum<-Compute.input.variables(msi.input, repeats = Hg19repeats, seq.len = seq.length)
- # result <- MSIseq.classify(mutationNum = test.mutationNum, cancerType = NULL)
- # return(result)
-#}
+ seq.length <- data.frame(Tumor_Sample_Barcode = paste(sample, "TD", sep = "_"), Sequence_Length = as.numeric(covered_region))
+ test.mutationNum<-Compute.input.variables(msi.input, repeats = Hg19repeats, seq.len = seq.length)
+ result <- MSIseq.classify(mutationNum = test.mutationNum, cancerType = NULL)
+ return(list(result = result, scores = test.mutationNum))
+}
 
 loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){
   filt_loh$table$VAF_Tumor <- as.character(filt_loh$table$VAF_Tumor)

@@ -30,7 +30,7 @@ library(tidyr)
 library(dplyr)
 library(magrittr)
 library(pracma)
-#library(MSIseq)
+library(MSIseq)
 
 args <- commandArgs()
 
@@ -57,6 +57,7 @@ targetCapture_cor_factors <- args[20]
 vaf <- as.numeric(args[21])*100
 min_var_count <- as.numeric(args[22])
 maf_cutoff <- as.numeric(args[23])
+actionable_genes <- args[24]
 
 #############
 # Functions #
@@ -172,7 +173,7 @@ if (protocol == "somatic" | protocol == "somaticGermline"){
                                 mode = "N", center = center, id = id,
                                 protocol = protocol, sureselect = bed_file,
                                 vaf = vaf, min_var_count = min_var_count,
-                                maf = maf_cutoff)
+                                maf = maf_cutoff, actionable_genes = actionable_genes)
     
     mutation_analysis_result_gd <- mutation_analysis(loh = NULL,
                                                      somatic = filt_result_gd$table,
@@ -277,6 +278,7 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   ## Input/Output Files
   ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_ratio.txt")
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_CNVs")
+  cpn_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.filtered.rmdup.realigned.fixed.recal.bam_sample.cpn")
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
@@ -289,6 +291,7 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   # outfile_gain <- paste0(path_output, sample, "_CNV_gain3_GO.xlsx")
   # outfile_dna_damage <- paste0(path_output, sample, "_CNV_dna_damage.xlsx")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
 
   #   cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
   #                                      outfile_plot = cnv_plot,
@@ -306,12 +309,16 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
   #                                      id = id,
   #                                      protocol = protocol)
 
-  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file,
+                                       cnvs_file = cnvs_file,
+                                       cpn_file = cpn_file,
+                                       cnv_pvalue_txt = cnv_pvalue_txt,
                                        outfile_ideogram = cnv_ideogram_plot,
                                        path_data = path_data,
                                        path_script = path_script,
                                        targets_txt = targets_txt,
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
+                                       outfile_seg = outfile_cnvs_seg,
                                        id = id,
                                        protocol = protocol)
 }
@@ -320,18 +327,24 @@ if (protocol == "tumorOnly"){
   ## Input/Output Files
   ratio_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt")
   cnvs_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs")
+  cpn_file <- paste0(path_input, "CNV/", sample, "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn")
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
   cnv_ideogram_plot <- paste0(path_output, sample,"_CNV_Plot_Ideogram.pdf")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
 
-  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file, cnvs_file = cnvs_file, cnv_pvalue_txt = cnv_pvalue_txt,
+  cnv_analysis_results <- cnv_analysis(ratio_file = ratio_file,
+                                       cnvs_file = cnvs_file,
+                                       cpn_file = cpn_file,
+                                       cnv_pvalue_txt = cnv_pvalue_txt,
                                        outfile_ideogram = cnv_ideogram_plot,
                                        path_data = path_data,
                                        path_script = path_script,
                                        targets_txt = targets_txt,
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
+                                       outfile_seg = outfile_cnvs_seg,
                                        id = id,
                                        protocol = protocol)
 }
@@ -354,15 +367,18 @@ if (protocol == "tumorOnly"){
 print("Mutation Signature Analysis.")
 if( protocol == "somaticGermline" | protocol == "somatic"){
   somaticVCF <- paste0(path_input, sample,"_vc.output.snp.Somatic.hc.fpfilter.vcf")
-  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output)
+  outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
+  mut_sig_ana <- mut_sig_wCI(vcf_file = somaticVCF, cutoff = 0.01, sample = sample, sureselect_type = sureselect_type, path_script = path_script, ref_genome = ref_genome, targetCapture_cor_factors, path_output = path_output, sample_name = id, outfile_cbioportal = outfile_mutsig_cbioportal)
 } else {
   vcf <- paste0(path_input, sample,"_vc.output.snp.fpfilter.vcf")
+  outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
   mut_sig_analysis <- mutation_signature_analysis(vcf_file = vcf,
                                                   cutoff = 0.01,
                                                   sample_name = NULL,
                                                   only_coding = FALSE,
                                                   path_data = path_data,
-                                                  path_output = path_output)
+                                                  path_output = path_output,
+                                                  outfile_cbioportal = outfile_mutsig_cbioportal)
 }
 
 # Write Excel File

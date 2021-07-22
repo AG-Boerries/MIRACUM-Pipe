@@ -244,31 +244,36 @@ tables <- function(x_s, x_l = NULL, protocol){
   #' @return list of
   #' @return ts_og_table dataframe. List of mutations in tumorsuppressors and
   #' @return oncogenes
-  #' @return sm_table dataframe. List if somatic mutations
+  #' @return sm_table dataframe. List of somatic mutations
   #' @return lm_table dataframe. List of LoH mutations
   #'
   #' @details The Tables TumorSuppressor-OncogeneTable,
   #' @details somaticMutations and lohMutations are generated and
   #' @details stored.
 
-  ts_og_table <- x_s[x_s$is_tumorsuppressor == 1 |
-                       x_s$is_oncogene == 1,
-                     c("Gene.refGene", "GeneName",
-                       "ExonicFunc.refGene", "AAChange",
-                       "Variant_Allele_Frequency",
-                       "Zygosity", "Variant_Reads", "is_tumorsuppressor",
-                       "is_oncogene", "is_hotspot", "target",
-                       "AF_nfe", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
-                       "Alt"), drop = FALSE]
+  col_names <- c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                 "AAChange", "Variant_Allele_Frequency", "Zygosity",
+                 "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
+                 "is_hotspot", "target", "AF_nfe",
+                 "CADD_phred", "condel.label", "CLINSIG",
+                 "cosmic_coding", "Chr", "Start", "Ref",
+                 "Alt")
 
-  sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                     "AAChange", "Variant_Allele_Frequency", "Zygosity",
-                     "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
-                     "is_hotspot", "target", "AF_nfe",
-                     "CADD_phred", "condel.label", "CLINSIG",
-                     "cosmic_coding", "Chr", "Start", "Ref",
-                     "Alt"), drop = FALSE]
+  ts_og_table <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+  colnames(ts_og_table) <- col_names
+  sm_table <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+  colnames(sm_table) <- col_names
+
+  if (!is.null(x_s) && dim(x_s)[1]) {
+    ts_og_table <- x_s[
+      x_s$is_tumorsuppressor == 1 |
+      x_s$is_oncogene == 1,
+      col_names,
+      drop = FALSE
+    ]
+
+    sm_table <- x_s[, col_names, drop = FALSE]
+  }
 
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
@@ -279,10 +284,10 @@ tables <- function(x_s, x_l = NULL, protocol){
                        "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
-  }else{
+  } else {
     lm_table <- data.frame()
-    
   }
+
   return(list(ts_og_table = ts_og_table, sm_table = sm_table,
               lm_table = lm_table))
 }
@@ -649,44 +654,48 @@ write_all_mut <- function(x_s, x_l = NULL){
   #' @return mut vector of strings. List of mutated genes
   #' 
   #' @details A table with all mutations (somatic and LoH) is saved.
-  mutations_somatic <- as.character(x_s$Gene.refGene)
-  mutations_somatic <- unique(mutations_somatic)
+  col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
+                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
+                 "Condel", "CLINSIG", "COSMIC")
+  all_mutations <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+
+  if (!is.null(x_s) && dim(x_s)[1]) {
+    mutations_somatic <- as.character(x_s$Gene.refGene)
+    mutations_somatic <- unique(mutations_somatic)
+
+    somatic <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                       "Variant_Allele_Frequency", "Variant_Reads",
+                       "AAChange", "is_tumorsuppressor",
+                       "is_oncogene", "is_hotspot", "target", "AF_nfe",
+                       "CADD_phred", "condel.label", "CLINSIG",
+                       "cosmic_coding"),
+                  drop = FALSE]
+
+      colnames(somatic) <- col_names
+      all_mutations <- rbind(all_mutations, somatic)
+  } else {
+    mutations_somatic <- c()
+  }
+
   if (!is.null(x_l)){
     mutations_loh <- as.character(x_l$Gene.refGene)
     mutations_loh <- unique(mutations_loh)
+
+    loh <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                    "VAF_Tumor", "Count_Tumor", "AAChange",
+                    "is_tumorsuppressor", "is_oncogene",
+                    "is_hotspot", "target", "AF_nfe", "CADD_phred",
+                    "condel.label", "CLINSIG", "cosmic_coding"),
+                drop = FALSE]
+
+    colnames(loh) <- col_names
+    all_mutations <- rbind(all_mutations, loh)
   } else {
     mutations_loh <- c()
   }
 
   mut <- unique(c(mutations_somatic, mutations_loh))
 
-  tmp1 <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                  "Variant_Allele_Frequency", "Variant_Reads",
-                  "AAChange", "is_tumorsuppressor",
-                  "is_oncogene", "is_hotspot", "target", "AF_nfe",
-                  "CADD_phred", "condel.label", "CLINSIG",
-                  "cosmic_coding"),
-              drop = FALSE]
-  if (!is.null(x_l)){
-    tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                    "VAF_Tumor", "Count_Tumor", "AAChange",
-                    "is_tumorsuppressor", "is_oncogene",
-                    "is_hotspot", "target", "AF_nfe", "CADD_phred",
-                    "condel.label", "CLINSIG", "cosmic_coding"),
-                drop = FALSE]
-    }
-  col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
-                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
-                 "Condel", "CLINSIG", "COSMIC")
-  colnames(tmp1) <- col_names
-  if (!is.null(x_l)) {
-    colnames(tmp2) <- col_names
-  }
-  if (!is.null(x_l)) {
-    all_mutations <- rbind(tmp1, tmp2)
-    } else {
-      all_mutations <- tmp1
-    }
   return(list(all_muts = all_mutations, mut = mut))
 }
 
