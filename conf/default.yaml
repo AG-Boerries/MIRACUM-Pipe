@@ -12,7 +12,7 @@ common:
     germline_R2: germline_R2.fastq.gz
   RNA:
     # folder contatining RNA fastq files for RNA fusions
-    folder : RNA
+    folder: RNA
   protocol: wes
 
 annotation:

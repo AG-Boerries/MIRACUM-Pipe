@@ -13,7 +13,7 @@ readonly CFG_FILE_TUMOR_R2=$(get_config_value common.files.tumor_R2 "${PARAM_DIR
 readonly CFG_FILE_GERMLINE_R1=$(get_config_value common.files.germline_R1 "${PARAM_DIR_PATIENT}")
 readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PARAM_DIR_PATIENT}")
 
-readonly CFG_FOLDER_RNA=$(get_config_value common.rna.folder "${PARAM_DIR_PATIENT}")
+readonly CFG_FOLDER_RNA=$(get_config_value common.RNA.folder "${PARAM_DIR_PATIENT}")
 
 # folder containing patient output
 readonly DIR_TARGET="${DIR_OUTPUT}/${CFG_CASE}_${PARAM_DIR_PATIENT}"
@@ -231,7 +231,6 @@ readonly BIN_SNPEFF="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/snpE
 
 # FREEC
 readonly BIN_FREEC="${DIR_TOOLS}/FREEC/bin/freec "
-
 readonly FILE_REFERENCE_MAPPABILITY="${DIR_REF}/mappability/$(get_config_value reference.mappability "${PARAM_DIR_PATIENT}")"
 
 # cnvkit
@@ -242,8 +241,8 @@ readonly BIN_CNVKIT=$(command -v cnvkit.py)
 readonly BIN_RSCRIPT=$(command -v Rscript)
 
 # fusioncatcher
-readonly FUSIONCATCHER_DB=${DIR_TOOLS}/fusioncatcher/current"
-readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSION_DB} "
+readonly FUSIONCATCHER_DB="${DIR_TOOLS}/fusioncatcher/data/current"
+readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSIONCATCHER_DB}"
 
 # export parameters
 export CFG_AUTHOR
