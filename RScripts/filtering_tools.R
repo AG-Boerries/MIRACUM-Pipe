@@ -1022,12 +1022,12 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
 
   # Read vcf files
   if (protocol == "somaticGermline" | protocol == "somatic"){
-    snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
-    indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+    indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
   }
   if (protocol == "panelTumor" | protocol == "tumorOnly"){
-    snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
-    indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+    indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
   }
   # combine SNVs and InDels + Filter for "PASS"
   variants <- rbind(snvs, indels)
