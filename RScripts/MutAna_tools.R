@@ -903,6 +903,9 @@ imp_pws <- function(ch_mat, all_muts){
   print("Tyrosine Kinases:")
   tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
   print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  print("TopArt:")
+  tmp <- rownames(ch_mat)[ch_mat[, 6] == 1]
+  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
   #print("PI3K-AKT-mTOR:")
   pi3k <- rownames(ch_mat)[ch_mat[, 3] == 1]
   if (length(pi3k) != 0){
@@ -948,9 +951,18 @@ imp_pws <- function(ch_mat, all_muts){
   } else {
     tyrosine_genes <- c()
     }
+  #print("TopArt:")
+  topart <- rownames(ch_mat)[ch_mat[, 6] == 1]
+  if (length(topart) != 0){
+    topart_genes <- all_muts[match(topart, all_muts$Symbol), ]
+    topart_genes$Pathway <- "."
+    topart_genes[1, "Pathway"] <- "Topart"
+  } else {
+    topart_genes <- c()
+    }
 
   important_pathways <- rbind(pi3k_genes, raf_genes, dna_damage_genes,
-                              cell_cycle_genes, tyrosine_genes)
+                              cell_cycle_genes, tyrosine_genes, topart_genes)
   return(important_pws = important_pathways)
 }
 
