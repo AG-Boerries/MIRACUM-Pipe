@@ -501,6 +501,8 @@ freec2seg <- function(cnvs_file, cpn_file, id, outfile_seg){
     entry <- bam[i,]
     bam[i,]$num.mark <- sum(cpn[cpn$V1 == entry$chrom & (cpn$V2 >= entry$loc.end & cpn$V2 <= entry$loc.end | cpn$V3 >= entry$loc.start & cpn$V3 <= entry$loc.end),]$V4)
   }
+  
+  bam$seg.mean[!is.finite(bam$seg.mean)] <- -1
 
   write.table(bam, outfile_seg, sep='\t', quote = F, row.names = F)
 }
