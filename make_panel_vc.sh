@@ -165,7 +165,8 @@ CODINGARG="--includesnp --onlyAltering --mrnaseq --tolerate"
 CONVERTARG="--includeinfo"
 
 # Mutect2
-${BIN_GATK4} Mutect2 -R ${GENOME} -I ${INPUT} -O ${OUTPUT_GZ}
+${BIN_GATK4} Mutect2 -R ${GENOME} -I ${INPUT} -O ${OUTPUT_GZ} \
+ --callable-depth "${CFG_PANEL_MUTECT_CALLABLEDEPTH}" --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-base-quality-score "${CFG_PANEL_GENERAL_MINBASEQUAL}" --base-quality-score-threshold "${CFG_PANEL_GENERAL_MINBASEQUAL}"
 
 # Filter
 ${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${GENOME} -O ${OUTPUT_FILTERED_GZ}
@@ -173,8 +174,8 @@ gunzip "${OUTPUT_FILTERED_GZ}"
 
 # Annovar
 ${TABLEANNOVAR} "${OUTPUT}.vcf" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" \
- --buildver hg19 --outfile "${OUTPUT}" --operation "${argop}" \
- --nastring . --vcfinput --thread "${nCore}" --maxgenethread "${nCore}" \
+ --buildver hg19 --outfile "${OUTPUT}" --operation "${CFG_ANNOVAR_ARGOP}" \
+ --nastring . --vcfinput --thread "${CFG_COMMON_CPUCORES}" --maxgenethread "${CFG_COMMON_CPUCORES}" \
  --otherinfo --remove --verbose --polish \
  --convertarg "${CONVERTARG}"
 rm "${OUTPUT}.avinput"
