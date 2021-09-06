@@ -17,7 +17,7 @@ function install_java8()
 function install_texlive()
 {
   apt-get install -y --no-install-recommends texlive texlive-lang-german texlive-latex-extra
-  tlmgr option repository ftp://tug.org/historic/systems/texlive/2018/tlnet-final
+  tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet #ftp://tug.org/historic/systems/texlive/2018/tlnet-final #http://mirror.ctan.org/systems/texlive/tlnet
   tlmgr install \
     breakurl \
     multirow \
@@ -50,7 +50,7 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
   default-jre \
   ant \
   perl-base \
-  python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas python3-biopython python3-pyfaidx python3-pyvcf cython \
+  python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas python3-biopython python3-pyfaidx python3-pyvcf cython python3-setuptools python3-dev libpython3-all-dev \
   cnvkit \
   libsnappy-java && \
   install_java8 && \
@@ -60,4 +60,5 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
   install_R && \
   install_texlive && \
   pip3 install shyaml && \
+  pip3 install sequenza-utils && \
   apt-get -y autoremove
