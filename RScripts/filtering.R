@@ -4,7 +4,8 @@
 
 filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
                       outfile, outfile_maf, path_data, path_script, covered_region, mode = "T", center = "Freiburg",
-                      id = id, protocol, sureselect, vaf = 10, min_var_count = 4, maf = 0.001, actionable_genes = NA){
+                      id = id, protocol, sureselect, vaf = 10, min_var_count = 4, maf = 0.001, actionable_genes = NA,
+                      coveredExons = coveredExons, cov_t = 1, sureselect_type){
   #' Filter Variants
   #'
   #' @description Filters the somatic SNPs and InDel for analysis
@@ -108,9 +109,8 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
   # TumorMutationBurden
   if (mode == "T") {
     if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
-      tmb <- tumbu(x, 30)
-    } else {
-      tmb <- tumbu(x, covered_region)
+      #tmb <- tumbu(x, 30)
+      tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
     }
   } else {
     tmb <- 0
@@ -132,6 +132,19 @@ filtering <- function(snpfile, indelfile, snpefffile_snp, snpefffile_indel,
 
   # Filter for rare mutations
   x <- rare(x, maf)
+
+  # TumorMutationBurden
+  if (mode == "T") {
+    if (protocol %in% c("panelTumor")) {
+      if(sureselect_type %in% c("TSO500")){
+        tmb <- tumbu(x, 1.27)
+      } else {
+        tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
+      }
+    }
+  } else {
+    tmb <- 0
+  }
 
   if (dim(x)[1] != 0) {
     # Include GeneName

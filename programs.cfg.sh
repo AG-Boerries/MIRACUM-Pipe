@@ -208,6 +208,9 @@ readonly BIN_INDEL_REALIGNER="${BIN_GATK} -R ${FILE_GENOME} -T IndelRealigner "
 readonly BIN_BASE_RECALIBRATOR="${BIN_GATK} -T BaseRecalibrator -l INFO -R ${FILE_GENOME} -knownSites ${CFG_REFERENCE_DBSNP} -nct ${CFG_COMMON_CPUCORES} "
 readonly BIN_PRINT_READS="${BIN_GATK} -T PrintReads -R ${FILE_GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
+# GATK4
+readonly BIN_GATK4="${DIR_TOOLS}/gatk4/gatk --java-options '-Xmx${CFG_COMMON_MEMORY}'"
+
 # PICARD
 readonly BIN_FIX_MATE="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -Dpicard.useLegacyParser=false -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
 
@@ -397,6 +400,8 @@ export BIN_REALIGNER_TARGER_CREATOR
 export BIN_INDEL_REALIGNER
 export BIN_BASE_RECALIBRATOR
 export BIN_PRINT_READS
+
+export BIN_GATK4
 
 export BIN_FIX_MATE
 

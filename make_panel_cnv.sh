@@ -75,20 +75,70 @@ fi
 
 ##################################################################################################################
 
+#readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
+
+#[[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
+
+# names
+#readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
+#readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+
+# keep
+#readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
+#readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cnr
+#readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cns
+
+# cnv calling
+#cnvkit batch --method amplicon --reference "${FILE_FLAT_REFERENCE}" --output-dir "${DIR_CNV_OUTPUT}" "${bam}"
+#cnvkit segment "${cnr}" -o "${cns}" --rscript-path "${BIN_RSCRIPT}"
+
+# CNV Calling with ControlFREEC
 readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
 # names
-readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
 readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
 
 # keep
 readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
-readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cnr
-readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cns
 
-# cnv calling
-cnvkit batch --method amplicon --reference "${FILE_FLAT_REFERENCE}" --output-dir "${DIR_CNV_OUTPUT}" "${bam}"
-cnvkit segment "${cnr}" -o "${cns}" --rscript-path "${BIN_RSCRIPT}"
+# build config file
+cat >"${DIR_WES}"/CNV_config.txt <<EOI
+[general]
 
+chrFiles = ${DIR_CHROMOSOMES}
+chrLenFile = ${CFG_REFERENCE_LENGTH}
+breakPointType = 4
+breakPointThreshold = 1.2
+forceGCcontentNormalization = 1
+gemMappabilityFile = ${FILE_REFERENCE_MAPPABILITY}
+intercept = 1
+minCNAlength = 3
+maxThreads = ${CFG_COMMON_CPUCORES}
+noisyData = TRUE
+outputDir = ${DIR_CNV_OUTPUT}
+ploidy = 2
+printNA = FALSE
+readCountThreshold = 50
+samtools = ${BIN_SAMTOOLS}
+sex = ${CFG_SEX}
+step = 0
+window = 0
+uniqueMatch = TRUE
+contaminationAdjustment = TRUE
+
+[sample]
+
+mateFile = ${bam}
+inputFormat = BAM
+mateOrientation = FR
+
+[target]
+
+captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
+EOI
+
+# run CNV calling
+export PATH=${PATH}:${BIN_SAMTOOLS}
+${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt

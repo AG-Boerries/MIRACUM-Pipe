@@ -22,6 +22,26 @@ tumbu <- function(x, covered_region){
   return(tmb)
 }
 
+tmb_ex <- function(x, coveredExons, mode = "T", cov_t) {
+  require(GenomicRanges)
+  if (mode != "T") {
+    tmb <- NULL
+  } else if {
+    bed <- read.delim(coveredExons, header = FALSE)
+    mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
+                       ranges = IRanges(start = bed$V2, end = bed$V3))
+    mani_gr <- reduce(mani_gr)
+    mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
+                      ranges = IRanges(start = x$Start , end = x$Start))
+    tmb <- (length(findOverlaps(mut_gr, mani_gr))/sum(width(mani_gr))*1000000)/cov_t
+    tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
+    } else {
+    print("Please provide a bed file containing the regions to be taken into account for TMB calculation!")
+    tmb <- NULL
+  }
+  return(tmb)
+}
+
 filt <- function(x, func){
   #' Filter for function
   #'
@@ -1002,12 +1022,12 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
 
   # Read vcf files
   if (protocol == "somaticGermline" | protocol == "somatic"){
-    snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
-    indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+    indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
   }
   if (protocol == "panelTumor" | protocol == "tumorOnly"){
-    snvs <- read.delim(file = snv_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
-    indels <- read.delim(file = indel_vcf, header = T, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+    indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
   }
   # combine SNVs and InDels + Filter for "PASS"
   variants <- rbind(snvs, indels)
