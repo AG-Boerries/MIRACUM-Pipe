@@ -62,9 +62,9 @@ readonly tmp_memory=$(get_config_value common.memory "${PARAM_DIR_PATIENT}")
 readonly CFG_COMMON_MEMORY="$(("${tmp_memory//[^0-9.]/}"/${TMP_PROCESSES}))${tmp_memory//[^a-zA-Z]/}"
 
 # general parameters
-readonly CFG_GENERAL_MINBASEQUAL=$(get_config_value wes.general.minBaseQual "${PARAM_DIR_PATIENT}")
-readonly CFG_GENERAL_MAFCUTOFF=$(get_config_value wes.general.maf_cutoff "${PARAM_DIR_PATIENT}")
-readonly CFG_WES_MINVAF=$(get_config_value wes.general.minVAF "${PARAM_DIR_PATIENT}")
+readonly CFG_GENERAL_MINBASEQUAL=$(get_config_value general.minBaseQual "${PARAM_DIR_PATIENT}")
+readonly CFG_GENERAL_MAFCUTOFF=$(get_config_value general.maf_cutoff "${PARAM_DIR_PATIENT}")
+readonly CFG_GENERAL_MINVAF=$(get_config_value general.minVAF "${PARAM_DIR_PATIENT}")
 
 # sametools mpileup
 readonly CFG_SAMTOOLS_MPILEUP_MINMQ=$(get_config_value wes.samtools.mpileup.minMQ "${PARAM_DIR_PATIENT}")
@@ -132,9 +132,6 @@ readonly CFG_VARSCAN_FPFILTER_MINVARMAPQUAL=$(get_config_value wes.varscan.fpfil
 readonly CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value wes.varscan.fpfilter.maxMapQualDiff "${PARAM_DIR_PATIENT}")
 
 # Panel Parameter
-readonly CFG_PANEL_MINVAF=$(get_config_value panel.general.minVAF "${PARAM_DIR_PATIENT}")
-readonly CFG_PANEL_MINBASEQUAL=$(get_config_value panel.general.minBaseQual "${PARAM_DIR_PATIENT}")
-
 # mpileup2snp
 readonly CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINCOVERAGE=$(get_config_value panel.samtools.mpileup2snp.minCoverage "${PARAM_DIR_PATIENT}")
 readonly CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINREADS2=$(get_config_value panel.samtools.mpileup2snp.minReads2 "${PARAM_DIR_PATIENT}")
@@ -174,6 +171,7 @@ readonly CFG_PANEL_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value panel.vars
 
 # mutect2
 readonly CFG_PANEL_MUTECT_CALLABLEDEPTH=$(get_config_value panel.mutect.callableDepth "${PARAM_DIR_PATIENT}")
+readonly CFG_MUTECT_CALLABLEDEPTH=$(get_config_value wes.mutect.callableDepth "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value annovar.protocol "${PARAM_DIR_PATIENT}")
@@ -355,9 +353,6 @@ export CFG_VARSCAN_FPFILTER_MINREFMAPQUAL
 export CFG_VARSCAN_FPFILTER_MINVARMAPQUAL
 export CFG_VARSCAN_FPFILTER_MAXMAPQUALDIFF
 
-export CFG_PANEL_MINVAF
-export CFG_PANEL_MINBASEQUAL
-
 export CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINCOVERAGE
 export CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINREADS2
 export CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINFREQFORHOM
@@ -391,6 +386,9 @@ export CFG_PANEL_VARSCAN_FPFILTER_MAXMMQSDIFF
 export CFG_PANEL_VARSCAN_FPFILTER_MINREFMAPQUAL
 export CFG_PANEL_VARSCAN_FPFILTER_MINVARMAPQUAL
 export CFG_PANEL_VARSCAN_FPFILTER_MAXMAPQUALDIFF
+
+export CFG_PANEL_MUTECT_CALLABLEDEPTH
+export CFG_MUTECT_CALLABLEDEPTH
 
 export CFG_ANNOVAR_PROTOCOL
 export CFG_ANNOVAR_ARGOP

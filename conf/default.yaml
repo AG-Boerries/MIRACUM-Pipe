@@ -21,12 +21,15 @@ common:
   # set to no if the germline sample should be used only to identify somatic variants
   germline: yes
 
-wes:
-  general:
-    # minimum base quality to call a variant
-    minBaseQual: 28
-    maf_cutoff: 0.001
+general:
+  # minimum base quality to call a variant
+  minBaseQual: 28
+  # minimum
+  maf_cutoff: 0.001
+  # minimum variant allele / tumor frequency to call a variant
+  minVAF: 0.05
 
+wes:
   samtools:
     mpileup:
       #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
@@ -53,13 +56,9 @@ wes:
       ignoreRG: false
       #-x, --ignore-overlaps   disable read-pair overlap detection
       ignoreOverlaps: false
-
-      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> tools.general.minBaseQual
+      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] ->  minBaseQual
 
   varscan:
-  # minimum variant allele / tumor frequency to call a variant
-    minVAF: 0.05
-
     somatic:
       #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
       minCoverage: 8
@@ -81,16 +80,14 @@ wes:
       strandFilter: 0
       #--validation - If set to 1, outputs all compared positions even if non-variant
       validation: 0
-
-      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> tools.varscan.minVAF
+      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> minVAF
 
     processSomatic:
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]
       maxNormalFreq: 0.05
       #--p-value - P-value for high-confidence calling [0.07]
       pValue: 0.07
-
-      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> tools.varscan.minVAF
+      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] ->  minVAF
 
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
@@ -139,6 +136,19 @@ wes:
       #--min-var-freq		Minimum variant allele frequency [0.05] -> tools.varscan.minVAF
       #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
       #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
+  
+  mutect:
+    #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
+    #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
+    callableDepth: 8
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
+
+  filterMutectCalls:
+    #--contamination-estimate 0.5?; Estimate of contamination.  Default value: 0.0 (evtl. tumor purity)
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
+    #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
 
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
@@ -186,11 +196,7 @@ wes:
     contaminationAdjustment: TRUE
 
 ## Panel Parameters
-panel:
-  general:
-    minVAF: 0.05
-    minBaseQual: 20
-    
+panel:  
   samtools:
     mpileup2snp:
       #--min-coverage  Minimum read depth at a position to make a call [8]
@@ -203,9 +209,8 @@ panel:
       pValue: 0.99
       #--strand-filter Ignore variants with >90% support on one strand [1]
       strandFilter: 1
-
-      #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.minVAF
-      #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.general.minBaseQual
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
       
     mpileup2indel:
       #--min-coverage  Minimum read depth at a position to make a call [8]
@@ -218,9 +223,8 @@ panel:
       pValue: 0.99
       #--strand-filter Ignore variants with >90% support on one strand [1]
       strandFilter: 1
-    
-      #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.panel.minVAF
-      #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.varscan.panel.minBaseQual
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
   
   varscan:
     fpfilter:
@@ -330,8 +334,7 @@ panel:
     # set TRUE to correct for contamination by normal cells.
     # If "contamination" is not provided, it will automatically evaluate the level of contamination
     contaminationAdjustment: TRUE
-
-       
+    
 annovar:
   # define annotation databases, together with their type, used. The databases have to be installed with annovar
   protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20210501,intervar_20180118,dbnsfp42a,cosmic_coding,cosmic_noncoding'
@@ -342,7 +345,7 @@ sequenza:
   # --window WINDOW; Window size used for binning the original seqz file. Default is 50.
   window: 50
   # if used for samples without mathcing normal as control a separate non-matching-normal file in bam format is needed
-  nonMatchingNormal: TSO500_non_matching_normal.bam
+  nonMatchingNormal: non_matching_normal.bam
 
 reference:
   # define reference genome

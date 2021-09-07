@@ -82,14 +82,21 @@ readonly mpileup=${DIR_TMP}/${NameD}_mpileup # DIR_WES
 readonly recalbam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
+readonly OUTPUT_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2.vcf.gz
+readonly OUTPUT_FILTERED_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered.vcf.gz
+readonly OUTPUT=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered
+readonly ANNOVAR_OUTPUT=${DIR_WES}/${NameTD}.hg19_multianno.vcf
+readonly MSI_OUTPUT=${DIR_WES}/${NameTD}_MSI
+readonly HRD_OUTPUT=${DIR_WES}/${NameTD}_HRD.seqz.gz
+readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameTD}_HRD.small.seqz.gz
 
-${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_PANEL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbam}" > "${mpileup}"
+${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINREADS2}" \
-    --min-freq-for-hom "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_PVALUE}" --min-avg-qual "${CFG_PANEL_MINBASEQUAL}" \
-    --strand-filter "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${snpvcf}"
+    --min-freq-for-hom "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_PVALUE}" --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" \
+    --strand-filter "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_GENERAL_MINVAF}" --output-vcf 1 > "${snpvcf}"
 ${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINCOVERAGE}" --min-reads2 "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINREADS2}" \
-    --min-freq-for-hom "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_PVALUE}" --min-avg-qual "${CFG_PANEL_MINBASEQUAL}" \
-    --strand-filter "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_PANEL_MINVAF}" --output-vcf 1 > "${indelvcf}"
+    --min-freq-for-hom "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_PVALUE}" --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" \
+    --strand-filter "${CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_GENERAL_MINVAF}" --output-vcf 1 > "${indelvcf}"
 
 
 readonly names1="snp indel"
@@ -108,8 +115,8 @@ for name1 in ${names1}; do
   ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
   ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
   ${BIN_VAR_SCAN} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
-      --min-ref-basequal "${CFG_PANEL_MINBASEQUAL}" --min-var-basequal "${CFG_PANEL_MINBASEQUAL}" \
-      --min-var-count "${CFG_PANEL_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_PANEL_MINVAF}" \
+      --min-ref-basequal "${CFG_GENERAL_MINBASEQUAL}" --min-var-basequal "${CFG_GENERAL_MINBASEQUAL}" \
+      --min-var-count "${CFG_PANEL_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_GENERAL_MINVAF}" \
       --min-var-count-lc "${CFG_PANEL_VARSCAN_FPFILTER_MINVARCOUNTLC}" --max-somatic-p "${CFG_PANEL_VARSCAN_FPFILTER_MAXSOMATICP}" \
       --max-somatic-p-depth "${CFG_PANEL_VARSCAN_FPFILTER_MAXSOMATICPDEPTH}" --min-ref-readpos "${CFG_PANEL_VARSCAN_FPFILTER_MINREFREADPOS}" \
       --min-var-readpos "${CFG_PANEL_VARSCAN_FPFILTER_MINVARREADPOS}" --min-ref-dist3 "${CFG_PANEL_VARSCAN_FPFILTER_MINREFDIST3}" \
@@ -143,30 +150,16 @@ for name1 in ${names1}; do
 done
 
 # GATK4 Mutect2
-# names
-readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_vc
-readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
-
-# keep
-readonly INPUT=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
-readonly OUTPUT_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2.vcf.gz
-readonly OUTPUT_FILTERED_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered.vcf.gz
-readonly OUTPUT=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered
-readonly ANNOVAR_OUTPUT=${DIR_WES}/${NameTD}.hg19_multianno.vcf
-readonly MSI_OUTPUT=${DIR_WES}/${NameTD}_MSI
-readonly HRD_OUTPUT=${DIR_WES}/${NameTD}_HRD.seqz.gz
-readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameTD}_HRD.small.seqz.gz
-
-# ANNOVAR
+# ANNOVAR settings
 CODINGARG="--includesnp --onlyAltering --mrnaseq --tolerate"
 CONVERTARG="--includeinfo"
 
 # Mutect2
-${BIN_GATK4} Mutect2 -R ${GENOME} -I ${INPUT} -O ${OUTPUT_GZ} \
- --callable-depth "${CFG_PANEL_MUTECT_CALLABLEDEPTH}" --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-base-quality-score "${CFG_PANEL_MINBASEQUAL}" --base-quality-score-threshold "${CFG_PANEL_MINBASEQUAL}"
+${BIN_GATK4} Mutect2 -R ${GENOME} -I ${recalbam} -O ${OUTPUT_GZ} \
+ --callable-depth "${CFG_PANEL_MUTECT_CALLABLEDEPTH}" --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-base-quality-score "${CFG_GENERAL_MINBASEQUAL}" --base-quality-score-threshold "${CFG_GENERAL_MINBASEQUAL}"
 
 # Filter
-${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${GENOME} -O ${OUTPUT_FILTERED_GZ} --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-median-base-quality "${CFG_PANEL_MINBASEQUAL}" --min-allele-fraction "${CFG_PANEL_MINVAF}"
+${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${GENOME} -O ${OUTPUT_FILTERED_GZ} --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-median-base-quality "${CFG_GENERAL_MINBASEQUAL}" --min-allele-fraction "${CFG_GENERAL_MINVAF}"
 gunzip "${OUTPUT_FILTERED_GZ}"
 
 # Annovar
@@ -181,7 +174,7 @@ rm "${OUTPUT}.avinput"
 ${BIN_SNPEFF} "${OUTPUT}.vcf" > "${OUTPUT}_SnpEff.vcf"
 
 # MSI
-${MSISENSOR2} -t "${INPUT}" -o "${MSI_OUTPUT}"
+${MSISENSOR2} -t "${recalbam}" -o "${MSI_OUTPUT}"
 
 # HRD
 if [ ! -f "${HRD_REF_WIG}" ]; then
@@ -189,7 +182,7 @@ if [ ! -f "${HRD_REF_WIG}" ]; then
     ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
 fi
 
-${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${INPUT}" --tumor "${INPUT}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" --parallel "${CFG_COMMON_CPUCORES}" \
+${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbam}" --tumor "${recalbam}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" --parallel "${CFG_COMMON_CPUCORES}" \
   -C chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX -o "${HRD_OUTPUT}"
 ${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
 
