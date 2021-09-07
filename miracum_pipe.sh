@@ -178,7 +178,7 @@ function get_case() {
   local dir_patient="${1}"
 
   if [[ "$(get_config_value common.protocol "${dir_patient}")" = "wes" ]]; then
-    if [[ "$(get_config_value annotation.germline "${dir_patient}")" = "True" ]]; then
+    if [[ "$(get_config_value common.germline "${dir_patient}")" = "True" ]]; then
       echo "somaticGermline"
     else
       echo "somatic"

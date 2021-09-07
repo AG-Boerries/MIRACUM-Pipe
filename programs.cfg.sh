@@ -13,6 +13,9 @@ readonly CFG_FILE_TUMOR_R2=$(get_config_value common.files.tumor_R2 "${PARAM_DIR
 readonly CFG_FILE_GERMLINE_R1=$(get_config_value common.files.germline_R1 "${PARAM_DIR_PATIENT}")
 readonly CFG_FILE_GERMLINE_R2=$(get_config_value common.files.germline_R2 "${PARAM_DIR_PATIENT}")
 
+readonly CFG_PANEL_FILE_TUMOR=$(get_config_value common.files.panel.tumor "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_FILE_NUMBER=$(get_config_value common.files.panel.numberOfFiles "${PARAM_DIR_PATIENT}")
+
 readonly CFG_FOLDER_RNA=$(get_config_value common.RNA.folder "${PARAM_DIR_PATIENT}")
 
 # folder containing patient output
@@ -26,8 +29,8 @@ readonly DIR_FUSIONS="${DIR_RNA}/fusioncatcher"
 
 ## Genome
 readonly FILE_GENOME="${DIR_REF}/genome/$(get_config_value reference.genome "${PARAM_DIR_PATIENT}")"
-
 readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.length "${PARAM_DIR_PATIENT}")"
+readonly HRD_REF_WIG="${DIR_REF}/genome/$(get_config_value reference.hrdRef "${PARAM_DIR_PATIENT}")"
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
@@ -169,6 +172,9 @@ readonly CFG_PANEL_VARSCAN_FPFILTER_MINREFMAPQUAL=$(get_config_value panel.varsc
 readonly CFG_PANEL_VARSCAN_FPFILTER_MINVARMAPQUAL=$(get_config_value panel.varscan.fpfilter.minVarMapQual "${PARAM_DIR_PATIENT}")
 readonly CFG_PANEL_VARSCAN_FPFILTER_MAXMAPQUALDIFF=$(get_config_value panel.varscan.fpfilter.maxMapQualDiff "${PARAM_DIR_PATIENT}")
 
+# mutect2
+readonly CFG_PANEL_MUTECT_CALLABLEDEPTH=$(get_config_value panel.mutect.callableDepth "${PARAM_DIR_PATIENT}")
+
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value annovar.protocol "${PARAM_DIR_PATIENT}")
 readonly CFG_ANNOVAR_ARGOP=$(get_config_value annovar.argop "${PARAM_DIR_PATIENT}")
@@ -246,6 +252,18 @@ readonly BIN_RSCRIPT=$(command -v Rscript)
 readonly FUSIONCATCHER_DB="${DIR_TOOLS}/fusioncatcher/data/current"
 readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p ${CFG_COMMON_CPUCORES} -d ${FUSIONCATCHER_DB} "
 
+# msisnesor2
+readonly MSISENSOR2="${DIR_TOOLS}/msisensor2/msisensor2 msi -b ${CFG_COMMON_CPUCORES} -M ${DIR_TOOLS}/msisensor2/models_hg19_GRCh37"
+
+# msisensor-pro
+readonly MSISENSOR_PRO="${DIR_TOOLS}/msisensor-pro/msisensor-pro msi -b ${CFG_COMMON_CPUCORES}"
+readonly MICROSATELLITE_SITES=$(get_config_value reference.microsatelliteSites "${PARAM_DIR_PATIENT}")
+
+# HRD
+readonly SEQUENZA_UTILS=$(command -v sequenza-utils)
+readonly SEQUENZA_WINDOW=$(get_config_value sequenza.window "${PARAM_DIR_PATIENT}")
+readonly SEQUENZA_NON_MATCHING_NORMAL=$(get_config_value sequenza.nonMatchingNormal "${PARAM_DIR_PATIENT}")
+
 # export parameters
 export CFG_AUTHOR
 export CFG_CENTER
@@ -255,6 +273,9 @@ export CFG_FILE_TUMOR_R1
 export CFG_FILE_TUMOR_R2
 export CFG_FILE_GERMLINE_R1
 export CFG_FILE_GERMLINE_R2
+
+export CFG_PANEL_FILE_TUMOR
+export CFG_PANEL_FILE_NUMBER
 
 export CFG_FOLDER_RNA
 
@@ -266,6 +287,7 @@ export DIR_FUSIONS
 
 export FILE_GENOME
 export CFG_REFERENCE_LENGTH
+export HRD_REF_WIG
 
 export CFG_REFERENCE_CAPTUREREGIONS
 export CFG_REFERENCE_CAPTUREGENES
@@ -427,3 +449,11 @@ export BIN_RSCRIPT
 
 export FUSIONCATCHER_DB
 export BIN_FUSIONCATCHER
+
+export MSISENSOR2
+export MSISENSOR_PRO
+export MICROSATELLITE_SITES
+
+export SEQUENZA_UTILS
+export SEQUENZA_WINDOW
+export SEQUENZA_NON_MATCHING_NORMAL

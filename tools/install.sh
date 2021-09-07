@@ -186,3 +186,16 @@ python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
 # sequenza-utils #
 ##################
 #pip3 install sequenza-utils
+
+##############
+# msisensor2 #
+##############
+cd ${DIR_SCRIPT}/msisensor2
+chmod +x msisensor2
+
+#################
+# msisensor-pro #
+#################
+cd ${DIR_SCRIPT}/msisensor-pro
+wget https://github.com/xjtu-omics/msisensor-pro/raw/master/binary/msisensor-pro
+chmod +x msisensor-pro 

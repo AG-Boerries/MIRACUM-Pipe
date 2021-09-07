@@ -10,6 +10,9 @@ common:
     tumor_R2: tumor_R2.fastq.gz
     germline_R1: germline_R1.fastq.gz
     germline_R2: germline_R2.fastq.gz
+    panel:
+        tumor: MT21_19902-RNA_S12_L00 #MT21_19902-RNA_S12_L001_R1_001.fastq.gz
+        number^OfFiles: 4
   RNA:
     # folder contatining RNA fastq files for RNA fusions
     folder: RNA
@@ -275,7 +278,7 @@ panel:
     #--contamination-estimate 0.5?; Estimate of contamination.  Default value: 0.0 (evtl. tumor purity)
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
-    #--min-median-base-quality 28
+    #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
   
   cnvkit:
     # supply cnvkit reference file, called FlatReference for tumor only CN calculation
@@ -334,11 +337,22 @@ annovar:
   protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20210501,intervar_20180118,dbnsfp42a,cosmic_coding,cosmic_noncoding'
   argop: 'g,f,f,f,f,f,f,f'
 
+sequenza:
+  # define sequenza-utils parameter
+  # --window WINDOW; Window size used for binning the original seqz file. Default is 50.
+  window: 50
+  # if used for samples without mathcing normal as control a separate non-matching-normal file in bam format is needed
+  nonMatchingNormal: TSO500_non_matching_normal.bam
+
 reference:
   # define reference genome
   genome: hg19.fa
   # file containing the length of the chromosomes
   length: hg19_chr.len
+  # reference wig file for HRD calculation; if not present its generated
+  hrdRef: hg19all.wig.gz
+  # microsatellite sites for msisnesor-pro
+  microsatelliteSites: microsatellite_sites_hg19
   # database of known SNPs
   dbSNP: snp150hg19.vcf.gz
   # Mappability file needed for calling CNVs with ControlFREEC
@@ -357,5 +371,5 @@ reference:
     # covered exons by capture kit; basically intersection of exome with capture regions
     # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed -u
     coveredExons: exons_5UTR.bed
-    # whitelist for genes in germline to be reported (e.g. by ACMG)
+    # positive list for genes in germline to be reported (e.g. by ACMG)
     # actionableGenes: actionable_genes.txt

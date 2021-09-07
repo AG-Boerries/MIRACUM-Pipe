@@ -167,5 +167,5 @@ ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^a
 # advanced qc / coverage of exonic regions
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_COVERED_EXONS}" | grep '^all' > "${coverageexons}"
 
-# zip
+# fastqc
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"

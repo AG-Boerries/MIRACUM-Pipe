@@ -85,6 +85,9 @@ readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fi
 # keep
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
+readonly MSI_OUTPUT=${DIR_WES}/${NameD}_MSI
+readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
+readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbamGD}" "${recalbamTD}" | ${BIN_SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
   --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" \
@@ -208,3 +211,23 @@ for name1 in ${names1}; do
   # snpEff; identify canonical transcript
   ${BIN_SNPEFF} "${hc_fpf}" > "${hc_L_snpeff}"
 done
+
+# MSI
+if [ ! -f "${MICROSATELLITE_SITES}" ]; then
+    echo "${MICROSATELLITE_SITES} does not exist. Generating ..."
+    ${MSISENSOR_PRO} scan -d "${FILE_GENOME}" -o "${MICROSATELLITE_SITES}"
+fi
+
+${MSISENSOR_PRO} -d ${MICROSATELLITE_SITES} -n "${recalbamGD}" -t "${recalbamTD}" -o "${MSI_OUTPUT}"
+
+# HRD
+if [ ! -f "${HRD_REF_WIG}" ]; then
+    echo "${HRD_REF_WIG} does not exist. Generating ..."
+    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
+fi
+
+${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" --parallel "${CFG_COMMON_CPUCORES}" \
+  -C chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX -o "${HRD_OUTPUT}"
+${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+
+#eo VC

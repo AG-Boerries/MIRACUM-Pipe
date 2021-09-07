@@ -61,9 +61,8 @@ fi
 [[ -d "${DIR_RNA}" ]] || mkdir -p "${DIR_RNA}"
 [[ -d "${DIR_FUSIONS}" ]] || mkdir -p "${DIR_FUSIONS}"
 
-readonly input="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FOLDER_RNA}"
-
 # SAMPLE
+readonly input="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FOLDER_RNA}"
 # readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
 # FASTQC
