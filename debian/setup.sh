@@ -60,5 +60,6 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
   install_R && \
   install_texlive && \
   pip3 install shyaml && \
+  pip3 install agfusion && \
   pip3 install sequenza-utils && \
   apt-get -y autoremove

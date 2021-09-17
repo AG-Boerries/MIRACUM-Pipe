@@ -19,8 +19,6 @@ packages <- c("foreach", "doMC", "openxlsx", "circlize", "knitr", "kableExtra", 
 BiocManager::install(pkgs = packages, update  = TRUE, ask = FALSE)
 
 url <- "https://cran.r-project.org/src/contrib/Archive/lsei/lsei_1.2-0.1.tar.gz"
-url2 <- "https://cran.r-project.org/src/contrib/Archive/MSIseq/MSIseq_1.0.0.tar.gz"
 devtools::install_url(url)
-devtools::install_url(url2)
 BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = FALSE, ask = FALSE)
 devtools::install_github('sztup/scarHRD',build_vignettes = FALSE)
