@@ -198,4 +198,11 @@ chmod +x msisensor2
 #################
 cd ${DIR_SCRIPT}/msisensor-pro
 wget https://github.com/xjtu-omics/msisensor-pro/raw/master/binary/msisensor-pro
-chmod +x msisensor-pro 
+chmod +x msisensor-pro
+
+############
+# agfusion #
+############
+cd /opt/MIRACUM-Pipe/databases
+pip3 install future
+agfusion download -g hg38
