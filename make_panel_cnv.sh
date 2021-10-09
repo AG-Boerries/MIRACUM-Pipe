@@ -146,7 +146,7 @@ if [ ! -f "${HRD_REF_WIG}" ]; then
     ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
 fi
 
-${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" --parallel "${CFG_COMMON_CPUCORES}" \
+${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" --parallel "${CFG_COMMON_CPUCORES}" \
   -C chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX -o "${HRD_OUTPUT}"
 ${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
