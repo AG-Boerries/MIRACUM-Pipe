@@ -48,7 +48,7 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
+if [[ "$(get_config_value common.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
   readonly CFG_CASE=somaticGermline
 else
   readonly CFG_CASE=somatic
