@@ -4,7 +4,7 @@ path <- args[7]
 
 library(scarHRD)
 library(sequenza)
-input_file <- paste0(path, ID, ".small.seqz.gz")
+input_file <- paste0(path, "/", ID, ".small.seqz.gz")
 # Determine the HRD-Score
 result <- scar_score(input_file, reference = "grch37", seqz = TRUE)
 write.table(x = result, file = paste0(path, "/", ID, "_HRD.txt"))
