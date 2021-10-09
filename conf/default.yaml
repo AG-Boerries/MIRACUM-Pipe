@@ -12,7 +12,7 @@ common:
     germline_R2: germline_R2.fastq.gz
     panel:
         tumor: MT21_19902-RNA_S12_L00 #MT21_19902-RNA_S12_L001_R1_001.fastq.gz
-        number^OfFiles: 4
+        numberOfFiles: 4
   RNA:
     # folder contatining RNA fastq files for RNA fusions
     folder: RNA
@@ -20,6 +20,8 @@ common:
   # process and annotate germline file, allowed values: yes, no
   # set to no if the germline sample should be used only to identify somatic variants
   germline: yes
+
+sex: XX
 
 general:
   # minimum base quality to call a variant

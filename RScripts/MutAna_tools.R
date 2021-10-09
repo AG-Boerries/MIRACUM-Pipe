@@ -1072,3 +1072,17 @@ get_status <- function(table, inf_tab_snv, inf_tab_indel) {
   }
   return(table)
 }
+
+msi <- function(msi_file) {
+  if (file.exists(msi_file)) {
+    msi <- read.table(
+      file = msi_file,
+      header = TRUE,
+      stringsAsFactors = FALSE
+    )
+    msi_score <- msi[1, 3]
+  } else {
+    msi_score <- NULL
+  }
+  return(msi = msi_score)
+}

@@ -405,7 +405,7 @@ filtering_mutect2 <- function(
   # TMB calculation for WES
   if (manifest != "TSO500"){
     if (mode == "T"){
-      tmb <- tumbu(x, sureselect)
+      tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
     } else {
       tmb <- 0
     }
@@ -507,53 +507,33 @@ filtering_mutect2 <- function(
       row.names = F
     )
     
-    # mico satellite stability
-    if (mode = "T") {
-      msi <- read.table(
-        file = msi_txt,
-        header = TRUE,
-        stringsAsFactors = FALSE
-      )
-      colnames(msi) <- c(
-        "Total_Number_of_Sites",
-        "Number_of_Somatic_Sites",
-        "MSI_Score"
-      )
-    } else {
-      msi <- NULL
-    }
     return(
       list(
         table = x,
         tmb = tmb,
         maf = out.maf,
-        msi = msi
       )
     )
 
   } else if (mode == "N" | mode == "T") {
     print("No SNVs passed filter!")
     out.maf <- NULL
-    msi <- NULL
     return(
       list(
         table = x,
         tmb = tmb,
         maf = out.maf,
-        msi = msi
       )
     )
 
   } else if (mode == "LOH") {
     print("No LOH passed filter!")
     out.maf <- NULL
-    msi <- NULL
     return(
       list(
         table = x,
         tmb = tmb,
         maf = out.maf,
-        msi = msi
       )
     )
   }

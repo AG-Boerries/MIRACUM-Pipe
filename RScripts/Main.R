@@ -208,6 +208,10 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     path_output, sample,
     "_VC_Somatic_TUMOR.xlsx"
   )
+  msi_file <- paste0(
+     path_input, "/", sample,
+     "_vc_MSI"
+  )
   # LOH
   snp_file_loh <- paste0(
     path_input, sample,
@@ -268,6 +272,11 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     path_input, "/", sample,
     "_gatk4_mutect2_filtered_SnpEff.vcf"
   )
+  msi_file <- paste0(
+    path_input, "/", sample,
+    "_vc_MSI"
+  )
+
   # Results
   outfile_circos <- paste0(path_output, sample, "_TD_circos.pdf")
   outfile_circos_mutect2 <- paste0(
@@ -306,7 +315,7 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     min_var_count = min_var_count,
     maf = maf_cutoff,
     coveredExons = coveredExons,
-    cov_t = 1,
+    cov_t = stats$cover_exons$perc[[2]][1],
     sureselect_type = sureselect_type
   )
 
@@ -358,7 +367,7 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       maf = maf_cutoff,
       actionable_genes = actionable_genes,
       coveredExons = coveredExons,
-      cov_t = 1,
+      cov_t = stats$cover_exons$perc[[1]][1],
       sureselect_type = sureselect_type
     )
     loh_correction <- loh_correction(
@@ -380,7 +389,8 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       targets_txt = targets_txt,
       protocol = "panelTumor",
       sureselect = bed_file,
-      sureselect_type = sureselect_type
+      sureselect_type = sureselect_type,
+      msi_file = msi_file
     )
   }
 
@@ -396,7 +406,8 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     targets_txt = targets_txt,
     protocol = protocol,
     sureselect = bed_file,
-    sureselect_type = sureselect_type
+    sureselect_type = sureselect_type,
+    msi_file = msi_file
   )
 }
 if (protocol == "panelTumor" | protocol == "tumorOnly") {
@@ -420,7 +431,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     min_var_count = min_var_count,
     maf = maf_cutoff,
     coveredExons = coveredExons,
-    cov_t = 1,
+    cov_t = stats$cover_exons$perc[[1]][1],
     sureselect_type = sureselect_type
   )
   # GATK4 Mutect2
@@ -440,7 +451,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     min_var_count = min_var_count,
     maf = maf_cutoff,
     coveredExons = coveredExons,
-    cov_t = 1,
+    cov_t = stats$cover_exons$perc[[1]][1],
     sureselect_type = sureselect_type
   )
 
@@ -458,7 +469,8 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     targets_txt = targets_txt,
     protocol = protocol,
     sureselect = bed_file,
-    sureselect_type = sureselect_type
+    sureselect_type = sureselect_type,
+    msi_file = msi_file
   )
   # GATK4 Mutect2
   mutation_analysis_result_mutect2 <- mutation_analysis(
@@ -471,7 +483,8 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     targets_txt = targets_txt,
     protocol = protocol,
     sureselect = bed_file,
-    sureselect_type = sureselect_type
+    sureselect_type = sureselect_type,
+    msi_file = msi_file
   )
 }
   
@@ -592,6 +605,20 @@ if (protocol == "tumorOnly" | protocol == "panelTumor") {
     path_input, "CNV/", sample,
     "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn"
   )
+  # HRD/Purity
+  purity_file <- paste0(
+    path_input, "/",
+    sample,
+    "_sequenza/",
+    sample,
+    "_alternative_solutions.txt"
+  )
+  hrd_file <- paste0(
+    path_input,
+    "/",
+    sample,
+    "_HRD.txt"
+  )
 
   # Results
   cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
@@ -611,7 +638,9 @@ if (protocol == "tumorOnly" | protocol == "panelTumor") {
     outfile_cbioportal = outfile_cnvs_cbioportal,
     outfile_seg = outfile_cnvs_seg,
     id = id,
-    protocol = protocol
+    protocol = protocol,
+    purity_file = purity_file,
+    hrd_file = hrd_file
   )
 }
 
@@ -697,6 +726,56 @@ if (protocol == "somaticGermline") {
 }
 
 # Export TMB, MSI and BRCAness as text file for cBioPortal
+# Export TMB, MSI, HRD and BRCAness as text file for cBioPortal
+if(protocol == "Tumor_only" & manifest == "TSO500") {
+  if (mutation_analysis_result_mutect2$msi < 20) {
+      msi_helper <- "Non-MSI-H"
+  } else {
+      msi_helper <- "Instable"
+  }
+  brca_helper <- which(mut_sig ==  "AC3")
+  if (length(brca_helper) == 1 & mut_sig["AC3", 3]*100 > 1) {
+    brca_helper <- paste0(round(mut_sig["AC3", 3]*100, digits = 1))
+  } else {
+    brca_helper <- "<1%"
+  }
+  biomarker <- data.frame(Tumor_Sample_Barcode = paste(as.character(sample),"TD",sep = "_"),
+                          MSI_SCORE = mutation_analysis_result_mutect2$msi,
+                          MSI_TYPE = msi_helper,
+                          CVR_TMB_SCORE = filt_result_td_10_mutect2$tmb,
+                          BRCAness = brca_helper,
+                          HRD = cnv_analysis_results$hrd$sum,
+                          Purity = cnv_analysis_results$purity$purity,
+                          Ploidity = cnv_analysis_results$purity$ploidy)
+  write.table(x = biomarker, file = biomarker_out , append = F, quote = F,
+              sep = '\t', col.names = T, row.names = F)
+} else {
+  if (mutation_analysis_result$msi < 10) {
+      msi_helper <- "Non-MSI-H"
+  } else {
+      msi_helper <- "Instable"
+  }
+  brca_helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
+  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
+    brca_helper <- paste0(round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
+			  " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
+			  ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")")
+  } else {
+    brca_helper <- "<1%"
+  }
+
+  biomarker <- data.frame(Tumor_Sample_Barcode = paste(as.character(sample), "TD", sep = "_"),
+			  MSI_SCORE = mutation_analysis_result$msi,
+			  MSI_TYPE = msi_helper,
+			  CVR_TMB_SCORE = filt_result_td$tmb,
+			  BRCAness = brca_helper,
+			  HRD = cnv_analysis_results$hrd$sum,
+        Purity = cnv_analysis_results$purity$purity,
+        Ploidity = cnv_analysis_results$purity$ploidy)
+  write.table(x = biomarker, file = biomarker_out, append = F, quote = F,
+	      sep = "\t", col.names = TRUE, row.names = F)
+}
+#
 if (protocol == "panelTumor" & sureselect_type == "TSO500") {
   helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
   if (length(helper) == 1) {

@@ -155,8 +155,8 @@ mutation_analysis <- function(
   # Check for important pathways
     check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets)
     importantpws <- imp_pws(check_mat, all_mut$all_muts)
-
   }
+  msi <- msi(msi_file)
   return(list(mut_tab = mutation_table,
               ts_og = tbl$ts_og_table,
               go = NULL, reactome = NULL,
@@ -169,5 +169,6 @@ mutation_analysis <- function(
               som_mut_tab = tbl$sm_table,
               table_loh_mutations = tbl$lm_table,
               all_mutations = all_mut$all_muts,
-              studies = studies))
+              studies = studies
+              msi = msi))
 }

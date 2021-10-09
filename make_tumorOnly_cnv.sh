@@ -73,6 +73,10 @@ readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
+readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
+readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
+readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
+
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
 
@@ -111,3 +115,13 @@ EOI
 export PATH=${PATH}:${BIN_SAMTOOLS}
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
 
+# HRD
+if [ ! -f "${HRD_REF_WIG}" ]; then
+    echo "${HRD_REF_WIG} does not exist. Generating ..."
+    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
+fi
+
+${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" --parallel "${CFG_COMMON_CPUCORES}" \
+  -C chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX -o "${HRD_OUTPUT}"
+${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"

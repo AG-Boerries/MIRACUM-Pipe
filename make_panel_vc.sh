@@ -87,8 +87,6 @@ readonly OUTPUT_FILTERED_GZ=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered.vcf.gz
 readonly OUTPUT=${DIR_WES}/${NameTD}_gatk4_mutect2_filtered
 readonly ANNOVAR_OUTPUT=${DIR_WES}/${NameTD}.hg19_multianno.vcf
 readonly MSI_OUTPUT=${DIR_WES}/${NameTD}_MSI
-readonly HRD_OUTPUT=${DIR_WES}/${NameTD}_HRD.seqz.gz
-readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameTD}_HRD.small.seqz.gz
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_PANEL_SAMTOOLS_MPILEUP2SNP_MINREADS2}" \
@@ -175,15 +173,5 @@ ${BIN_SNPEFF} "${OUTPUT}.vcf" > "${OUTPUT}_SnpEff.vcf"
 
 # MSI
 ${MSISENSOR2} -t "${recalbam}" -o "${MSI_OUTPUT}"
-
-# HRD
-if [ ! -f "${HRD_REF_WIG}" ]; then
-    echo "${HRD_REF_WIG} does not exist. Generating ..."
-    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
-fi
-
-${SEQUENZA_UTILS} bam2seqz -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbam}" --tumor "${recalbam}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" --parallel "${CFG_COMMON_CPUCORES}" \
-  -C chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX -o "${HRD_OUTPUT}"
-${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
 
 #eo VC
