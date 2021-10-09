@@ -112,7 +112,7 @@ mateOrientation = FR
 captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
-export PATH=${PATH}:${BIN_SAMTOOLS}
+export PATH="${BIN_SAMTOOLS}:${PATH}"
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
 
 # HRD
