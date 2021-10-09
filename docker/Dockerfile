@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:11
 
 #ENV http_proxy http://proxy.ibsm.uni-freiburg.de:8080
 #ENV https_proxy http://proxy.ibsm.uni-freiburg.de:8080
