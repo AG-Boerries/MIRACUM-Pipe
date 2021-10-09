@@ -2,10 +2,19 @@
 # Mutation Analysis #
 
 
-mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
-                             outfile_reactome, outfile_consensus,
-                             outfile_hallmarks, outfile_mtb_genesets, path_data,
-                             path_script, path_output, targets_txt, protocol, sureselect, sureselect_type){
+mutation_analysis <- function(
+  loh,
+  somatic,
+  tumbu,
+  outfile_circos,
+  path_data,
+  path_script,
+  path_output,
+  targets_txt,
+  protocol,
+  sureselect,
+  sureselect_type
+) {
   #' Mutation Analysis
   #'
   #' @description Analysis and Annotation of Mutations
@@ -63,9 +72,6 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   require(Homo.sapiens)
   require(stringr)
 
-  #load(paste(path_data, "GOGeneSets.RData", sep = "/"))
-  #load(paste(path_data, "Reactome.rda", sep = "/"))
-  #load(paste(path_data, "Consensus.RData", sep = "/"))
   load(paste(path_data, "hallmarksOfCancer_GeneSets.RData", sep = "/"))
   load(paste(path_data, "MTB_Genesets.rda", sep = "/"))
   targets <- read.table(targets_txt)
@@ -123,7 +129,7 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     check_mat <- NULL
     importantpws <- NULL
   
-    } else {
+  } else {
     cc <- circos_colors(x_s_snp = sub_lst$x_s_snp, x_s_indel = sub_lst$x_s_indel,
                         x_l_snp = sub_lst$x_l_snp,
                         x_l_indel = sub_lst$x_l_indel, no_loh = sub_lst$no_loh,
@@ -138,13 +144,6 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
     if (protocol == "somaticGermline" | protocol == "somatic"){
       # Pathway-Analysis
       prep <- prep_pwa(targets, all_mut$mut)
-      #result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
-      #result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
-      #result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
-      #result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_hallmarks)
-      #result_go <- get_terms(dataset = go.bp, mut.entrez =  prep$de_genes, t2.entrez = prep$universe, outfile = outfile_go)
-      #result_re <- get_terms(dataset = reactome2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_reactome)
-      #result_co <- get_terms(dataset = cons2, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = outfile_consensus)
       result_hm <- get_terms(dataset = hallmarksOfCancer, mut.entrez = prep$de_genes, t2.entrez = prep$universe, outfile = NULL)
     } else {
       result_go <- NULL
@@ -156,8 +155,8 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
   # Check for important pathways
     check_mat <- write_mtb_genesets(all_mut$mut, mtb.genesets)
     importantpws <- imp_pws(check_mat, all_mut$all_muts)
-}
-  
+
+  }
   return(list(mut_tab = mutation_table,
               ts_og = tbl$ts_og_table,
               go = NULL, reactome = NULL,
@@ -169,5 +168,6 @@ mutation_analysis <- function(loh, somatic, tumbu, outfile_circos, outfile_go,
               important_pathways = importantpws,
               som_mut_tab = tbl$sm_table,
               table_loh_mutations = tbl$lm_table,
-              all_mutations = all_mut$all_muts))
+              all_mutations = all_mut$all_muts,
+              studies = studies))
 }

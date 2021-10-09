@@ -1,6 +1,6 @@
 #################
 # Coverage Plot #
-coverage_plot <- function(path, outfilePDF, protocol){
+coverage_plot <- function(path, outfilePDF, protocol) {
   #' Coverage Plot
   #'
   #' @description Coverage Plot
@@ -41,7 +41,7 @@ coverage_plot <- function(path, outfilePDF, protocol){
     cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
   }
   # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
-  if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
+  if (protocol != "panelTumor") {
     min_cov <- 8
     mit_cov <- 40
   } else {
@@ -121,7 +121,7 @@ if (protocol != "panelTumor"){
   return(list(cov = cov, perc = perc, labs = labs, files = files))
 }
 
-reads <- function(tfile, gfile){
+reads <- function(tfile, gfile) {
   #' Reads
   #'
   #' @description Extract the mean readcount
@@ -157,7 +157,7 @@ reads <- function(tfile, gfile){
               nRG = ngreads, gin = gin_size, gin_sd = gin_sd))
 }
 
-treads <- function(tfile){
+treads <- function(tfile) {
   treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
   id <- which (as.character(treads_tab$V2) == "reads properly paired:")
   treads <- as.character(treads_tab$V3[id])
@@ -183,14 +183,14 @@ coverage_exon <- function(path, protocol = protocol){
   #' @return labs vector of strings. IDs for coverage files
   #' @return perc vector. Vector containing percentage of targeted exons with at least
   #' @return 8 or 40 reads for Tumor_Normal, 20 or 100 reads for Tumor_Only.
-  #' 
-  #' 
+  #'
+  #'
 
   # Get a list of the bedtools output files you'd like to read in
   print(files <- list.files(path = path, pattern = "exons.txt$"))
   print(labs <- gsub("_coverage.exons.txt", "", files, perl = TRUE))
   files <- paste(path, files, sep = "/")
-  
+
   # Create lists to hold coverage and cumulative coverage for each alignment,
   # and read the data into these lists.
   cov <- list()
@@ -200,7 +200,7 @@ coverage_exon <- function(path, protocol = protocol){
     cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
   }
   # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
-  if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
+  if (protocol != "panelTumor") {
     min_cov <- 8
     mit_cov <- 40
   } else {
@@ -216,7 +216,7 @@ coverage_exon <- function(path, protocol = protocol){
 return(list(cov = cov, labs = labs, perc = perc))
 }
 
-quality_check <- function(path, nsamples, protocol){
+quality_check <- function(path, nsamples, protocol) {
   gc_content <- rep(0, times = length(nsamples))
   mean_QC <- rep(0, times = length(nsamples))
   for (i in 1:length(nsamples)){

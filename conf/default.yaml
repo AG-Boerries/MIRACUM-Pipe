@@ -308,7 +308,7 @@ panel:
     # intercept of polynomial
     # 1 - with GC-content,
     # 0 - with a control dataset
-    intercept: 0
+    intercept: 1
     # minimal number of consecutive windows to call a CNA
     # 3 for WES and 1 for WGS
     minCNAlength: 3

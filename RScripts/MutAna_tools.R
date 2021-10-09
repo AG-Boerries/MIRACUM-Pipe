@@ -17,6 +17,23 @@ find_indel <- function(list){
   return(id)
 }
 
+find_indel_2 <- function(list){
+  #' Indel Finder
+  #'
+  #' @description Find Indels in list
+  #'
+  #' @param list dataframe. List of mutations
+  #'
+  #' @return id indexvector. List of indices
+  #'
+  #' @details Given a list of mutations find the indels by checking the
+  #' @details reference and alternative bases. 
+  id.ref <- which(nchar(as.character(list$Ref)) > 1)
+  id.alt <- which(nchar(as.character(list$Alt)) > 1)
+  id <- unique( c(id.ref, id.alt) )
+  return(id)
+}
+
 div <- function(x_s, x_l, no_loh){
   #' Mutation separation
   #'
@@ -90,7 +107,7 @@ div <- function(x_s, x_l, no_loh){
               no_indel_loh = no_indel_loh, no_snp_loh = no_snp_loh))
 }
 
-mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol){
+mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol) {
   #' Mutation Table
   #'
   #' @description Build Mutation Table
@@ -232,7 +249,7 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, protocol) {
               loh_mut <- lohmutations))
 }
 
-tables <- function(x_s, x_l = NULL, protocol){
+tables <- function(x_s, x_l = NULL, protocol) {
   #' Create Tables
   #'
   #' @description Write Tables for Tumorsuppressors/Oncogenes, all somatic
@@ -292,9 +309,8 @@ tables <- function(x_s, x_l = NULL, protocol){
               lm_table = lm_table))
 }
 
-get_mapping_matrix <- function(annovar_table, row_index)
-{
-  if (length(row_index)==0) return(NULL)
+get_mapping_matrix <- function(annovar_table, row_index) {
+  if (length(row_index) == 0) return(NULL)
   col_index <- match(c("Chr", "Start", "Gene.refGene"), colnames(annovar_table))
   new_table <- annovar_table[row_index, col_index]
   new_table[] <- lapply(new_table, as.character)
@@ -302,23 +318,20 @@ get_mapping_matrix <- function(annovar_table, row_index)
   return(new_table)
 }
 
-add_default_value <- function(mapping_matrix)
-{
+add_default_value <- function(mapping_matrix) {
   if (is.null(mapping_matrix)) return(mapping_matrix)
   new_matrix <- cbind(mapping_matrix, rep(1, nrow(mapping_matrix)))
   colnames(new_matrix)[ncol(new_matrix)] <- "Value"
   return(new_matrix)	
 }
 
-rename_chr <- function(mapping_matrix)
-{
+rename_chr <- function(mapping_matrix) {
   new_matrix <- mapping_matrix
   new_matrix[,1] <- gsub("chr", "", new_matrix[,1])
   return(new_matrix)	
 }
 
-duplicate_first_raw <- function(mapping_matrix)
-{
+duplicate_first_raw <- function(mapping_matrix) {
   if (is.null(mapping_matrix)) return(NULL)
   new_matrix <- mapping_matrix
   new_matrix <- rbind(new_matrix[1,], new_matrix)
@@ -326,7 +339,17 @@ duplicate_first_raw <- function(mapping_matrix)
   return(new_matrix)
 }
 
-circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_indel = NULL, no_loh, no_indel_somatic, no_snp, no_indel_loh, no_snp_loh){
+circos_colors <- function(
+  x_s_snp = NULL,
+  x_s_indel = NULL,
+  x_l_snp = NULL,
+  x_l_indel = NULL,
+  no_loh,
+  no_indel_somatic,
+  no_snp,
+  no_indel_loh,
+  no_snp_loh
+) {
   #' Circos Colors
   #'
   #' @description Prepare List and colors for Circosplot
@@ -402,8 +425,16 @@ circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_
   return(list(map_mat = oc_matrices, circoscolors = circoscolors))
 }
 
-omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
-                          circosColors = NULL, protocol, sureselect, sureselect_type) {
+omicCircosUni <- function(
+  listOfMap,
+  label = NULL,
+  minR,
+  outfile,
+  circosColors = NULL,
+  protocol,
+  sureselect,
+  sureselect_type
+) {
   #' omic Circos Uni
   #'
   #' @description Create the Circosplot
@@ -412,7 +443,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   #' @param minR numerical. Minimum radius
   #' @param outfile string. Name of output file
   #' @param circosColors vector of strings. Colors for Circosplot
-  #' 
+  #'
   #' @details This function plots the human genome on a circle.
   #' @details The mutations are then arranged by location on smaller
   #' @details concentric circle. Each mutation type gets an extra circle.
@@ -529,8 +560,16 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   dev.off()	
 }
 
-omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
-                          circosColors = NULL, protocol, sureselect) {
+omicCircosFus2 <- function(
+  listOfMap,
+  fusions,
+  label = NULL,
+  minR,
+  outfile,
+  circosColors = NULL,
+  protocol,
+  sureselect
+) {
   #' omic Circos with Fusions
   #'
   #' @description Create the Circosplot
@@ -541,7 +580,7 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
   #' @param circosColors vector of strings. Colors for Circosplot
   #' @param protocol string. Name of the analysis protocol
   #' @param mode string. Name of the capture kit.
-  #' 
+  #'
   #' @details This function plots the human genome on a circle.
   #' @details The mutations are then arranged by location on smaller
   #' @details concentric circle. Each mutation type gets an extra circle.

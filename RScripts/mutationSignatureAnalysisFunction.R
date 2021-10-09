@@ -25,9 +25,9 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   require("BSgenome.Hsapiens.UCSC.hg19")
   require("TxDb.Hsapiens.UCSC.hg19.knownGene")
   require("openxlsx")
-  
+
   txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
-  
+
   ## Loading Siganture Info
   # "old" Alexandrov Signatures
   Alex_signatures_path <- paste(path_data, "signatures.txt", sep = "/")
@@ -128,7 +128,7 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
     sample_name <- unlist(strsplit(sam_na[length(sam_na)], ".", fixed = T))[1]
   }
   ## load vcf Files
-  sample.vcf <- readVcf(vcf_file,"hg19")
+  sample.vcf <- readVcf(vcf_file, "hg19")
   ## create data.frame from mutations
   if(only_coding == TRUE){
     mutations.coding <- predictCoding(sample.vcf, txdb, seqSource = Hsapiens)

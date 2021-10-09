@@ -31,8 +31,6 @@ function install_texlive()
 function install_R()
 {
   echo "deb http://cloud.r-project.org/bin/linux/debian buster-cran40/" >> /etc/apt/sources.list && \
-  #apt-key adv --keyserver keyserver.ubuntu.com --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
-  #wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe19f5f87128899b192b1a2c2ad5f960a256a04af | apt-key add - &&
   apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
   apt-get update && apt-get install -y --no-install-recommends -t buster-cran40 r-base-dev
   R CMD javareconf
@@ -44,7 +42,7 @@ apt-get update
 # packages that are required for installation
 apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
   autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev tabix \
-  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev \
+  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev libcurl4-openssl-dev libncursesw5-dev libhts-dev \
   python python-dev python-numpy python-biopython python-xlrd python-openpyxl \
   gfortran \
   default-jre \

@@ -1,6 +1,9 @@
 #### Functions for filtering
 
-tumbu <- function(x, covered_region){
+tumbu <- function(
+  x,
+  covered_region
+) {
   #' Tumor Mutational Burden
   #'
   #' @description Calculates the tumor mutational burden
@@ -18,25 +21,23 @@ tumbu <- function(x, covered_region){
   #' @details that the sequencer covers
   covered_region <- as.numeric(covered_region)
   tmb <- nrow(x) / covered_region
-  tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
   return(tmb)
 }
 
-tmb_ex <- function(x, coveredExons, mode = "T", cov_t) {
+tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
   require(GenomicRanges)
   if (mode != "T") {
     tmb <- NULL
   } else if {
-    bed <- read.delim(coveredExons, header = FALSE)
+    bed <- read.delim(covered_exons, header = FALSE)
     mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
                        ranges = IRanges(start = bed$V2, end = bed$V3))
     mani_gr <- reduce(mani_gr)
     mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
                       ranges = IRanges(start = x$Start , end = x$Start))
     tmb <- (length(findOverlaps(mut_gr, mani_gr))/sum(width(mani_gr))*1000000)/cov_t
-    tm <- paste0("Tumor Mutation Burden: ", tmb, " pro Mb")
     } else {
-    print("Please provide a bed file containing the regions to be taken into account for TMB calculation!")
+      print("Please provide a bed file containing the regions to be taken into account for TMB calculation!")
     tmb <- NULL
   }
   return(tmb)
@@ -133,6 +134,63 @@ vrz <- function(x, mode, protocol){
     }
   return(x)
 }
+
+vrz_gatk <- function(x, mode, protocol = "Tumor_Normal", manifest){
+  #' Extract VAF, Readcounts and Zygosity
+  #'
+  #' @description Extracts VAF, Readcounts (and Zygosity)
+  #'
+  #' @param x dataframe. Table of Mutations
+  #' @param mode string. "N" for SNPs and Indels, "LOH" for LoH
+  #'
+  #' @return returns x, dataframe. Table of Mutations with extra columns
+  #'
+  #' @details Mode: "N"
+  #' @details We extract VAF, Readcounts and Zygosity out of the column
+  #' @details "Otherinfo".
+  #' @details Mode: "LOH"
+  #' @details We extract VAF and Readcounts both for Tumor and Normal
+  #' @details out of the column "Otherinfo". The dataframe x should contain
+  #' @details only mutations calls with a lack of heterozygosity.
+  if(dim(x)[1] == 0){
+    return(x)
+  }
+  if (mode == "N" | mode == "T"){
+    split_other <- strsplit(x$Otherinfo13, split = ":", fixed = TRUE)
+    x$Variant_Allele_Frequency <- unlist(lapply(split_other, function(f) f[3]))
+    count_alt <- unlist(lapply(split_other, function(f) f[2]))
+    x$Variant_Reads <- paste(unlist(lapply(strsplit(count_alt, split = ",", fixed = TRUE), function(f) f[2])),
+                             unlist(lapply(split_other, function(f) f[4])), sep = "|")
+    x$Zygosity <- "het"
+    x$Zygosity[as.numeric(x$Variant_Allele_Frequency) > 0.75] <- "hom"
+    return(x)
+  }
+  if (mode == "LOH"){
+    vaf.normal <- c()
+    vaf.tumor <- c()
+    count.normal <- c()
+    count.tumor <- c()
+    for (j in 1:dim(x)[1]) {
+      other <- as.character(x[j, "Otherinfo"])
+      split <- strsplit(other, split = ":", fixed = TRUE)
+      vaf.normal <- c(vaf.normal, split[[1]][12])
+      vaf.tumor <- c(vaf.tumor, split[[1]][18])
+      count.normal <- c(count.normal, paste(split[[1]][11], split[[1]][9],
+                                            sep = "|"))
+      count.tumor <- c(count.tumor, paste(split[[1]][17],
+                                          (as.numeric(split[[1]][16]) 
+                                           + as.numeric(split[[1]][17])),
+                                          sep = "|"))
+    }
+    
+    x <- cbind(x, VAF_Normal = vaf.normal, VAF_Tumor = vaf.tumor,
+               Count_Normal = count.normal, Count_Tumor = count.tumor)
+    vaf.tumor <- as.character(vaf.tumor)
+    vaf.tumor2 <- as.numeric(gsub("%", "", vaf.tumor))
+  }
+  return(x)
+}
+
 
 mrc <- function(x, min_var_count){
   vrc <- strsplit(x = as.character(x$Variant_Reads), split = "|", fixed = TRUE)
@@ -899,8 +957,7 @@ id_na <- grep(pattern = ";", x = x$AAChange)
   return(x)
 }
 
-####################
-# Condel Functions #
+## Condel Functions
 condelQuery <- function(chr, start, ref, alt, dbfile){
   #' Condel Query
   #'
@@ -1102,11 +1159,12 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "splicing", yes = "Splice_Site", no = ann$ExonicFunc.refGene)
   ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "UTR3", yes = "3'UTR", no = ann$ExonicFunc.refGene)
   ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "UTR5", yes = "5'UTR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "splice_region_variant&synonymous_variant", yes = "Splice_Site", no = ann$ExonicFunc.refGene)
   ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene %in% c("ncRNA_exonic", "ncRNA_intronic", "ncRNA_UTR3", "ncRNA_UTR5", "ncRNA"), yes = "RNA", no = ann$ExonicFunc.refGene)
   ann.lvls <- c("synonymous", "nonsynonymous", "stopgain", "stoploss", "frameshift insertion", "frameshift deletion", "nonframeshift insertion", "nonframeshift deletion",
-                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA")
+                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA", "nonframeshift substitution")
   ann.lbls <- c("Silent", "Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation", "Frame_Shift_Ins", "Frame_Shift_Del", "In_Frame_Ins", "In_Frame_Del",
-                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "Unknown", "Unknown", "RNA")
+                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "Unknown", "Unknown", "RNA", "Missense_Mutation")
   names(ann.lbls) <- ann.lvls
   ann$ExonicFunc.refGene <- as.character(ann.lbls[as.character(ann$ExonicFunc.refGene)])
   
@@ -1273,6 +1331,266 @@ txt2maf <- function(input, Center = center, refBuild = 'GRCh37', idCol = NULL, i
   return(ann.maf)
 }
 
+txt2maf_mutect2 <- function(input, snv_vcf, protocol, Center = center, refBuild = 'GRCh37', idCol = NULL, id = NULL, sep = "\t", Mutation_Status = c("T", "N","LOH")[1]){
+  
+  #' Text to MAF Converter (cBioPortal Import)
+  #' 
+  #' @param input data.frame. Input data,frame from the pipeline. Output from the filtering scripts.
+  #' @param Center string. Name of the processing Center.
+  #' @param refBuild string. Reference genome version, e.g. GRCh37, GRCh38.
+  #' @param idCol string. Column name in the input file containing the Patient_ID.
+  #' @param id string. Patient_ID.
+  #' @param sep string. Separator for the outputfile. Should be "\t" for cBioPortal import.
+  #' @param Mutation_Status string. Kind of mutations about to process. Could either be T(umor), N(ormal) or LOH.
+  #' @param protocol string. Used protocol either panel/tumor only (panelTumor) or WES / tumor and normal (somaticGerlmine or somatic)
+  #' @param snv_vcf string. snpEff vcf output containing SNVs.
+  #' @param indel_vcf string. snpEff vcf output containing InDels.
+  
+  if (protocol == "somaticGermline" | protocol == "somatic"){
+    if (Mutation_Status == "T") {
+      Mutation_Status <- "Somatic"
+    } else if (Mutation_Status == "N") {
+      Mutation_Status <- "Germline"
+    } else if (Mutation_Status == "LOH") {
+      Mutation_Status <- "LoH"
+    }
+  }
+  if (protocol == "panelTumor" | protocol == "tumorOnly" | protocol == "Tumor_only"){
+    Mutation_Status = "Tumor"
+  }
+  
+  # Read vcf files
+  if (protocol == "somaticGermline" | protocol == "somatic"){
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+    #indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "NORMAL", "TUMOR"), stringsAsFactors = F)
+  }
+  if (protocol == "panelTumor" | protocol == "tumorOnly"  | protocol == "Tumor_only"){
+    snvs <- read.delim(file = snv_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+    #indels <- read.delim(file = indel_vcf, header = F, sep = "\t", quote = "", na.strings = ".", dec = ".", comment.char = "#", col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER","INFO", "FORMAT", "TUMOR"), stringsAsFactors = F)
+  }
+  # combine SNVs and InDels + Filter for "PASS"
+  variants <- snvs
+  id.pass <- variants$FILTER == "PASS"
+  variants <- variants[id.pass,]
+  
+  ann <- input
+  
+  essential.col <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+                     "AAChange", "CChange", "Transcript", "Ensembl", "avsnp150")
+  
+  for(i in 1:length(essential.col)){
+    colId = suppressWarnings(grep(pattern = paste0("^",essential.col[i], "$"),
+                                  x <- colnames(ann), ignore.case = TRUE))
+    if (length(colId) == 1) {
+      colnames(ann)[colId] <- essential.col[i]
+    }
+  }
+  
+  if(length(essential.col[!essential.col %in% colnames(ann)]) > 0){
+    message("Available fields:")
+    print(colnames(ann))
+    message(paste0("Missing required field in input file: "))
+    print(essential.col[!essential.col %in% colnames(ann)])
+    stop()
+  }
+  
+  if(is.null(idCol) & is.null(id)) {
+    error('Provide either the column containing the Tumor Sample Barcode or the Tumor Sample Barcode as string!')
+    stop()
+  }
+  
+  if(is.null(idCol) & !is.null(id)) {
+    ann$Tumor_Sample_Barcode <- paste(as.character(id),"TD",sep = "_")
+    ann$Matched_Norm_Sample_Barcode <- paste(as.character(id),"GD",sep = "_")
+  }
+  
+  if(!is.null(idCol)) {
+    colnames(ann)[which(colnames(ann) == idCol)] <- "Tumor_Sample_Barcode"
+  }
+  
+  if(is.null(Center)) {
+    Center <- NA
+  }
+  
+  ann$uid <- paste("uid", 1:nrow(ann), sep = "")
+  ann.mand <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene", "Gene.refGene", "ExonicFunc.refGene",
+                "AAChange", "CChange", "Transcript", "Ensembl", "Tumor_Sample_Barcode", "Matched_Norm_Sample_Barcode", "avsnp150", "uid")
+  
+  ann.opt <- colnames(ann)[!colnames(ann) %in% ann.mand]
+  ann.opt <- c(ann.opt, "uid")
+  ann.opt <- ann[, ann.opt]
+  
+  # adding MIRACUM prefix to all optional columns to simplify the import in cBioPortal via namespace
+  colnames(ann.opt) <- paste("MIRACUM", colnames(ann.opt), sep = ".")
+  colnames(ann.opt)[dim(ann.opt)[2]] <- "uid"
+  
+  ann <- ann[, ann.mand]
+  ann$ExonicFunc.refGene <- gsub(pattern = " SNV", replacement = "", x = ann$ExonicFunc.refGene)
+  funcSpl <- strsplit(x = as.character(ann$ExonicFunc.refGene), split = ";", fixed = TRUE)
+  funcSpl <- sapply(funcSpl, function(l) {l[length(l)]})
+  ann$ExonicFunc.refGene <- funcSpl
+  
+  funcRef <- strsplit(x = as.character(ann$Func.refGene), split = ";", fixed = TRUE)
+  funcRef <- sapply(funcRef, function(l) {l[length(l)]})
+  ann$Func.refGene <- funcRef
+  
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "intronic", yes = "Intron", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "intergenic", yes = "IGR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "downstream", yes = "3'Flank", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "upstream", yes = "5'Flank", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "splicing", yes = "Splice_Site", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "UTR3", yes = "3'UTR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "UTR5", yes = "5'UTR", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene == "splice_region_variant&synonymous_variant", yes = "Splice_Site", no = ann$ExonicFunc.refGene)
+  ann$ExonicFunc.refGene <- ifelse(test = ann$Func.refGene %in% c("ncRNA_exonic", "ncRNA_intronic", "ncRNA_UTR3", "ncRNA_UTR5", "ncRNA"), yes = "RNA", no = ann$ExonicFunc.refGene)
+  ann.lvls <- c("synonymous", "nonsynonymous", "stopgain", "stoploss", "frameshift insertion", "frameshift deletion", "nonframeshift insertion", "nonframeshift deletion",
+                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "unknown", "UNKNOWN", "RNA", "nonframeshift substitution")
+  ann.lbls <- c("Silent", "Missense_Mutation", "Nonsense_Mutation", "Nonstop_Mutation", "Frame_Shift_Ins", "Frame_Shift_Del", "In_Frame_Ins", "In_Frame_Del",
+                "Intron", "IGR", "Splice_Site", "3'UTR", "3'Flank", "5'UTR", "5'Flank", "Unknown", "Unknown", "RNA", "Missense_Mutation")
+  names(ann.lbls) <- ann.lvls
+  ann$ExonicFunc.refGene <- as.character(ann.lbls[as.character(ann$ExonicFunc.refGene)])
+  
+  ann.del <- ann[ann$Alt %in% "-",]
+  ann <- ann[!ann$Alt %in% "-",]
+  
+  if(nrow(ann.del) > 0){
+    ann.del$var.type <- "DEL"
+  } else {
+    ann.del$var.type <- rep(NA, times = dim(ann.del)[1])
+  }
+  
+  ann.ins <- ann[ann$Ref %in% "-",]
+  ann <- ann[!ann$Ref %in% "-",]
+  if(nrow(ann.ins) > 0){
+    ann.ins$var.type <- "INS"
+  } else {
+    ann.ins$var.type <- rep(NA, times = dim(ann.ins)[1])
+  }
+  
+  if(nrow(ann) > 0){
+    ann$var.type <- "SNP"
+  } else {
+    ann$var.type <-  rep(NA, times = dim(ann)[1])
+  }
+  
+  ann <- rbind(ann, ann.del, ann.ins)
+  
+  # Hugo Gene Symbol
+  symbol <- unlist(lapply(strsplit(ann$Gene.refGene, split = ";"), function(x) {x[1]}))
+  idx <- which(!is.na(symbol))
+  
+  # ENTREZ Gene ID
+  entrez <- rep(NA, times = length(symbol))
+  entrez[idx] <- unlist(lapply(mget(as.character(symbol[idx]), org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x){x[1]}))
+  
+  # ENSEMBL Gene ID
+  ensembl <- rep(NA, times = length(symbol))
+  idx <- which(!is.na(entrez))
+  ensembl[idx] <- unlist(lapply(mget(as.character(entrez[idx]), org.Hs.egENSEMBL, ifnotfound = NA), function(x){x[1]}))
+  
+  # Protein Change
+  proteinChange <- as.character(ann$AAChange)
+  
+  # ENSEMBL Trancript ID
+  Transcript_Id <- ann$Transcript
+  Transcript_Id <- gsub(Transcript_Id, pattern = " ", replacement = "")
+  Transcript_Id[Transcript_Id == ""] <- NA
+  Transcript_Id <- substr(Transcript_Id, start = 1, stop = 15)
+  
+  # TxChange
+  TxChange <- unlist(lapply(strsplit(x = as.character(ann$CChange), split = ";", fixed = T), function(x) x[1]))
+  TxChange <- gsub(TxChange, pattern = " ", replacement = "")
+  TxChange[TxChange == ""] <- NA
+  
+  # read counts from vcf
+  ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype"> (1)
+  ##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality"> (2)
+  ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth"> (3)
+  ##FORMAT=<ID=RD,Number=1,Type=Integer,Description="Depth of reference-supporting bases (reads1)"> (4)
+  ##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Depth of variant-supporting bases (reads2)"> (5)
+  ##FORMAT=<ID=FREQ,Number=1,Type=String,Description="Variant allele frequency"> (6)
+  ##FORMAT=<ID=DP4,Number=1,Type=String,Description="Strand read counts: ref/fwd, ref/rev, var/fwd, var/rev"> (7)
+  
+  # create unique MAF IDs
+  dels <- ann$var.type == "DEL"
+  new_start <- ann$Start
+  new_start[dels] <- ann$Star[dels]-1
+  tmp_ids_maf <- paste(ann$Chr, new_start, sep = "_")
+  
+  # t_alt_count, t_ref_count, n_alt_count, n_ref_count
+  tmp_ids_vcf <- paste(variants$CHROM, variants$POS, sep = "_")
+  if( protocol == "somaticGermline" | protocol == "somatic"){
+    tmp_counts <- data.frame(t_ref_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[4])),
+                             t_alt_count = unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[5])),
+                             n_ref_count = unlist(lapply(strsplit(variants$NORMAL, split = ":"), function(x) x[4])),
+                             n_alt_count = unlist(lapply(strsplit(variants$NORMAL, split = ":"), function(x) x[5])))
+  }
+  if (protocol == "panelTumor" | protocol == "tumorOnly" | protocol == "Tumor_only"){
+    split <- unlist(lapply(strsplit(variants$TUMOR, split = ":"), function(x) x[2]))
+    tmp_counts <- data.frame(t_ref_count = unlist(lapply(strsplit(split, split = ","),function(x) x[1])),
+                             t_alt_count = unlist(lapply(strsplit(split, split = ","),function(x) x[2])),
+                             n_ref_count = "",
+                             n_alt_count = "")    
+  }
+  rownames(tmp_counts) <- tmp_ids_vcf
+  tmp <- tmp_counts[tmp_ids_maf,]
+  tmp$uid2 <- rownames(tmp)
+  
+  
+  ann.maf <- data.table::data.table(Hugo_Symbol = as.character(symbol),
+                                    Entrez_Gene_Id = as.character(entrez),
+                                    Center = Center,
+                                    NCBI_Build = refBuild,
+                                    Chromosome = ann$Chr,
+                                    Start_Position = ann$Start,
+                                    End_Position = ann$End,
+                                    Strand = "+",
+                                    Variant_Classification = ann$ExonicFunc.refGene,
+                                    Variant_Type = ann$var.type,
+                                    Reference_Allele = ann$Ref,
+                                    Tumor_Seq_Allele1 = ann$Ref,
+                                    Tumor_Seq_Allele2 = ann$Alt,
+                                    dbSNP_RS = ann$avsnp150,
+                                    dbSNP_Val_Status = "",
+                                    Tumor_Sample_Barcode = ann$Tumor_Sample_Barcode,
+                                    Matched_Norm_Sample_Barcode = ann$Matched_Norm_Sample_Barcode,
+                                    Match_Norm_Seq_Allele1 = ann$Ref,
+                                    Match_Norm_Seq_Allele2 = ann$Alt,
+                                    Tumor_Validation_Allele1 = "",
+                                    Tumor_Validation_Allele2 = "",
+                                    Match_Norm_Validation_Allele1 = "",
+                                    Match_Norm_Validation_Allele2 = "",
+                                    Verification_Status = "",
+                                    Validation_Status = NA,
+                                    Mutation_Status = Mutation_Status,
+                                    Sequencing_Phase = "",
+                                    Sequencing_Source = "",
+                                    Validation_Method = "",
+                                    Score = "",
+                                    BAM_File = "",
+                                    Sequencer = "",
+                                    HGVSp_Short = proteinChange,
+                                    Amino_Acid_Change = proteinChange,
+                                    TxChange = TxChange,
+                                    Transcript_Id = Transcript_Id,
+                                    ENSEMBL_Gene_Id = ensembl,
+                                    uid = ann$uid,
+                                    uid2 = tmp_ids_maf)
+  
+  ann.maf <- merge(ann.maf, tmp, by = "uid2")
+  ann.maf <- ann.maf[, `:=`(uid2, NULL)]
+  #ann.maf <- merge(ann.maf, ann.opt, by = "uid")
+  #ann.maf <- ann.maf[, `:=`(uid, NULL)]
+  
+  # # Clean Up for "missinterpretable" characters
+  # ann.maf$MIRACUM.target <- gsub(ann.maf$MIRACUM.target, pattern = "\n", replacement = "; ", fixed = T)
+  # ann.maf$MIRACUM.Otherinfo <- gsub(ann.maf$MIRACUM.Otherinfo, pattern = "\t", replacement = ";", fixed = T)
+  
+  ann.maf <- subset(ann.maf, select = -c(uid))
+  
+  return(ann.maf)
+}
+
 exclude <- function(x, vaf = 5){
   variant_freq <- substr(as.character(x$Variant_Allele_Frequency), start = 1,
                          stop = nchar(as.character(x$Variant_Allele_Frequency))-1)
@@ -1283,21 +1601,12 @@ exclude <- function(x, vaf = 5){
   return(x)
 }
 
-msistatus <- function(maf, sample, path_data) {
- require(MSIseq)
- # load required database containing repeats for hg19; http://steverozen.net/data/Hg19repeats.rda
- load(paste(path_data,"Hg19repeats.rda", sep = "/"))#
-
- msi.input <- data.frame(Chrom = maf$Chromosome,
-                       Start_Position = maf$Start_Position,
-                       End_Position = maf$End_Position,
-                       Variant_Type = maf$Variant_Type,
-                       Tumor_Sample_Barcode = maf$Tumor_Sample_Barcode)
-
- seq.length <- data.frame(Tumor_Sample_Barcode = paste(sample, "TD", sep = "_"), Sequence_Length = as.numeric(covered_region))
- test.mutationNum<-Compute.input.variables(msi.input, repeats = Hg19repeats, seq.len = seq.length)
- result <- MSIseq.classify(mutationNum = test.mutationNum, cancerType = NULL)
- return(list(result = result, scores = test.mutationNum))
+exclude_gatk <- function(x, vaf = 0.1){
+  id <- which(as.numeric(x$Variant_Allele_Frequency) >= vaf)
+  if(length(id) > 0) {
+    x <- x[id, ]
+  }
+  return(x)
 }
 
 loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){

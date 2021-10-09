@@ -1,4 +1,15 @@
-mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselect_type, path_script, ref_genome, targetCapture_cor_factors, path_output, sample_name, outfile_cbioportal){
+mut_sig_wCI <- function(
+  vcf_file = NULL,
+  cutoff = 0.01,
+  sample = NULL,
+  sureselect_type,
+  path_script,
+  ref_genome,
+  target_capture_cor_factors,
+  path_output,
+  sample_name,
+  outfile_cbioportal
+  ) {
   library(getopt)
   library(dplyr)
   library(magrittr)
@@ -7,8 +18,8 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   library(YAPSA)
   library(IRanges)
   library(data.table)
-  
-  load(targetCapture_cor_factors)
+
+  load(target_capture_cor_factors)
 
   if (sureselect_type == "V6"){
     targetCapture <- "Agilent6withoutUTRs"
@@ -21,12 +32,12 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   } else {
       error("Unsupported Capture Region Kit.")
   }
-  
+
   refGenome_path <- file.path(ref_genome)# hg19
   refGenome <- FaFile(refGenome_path)
 
   commonCutoff <- cutoff
-  
+
   mostInformativeCombo <- "Valid_norm"
   sequencingType <- "WES"
   wordLength <- 3
@@ -178,28 +189,6 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   subgroups_df <- data.frame(
     PID = names(exposures_list), subgroup = "test", sum = 1, compl_sum = 1, 
     index = seq_along(exposures_list), col = "#FF0000FF")
-  # combinedPlot_file <- paste0(sample, ".combinedSignatureExposures.pdf")
-  # pdf_width <- 7
-  # pdf_height <- 6
-  # pdf(file = combinedPlot_file, width = pdf_width, height = pdf_height)
-  # annotation_exposures_barplot(
-  #   in_exposures_df = temp_exposures_df,
-  #   in_signatures_ind_df = temp_sigInd_df,
-  #   in_subgroups_df = subgroups_df,
-  #   in_annotation_df = annotation_df,
-  #   in_annotation_col = annotation_col,
-  #   in_annotation_legend_side = "top", in_column_anno_borders = TRUE,
-  #   in_labels = TRUE)
-  # dev.off()
-  # 
-  
-  # combinedTable_file <- paste0(sample, ".combinedSignatureExposures.tsv")
-  # write.table(my_exposures_df, quote = FALSE, sep = "\t", col.names = NA, 
-  #             file = combinedTable_file)
-  # combinedNormTable_file <- paste0(sample, ".combinedSignatureNormExposures.tsv")
-  # write.table(my_normExposures_df, quote = FALSE, sep = "\t", col.names = NA, 
-  #             file = combinedNormTable_file)
-  
   # Compute confidence intervals
   reduced_names <- names(exposures_list)
   complete_df_list <- 
@@ -223,29 +212,18 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
     return(current_complete_df)
   })
   complete_df <- do.call(rbind, complete_df_list)
-  
-  # combinedConfPlot_file <- paste0(sample, ".combinedSignatureExposuresConfidence.pdf")
-  # pdf_width <- 7
-  # pdf_height <- 8
-  # pdf(file = combinedConfPlot_file, width = pdf_width, height = pdf_height)
-  # plotExposuresConfidence(complete_df, subgroups_df,
-  #                         AlexCosmicArtif_sigInd_df)
-  # dev.off()
-  # confIntTable_file <- paste0(sample, ".confIntSignatureExposures.tsv")
-  # write.table(complete_df, quote = FALSE, sep = "\t", col.names = TRUE, 
-  #           row.names = FALSE, file = confIntTable_file)
 
   sign_list <- list(CosmicValid_gen_LCDlist, CosmicValid_abs_LCDlist, CosmicValid_norm_LCDlist)
-  
+
   cutoffPerc <- cutoff * 100
-  
+
   out <- data.frame(
     Signature = sign_list[[which(!is.na(annotation_df$mostInformative))]]$out_sig_ind_df[, 1],
     Process = sign_list[[which(!is.na(annotation_df$mostInformative))]]$out_sig_ind_df[, 4],
     Percentage = sign_list[[which(!is.na(annotation_df$mostInformative))]]$norm_exposures*100,
     CI_lb = complete_df_list[[which(!is.na(annotation_df$mostInformative))]]$norm_lower[1:length(sign_list[[which(!is.na(annotation_df$mostInformative))]]$out_sig_ind_df[, 1])]*100,
     CI_ub = complete_df_list[[which(!is.na(annotation_df$mostInformative))]]$norm_upper[1:length(sign_list[[which(!is.na(annotation_df$mostInformative))]]$out_sig_ind_df[, 1])]*100)
-  
+
   output <- list("Mutation_Signature_Catalog" = mutation_catalogue_df,
                  "Signatures_Identified" = sign_list[[which(!is.na(annotation_df$mostInformative))]]$out_sig_ind_df[, c(1:2, 4)],
                  "Normalized_Exposures" = my_normExposures_df[, rownames(annotation_df)[which(!is.na(annotation_df$mostInformative))], drop = FALSE],
@@ -254,10 +232,10 @@ mut_sig_wCI <- function(vcf_file = NULL, cutoff = 0.01, sample = NULL, sureselec
   colnames(output$Mutation_Signature_Catalog) <- c(sample)
   colnames(output$Normalized_Exposures) <- c(sample)
   colnames(output$Summary)[3] <- c(sample)
-  
+
   write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
              headerStyle = createStyle(textDecoration = 'bold'))
-  
+
   # Is 0 in the CI in any?
   CI <- length(which(output$Confidence_Intervals$lower[which(output$Confidence_Intervals$sig == "AC3")] < 0))
   mutsig2cbioportal_wes(signatures = out, all_signatures = AlexCosmicValid_sigInd_df, id = sample_name, outfile_cbioportal = outfile_cbioportal)

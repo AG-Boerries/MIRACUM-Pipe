@@ -24,6 +24,6 @@ stats <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
     avreads <- treads(stats_td)
   }
   qc_check <- quality_check(path = path, nsamples = cover$labs, protocol = protocol)
-  #return(list(cover = cover, avreads = avreads))
+  
   return(list(cover = cover, cover_exons = cover_exons, avreads = avreads, qc_check = qc_check))
 }
