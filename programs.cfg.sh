@@ -261,6 +261,7 @@ readonly MICROSATELLITE_SITES=$(get_config_value reference.microsatelliteSites "
 readonly SEQUENZA_UTILS=$(command -v sequenza-utils)
 readonly SEQUENZA_WINDOW=$(get_config_value sequenza.window "${PARAM_DIR_PATIENT}")
 readonly SEQUENZA_NON_MATCHING_NORMAL=$(get_config_value sequenza.nonMatchingNormal "${PARAM_DIR_PATIENT}")
+readonly SEQUENZA_CHROMOSOMES=$(get_config_value sequenza.chromosomes "${PARAM_DIR_PATIENT}")
 
 # export parameters
 export CFG_AUTHOR

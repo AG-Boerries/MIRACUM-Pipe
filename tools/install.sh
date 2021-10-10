@@ -192,8 +192,9 @@ chmod +x msisensor2
 # msisensor-pro #
 #################
 cd ${DIR_SCRIPT}/msisensor-pro
-wget https://github.com/xjtu-omics/msisensor-pro/raw/master/binary/msisensor-pro
-chmod +x msisensor-pro
+#wget https://github.com/xjtu-omics/msisensor-pro/raw/master/binary/msisensor-pro
+#chmod +x msisensor-pro
+./INSTALL
 
 ############
 # agfusion #
