@@ -82,7 +82,7 @@ readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fi
 readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
 readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
-
+: '
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
 
@@ -126,7 +126,7 @@ EOI
 
 export PATH="${BIN_SAMTOOLS}:${PATH}"
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
-
+'
 # HRD
 if [ ! -f "${HRD_REF_WIG}" ]; then
     echo "${HRD_REF_WIG} does not exist. Generating ..."

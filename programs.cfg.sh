@@ -30,7 +30,7 @@ readonly DIR_FUSIONS="${DIR_RNA}/fusioncatcher"
 ## Genome
 readonly FILE_GENOME="${DIR_REF}/genome/$(get_config_value reference.genome "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_LENGTH="${DIR_CHROMOSOMES}/$(get_config_value reference.length "${PARAM_DIR_PATIENT}")"
-readonly HRD_REF_WIG="${DIR_REF}/genome/$(get_config_value reference.hrdRef "${PARAM_DIR_PATIENT}")"
+readonly HRD_REF_WIG="${DIR_DATABASE}/$(get_config_value reference.hrdRef "${PARAM_DIR_PATIENT}")"
 
 # depending on measurement machine
 ## SureSelect (Capture Kit)
@@ -254,8 +254,9 @@ readonly BIN_FUSIONCATCHER="${DIR_TOOLS}/fusioncatcher/bin/fusioncatcher.py -p $
 readonly MSISENSOR2="${DIR_TOOLS}/msisensor2/msisensor2 msi -b ${CFG_COMMON_CPUCORES} -M ${DIR_TOOLS}/msisensor2/models_hg19_GRCh37"
 
 # msisensor-pro
-readonly MSISENSOR_PRO="${DIR_TOOLS}/msisensor-pro/msisensor-pro msi -b ${CFG_COMMON_CPUCORES}"
-readonly MICROSATELLITE_SITES=$(get_config_value reference.microsatelliteSites "${PARAM_DIR_PATIENT}")
+readonly MSISENSOR_PRO="${DIR_TOOLS}/msisensor-pro/binary/msisensor-pro msi -b ${CFG_COMMON_CPUCORES}"
+readonly MSISENSOR_PRO_SCAN="${DIR_TOOLS}/msisensor-pro/binary/msisensor-pro scan"
+readonly MICROSATELLITE_SITES="${DIR_DATABASE}/$(get_config_value reference.microsatelliteSites "${PARAM_DIR_PATIENT}")"
 
 # HRD
 readonly SEQUENZA_UTILS=$(command -v sequenza-utils)
@@ -451,8 +452,10 @@ export BIN_FUSIONCATCHER
 
 export MSISENSOR2
 export MSISENSOR_PRO
+export MSISENSOR_PRO_SCAN
 export MICROSATELLITE_SITES
 
 export SEQUENZA_UTILS
 export SEQUENZA_WINDOW
 export SEQUENZA_NON_MATCHING_NORMAL
+export SEQUENZA_CHROMOSOMES

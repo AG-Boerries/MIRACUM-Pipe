@@ -351,19 +351,19 @@ sequenza:
   chromosomes: chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX
 
 reference:
-  # define reference genome
+  # define reference genome (located in references/Genome incl. indices)
   genome: hg19.fa
-  # file containing the length of the chromosomes
+  # file containing the length of the chromosomes (located in references/chromosomes)
   length: hg19_chr.len
-  # reference wig file for HRD calculation; if not present its generated
+  # reference wig file for HRD calculation; if not present its generated (to be put/created in databases)
   hrdRef: hg19all.wig.gz
-  # microsatellite sites for msisnesor-pro
+  # microsatellite sites for msisnesor-pro; if not present its generated (to be put/created in databases)
   microsatelliteSites: microsatellite_sites_hg19
-  # database of known SNPs
+  # database of known SNPs (located in databses/dbSNP)
   dbSNP: snp150hg19.vcf.gz
-  # Mappability file needed for calling CNVs with ControlFREEC
+  # Mappability file needed for calling CNVs with ControlFREEC (located in reference/mappability)
   mappability: out100m2_hg19.gem
-  sequencing:
+  sequencing: # all located in references/sequencing
     # target region covered by the sequencer in .bed format
     captureRegions: V5UTR.bed
     # file containing all the covered genes as HUGO Symbols

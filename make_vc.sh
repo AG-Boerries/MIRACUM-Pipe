@@ -213,7 +213,7 @@ done
 # MSI
 if [ ! -f "${MICROSATELLITE_SITES}" ]; then
     echo "${MICROSATELLITE_SITES} does not exist. Generating ..."
-    ${MSISENSOR_PRO} scan -d "${FILE_GENOME}" -o "${MICROSATELLITE_SITES}"
+    ${MSISENSOR_PRO_SCAN} -d "${FILE_GENOME}" -o "${MICROSATELLITE_SITES}"
 fi
 
 ${MSISENSOR_PRO} -d ${MICROSATELLITE_SITES} -n "${recalbamGD}" -t "${recalbamTD}" -o "${MSI_OUTPUT}"

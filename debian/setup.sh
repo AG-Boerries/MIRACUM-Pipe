@@ -37,18 +37,18 @@ function install_R()
 }
 
 # update packages
-apt-get update
+apt-get update & apt-get upgrade -y
 
 # packages that are required for installation
 apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
-  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libmariadbclient-dev tabix \
+  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libssl-dev libmariadbclient-dev tabix \
   libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev libcurl4-openssl-dev libncursesw5-dev libhts-dev libncurses5-dev \
   python python-dev python-numpy python-biopython python-xlrd python-openpyxl \
   gfortran \
   default-jre \
   ant \
   perl-base \
-  python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas python3-biopython python3-pyfaidx python3-pyvcf cython python3-setuptools python3-dev libpython3-all-dev \
+  python3 python3-pysam python3-pip python3-numpy python3-scipy python3-matplotlib python3-reportlab python3-pandas python3-biopython python3-pyfaidx python3-pyvcf cython python3-setuptools python3-dev libpython3-all-dev python3-future \
   cnvkit \
   libsnappy-java && \
   install_java8 && \
@@ -57,7 +57,6 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
                     openjdk-11-jre openjdk-11-jre-headless && \
   install_R && \
   install_texlive && \
-  pip3 install shyaml && \
-  pip3 install agfusion && \
-  pip3 install sequenza-utils && \
+  python3 -m pip install wheel && \
+  python3 -m pip install shyaml agfusion sequenza-utils && \
   apt-get -y autoremove

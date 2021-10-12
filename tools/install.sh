@@ -200,5 +200,4 @@ cd ${DIR_SCRIPT}/msisensor-pro
 # agfusion #
 ############
 cd /opt/MIRACUM-Pipe/databases
-pip3 install future
 agfusion download -g hg38
