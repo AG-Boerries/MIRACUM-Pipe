@@ -21,14 +21,14 @@ tumbu <- function(
   #' @details that the sequencer covers
   covered_region <- as.numeric(covered_region)
   tmb <- nrow(x) / covered_region
-  return(tmb)
+  return(list(tmb = tmb, exon_region = covered_region))
 }
 
 tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
   require(GenomicRanges)
   if (mode != "T") {
     tmb <- NULL
-  } else if {
+  } else {
     bed <- read.delim(covered_exons, header = FALSE)
     mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
                        ranges = IRanges(start = bed$V2, end = bed$V3))
@@ -36,12 +36,26 @@ tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
     mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
                       ranges = IRanges(start = x$Start , end = x$Start))
     tmb <- (length(findOverlaps(mut_gr, mani_gr))/sum(width(mani_gr))*1000000)/cov_t
-    } else {
-      print("Please provide a bed file containing the regions to be taken into account for TMB calculation!")
-    tmb <- NULL
+    exon_region <- sum(width(mani_gr))/1000000
   }
-  return(tmb)
+  return(list(tmb = tmb, exon_region = exon_region))
 }
+
+covered_region <- function(sureselect, mode = "T") {
+  if (mode == "T") {
+    bed <- read.delim(sureselect, header = FALSE)
+    gr <- GRanges(
+      seqnames = bed$V1, strand = "*",
+      ranges = IRanges(start = bed$V2, end = bed$V3)
+    )
+    gr <- reduce(gr)
+    region <- sum(width(gr))/1000000
+  } else {
+    region = NULL
+  }
+  return(region)
+}
+
 
 filt <- function(x, func){
   #' Filter for function
@@ -127,11 +141,7 @@ vrz <- function(x, mode, protocol){
                Count_Normal = count.normal, Count_Tumor = count.tumor)
     vaf.tumor <- as.character(vaf.tumor)
     vaf.tumor2 <- as.numeric(gsub("%", "", vaf.tumor))
-    exclude <- which(vaf.tumor2 < 20)
-    if(length(exclude) !=0){
-      x <- x[-exclude, ]
-    }
-    }
+  }
   return(x)
 }
 
@@ -1616,7 +1626,7 @@ loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline
                           stop = nchar(filt_loh$table$VAF_Tumor) - 1)) <  20)
   filt_loh_loss <- filt_loh$table[id_loss, ]
   filt_loh$table <- filt_loh$table[-id_loss, ]
-  if (modus == "SomaticGermline"){
+  if (protocol == "somaticGermline"){
     filt_loh_loss$Variant_Reads <- filt_loh_loss$Count_Normal
     filt_loh_loss$Variant_Allele_Frequency <- filt_loh_loss$VAF_Normal
     filt_loh_loss$Zygosity <- rep(x = "het", times = dim(filt_loh_loss)[1])

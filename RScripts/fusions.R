@@ -16,7 +16,7 @@ fusions_ana <- function(fus_file, path_data, fusion_genes = NULL) {
       )
     path_agfus <- substr(fus_file, start = 1, stop = nchar(fus_file) - 43)
     ag_fus <- paste0(
-      "/data/MTB_Test/git/MTB/Panel/agfusion-py3 batch -f ",
+      "agfusion batch -f ",
       fus_file_38,
       " -a fusioncatcher -o ",
       path_agfus,

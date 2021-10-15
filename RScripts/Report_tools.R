@@ -3,588 +3,79 @@ keys <- function(
   mut_sig_ana,
   mutation_analysis_result,
   mutation_analysis_result_gd,
-  mutation_analysis_result_10,
-  filt_result_td_10,
   cnv_analysis_results,
+  filt_result_td,
   filt_result_gd,
   med_tmb
 ) {
-  # Check for BRCAness
-  helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
 
-  # Put Results of Studies together
-  if (as.integer(
-    dim(mutation_analysis_result$studies$Soratram)[1]
-    + dim(mutation_analysis_result_gd$studies$Soratram)[1]
-  ) == 0
-  ) {
-    studies3 <- "Soratram: negativ"
-  } else {
-    mut_st <- paste0(
-      mutation_analysis_result$studies$Soratram$Symbol, "(",
-      mutation_analysis_result$studies$Soratram$AAChange, ")"
-    )
-    mut_st <- paste0(mut_st, collapse = ", ")
-    studies3 <- paste0("Soratram:", mut_st)
+  if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
+    sureselect_type <- paste("Agilent SureSelect", sureselect_type, sep = " ")
+  } else if (sureselect_type %in% c("TSO500", "TruSight_Tumor")) {
+    sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
   }
-  if (dim(mutation_analysis_result$studies$JDQ443A)[1] != 0) {
-    studies_jd <- "JDQ443A: positiv"
-  } else {
-    studies_jd <- "JDQ443A: negativ"
-  }
-  if (length(helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    studies2 <- "TopArt: BRCA positiv."
-  } else {
-    studies2 <- "TopArt: BRCA negativ."
-  }
-
-  if (!is.null(med_tmb$sd) & !is.null(med_tmb$med)) {
-    if (filt_result_td$tmb < med_tmb$sd[1]) {
-      help_tmb <- "--"
-    } else if (filt_result_td$tmb > med_tmb$sd[2]) {
-      help_tmb <- "++"
-    } else if (filt_result_td$tmb < med_tmb$med) {
-      help_tmb <- "-"
-    } else if (filt_result_td$tmb > med_tmb$med) {
-      help_tmb <- "+"
-    } else {
-      help_tmb <- "o"
-    }
-  } else if (!is.null(med_tmb$sd)) {
-    if (filt_result_td$tmb < med_tmb$med) {
-      help_tmb <- "-"
-    } else if (filt_result_td$tmb > med_tmb$med) {
-      help_tmb <- "+"
-    }
-  } else {
-    help_tmb <- "o"
-  }
-
-  if (length(helper) == "0") {
-    help_ac3 <- "--"
-  } else if(mut_sig_ana$output$Summary["AC3", 4] <= 0) {
-    help_ac3 <- "+"
-  } else if(mut_sig_ana$output$Summary["AC3", 4] > 0) {
-    help_ac3 <- "++"
-  }
-  if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 100) {
-    help_cnv <- "-"
-  } else if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 150) {
-    help_cnv <- "o"
-  } else if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 200) {
-    help_cnv <- "+"
-  } else {
-    help_cnv <- "++"
-  }
-  if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10)) < 150) {
-    help_germ <- "-"
-  } else if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10) < 200)) {
-    help_germ <- "o"
-  } else if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10) < 300)) {
-    help_germ <- "+"
-  } else {
-    help_germ <- "++"
-  }
-
-  if (length(grep(
-    pattern = "positiv", x = studies3
-  )) > 0 & length(grep(
-    pattern = "positive", x = studies2
-  )) > 0) {
-    help_studies <- "+/+"
-  } else if (length(grep(
-    pattern = "positiv", x = studies3
-  )) > 0) {
-    help_studies <- "+/-"
-  } else if (length(grep(
-    pattern = "positiv", x = studies2
-  )) > 0) {
-    help_studies <- "-/+" 
-  } else {
-    help_studies <- "-/-"
-  }
-  if (length(grep(
-    pattern = "positiv", x = studies_jd
-  )) > 0) {
-    help_studies <- paste0(help_studies, "/+")
-  } else {
-    help_studies <- paste0(help_studies, "/-")
-  }
-
-  if (length(helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] < 1.0) {
-    helper <- c()
-  }
-  if (length(helper) == 1) {
-    mut_tab1 <- data.frame(
-      Eigenschaften = c(
-        "Mutationslast",
-        "Anzahl somatischer Mutationen",
-        "BRCAness",
-        "Anzahl CN- Regionen",
-        "Anzahl seltener Keimbahnmutationen",
-        "Studiencheck",
-        ""
-      ),
-      Wert1 = c(
-        paste0(round(x = filt_result_td_10$tmb, digits = 2), "/Mb"),
-        as.character(
-          round(x = sum(as.numeric(
-            mutation_analysis_result_10$mut_tab[, 2]
-            )), digits = 0
-          )
-        ),
-        paste0(round(
-          x = mut_sig_ana$output$Summary[helper, 3], digits = 2
-        ), " %"),
-        paste0(round(
-          x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1],
-          digits = 0
-        ), " Regionen"),
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 10)),
-        studies3, studies_jd
-      ),
-      Wert2 = c(
-        paste0(round(
-          x = filt_result_td$tmb, digits = 2
-        ), "/Mb"),
-        as.character(round(
-          x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])),
-          digits = 0
-        )),
-        "-",
-        "-",
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 5)),
-        studies2, ""
-      ),
-      Wert3 = c(
-        help_tmb, "",
-        help_ac3, help_cnv, help_germ, help_studies, ""
-      )
-    )
-  } else {
-    mut_tab1 <- data.frame(
-      Eigenschaften = c(
-        "Mutationslast", 
-        "Anzahl somatischer Mutationen",
-        "BRCAness",
-        "Anzahl CNV- Regionen",
-        "Anzahl seltener Keimbahnmutationen",
-        "Studiencheck",
-        ""
-      ),
-      Wert1 = c(
-        paste0(round(
-          x = filt_result_td_10$tmb, digits = 2
-        ), "/Mb"),
-        round(x = sum(as.numeric(
-          mutation_analysis_result_10$mut_tab[, 2]
-        )), digits = 0),
-        "< 1.0%",
-        paste0(round(
-          x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1],
-          digits = 0
-        ), " Regionen"),
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 10)),
-        studies3, studies_jd
-      ),
-      Wert2 = c(
-        paste0(round(
-          x = filt_result_td$tmb, digits = 2
-        ), "/Mb"),
-        as.character(round(
-          x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])),
-          digits = 0
-        )),
-        "-",
-        "-",
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 5)),
-        studies2, ""
-      ),
-      Wert3 = c(
-        help_tmb,
-        "",
-        help_ac3,
-        help_cnv,
-        help_germ,
-        help_studies,
-        ""
-      )
-    )
-  }
-  colnames(mut_tab1) <- c(
-    "Eigenschaften",
-    "Wert (VAF > 10%)",
-    "Wert (VAF > 5%)",
-    "Einordnung"
+  brca_helper <- which(
+    mut_sig_ana$output$Summary$Signature ==  "AC3"
   )
+  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
+    brca_helper <- paste0(
+      round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
+      " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
+      ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")"
+    )
+  } else {
+    brca_helper <- "<1%"
+  }
+  if (mutation_analysis_result$msi < 10) {
+      msi_helper <- "MSS"
+  } else {
+      msi_helper <- "MSI"
+  }
 
   if (!is.null(med_tmb$med) & !is.null(med_tmb$sd)) {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = entity,
-      Wert2 = paste0(
-        med_tmb$med, " (",
-        as.numeric(med_tmb$sd[1], digits = 2),
-        "-", as.numeric(med_tmb$sd[2], digits = 2),
-        ")"
-      ),
-      Wert3 = ""
+    tmb_helper <- paste0(
+      med_tmb$med, " (",
+      as.numeric(med_tmb$sd[1], digits = 2),
+      "-", as.numeric(med_tmb$sd[2], digits = 2),
+      ")"
     )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 8, 2:7), ]
   } else if (!is.null(med_tmb$med)) {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = entity,
-      Wert2 = med_tmb$med,
-      Wert3 = ""
-    )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 8, 2:7), ]
+    tmb_helper <- med_tmb$med
   } else {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = "Nicht gelistet",
-      Wert2 = "-",
-      Wert3 = ""
-    )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 8, 2:7), ]
+    tmb_helper <- "-"
   }
 
-  return(mut_tab1)
-}
-
-keys2 <- function(
-  mut_sig_ana,
-  mutation_analysis_result,
-  mutation_analysis_result_gd,
-  mutation_analysis_result_10,
-  filt_result_td_10,
-  cnv_analysis_results,
-  filt_result_gd, med_tmb
-) {
-  # Check for BRCAness
-  helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
-  
-  # Put Results of Studies together
-  if (as.integer(
-    dim(mutation_analysis_result$studies$Soratram)[1]
-    + dim(mutation_analysis_result_gd$studies$Soratram)[1]
-  ) == 0) {
-    studies3 <- "Soratram: negativ"
-  } else {
-    mut_st <- paste0(
-      mutation_analysis_result$studies$Soratram$Symbol, "(",
-      mutation_analysis_result$studies$Soratram$AAChange, ")"
-    )
-    mut_st <- paste0(mut_st, collapse = ", ")
-    studies3 <- paste0("Soratram:", mut_st)
-  }
-  if(dim(mutation_analysis_result$studies$JDQ443A)[1] != 0) {
-    studies_jd <- "JDQ443A: positiv"
-  } else {
-    studies_jd <- "JDQ443A: negativ"
-  }
-  if (length(helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    studies2 <- "TopArt: BRCA positiv."
-  } else {
-    studies2 <- "TopArt: BRCA negativ."
-  }
-
-  if(cnv_analysis_results$hrd$sum >= 42) {
-    help_hrd <- "++"
-  } else if (cnv_analysis_results$hrd$sum >= 30) {
-    help_hrd <- "+"
-  } else {
-    help_hrd <- "o"
-  }
-
-  if(cnv_analysis_results$purity$purity > 0.8) {
-    help_tzg <- "++"
-  } else if (cnv_analysis_results$purity$purity > 0.6) {
-    help_tzg <- "+"
-  } else if (cnv_analysis_results$purity$purity > 0.5) {
-    help_tzg <- "o"
-  } else {
-    help_tzg <- "-"
-  }
-
-  if (!is.null(med_tmb$sd) & !is.null(med_tmb$med)) {
-    if (filt_result_td$tmb < med_tmb$sd[1]) {
-      help_tmb <- "--"
-    } else if (filt_result_td$tmb > med_tmb$sd[2]) {
-      help_tmb <- "++"
-    } else if (filt_result_td$tmb < med_tmb$med) {
-      help_tmb <- "-"
-    } else if (filt_result_td$tmb > med_tmb$med) {
-      help_tmb <- "+"
-    } else {
-      help_tmb <- "o"
-    }
-  } else if (!is.null(med_tmb$sd)) {
-    if (filt_result_td$tmb < med_tmb$med) {
-      help_tmb <- "-"
-    } else if (filt_result_td$tmb > med_tmb$med) {
-      help_tmb <- "+"
-    }
-  } else {
-    help_tmb <- "o"
-  }
-  
-  if (length(helper) == "0") {
-    help_ac3 <- "--"
-  } else if(mut_sig_ana$output$Summary["AC3", 4] <= 0) {
-    help_ac3 <- "+"
-  } else if(mut_sig_ana$output$Summary["AC3", 4] > 0) {
-    help_ac3 <- "++"
-  }
-  if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 100) {
-    help_cnv <- "-"
-  } else if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 150) {
-    help_cnv <- "o"
-  } else if (dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1] < 200) {
-    help_cnv <- "+"
-  } else {
-    help_cnv <- "++"
-  }
-  if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10)) < 150) {
-    help_germ <- "-"
-  } else if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10) < 200)) {
-    help_germ <- "o"
-  } else if (length(which(as.numeric(gsub(
-    pattern = "%", replacement = "",
-    x = filt_result_gd$table$Variant_Allele_Frequency
-  )) > 10) < 300)) {
-    help_germ <- "+"
-  } else {
-    help_germ <- "++"
-  }
-
-  if (length(grep(
-    pattern = "positiv", x = studies3
-  )) > 0 & length(grep(pattern = "positive", x = studies2)) > 0) {
-    help_studies <- "+/+"
-  } else if (length(grep(pattern = "positiv", x = studies3)) > 0) {
-    help_studies <- "+/-"
-  } else if (length(grep(pattern = "positiv", x = studies2)) > 0) {
-    help_studies <- "-/+" 
-  } else {
-    help_studies <- "-/-"
-  }
-  if (length(grep(pattern = "positiv", x = studies_jd)) > 0) {
-    help_studies <- paste0(help_studies, "/+")
-  } else {
-    help_studies <- paste0(help_studies, "/-")
-  }
-
-  if (length(helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] < 1.0) {helper <- c()}
-  if (length(helper) == 1){
-    mut_tab1 <- data.frame(
-      Eigenschaften = c(
-        "Mutationslast",
-        "Anzahl somatischer Mutationen",
-        "BRCAness",
-        "HRD-Score (LoH|LST|TAI)",
-        "Anzahl CN- Regionen",
-        "Anzahl seltener Keimbahnmutationen",
-        "Studiencheck",
-        "",
-        "Tumorzellgehalt (Ploidität)"
-      ),
-      Wert1 = c(
-        paste0(round(
-          x = filt_result_td_10$tmb, digits = 2
-        ),"/Mb"),
-        as.character(round(
-          x = sum(as.numeric(mutation_analysis_result_10$mut_tab[, 2])),
-          digits = 0
-        )),
-        paste0(round(
-          x = mut_sig_ana$output$Summary[helper, 3], digits = 2
-        ), " %"),
-        cnv_analysis_results$hrd$score,
-        paste0(round(
-          x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1],
-          digits = 0
-        ), " Regionen"),
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 10)),
-        studies3,
-        studies_jd,
-        cnv_analysis_results$purity$purity
-      ),
-      Wert2 = c(
-        paste0(round(
-          x = filt_result_td$tmb, digits = 2
-        ), "/Mb"),
-        as.character(round(
-          x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])),
-          digits = 0
-        )),
-        "-",
-        "", 
-        "-",
-        length(which(as.numeric(gsub(
-          pattern = "%", replacement = "",
-          x = filt_result_gd$table$Variant_Allele_Frequency
-        )) > 5)),
-        studies2,
-        "",
-        paste0("(", cnv_analysis_results$purity$ploidy, ")")
-      ),
-      Wert3 = c(
-        help_tmb,
-        "",
-        help_ac3,
-        help_hrd,
-        help_cnv,
-        help_germ,
-        help_studies,
-        "",
-        help_tzg
-      )
-    )
-  } else {
-    mut_tab1 <- data.frame(
-      Eigenschaften = c(
-        "Mutationslast",
-        "Anzahl somatischer Mutationen",
-        "BRCAness",
-        "HRD-Score (LoH|LST|TAI)",
-        "Anzahl CNV- Regionen",
-        "Anzahl seltener Keimbahnmutationen",
-        "Studiencheck",
-        "",
-        "Tumorzellgehalt (Ploidität)"
-      ),
-      Wert1 = c(paste0(round(
-        x = filt_result_td_10$tmb,digits = 2
-      ), "/Mb"),
-      round(x = sum(as.numeric(
-        mutation_analysis_result_10$mut_tab[, 2]
-      )), digits = 0),
-      "< 1.0%",
+  mut_tab1 <- data.frame(
+    Eigenschaften = c(
+      "Capture Kit",
+      "Abgedeckte Region (total)",
+      "Abgedeckte Region (exonisch)",
+      paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
+      paste0("Mittlere TMB der Entität", " (", entity, ")"),
+      paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
+      paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
+      "Mikrosatelliten Status (Score)",
+      "HRD-Score (HRD-LoH|TAI|LST)",
+      "Purity (%)",
+      "Ploidity",
+      "Anzahl CN- Regionen",
+      paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
+    ), Wert = c(
+      as.character(sureselect_type),
+      paste(round(x = as.numeric(filt_result_td$covered_region), digits = 0), "Mb", sep = ""),
+      paste(round(x = as.numeric(filt_result_td$exon_region), digits = 0), "Mb", sep = ""),
+      paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"),
+      tmb_helper,
+      as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)),
+      brca_helper,
+      paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
       cnv_analysis_results$hrd$score,
-      paste0(round(
-        x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1],
-        digits = 0
-      ), " Regionen"),
-      length(which(as.numeric(gsub(
-        pattern = "%", replacement = "",
-        x = filt_result_gd$table$Variant_Allele_Frequency
-      )) > 10)),
-      studies3,
-      studies_jd,
-      cnv_analysis_results$purity$purity
-    ),
-    Wert2 = c(
-      paste0(round(
-        x = filt_result_td$tmb, digits = 2
-      ), "/Mb"),
-      as.character(round(
-        x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])),
-        digits = 0
-      )),
-      "-",
-      "-",
-      "-",
-      length(which(as.numeric(gsub(
-        pattern = "%", replacement = "",
-        x = filt_result_gd$table$Variant_Allele_Frequency
-      )) > 5)),
-      studies2,
-      "",
-      paste0("(", cnv_analysis_results$purity$ploidy, ")")
-      ),
-      Wert3 = c(
-        help_tmb,
-        "",
-        help_ac3,
-        help_hrd,
-        help_cnv,
-        help_germ,
-        help_studies,
-        "",
-        help_tzg
-      )
+      cnv_analysis_results$purity$purity,
+      cnv_analysis_results$purity$ploidy,
+      paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"),
+      as.character(round(x = sum(as.numeric(mutation_analysis_result_gd$mut_tab[, 3])), digits = 0))
     )
-  }
-  colnames(mut_tab1) <- c(
-    "Eigenschaften",
-    "Wert (VAF > 10%)",
-    "Wert (VAF > 5%)",
-    "Einordnung"
   )
-
-  if (!is.null(med_tmb$med) & !is.null(med_tmb$sd)) {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = entity,
-      Wert2 = paste0(
-        med_tmb$med, " (",
-        as.numeric(med_tmb$sd[1], digits = 2),
-        "-", as.numeric(med_tmb$sd[2], digits = 2), ")"
-      ),
-      Wert3 = ""
-    )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 10, 2:9), ]
-  } else if (!is.null(med_tmb$med)) {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = entity,
-      Wert2 = med_tmb$med,
-      Wert3 = ""
-    )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 10, 2:9), ]
-  } else {
-    tmb <- data.frame(
-      Eigenschaft = "Mittlere TMB der Entität",
-      Wert1 = "Nicht gelistet",
-      Wert2 = "-",
-      Wert3 = ""
-    )
-    colnames(tmb) <- colnames(mut_tab1)
-    mut_tab1 <- rbind(mut_tab1, tmb)
-    mut_tab1 <- mut_tab1[c(1, 10, 2:9), ]
-  }
-
   return(mut_tab1)
 }
 
@@ -616,9 +107,10 @@ l_gen_nex <- function(df, type = "SNV") {
   return(vec_gen_nex)
 }
 meta <- function(df) {
+  df$AAChange <- substr(x = df$AAChange, start = 3, stop = nchar(df$AAChange))
   hyper_refs <- paste0(
     "https://search.cancervariants.org/\\#", df$Symbol, "\\%20",
-    substr(x = df$AAChange, start = 3, stop = nchar(df$AAChange))
+    df$AAChange
   )
   vec_meta <- paste0(
     "{\\href{", hyper_refs, "}{", df$AAChange, "}}"
@@ -807,7 +299,7 @@ ex_func <- function(df) {
   )
   vec_exf <- gsub(
     pattern = "startloss",
-    replacement = "SL", x = vec_ex
+    replacement = "SL", x = vec_exf
   )
   vec_exf <- gsub(
     pattern = "splice_region_variant&synonymous_variant",
@@ -1025,13 +517,13 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
       }
       # Cancer Consortium Meta-Knowledgebase
       highlight$AAChange <- meta(df = highlight)
-      
+
       # Function
       highlight$ExonicFunc.refGene <- ex_func(df = highlight)
-      
+
       # VarSome links
       highlight$Varsome <- varsome(df = highlight, mode = "2")
-      
+
       # VAF
       if (Mode %in% c("Tumor", "Germline")) {
         highlight$VAF <- gsub(
@@ -1060,15 +552,15 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
       # InterVar (ACMG)
       highlight$combineInterVarClinVar <- acmg(df = highlight)[, 1]
       highlight$Classification <- acmg(df = highlight)[, 2]
-      
+
       # REVEL
       res_revel <- revel(df = highlight)
       highlight$REVEL <- res_revel$revel
       highlight$REVEL_cat <- res_revel$cat
-      
+
       # COSMIC
       highlight$cosmic <- cosmic(df = highlight)
-      
+
       # Order table
       if (Mode %in% c("Tumor", "Germline")) {
         highlight <- highlight[order(
@@ -1095,16 +587,16 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
       highlight$Cancergene[which(
         highlight$is_oncogene == 1 & highlight$is_tumorsuppressor == 1
       )] <- "both"
-    
+
       # Population frequency
       highlight$AF_nfe <- as.character(format(
         as.numeric(highlight$AF_nfe), scientific = TRUE, digits = 2
       ))
       highlight$AF_nfe[is.na(highlight$AF_nfe)] <- "."
-      
+
       # output
       if (Mode == "Tumor") {
-        muts_tab <- highlight[, c(24, 4, 25, 26, 12, 27, 30, 31, 32)]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -1117,7 +609,7 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
           "Cancergene"
         )
       } else if (Mode == "LoH") {
-        muts_tab <- highlight[, c(25, 4, 26, 28, 27, 13, 29, 32:34)]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF_tumor", "VAF_normal", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -1131,7 +623,7 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
          "Cancergene"
         )
       } else if (Mode == "Germline") {
-        muts_tab <- highlight[, c(210, 11, 211:212, 13, 213, 216:218)]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -1252,7 +744,7 @@ summary_quality <- function(stats) {
     "Insertlänge",
     "GC-Anteil",
     "Mittlere Qualität"
-  )        
+  )
   if (length(which(q_n != "Sehr gut") > 0)) {
     warn_n <- paste0(
       names(qp_n)[which(q_n != "Sehr gut")],
@@ -1321,7 +813,7 @@ cnv_cg <- function(gene_loci, type = "OG") {
   } else {
     tmpd <- data.frame("", "", "")
   }
-  colnames(tmpd) <- colnames(df)[1:3]
+  colnames(tmpd) <- colnames_df[1:3]
 
   if((tmpg[1,1] != "") & (tmpl[1,1] != "")){
     id_l <- which(tmpl$`CN-Typ` < 1)
@@ -1410,9 +902,9 @@ pthws_mut <- function(df) {
       "VAF",
       "Reads",
       "MAF",
-      "InterVar",
+      "InterVar_automated",
       "CLNSIG",
-      "REVEL",
+      "REVEL_score",
       "COSMIC"
     )]
     colnames(df) <- c(
@@ -1439,6 +931,10 @@ pthws_mut <- function(df) {
       replacement = "Tyr Kin",
       x = df$Pathway
     )
+    # AAChange
+    df$AAChange <- substr(
+      x = df$AAChange, start = 3, stop = nchar(df$AAChange)
+    )
     # VAF
     df$VAF <- gsub(
       pattern = "%", replacement = "", x = df$VAF, fixed = TRUE
@@ -1462,7 +958,6 @@ pthws_mut <- function(df) {
     df$MAF <- as.character(
       format(as.numeric(df$MAF), scientific = TRUE, digits = 2)
     )
-    
     # output
     df <- df[, c(1:5, 7, 14, 13, 12)]
     dup <- which(duplicated(df))
@@ -1509,9 +1004,9 @@ topart_mut <- function(df) {
       "VAF",
       "Reads",
       "MAF",
-      "InterVar",
+      "InterVar_automated",
       "CLNSIG",
-      "REVEL",
+      "REVEL_score",
       "COSMIC"
     )]
     colnames(df) <- c(
@@ -1525,7 +1020,12 @@ topart_mut <- function(df) {
       "InterVar",
       "ClinVar",
       "REVEL",
-      "COSMIC")
+      "COSMIC"
+    )
+    # AAChange
+    df$AAChange <- substr(
+      x = df$AAChange, start = 3, stop = nchar(df$AAChange)
+    )
     # VAF
     df$VAF <- gsub(pattern = "%", replacement = "", x = df$VAF, fixed = TRUE)
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")

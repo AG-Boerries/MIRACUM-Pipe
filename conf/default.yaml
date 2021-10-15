@@ -13,6 +13,7 @@ common:
     panel:
         tumor: MT21_19902-RNA_S12_L00 #MT21_19902-RNA_S12_L001_R1_001.fastq.gz
         numberOfFiles: 4
+  entity: BRCA
   RNA:
     # folder contatining RNA fastq files for RNA fusions
     folder: RNA
@@ -336,6 +337,9 @@ panel:
     # set TRUE to correct for contamination by normal cells.
     # If "contamination" is not provided, it will automatically evaluate the level of contamination
     contaminationAdjustment: TRUE
+  
+  fusions:
+    fusionGenes: fusion_genes.txt
     
 annovar:
   # define annotation databases, together with their type, used. The databases have to be installed with annovar
@@ -379,3 +383,4 @@ reference:
     coveredExons: exons_5UTR.bed
     # positive list for genes in germline to be reported (e.g. by ACMG)
     # actionableGenes: actionable_genes.txt
+    amplifiedGenes: TSO500_genes_ampl_fusions.xlsx

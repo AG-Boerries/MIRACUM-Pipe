@@ -9,7 +9,6 @@ filtering <- function(
   outfile_maf,
   path_data,
   path_script,
-  covered_region,
   mode = "T",
   center = "Freiburg",
   id = id,
@@ -21,8 +20,7 @@ filtering <- function(
   actionable_genes = NA,
   covered_exons = covered_exons,
   cov_t = 1,
-  sureselect_type,
-  msi_txt
+  sureselect_type
   ) {
   #' Filter Variants
   #'
@@ -110,6 +108,9 @@ filtering <- function(
     x <- target_check(x, sureselect)
   }
 
+  # Calcualte covered region from bed file
+  cov_region <- covered_region(sureselect = sureselect, mode = mode)
+
   # Additional Filter for VAF
   x <- exclude(x, vaf = vaf)
 
@@ -137,11 +138,11 @@ filtering <- function(
   # TumorMutationBurden
   if (mode == "T") {
     if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
-      tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
+      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
       #tmb <- tmb_ex(x = x, manifest = sureselect, path_data = path_data, mode = mode, cov_t = cov_t)
     }
   } else {
-    tmb <- 0
+    tmb <- list(tmb = NULL, exon_region = NULL)
   }
   
   # Filter for exonic function
@@ -171,7 +172,7 @@ filtering <- function(
       }
     }
   } else {
-    tmb <- 0
+    tmb <- list(tmb=NULL, exon_region=NULL)
   }
 
   if (dim(x)[1] != 0) {
@@ -236,27 +237,13 @@ filtering <- function(
       indel_vcf = snpefffile_indel
     )
 
-    # mico satellite stability
-    if (mode = "T") {
-      msi <- read.table(
-        file = msi_txt,
-        header = TRUE,
-        stringsAsFactors = FALSE
-      )
-      colnames(msi) <- c(
-        "Total_Number_of_Sites",
-        "Number_of_Somatic_Sites",
-        "MSI_Score"
-      )
-    } else {
-      msi <- NULL
-    }
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
-        msi = msi
+        covered_region = cov_region
       )
     )
 
@@ -267,40 +254,49 @@ filtering <- function(
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
-        msi = msi
+        covered_region = cov_region
       )
     )
 
   } else if (mode == "LOH") {
     print("No LOH passed filter!")
     out.maf <- NULL
-    msi <- NULL
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
-        msi = msi
+        covered_region = cov_region
       )
     )
   }
 }
 
 filtering_mutect2 <- function(
-  mutect2,
-  mutect2_snpEff,
+  snpfile,
+  indelfile,
+  snpefffile_snp,
+  snpefffile_indel,
+  outfile,
   outfile_maf,
-  sample,
   path_data,
   path_script,
-  sureselect,
   mode = "T",
-  protocol = "Tumor_Normal",
+  center = "Freiburg",
+  id = id,
+  protocol,
+  sureselect,
   vaf = 0.05,
+  min_var_count = 4,
   maf = 0.01,
-  msi_txt
+  actionable_genes = NA,
+  covered_exons = covered_exons,
+  cov_t = 1,
+  sureselect_type
   ) {
   #' Filter Variants
   #'
@@ -347,6 +343,9 @@ filtering_mutect2 <- function(
   
   # Filter for targeted region in tNGS
   x <- target_check(x, sureselect, path_data)
+
+  # Calcualte covered region from bed file
+  cov_region <- covered_region(sureselect = sureselect, mode = mode)
     
   id <- grep(pattern = "CHROM", x = x$Chr)
   if (length(id) > 0) {
@@ -405,9 +404,9 @@ filtering_mutect2 <- function(
   # TMB calculation for WES
   if (manifest != "TSO500"){
     if (mode == "T"){
-      tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
+      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
     } else {
-      tmb <- 0
+      tmb <- list(tmb = NULL, exon_region = NULL)
     }
   }
   
@@ -432,9 +431,10 @@ filtering_mutect2 <- function(
   # TMB calculation for TSO500; only rare mutations; assumption: rare mutations are "somatic"
   if (manifest == "TSO500") {
     if (mode == "T"){
-      tmb <- tumbu(x, sureselect)
+      #tmb <- tumbu(x, 1.27)
+      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
     } else {
-      tmb <- 0
+      tmb <- list(tmb = NULL, exon_region = NULL)
     }
   }
   
@@ -510,8 +510,10 @@ filtering_mutect2 <- function(
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
+        covered_region = cov_region
       )
     )
 
@@ -521,8 +523,10 @@ filtering_mutect2 <- function(
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
+        covered_region = cov_region
       )
     )
 
@@ -532,8 +536,10 @@ filtering_mutect2 <- function(
     return(
       list(
         table = x,
-        tmb = tmb,
+        tmb = tmb$tmb,
+        exon_region = tmb$exon_region,
         maf = out.maf,
+        covered_region = cov_region
       )
     )
   }

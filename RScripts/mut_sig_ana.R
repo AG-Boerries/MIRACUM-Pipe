@@ -8,7 +8,8 @@ mut_sig_wCI <- function(
   target_capture_cor_factors,
   path_output,
   sample_name,
-  outfile_cbioportal
+  outfile_cbioportal,
+  vaf
   ) {
   library(getopt)
   library(dplyr)
@@ -43,10 +44,29 @@ mut_sig_wCI <- function(
   wordLength <- 3
 
   # read in the snv data
-  vcf_like_df <- read.csv(vcf_file, header = TRUE, sep="\t", skip = 30)
-  names(vcf_like_df) <- gsub("X.", "", names(vcf_like_df))
+  vcf_like_df <- read.delim(
+    file = vcf_file,
+    sep = "\t",
+    header = FALSE,
+    comment.char = "#",
+    col.names = c("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT", "NORMAL", "TUMOR")
+  )
   id <- which(vcf_like_df$FILTER == "PASS")
   vcf_like_df <- vcf_like_df[id, ]
+  vcf_like_df$FREQ <- as.numeric(
+    gsub(
+      pattern = "%", replacement = "", fixed = TRUE,
+      unlist(
+        lapply(
+          strsplit(vcf_like_df$TUMOR, split = ":", fixed = TRUE),
+          function(i) i[6])
+      )
+    )
+  )
+  id <- which(vcf_like_df$FREQ >= vaf)
+  if(length(id) > 0) {
+    vcf_like_df <- vcf_like_df[id, ]
+  }
   number_of_SNVs <- nrow(vcf_like_df)
 
   # load data for signatures and cutoffs from the package
@@ -233,8 +253,8 @@ mut_sig_wCI <- function(
   colnames(output$Normalized_Exposures) <- c(sample)
   colnames(output$Summary)[3] <- c(sample)
 
-  write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
-             headerStyle = createStyle(textDecoration = 'bold'))
+  #write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
+  #           headerStyle = createStyle(textDecoration = 'bold'))
 
   # Is 0 in the CI in any?
   CI <- length(which(output$Confidence_Intervals$lower[which(output$Confidence_Intervals$sig == "AC3")] < 0))

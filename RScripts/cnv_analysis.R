@@ -107,11 +107,7 @@ cnv_analysis <- function(
     cec = cec
   )
 
-  if (dim(out)[1] != 0) {
-      cnvs2cbioportal(out, id, outfile_cbioportal, ampl_genes, gender)
-      freec2seg(cnvs_file, cpn_file, id, outfile_seg)
-  }
-  if (manifest == "TSO500") {
+  if (sureselect_type == "TSO500") {
     db <- read.delim(
       paste(
         path_data, "cancerGeneList.tsv", sep = "/"
@@ -132,6 +128,11 @@ cnv_analysis <- function(
     out$Cancergene[which(out$is_oncogene == 1)] <- paste0(
       "OG", out$Cancergene[which(out$is_oncogene == 1)]
     )
+  }
+
+  if (dim(out)[1] != 0) {
+    cnvs2cbioportal(out, id, outfile_cbioportal, gender = gender, ampl_genes = ampl_genes)
+    freec2seg(cnvs_file, cpn_file, id, outfile_seg)
   }
 
   type <- get_type(

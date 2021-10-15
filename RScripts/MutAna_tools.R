@@ -272,7 +272,7 @@ tables <- function(x_s, x_l = NULL, protocol) {
                  "AAChange", "Variant_Allele_Frequency", "Zygosity",
                  "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
                  "is_hotspot", "target", "AF_nfe",
-                 "CADD_phred", "condel.label", "CLINSIG",
+                 "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
                  "cosmic_coding", "Chr", "Start", "Ref",
                  "Alt")
 
@@ -297,8 +297,8 @@ tables <- function(x_s, x_l = NULL, protocol) {
                        "AAChange", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "AF_nfe", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
+                       "AF_nfe", "CADD_phred", "condel.label", "REVEL_score",
+                       "CLNSIG", "InterVar_automated", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
   } else {
@@ -695,7 +695,7 @@ write_all_mut <- function(x_s, x_l = NULL){
   #' @details A table with all mutations (somatic and LoH) is saved.
   col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
                  "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
-                 "Condel", "CLINSIG", "COSMIC")
+                 "Condel", "REVEL_score", "CLNSIG", "InterVar_automated", "COSMIC")
   all_mutations <- data.frame(matrix(ncol = length(col_names), nrow = 0))
 
   if (!is.null(x_s) && dim(x_s)[1]) {
@@ -706,7 +706,7 @@ write_all_mut <- function(x_s, x_l = NULL){
                        "Variant_Allele_Frequency", "Variant_Reads",
                        "AAChange", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target", "AF_nfe",
-                       "CADD_phred", "condel.label", "CLINSIG",
+                       "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
                        "cosmic_coding"),
                   drop = FALSE]
 
@@ -724,7 +724,7 @@ write_all_mut <- function(x_s, x_l = NULL){
                     "VAF_Tumor", "Count_Tumor", "AAChange",
                     "is_tumorsuppressor", "is_oncogene",
                     "is_hotspot", "target", "AF_nfe", "CADD_phred",
-                    "condel.label", "CLINSIG", "cosmic_coding"),
+                    "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated", "cosmic_coding"),
                 drop = FALSE]
 
     colnames(loh) <- col_names
@@ -927,24 +927,24 @@ imp_pws <- function(ch_mat, all_muts){
   #' 
   #' @details A Table for the important Pathways is built that contains all the
   #' @details mutations found belonging to them.
-  print("PI3K-AKT-mTOR:")
-  tmp <- rownames(ch_mat)[ch_mat[, 3] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("RAF-MEK-ERK:")
-  tmp <- rownames(ch_mat)[ch_mat[, 4] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("DNA Damage Response:")
-  tmp <- rownames(ch_mat)[ch_mat[, 2] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("Cell Cycle:")
-  tmp <- rownames(ch_mat)[ch_mat[, 1] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("Tyrosine Kinases:")
-  tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("TopArt:")
-  tmp <- rownames(ch_mat)[ch_mat[, 6] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("PI3K-AKT-mTOR:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 3] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("RAF-MEK-ERK:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 4] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("DNA Damage Response:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 2] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("Cell Cycle:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 1] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("Tyrosine Kinases:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("TopArt:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 6] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
   #print("PI3K-AKT-mTOR:")
   pi3k <- rownames(ch_mat)[ch_mat[, 3] == 1]
   if (length(pi3k) != 0){

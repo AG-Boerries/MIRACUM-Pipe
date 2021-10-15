@@ -1,4 +1,4 @@
-stats <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
+stats_func <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
       stats_gd, path_output, protocol){
   #' Statistics
   #'

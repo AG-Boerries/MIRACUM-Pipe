@@ -421,7 +421,7 @@ cnv_table <- function(cnvs, ampl_genes){
 }
 
 # check cnvs for dna damage response
-cnv_pathways <- function(input, db){
+cnv_pathways <- function(input, db) {
   #' CNV DNA Damage Response
   #'
   #' @description Get DNA Damage Response genes with CNVs
@@ -444,7 +444,9 @@ cnv_pathways <- function(input, db){
   return(l)
 }
 
-cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender) {
+cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = NULL){
+  #print(gender)
+  #print(ampl_genes)
   #' Export annotated CNVs to a txt file
   #'
   #' @describtion Export annotated CNVs to a text file for subsequent import in cbioportal
@@ -454,10 +456,9 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender) {
   #' @param outfile_cbioportal string. Name of the outputfile
   require(tidyr)
   require(stringi)
-  require(org.Hs.eg.db)
 
-  # due to the conversion to -2:2 (GISTIC) sex chromosomes need adjustments because these are only present as a single copy
-  if(gender == "XY"){
+  # due to the conversion to -2:2 (GISTIC) sex chromosomes by a male individuum need adjustments because these are only present as a single copy
+  if (gender == "XY") {
     ids <- which(cnvs$Chr %in% c("X", "Y") & cnvs$CopyNumber >= 1)
     cnvs[ids, "CopyNumber"] <- cnvs[ids, "CopyNumber"] + 1
   }
@@ -468,25 +469,35 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender) {
   cnvs.sub.extended <- cnvs.sub.extended[!stri_isempty(cnvs.sub.extended$Gene),]
   cnvs.sub.extended$Entrez <- unlist(lapply(mget(as.character(cnvs.sub.extended$Gene), org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
   cnvs.out <- data.frame(Hugo_Symbol = cnvs.sub.extended$Gene, Entrez_Gene_Id = cnvs.sub.extended$Entrez, Sample_ID = cnvs.sub.extended$CopyNumber)
-
+ 
   # how to deal with multiple copy number variations for a single gene?
   # keep only the maximal CNA
   # cnvs.out <- cnvs.out[!duplicated(cnvs.out$Hugo_Symbol),]
   cnvs.out <- data.table::as.data.table(cnvs.out)
   cnvs.out <- cnvs.out[cnvs.out[, .I[which.max(Sample_ID)], by=Hugo_Symbol]$V1]
 
+  # for TSO500 report all analyzed genes; all genes not found in cnvs.out are assumed to have no change in CN and get therefore a 2 (diploid)
+  if(!is.null(ampl_genes)) {
+    ampl_genes.entrez <- unlist(lapply(mget(as.character(ampl_genes), org.Hs.egSYMBOL2EG, ifnotfound = NA), function(x) x[1]))
+    cnvs.complete <- data.frame(Hugo_Symbol = ampl_genes, Entrez_Gene_Id = ampl_genes.entrez, Sample_ID = 2)
+
+    cnvs.complete[na.omit(match(cnvs.out$Hugo_Symbol, cnvs.complete$Hugo_Symbol)), "Sample_ID"] <- cnvs.out$Sample_ID
+    cnvs.out <- cnvs.complete
+  }
+
   # set sample specific column name
-  colnames(cnvs.out)[3] <- paste(id, "TD", sep = "_")
+  colnames(cnvs.out)[3] <- paste(id,"TD",sep = "_")
   # convert total copy numbers from Control-FREEC to allowed values
   # allowed values -2, -1, 0, 1, 2, NA
   cnvs.out[,3][cnvs.out[,3] == 0] <- -2
   cnvs.out[,3][cnvs.out[,3] == 1] <- -1
   cnvs.out[,3][cnvs.out[,3] == 2] <- 0
-  cnvs.out[,3][cnvs.out[,3] == 3] <- 1
-  cnvs.out[,3][cnvs.out[,3] > 3] <- 2
+  cnvs.out[,3][cnvs.out[,3] <= 6 & cnvs.out[,3] >= 3 ] <- 1
+  cnvs.out[,3][cnvs.out[,3] > 6] <- 2
 
   write.table(x = cnvs.out, file = outfile_cbioportal, quote = F, sep = "\t", col.names = T, row.names = F)
 }
+
 
 get_type <- function(Oncogenes, Tumorsuppressor, CNVsAnnotated){
   require(EnsDb.Hsapiens.v75)

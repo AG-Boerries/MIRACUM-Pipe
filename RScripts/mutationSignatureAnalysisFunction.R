@@ -188,9 +188,9 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
 
   mutsig2cbioportal(signatures = CosmicValid_cutoffGen_LCDlist, id = sample_name, outfile_cbioportal = outfile_cbioportal)
 
-  write.xlsx(output, paste0(path_output, sample_name, "_Mutation_Signature_cutoff_",
-             cutoffPerc, "Percent.xlsx"), rowNames = T, firstRow = T,
-             headerStyle = createStyle(textDecoration = 'bold'))
+  #write.xlsx(output, paste0(path_output, sample_name, "_Mutation_Signature_cutoff_",
+  #           cutoffPerc, "Percent.xlsx"), rowNames = T, firstRow = T,
+  #           headerStyle = createStyle(textDecoration = 'bold'))
   return(list(CosmicValid_cutoffGen_LCDlist = CosmicValid_cutoffGen_LCDlist,
               mutationCataloge = mutCat_df))
 }
