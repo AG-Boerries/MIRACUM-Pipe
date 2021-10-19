@@ -61,7 +61,7 @@ readonly CFG_COMMON_MEMORY="$(("${tmp_memory//[^0-9.]/}"/${TMP_PROCESSES}))${tmp
 # general parameters
 readonly CFG_GENERAL_MINBASEQUAL=$(get_config_value wes.general.minBaseQual "${PARAM_DIR_PATIENT}")
 readonly CFG_GENERAL_MAFCUTOFF=$(get_config_value wes.general.maf_cutoff "${PARAM_DIR_PATIENT}")
-readonly CFG_WES_MINVAF=$(get_config_value wes.general.minVAF "${PARAM_DIR_PATIENT}")
+readonly CFG_GENERAL_MINVAF=$(get_config_value wes.general.minVAF "${PARAM_DIR_PATIENT}")
 
 # sametools mpileup
 readonly CFG_SAMTOOLS_MPILEUP_MINMQ=$(get_config_value wes.samtools.mpileup.minMQ "${PARAM_DIR_PATIENT}")
