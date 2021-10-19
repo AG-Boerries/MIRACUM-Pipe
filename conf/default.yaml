@@ -23,6 +23,8 @@ wes:
     # minimum base quality to call a variant
     minBaseQual: 28
     maf_cutoff: 0.001
+    # minimum variant allele / tumor frequency to call a variant
+    minVAF: 0.05
 
   samtools:
     mpileup:
@@ -54,8 +56,6 @@ wes:
       #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> tools.general.minBaseQual
 
   varscan:
-  # minimum variant allele / tumor frequency to call a variant
-    minVAF: 0.05
 
     somatic:
       #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
