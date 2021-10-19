@@ -104,9 +104,9 @@ readonly CFG_VARSCAN_SOMATIC_VALIDATION=$(get_config_value wes.varscan.somatic.v
 # tumorOnly mpileup2snp
 readonly CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minCoverage "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_MPILEUP2SNP_MINREADS2=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minReads2 "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_MINFREQFORHOM=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minFreqForHom "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_PVALUE=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.pValue "${PARAM_DIR_PATIENT}")
-readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_STRANDFILTER=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.strandFilter "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minFreqForHom "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_PVALUE=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.pValue "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.strandFilter "${PARAM_DIR_PATIENT}")
 
 # tumorOnly mpileup2indel
 readonly CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.minCoverage "${PARAM_DIR_PATIENT}")
@@ -325,9 +325,9 @@ export CFG_VARSCAN_SOMATIC_VALIDATION
 
 export CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE
 export CFG_VARSCAN_MPILEUP2SNP_MINREADS2
-export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_MINFREQFORHOM
-export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_PVALUE
-export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_STRANDFILTER
+export CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM
+export CFG_VARSCAN_MPILEUP2SNP_PVALUE
+export CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER
 
 export CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE
 export CFG_VARSCAN_MPILEUP2INDEL_MINREADS2
