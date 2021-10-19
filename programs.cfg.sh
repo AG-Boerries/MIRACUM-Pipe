@@ -101,6 +101,20 @@ readonly CFG_VARSCAN_SOMATIC_SOMATICPVALUE=$(get_config_value wes.varscan.somati
 readonly CFG_VARSCAN_SOMATIC_STRANDFILTER=$(get_config_value wes.varscan.somatic.strandFilter "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_SOMATIC_VALIDATION=$(get_config_value wes.varscan.somatic.validation "${PARAM_DIR_PATIENT}")
 
+# tumorOnly mpileup2snp
+readonly CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minCoverage "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_MINREADS2=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minReads2 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_MINFREQFORHOM=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.minFreqForHom "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_PVALUE=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.pValue "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_STRANDFILTER=$(get_config_value wes.varscan.tumorOnly.mpileup2snp.strandFilter "${PARAM_DIR_PATIENT}")
+
+# tumorOnly mpileup2indel
+readonly CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.minCoverage "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2INDEL_MINREADS2=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.minReads2 "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.minFreqForHom "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2INDEL_PVALUE=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.pValue "${PARAM_DIR_PATIENT}")
+readonly CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER=$(get_config_value wes.varscan.tumorOnly.mpileup2indel.strandFilter "${PARAM_DIR_PATIENT}")
+
 # Varscan processSomatic
 readonly CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ=$(get_config_value wes.varscan.processSomatic.maxNormalFreq "${PARAM_DIR_PATIENT}")
 readonly CFG_VARSCAN_PROCESSSOMATIC_PVALUE=$(get_config_value wes.varscan.processSomatic.pValue "${PARAM_DIR_PATIENT}")
@@ -308,6 +322,18 @@ export CFG_VARSCAN_SOMATIC_PVALUE
 export CFG_VARSCAN_SOMATIC_SOMATICPVALUE
 export CFG_VARSCAN_SOMATIC_STRANDFILTER
 export CFG_VARSCAN_SOMATIC_VALIDATION
+
+export CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE
+export CFG_VARSCAN_MPILEUP2SNP_MINREADS2
+export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_MINFREQFORHOM
+export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_PVALUE
+export CFG_VARSCAN_MPILEUP2SNP_MPILEUP2SNP_STRANDFILTER
+
+export CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE=
+export CFG_VARSCAN_MPILEUP2INDEL_MINREADS2
+export CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM
+export CFG_VARSCAN_MPILEUP2INDEL_PVALUE
+export CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER
 
 export CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ
 export CFG_VARSCAN_PROCESSSOMATIC_PVALUE
