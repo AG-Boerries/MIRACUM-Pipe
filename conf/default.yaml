@@ -107,6 +107,7 @@ wes:
         #--p-value       Default p-value threshold for calling variants [99e-02]
         pValue: 0.99
         #--strand-filter Ignore variants with >90% support on one strand [1]
+        strandFilter: 1
 
     processSomatic:
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]
