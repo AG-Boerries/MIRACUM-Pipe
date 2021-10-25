@@ -1,5 +1,5 @@
 stats_func <- function(path = path2coverage, outfile_pdf = coverage_out, stats_td,
-      stats_gd, path_output, protocol){
+      stats_gd, path_output, protocol, sureselect_type){
   #' Statistics
   #'
   #' @description Information about Coverage and Readdepth
@@ -17,7 +17,7 @@ stats_func <- function(path = path2coverage, outfile_pdf = coverage_out, stats_t
   #'
   #' @details Statistical numbers are extracted from alignment's statistics.
   cover <- coverage_plot(path = path, outfilePDF = coverage_out, protocol = protocol)
-  cover_exons <- coverage_exon(path = path, protocol = protocol)
+  cover_exons <- coverage_exon(path = path, protocol = protocol, sureselect_type = sureselect_type)
   if (protocol == "somaticGermline" | protocol == "somatic"){
     avreads <- reads(stats_td, stats_gd)
   } else {

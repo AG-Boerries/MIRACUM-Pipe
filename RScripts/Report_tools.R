@@ -6,7 +6,9 @@ keys <- function(
   cnv_analysis_results,
   filt_result_td,
   filt_result_gd,
-  med_tmb
+  med_tmb,
+  protocol,
+  fusions
 ) {
 
   if (sureselect_type %in% c("V5UTR", "V6UTR", "V6")){
@@ -15,21 +17,38 @@ keys <- function(
     sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
   }
   brca_helper <- which(
-    mut_sig_ana$output$Summary$Signature ==  "AC3"
+    mut_sig$Signature ==  "AC3"
   )
-  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
+  if (length(brca_helper) == 1 & mut_sig_ana["AC3", 3] > 1.0) {
     brca_helper <- paste0(
-      round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
-      " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
-      ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")"
+      round(mut_sig_ana["AC3", 3], digits = 1),
+      " (", round(mut_sig_ana["AC3", 4], digits = 1),
+      ";", round(mut_sig_ana["AC3", 5], digits = 1) , ")"
     )
   } else {
     brca_helper <- "<1%"
   }
-  if (mutation_analysis_result$msi < 10) {
+  if (protocol == "somaticGermline" | protocol == "somatic") {
+    if (mutation_analysis_result$msi < 10) {
       msi_helper <- "MSS"
-  } else {
+    } else {
       msi_helper <- "MSI"
+    }
+  }
+  if (protocol == "panelTumor" | protocol == "tumorOnly") {
+    if (mutation_analysis_result$msi < 20) {
+      msi_helper <- "MSS"
+    } else {
+      msi_helper <- "MSI"
+    }
+  }
+  if (protocol == "panelTumor") {
+    if (!is.null(fusions)) {
+      fus_tmp <- fusions$Fusion_OV$Fusionen
+      fus_tmp <- paste(fus_tmp, collapse = ", ")
+    } else {
+      fus_tmp <- "Keine"
+    }
   }
 
   if (!is.null(med_tmb$med) & !is.null(med_tmb$sd)) {
@@ -44,38 +63,72 @@ keys <- function(
   } else {
     tmb_helper <- "-"
   }
-
-  mut_tab1 <- data.frame(
-    Eigenschaften = c(
-      "Capture Kit",
-      "Abgedeckte Region (total)",
-      "Abgedeckte Region (exonisch)",
-      paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-      paste0("Mittlere TMB der Entität", " (", entity, ")"),
-      paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
-      paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
-      "Mikrosatelliten Status (Score)",
-      "HRD-Score (HRD-LoH|TAI|LST)",
-      "Purity (%)",
-      "Ploidity",
-      "Anzahl CN- Regionen",
-      paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
-    ), Wert = c(
-      as.character(sureselect_type),
-      paste(round(x = as.numeric(filt_result_td$covered_region), digits = 0), "Mb", sep = ""),
-      paste(round(x = as.numeric(filt_result_td$exon_region), digits = 0), "Mb", sep = ""),
-      paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb"),
-      tmb_helper,
-      as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)),
-      brca_helper,
-      paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
-      cnv_analysis_results$hrd$score,
-      cnv_analysis_results$purity$purity,
-      cnv_analysis_results$purity$ploidy,
-      paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"),
-      as.character(round(x = sum(as.numeric(mutation_analysis_result_gd$mut_tab[, 3])), digits = 0))
+  if (protocol == "somaticGermline" | protocol == "somatic") {
+    mut_tab1 <- data.frame(
+      Eigenschaften = c(
+        "Capture Kit",
+        "Abgedeckte Region (total)",
+        "Abgedeckte Region (exonisch)",
+        paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
+        paste0("Mittlere TMB der Entität", " (", entity, ")"),
+        paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
+        paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
+        "Mikrosatelliten Status (Score)",
+        "HRD-Score (HRD-LoH|TAI|LST)",
+        "Purity (%)",
+        "Ploidity",
+        "Anzahl CN- Regionen",
+        paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
+      ), Wert = c(
+        as.character(sureselect_type),
+        paste(round(x = as.numeric(filt_result_td$covered_region), digits = 2), "Mb", sep = ""),
+        paste(round(x = as.numeric(filt_result_td$exon_region), digits = 2), "Mb", sep = ""),
+        paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb", " (", filt_result_td$number_used_mutations_tmb, "/", round(x = as.numeric(filt_result_td$used_exon_region), digits = 2), ")"),
+        tmb_helper,
+        as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 2])), digits = 0)),
+        brca_helper,
+        paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
+        cnv_analysis_results$hrd$score,
+        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$ploidy,
+        paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"),
+        as.character(round(x = sum(as.numeric(mutation_analysis_result_gd$mut_tab[, 3])), digits = 0))
+      )
     )
-  )
+  }
+  if (protocol == "panelTumor") {
+    mut_tab1 <- data.frame(
+      Eigenschaften = c(
+        "Capture Kit",
+        "Abgedeckte Region (total)",
+        "Abgedeckte Region (exonisch)",
+        paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
+        paste0("Mittlere TMB der Entität", " (", entity, ")"),
+        paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
+        paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
+        "Mikrosatelliten Status (Score)",
+        "HRD-Score (HRD-LoH|TAI|LST)",
+        "Purity (%)",
+        "Ploidity",
+        "Anzahl CN- Regionen",
+        "Fusionen"
+      ), Wert = c(
+        as.character(sureselect_type),
+        paste(round(x = as.numeric(filt_result_td$covered_region), digits = 2), "Mb", sep = ""),
+        paste(round(x = as.numeric(filt_result_td$exon_region), digits = 2), "Mb", sep = ""),
+        paste0(round(x = filt_result_td$tmb, digits = 2), "/Mb", " (", filt_result_td$number_used_mutations_tmb, "/", round(x = as.numeric(filt_result_td$used_exon_region), digits = 2), ")"),
+        tmb_helper,
+        as.character(round(x = sum(as.numeric(mutation_analysis_result$mut_tab[, 3])), digits = 0)),
+        brca_helper,
+        paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
+        cnv_analysis_results$hrd$score,
+        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$ploidy,
+        paste0(round(x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1], digits = 0), " Regionen"),
+        fus_tmp
+      )
+    )
+  }
   return(mut_tab1)
 }
 
@@ -317,7 +370,7 @@ ex_func <- function(df) {
 }
 
 
-highlight <- function(muts_tab) {
+highlight <- function(muts_tab, protocol) {
   # Select mutations in tumorsuppressors and oncogenes as well as potentially deleterious
   highlight <- muts_tab[which(
     muts_tab$is_oncogene == 1 | muts_tab$is_tumorsuppressor == 1 |
@@ -394,6 +447,9 @@ highlight <- function(muts_tab) {
 
     # VAF
     highlight$VAF <- gsub(pattern = "%", replacement = "", x = highlight$VAF)
+    if (protocol == "panelTumor") {
+      highlight$VAF <- as.numeric(highlight$VAF)*100
+    }
 
     # InterVar (ACMG)
     highlight$Classification <- acmg(df = highlight)[, 2]
@@ -477,7 +533,7 @@ highlight <- function(muts_tab) {
     return(list(highlight = highlight, id_hs = id_hs))
 }
 
-highlight_detail <- function(muts_tab, Mode = "Tumor") {
+highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
  highlight <- muts_tab
   if (dim(muts_tab)[1] == 0) {
      highlight <- data.frame()
@@ -530,6 +586,9 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
           pattern = "%", replacement = "",
           x = highlight$Variant_Allele_Frequency
         )
+        if (protocol == "panelTumor") {
+          highlight$VAF <- as.numeric(highlight$VAF)*100
+        }
         highlight$VAF <- paste0(
           highlight$VAF, " (", highlight$Variant_Reads, ")"
         )
@@ -640,124 +699,183 @@ highlight_detail <- function(muts_tab, Mode = "Tumor") {
     return(list(muts_tab = muts_tab, id_hs = id_hs))
  }
  
-summary_quality <- function(stats) {
-  q_t <- c()
-  if (round(x = sum(
-    stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]
-  ), digits = 2) < 80) {
-    q_t[1] <- "Akzeptabel" } else {
-      q_t[1] <- "Sehr gut"
-    }
-  if (round(stats$cover$perc[[2]][1], digits = 2) * 100 > 80) {
-    q_t[2] <- "Sehr gut"
-  } else { q_t[2] <- "Akzeptabel" }
-  if (round(stats$cover$perc[[2]][2], digits = 2) * 100 > 80) {
-    q_t[3] <- "Sehr gut"
-  } else {q_t[3] <- "Akzeptabel" }
-  if (as.numeric(stats$avreads$tin) > 100) {
-    q_t[4] <- "Sehr gut"
-  } else {q_t[4] <- "Akzeptabel" }
-  if (as.numeric(
-    stats$qc_check$gc_content[[2]]
-  ) >= 40 && as.numeric(stats$qc_check$gc_content[[2]]) <= 60) {
-    q_t[5] <- "Sehr gut"
-  } else {q_t[5] <- "Akzeptabel"}
-  if (round(stats$qc_check$mean_QC[[2]], digits = 2) > 30) {
-    q_t[6] <- "Sehr gut"
-  } else {q_t[6] <- "Akzeptabel" }
-  qp_t <- c(
-    round(
-      x = sum(
-        stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]
-      ), digits = 2
-    ), paste0(round(stats$cover$perc[[2]][1], digits = 2) * 100, "%"),
-    paste0(round(stats$cover$perc[[2]][2], digits = 2) * 100, "%"),
-    as.numeric(stats$avreads$tin),
-    as.numeric(stats$qc_check$gc_content[[2]]),
-    round(stats$qc_check$mean_QC[[2]], digits = 2)
-  )
-  names(qp_t) <- c(
-    "Mittlere Coverage",
-    "Coverage > 8",
-    "Coverage > 40",
-    "Insertlänge",
-    "GC-Anteil",
-    "Mittlere Qualität"
-  )
-  if (length(which(q_t != "Sehr gut") > 0)) {
-    warn_t <- paste0(
-      names(qp_t)[which(q_t != "Sehr gut")],
-      ": ", qp_t[which(q_t != "Sehr gut")]
+summary_quality <- function(stats, protocol) {
+  if (protocol == "somaticGermline" | protocol == "somatic") {
+    q_t <- c()
+    if (round(x = sum(
+      stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]
+    ), digits = 2) < 80) {
+      q_t[1] <- "Akzeptabel" } else {
+        q_t[1] <- "Sehr gut"
+      }
+    if (round(stats$cover$perc[[2]][1], digits = 2) * 100 > 80) {
+      q_t[2] <- "Sehr gut"
+    } else { q_t[2] <- "Akzeptabel" }
+    if (round(stats$cover$perc[[2]][2], digits = 2) * 100 > 80) {
+      q_t[3] <- "Sehr gut"
+    } else {q_t[3] <- "Akzeptabel" }
+    if (as.numeric(stats$avreads$tin) > 100) {
+      q_t[4] <- "Sehr gut"
+    } else {q_t[4] <- "Akzeptabel" }
+    if (as.numeric(
+      stats$qc_check$gc_content[[2]]
+    ) >= 40 && as.numeric(stats$qc_check$gc_content[[2]]) <= 60) {
+      q_t[5] <- "Sehr gut"
+    } else {q_t[5] <- "Akzeptabel"}
+    if (round(stats$qc_check$mean_QC[[2]], digits = 2) > 30) {
+      q_t[6] <- "Sehr gut"
+    } else {q_t[6] <- "Akzeptabel" }
+    qp_t <- c(
+      round(
+        x = sum(
+          stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]
+        ), digits = 2
+      ), paste0(round(stats$cover$perc[[2]][1], digits = 2) * 100, "%"),
+      paste0(round(stats$cover$perc[[2]][2], digits = 2) * 100, "%"),
+      as.numeric(stats$avreads$tin),
+      as.numeric(stats$qc_check$gc_content[[2]]),
+      round(stats$qc_check$mean_QC[[2]], digits = 2)
     )
-    q_t1 <- paste0(warn_t, collapse = ", ")
-  } else {
-    q_t1 <- "Keine."
-  }
-  q_n <- c()
-  if (round(
-    x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]),
-    digits = 2
-  ) < 80) {
-    q_n[1] <- "Akzeptabel"} else {
-      q_n[1] <- "Sehr gut" 
+    names(qp_t) <- c(
+      "Mittlere Coverage",
+      "Coverage > 8",
+      "Coverage > 40",
+      "Insertlänge",
+      "GC-Anteil",
+      "Mittlere Qualität"
+    )
+    if (length(which(q_t != "Sehr gut") > 0)) {
+      warn_t <- paste0(
+        names(qp_t)[which(q_t != "Sehr gut")],
+        ": ", qp_t[which(q_t != "Sehr gut")]
+      )
+      q_t1 <- paste0(warn_t, collapse = ", ")
+    } else {
+      q_t1 <- "Keine."
     }
-  if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 80) {
-    q_n[2] <- "Sehr gut"
-  } else { q_n[2] <- "Akzeptabel"
-  }
-  if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 80) {
-    q_n[3] <- "Sehr gut"
-  } else { q_n[3] <- "Akzeptabel"
-  }
-  if (as.numeric(stats$avreads$gin) > 100) {
-    q_n[4] <- "Sehr gut"
-  } else { q_n[4] <- "Akzeptabel"
-  }
-  if (as.numeric(
-    stats$qc_check$gc_content[[1]]
-  ) >= 40 && as.numeric(
-    stats$qc_check$gc_content[[1]]
-  ) <= 60) {
-    q_n[5] <- "Sehr gut"
-  } else {
-    q_n[5] <- "Akzeptabel"
-  }
-  if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30) {
-    q_n[6] <- "Sehr gut"
-  } else {q_n[6] <- "Akzeptabel"
-  }
-  qp_n <- c(
-    round(
+    q_n <- c()
+    if (round(
       x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]),
       digits = 2
-    ),
-    paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"),
-    paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
-    as.numeric(stats$avreads$gin),
-    as.numeric(stats$qc_check$gc_content[[1]]),
-    round(stats$qc_check$mean_QC[[1]], digits = 2)
-  )
-  names(qp_n) <- c(
-    "Mittlere Coverage",
-    "Coverage > 8",
-    "Coverage > 40",
-    "Insertlänge",
-    "GC-Anteil",
-    "Mittlere Qualität"
-  )
-  if (length(which(q_n != "Sehr gut") > 0)) {
-    warn_n <- paste0(
-      names(qp_n)[which(q_n != "Sehr gut")],
-      ": ",
-      qp_n[which(q_n != "Sehr gut")]
+    ) < 80) {
+      q_n[1] <- "Akzeptabel"} else {
+        q_n[1] <- "Sehr gut" 
+      }
+    if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 80) {
+      q_n[2] <- "Sehr gut"
+    } else { q_n[2] <- "Akzeptabel"
+    }
+    if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 80) {
+      q_n[3] <- "Sehr gut"
+    } else { q_n[3] <- "Akzeptabel"
+    }
+    if (as.numeric(stats$avreads$gin) > 100) {
+      q_n[4] <- "Sehr gut"
+    } else { q_n[4] <- "Akzeptabel"
+    }
+    if (as.numeric(
+      stats$qc_check$gc_content[[1]]
+    ) >= 40 && as.numeric(
+      stats$qc_check$gc_content[[1]]
+    ) <= 60) {
+      q_n[5] <- "Sehr gut"
+    } else {
+      q_n[5] <- "Akzeptabel"
+    }
+    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30) {
+      q_n[6] <- "Sehr gut"
+    } else {q_n[6] <- "Akzeptabel"
+    }
+    qp_n <- c(
+      round(
+        x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]),
+        digits = 2
+      ),
+      paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100 , "%"),
+      paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
+      as.numeric(stats$avreads$gin),
+      as.numeric(stats$qc_check$gc_content[[1]]),
+      round(stats$qc_check$mean_QC[[1]], digits = 2)
     )
-    q_n1 <- paste0(warn_n, collapse = ", ")
-  } else {
-    q_n1 <- "Keine"
+    names(qp_n) <- c(
+      "Mittlere Coverage",
+      "Coverage > 8",
+      "Coverage > 40",
+      "Insertlänge",
+      "GC-Anteil",
+      "Mittlere Qualität"
+    )
+    if (length(which(q_n != "Sehr gut") > 0)) {
+      warn_n <- paste0(
+        names(qp_n)[which(q_n != "Sehr gut")],
+        ": ",
+        qp_n[which(q_n != "Sehr gut")]
+      )
+      q_n1 <- paste0(warn_n, collapse = ", ")
+    } else {
+      q_n1 <- "Keine"
+    }
+    tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
+    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+    return(tab)
   }
-  tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
-  colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
-  return(tab)
+  if (protocol == "panelTumor" | protocol == "tumorOnly") {
+    q_t <- c()
+    if (round(x = sum(
+      stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
+    ), digits = 2) < 150) {
+      q_t[1] <- "Akzeptabel" } else {
+        q_t[1] <- "Sehr gut"
+      }
+    if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 90) {
+      q_t[2] <- "Sehr gut"
+    } else { q_t[2] <- "Akzeptabel" }
+    if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 90) {
+      q_t[3] <- "Sehr gut"
+    } else {q_t[3] <- "Akzeptabel" }
+    if (as.numeric(stats$avreads$tin) > 100) {
+      q_t[4] <- "Sehr gut"
+    } else {q_t[4] <- "Akzeptabel" }
+    if (as.numeric(
+      stats$qc_check$gc_content[[1]]
+    ) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60) {
+      q_t[5] <- "Sehr gut"
+    } else {q_t[5] <- "Akzeptabel"}
+    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30) {
+      q_t[6] <- "Sehr gut"
+    } else {q_t[6] <- "Akzeptabel" }
+    qp_t <- c(
+      round(
+        x = sum(
+          stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
+        ), digits = 2
+      ), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
+      paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
+      as.numeric(stats$avreads$tin),
+      as.numeric(stats$qc_check$gc_content[[1]]),
+      round(stats$qc_check$mean_QC[[1]], digits = 2)
+    )
+    names(qp_t) <- c(
+      "Mittlere Coverage",
+      "Coverage > 50",
+      "Coverage > 150",
+      "Insertlänge",
+      "GC-Anteil",
+      "Mittlere Qualität"
+    )
+    if (length(which(q_t != "Sehr gut") > 0)) {
+      warn_t <- paste0(
+        names(qp_t)[which(q_t != "Sehr gut")],
+        ": ", qp_t[which(q_t != "Sehr gut")]
+      )
+      q_t1 <- paste0(warn_t, collapse = ", ")
+    } else {
+      q_t1 <- "Keine."
+    }
+    tab <- rbind(c("Tumor", q_t1))
+    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+    return(tab)
+  }
 }
 
 sum_muts <- function(tmp_5, tmp_10) {
@@ -823,6 +941,12 @@ cnv_cg <- function(gene_loci, type = "OG") {
   return(list(Gains = tmpg, Losses = tmpl, Different = tmpd))
 }
 
+cnv_panel <- function(cnv_results) {
+  tmp <- cnv_analysis_results$out[, c("Gene", "CopyNumber", "Status", "Type", "Cancergene")]
+  colnames(tmp) <- c("Gen", "Kopien", "Status", "CN-Typ", "Cancergene")
+  return(tmp)
+}
+
 pathws_cnv <- function(df) {
   if (sum(unlist(lapply(df, function(x){return(dim(x)[1])}))) == 0) {
     return(NULL)
@@ -882,7 +1006,7 @@ pathws_cnv <- function(df) {
   }
 }
 
-pthws_mut <- function(df) {
+pthws_mut <- function(df, protocol) {
   id_to <- which(df$Pathway == "Topart")
   if (length(id_to) != 0) {
     df <- df[-c(id_to:dim(df)[1]), ]
@@ -939,6 +1063,9 @@ pthws_mut <- function(df) {
     df$VAF <- gsub(
       pattern = "%", replacement = "", x = df$VAF, fixed = TRUE
     )
+    if (protocol == "panelTumor") {
+      df$VAF <- as.numeric(df$VAF)*100
+    }
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
     # AAChange
     df$AAChange <- gsub(
@@ -991,7 +1118,7 @@ pthws_mut <- function(df) {
   }
 }
 
-topart_mut <- function(df) {
+topart_mut <- function(df, protocol) {
   id_to <- which(df$Pathway == "Topart")
   if (length(id_to) == 0) {
     return(NULL)
@@ -1028,6 +1155,9 @@ topart_mut <- function(df) {
     )
     # VAF
     df$VAF <- gsub(pattern = "%", replacement = "", x = df$VAF, fixed = TRUE)
+    if (protocol == "panelTumor") {
+      df$VAF <- as.numeric(df$VAF)*100
+    }
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
     # AAChange
     df$AAChange <- gsub(

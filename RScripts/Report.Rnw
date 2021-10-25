@@ -96,8 +96,8 @@ kable(sq_tab, booktabs = T, row.names = F, caption = "\\footnotesize{Auff\"allig
 %%%% Mutationsanalyse %%%%
 \section{Mutationsanalyse}
 \subsection{Detaillierte \"Ubersicht}
-In der Analyse werden nur seltene Mutationen mit einer \ac{VAF} über \Sexpr{vaf}\% betrachtet. Gezeigt werden Mutationen vom Typ \acp{SNV}, \acp{DNV}, \acp{InDels} and \acp{LoH}. Letztere sind Mutationen, die in der Keimbahn heterozygot vorliegen, im Tumor allerdings homozygot.\\
-Im Weiteren werden die Ergebnisse der Mutationsanalyse in Tabellen dargestellt. Zunächst eine Übersicht über die Anzahl der Mutationen, aufgeteilt in verschiedene Mutationstypen (Tab \ref{mut_ana_ov}). Es wird gelistet, wie viele dieser Mutationen als ein sogenannter Cancergene nach OncoKB, aufgeteilt in \ac{TSG} und \ac{OG}, identifiziert wurden. Desweitern wird die Anzahl der sogenannten \ac{HS} nach cancerhotspots.org angegeben.\\
+In der Analyse werden nur seltene Mutationen mit einer \ac{VAF} über \Sexpr{vaf}\% betrachtet. Gezeigt werden Mutationen vom Typ \acp{SNV}, \acp{DNV}, \acp{InDels} und \acp{LoH}. Letztere sind Mutationen, die in der Keimbahn heterozygot vorliegen, im Tumor allerdings homozygot.\\
+Im Weiteren werden die Ergebnisse der Mutationsanalyse in Tabellen dargestellt. Zunächst eine Übersicht über die Anzahl der Mutationen, aufgeteilt in verschiedene Mutationstypen (Tab \ref{mut_ana_ov}). Es wird gelistet, wie viele dieser Mutationen als ein sogenanntes Cancergene nach OncoKB, aufgeteilt in \ac{TSG} und \ac{OG}, identifiziert wurden. Desweitern wird die Anzahl der sogenannten \ac{HS} nach cancerhotspots.org angegeben.\\
 Die Lage der Mutationen im Genom wird, aufgeteilt nach Mutationstyp (somatische SNV, somatische Indel, LoH SNV, LoH InDel), im Circosplot dargestellt (Abb \ref{cir_plot}).
 
 <<mut_ana_ov, eval=TRUE, results="tex", echo=FALSE>>=

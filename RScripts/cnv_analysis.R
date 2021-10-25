@@ -71,7 +71,7 @@ cnv_analysis <- function(
     ampl_genes <- read.delim(
       file = ampl_genes_txt,
       header = F
-    )
+    )$V1
   } else {
     ampl_genes <- NULL
   }
@@ -107,42 +107,57 @@ cnv_analysis <- function(
     cec = cec
   )
 
-  if (sureselect_type == "TSO500") {
-    db <- read.delim(
-      paste(
-        path_data, "cancerGeneList.tsv", sep = "/"
-      ),
-      header = T, sep = "\t", colClasses = "character"
-    )
-    out$is_tumorsuppressor <- 0
-    ts <- which(db$Is.Tumor.Suppressor.Gene == "Yes")
-    idx <- which(as.character(out$Gene) %in% db$Hugo.Symbol[ts])
-    out$is_tumorsuppressor[idx] <- 1
-
-    out$is_oncogene <- 0
-    og <- which(db$Is.Oncogene == "Yes")
-    idx <- which (as.character(out$Gene) %in% db$Hugo.Symbol[og])
-    out$is_oncogene[idx] <- 1
-    out$Cancergene <- ""
-    out$Cancergene[which(out$is_tumorsuppressor == 1)] <- "TSG"
-    out$Cancergene[which(out$is_oncogene == 1)] <- paste0(
-      "OG", out$Cancergene[which(out$is_oncogene == 1)]
-    )
-  }
-
   if (dim(out)[1] != 0) {
     cnvs2cbioportal(out, id, outfile_cbioportal, gender = gender, ampl_genes = ampl_genes)
     freec2seg(cnvs_file, cpn_file, id, outfile_seg)
+  }
+  
+  hrd <- hrd_extr(hrd_file)
+  pur <- purity_extr(purity_file)
+  
+  if (sureselect_type == "TSO500") {
+    if(dim(out)[1]!=0){
+      db <- read.delim(
+        paste(
+          path_data, "cancerGeneList.tsv", sep = "/"
+        ),
+        header = T, sep = "\t", colClasses = "character"
+      )
+      out$is_tumorsuppressor <- 0
+      ts <- which(db$Is.Tumor.Suppressor.Gene == "Yes")
+      idx <- which(as.character(out$Gene) %in% db$Hugo.Symbol[ts])
+      out$is_tumorsuppressor[idx] <- 1
+  
+      out$is_oncogene <- 0
+      og <- which(db$Is.Oncogene == "Yes")
+      idx <- which (as.character(out$Gene) %in% db$Hugo.Symbol[og])
+      out$is_oncogene[idx] <- 1
+      out$Cancergene <- ""
+      out$Cancergene[which(out$is_tumorsuppressor == 1)] <- "TSG"
+      out$Cancergene[which(out$is_oncogene == 1)] <- paste0(
+        "OG", out$Cancergene[which(out$is_oncogene == 1)])
+      
+      type <- get_type(Oncogenes = out, sureselect_type = sureselect_type)
+      
+      # merge outputs
+      out <- merge(x = out, y = type$gene_loci, by.x = c("Gene", "CopyNumber"),
+                   by.y = c("gene_name", "cn"))
+      
+    } else {
+      type <- NULL
+    }
+    return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
+                = cnv_analysis_results, out = out, impa = impa,
+                gene_loci = type$gene_loci, hrd = hrd, purity = pur))
   }
 
   type <- get_type(
     Oncogenes = cnvs_annotated$CNVOncogenes,
     Tumorsuppressor = cnvs_annotated$CNVTumorSuppressors,
-    CNVsAnnotated = cnvs_annotated$CNVsAnnotated
+    CNVsAnnotated = cnvs_annotated$CNVsAnnotated,
+    sureselect_type = sureselect_type
   )
 
-  hrd <- hrd_extr(hrd_file)
-  pur <- purity_extr(purity_file)
   return(
     list(
       cnvs_annotated = cnvs_annotated,
@@ -151,7 +166,7 @@ cnv_analysis <- function(
       impa = impa,
       gene_loci_onc = type$gene_loci_onc,
       gene_loci_tsg = type$gene_loci_tsg,
-      hrd = hrd,purity = pur
+      hrd = hrd, purity = pur
     )
   )
 }

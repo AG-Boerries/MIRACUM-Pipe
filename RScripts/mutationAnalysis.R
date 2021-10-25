@@ -104,7 +104,7 @@ mutation_analysis <- function(
     }
   }
 # split lists into sublists
-  sub_lst <- div(x_s, x_l, no_loh)
+  sub_lst <- div(x_s, x_l, no_loh, protocol = protocol, sureselect_type = sureselect_type)
 # Write/print summary of mutationsnumber, diverse tables
   mutation_table <- mut_tab(sub_lst$x_s_snp, sub_lst$x_s_indel, sub_lst$x_l_snp,
                             sub_lst$x_l_indel, protocol)

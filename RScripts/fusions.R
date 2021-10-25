@@ -24,7 +24,7 @@ fusions_ana <- function(fus_file, path_data, fusion_genes = NULL) {
       path_data,
       "/agfusion.homo_sapiens.95.db --recolor \"Pkinase_Tyr;red\" --recolor \"Pkinase;red\" "
     )
-    system(ag_fus)
+    #system(ag_fus)
 
     fusions_38 <- read.delim(fus_file_38, header = TRUE)
     fus_38 <- fusions_38[, c(1:2, 9:10)]
@@ -58,7 +58,7 @@ fusions_ana <- function(fus_file, path_data, fusion_genes = NULL) {
       fus_genes <- read.delim(
         file = fusion_genes,
         header = F
-      )
+      )$V1
       id1 <- which(ftd_fus$Gen1 %in% fus_genes)
       id2 <- which(ftd_fus$Gen2 %in% fus_genes)
       id <- union(id1, id2)
@@ -189,19 +189,19 @@ fusions2cbioportal <- function(fusions, sample, outfile_fusions_cbioportal){
 
   fusions.cbioportal <- data.frame(
     "Hugo_Symbol" = c(
-      as.character(fusionTable$Gen1),
-      as.character(fusionTable$Gen2)
+      as.character(fusion_table$Gen1),
+      as.character(fusion_table$Gen2)
     ),
     "Entrez_Gene_Id" = c(
       unlist(
         lapply(
-          mget(as.character(fusionTable$Gen1), org.Hs.egSYMBOL2EG),
+          mget(as.character(fusion_table$Gen1), org.Hs.egSYMBOL2EG),
           function(x) x[1]
         )
       ),
       unlist(
         lapply(
-          mget(as.character(fusionTable$Gen2), org.Hs.egSYMBOL2EG),
+          mget(as.character(fusion_table$Gen2), org.Hs.egSYMBOL2EG),
           function(x) x[1]
         )
       )

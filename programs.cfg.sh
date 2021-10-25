@@ -5,7 +5,7 @@ readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
 readonly CFG_CENTER=$(get_config_value common.center "${PARAM_DIR_PATIENT}")
 readonly CFG_PROTOCOL=$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-readonly ENTITY=$(get_config_value common.entity "${PARAM_DIR_PATIENT}")
+readonly CFG_ENTITY=$(get_config_value common.entity "${PARAM_DIR_PATIENT}")
 
 # temporary folder
 readonly DIR_TMP="$(get_config_value common.dirTmp "${PARAM_DIR_PATIENT}")/${PARAM_DIR_PATIENT}"
@@ -43,9 +43,6 @@ readonly CFG_REFERENCE_CAPTUREREGIONNAME="$(get_config_value reference.sequencin
 readonly CFG_REFERENCE_CAPTURECORFACTORS="${DIR_DATABASE}/$(get_config_value reference.sequencing.captureCorFactors "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_COVERED_EXONS="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.coveredExons "${PARAM_DIR_PATIENT}")"
 readonly CFG_REFERENCE_ACTIONABLEGENES="${DIR_DATABASE}/$(get_config_value reference.sequencing.actionableGenes "${PARAM_DIR_PATIENT}")"
-
-# Panel specific
-readonly CFG_REFERENCE_AMPL_GENES="${DIR_SEQUENCING}/$(get_config_value reference.sequencing.amplifiedGenes "${PARAM_DIR_PATIENT}")"
 
 # database for known variants
 ## dbSNP vcf File
@@ -180,6 +177,9 @@ readonly CFG_MUTECT_CALLABLEDEPTH=$(get_config_value wes.mutect.callableDepth "$
 
 # Fusions
 readonly CFG_FUSION_GENES=$(get_config_value panel.fusions.fusionGenes "${PARAM_DIR_PATIENT}")
+
+# Amplifications
+readonly CFG_AMPLIFICATION_GENES=$(get_config_value panel.amplification.AmplificationGenes "${PARAM_DIR_PATIENT}")
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value annovar.protocol "${PARAM_DIR_PATIENT}")
@@ -402,6 +402,7 @@ export CFG_PANEL_MUTECT_CALLABLEDEPTH
 export CFG_MUTECT_CALLABLEDEPTH
 
 export CFG_FUSION_GENES
+export CFG_AMPLIFICATION_GENES
 
 export CFG_ANNOVAR_PROTOCOL
 export CFG_ANNOVAR_ARGOP

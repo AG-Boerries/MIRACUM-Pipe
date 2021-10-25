@@ -290,7 +290,10 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   for(i in 1:nrow(x)) {
     cat("Processing CNV#", i, "\n")
     
-    if(x$WilcoxonRankSumTestPvalue[i] < 0.05 & x$KolmogorovSmirnovPvalue[i] < 0.05 & !is.na(x$WilcoxonRankSumTestPvalue[i]) & !is.na(x$KolmogorovSmirnovPvalue[i])) {
+    if (x$WilcoxonRankSumTestPvalue[i] < 0.05
+       & x$KolmogorovSmirnovPvalue[i] < 0.05
+       & !is.na(x$WilcoxonRankSumTestPvalue[i])
+       & !is.na(x$KolmogorovSmirnovPvalue[i])) {
       location <- list(x$chr[i], x$start[i], x$end[i])
       # try USCS SQL server first
       query <- try(del_dup_query(location), silent = TRUE)
@@ -404,8 +407,10 @@ cnv_table <- function(cnvs, ampl_genes){
       start <- rep(cnvs$start[i], entryLength[[i]])
       end <- rep(cnvs$end[i], entryLength[[i]])
       genes <- genesSplitList[[i]]
-      genes[2:length(genes)] <- substr(genes[2:length(genes)], start = 2,
-                                       stop = nchar(as.character(genes[2:length(genes)])))
+      # if(length(genes) > 1) {
+      #   genes[2:length(genes)] <- substr(genes[2:length(genes)], start = 2,
+      #                                    stop = nchar(as.character(genes[2:length(genes)])))
+      # }
       copyNumber <- rep(cnvs$copy.number[i], entryLength[[i]])
       status <- rep(cnvs$status[i], entryLength[[i]])
       tmp <- data.frame(Gene = genes, Chr = chr, Start = start, End = end, CopyNumber = copyNumber, Status = status)
@@ -499,68 +504,121 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = N
 }
 
 
-get_type <- function(Oncogenes, Tumorsuppressor, CNVsAnnotated){
+get_type <- function(Oncogenes, Tumorsuppressor, CNVsAnnotated, sureselect_type) {
   require(EnsDb.Hsapiens.v75)
   require(GenomicRanges)
   
-  genes_onc <- Oncogenes$Oncogene
-  genes_onc <- unique(unlist(strsplit(genes_onc, split = ",")))
-  genes_tsg <- Tumorsuppressor$TumorSuppressor
-  genes_tsg <- unique(unlist(strsplit(genes_tsg, split = ",")))
-  
-  edb <- EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75
-  genes_edb <- genes(edb)
-  
-  gene_loci_tsg <- genes_edb[which(genes_edb$symbol %in% genes_tsg), ]
-  gene_loci_tsg <- gene_loci_tsg[which(gene_loci_tsg$gene_biotype == "protein_coding"), ]
-  gene_loci_tsg <- gene_loci_tsg[which(seqnames(gene_loci_tsg) %in% c(1:22, "X", "Y"))]
-  
-  gene_loci_onc <- genes_edb[which(genes_edb$symbol %in% genes_onc), ]
-  gene_loci_onc <- gene_loci_onc[which(gene_loci_onc$gene_biotype == "protein_coding"), ]
-  gene_loci_onc <- gene_loci_onc[which(seqnames(gene_loci_onc) %in% c(1:22, "X", "Y"))]
-  
-  cnvs <- data.frame(chr = CNVsAnnotated$chr,
-                     start = CNVsAnnotated$start,
-                     end = CNVsAnnotated$end,
-                     cn = CNVsAnnotated$copy.number)
-  gene_loci_onc <- as.data.frame(gene_loci_onc)[, c(1:3, 7)]
-  gene_loci_tsg <- as.data.frame(gene_loci_tsg)[, c(1:3, 7)]
-  
-  get_cn <- function(x){
-    cn <- cnvs$cn[which(x$start >= cnvs$start
-                        & x$end <= cnvs$end
-                        & x$seqnames == cnvs$chr)]
-    return(cn)
-  }
-  gene_loci_onc$cn <- "-"
-  gene_loci_onc$Type <- "focal"
-  for (i in 1:dim(gene_loci_onc)[1]) {
-    if(length(get_cn(gene_loci_onc[i, ])) > 0) {
-      gene_loci_onc$cn[i] <- get_cn(gene_loci_onc[i, ])
-      gene_loci_onc$Type[i] <- "complete"
-    } else {
-      gene_loci_onc$cn[i] <- paste0(Oncogenes$copy.number[grep(gene_loci_onc$gene_name[i],
-                                                               x = Oncogenes$Oncogene)],
-                                    sep = "", collapse = ", ")
+  if(sureselect_type != "TSO500"){
+    genes_onc <- Oncogenes$Oncogene
+    genes_onc <- unique(unlist(strsplit(genes_onc, split = ",")))
+    genes_tsg <- Tumorsuppressor$TumorSuppressor
+    genes_tsg <- unique(unlist(strsplit(genes_tsg, split = ",")))
+    
+    edb <- EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75
+    genes_edb <- genes(edb)
+    
+    gene_loci_tsg <- genes_edb[which(genes_edb$symbol %in% genes_tsg), ]
+    gene_loci_tsg <- gene_loci_tsg[which(gene_loci_tsg$gene_biotype == "protein_coding"), ]
+    gene_loci_tsg <- gene_loci_tsg[which(seqnames(gene_loci_tsg) %in% c(1:22, "X"))]
+    
+    gene_loci_onc <- genes_edb[which(genes_edb$symbol %in% genes_onc), ]
+    gene_loci_onc <- gene_loci_onc[which(gene_loci_onc$gene_biotype == "protein_coding"), ]
+    gene_loci_onc <- gene_loci_onc[which(seqnames(gene_loci_onc) %in% c(1:22, "X"))]
+    
+    cnvs <- data.frame(chr = CNVsAnnotated$chr,
+                      start = CNVsAnnotated$start,
+                      end = CNVsAnnotated$end,
+                      cn = CNVsAnnotated$copy.number)
+    gene_loci_onc <- as.data.frame(gene_loci_onc)[, c(1:3, 7)]
+    gene_loci_tsg <- as.data.frame(gene_loci_tsg)[, c(1:3, 7)]
+    
+    get_cn <- function(x){
+      cn <- cnvs$cn[which(x$start >= cnvs$start
+                          & x$end <= cnvs$end
+                          & x$seqnames == cnvs$chr)]
+      return(cn)
     }
+    gene_loci_onc$cn <- "-"
+    gene_loci_onc$Type <- "focal"
+    for (i in 1:dim(gene_loci_onc)[1]) {
+      if(length(get_cn(gene_loci_onc[i, ])) > 0) {
+        gene_loci_onc$cn[i] <- get_cn(gene_loci_onc[i, ])
+        gene_loci_onc$Type[i] <- "complete"
+      } else {
+        gene_loci_onc$cn[i] <- paste0(Oncogenes$copy.number[grep(gene_loci_onc$gene_name[i],
+                                                                x = Oncogenes$Oncogene)],
+                                      sep = "", collapse = ", ")
+      }
+    }
+    
+    gene_loci_tsg$cn <- "-"
+    gene_loci_tsg$Type <- "focal"
+    for (i in 1:dim(gene_loci_tsg)[1]) {
+      if(length(get_cn(gene_loci_tsg[i, ])) > 0) {
+        gene_loci_tsg$cn[i] <- get_cn(gene_loci_tsg[i, ])
+        gene_loci_tsg$Type[i] <- "complete"
+      } else {
+        gene_loci_tsg$cn[i] <- paste0(Tumorsuppressor$copy.number[grep(gene_loci_tsg$gene_name[i],
+                                                                      x = Tumorsuppressor$TumorSuppressor)],
+                                      sep = "", collapse = ", ")
+      }
+    }
+
+    return(list(gene_loci_onc = gene_loci_onc, gene_loci_tsg = gene_loci_tsg))
+
+  } else if(sureselect_type == "TSO500"){
+    genes_onc <- as.character(Oncogenes$Gene)
+    genes_onc <- unique(unlist(strsplit(genes_onc, split = ",")))
+    
+    edb <- EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75
+    genes_edb <- genes(edb)
+    
+    gene_loci <- genes_edb[which(genes_edb$symbol %in% genes_onc), ]
+    gene_loci <- gene_loci[which(gene_loci$gene_biotype == "protein_coding"), ]
+    gene_loci <- gene_loci[which(seqnames(gene_loci) %in% c(1:22, "X", "Y"))]
+    
+    cnvs <- data.frame(chr = Oncogenes$Chr,
+                       start = Oncogenes$Start,
+                       end = Oncogenes$End,
+                       cn = Oncogenes$CopyNumber)
+    gene_loci <- as.data.frame(gene_loci)[, c(1:3, 7)]
+    
+    get_cn <- function(x){
+      cn <- cnvs$cn[which(x$start >= cnvs$start
+                          & x$end <= cnvs$end
+                          & x$seqnames == cnvs$chr)]
+      return(cn)
+    }
+    gene_loci$cn <- "-"
+    gene_loci$Type <- "focal"
+    for (i in 1:dim(gene_loci)[1]) {
+      if(length(get_cn(gene_loci[i, ])) > 0) {
+        gene_loci$cn[i] <- get_cn(gene_loci[i, ])
+        gene_loci$Type[i] <- "complete"
+      } else {
+        gene_loci$cn[i] <- paste0(Oncogenes$CopyNumber[grep(gene_loci$gene_name[i],
+                                                                x = Oncogenes$Gene)],
+                                      sep = "", collapse = ", ")
+      }
+    }
+    
+    if(any(unlist(lapply(strsplit(gene_loci$cn, split = ", "), length)) > 1)){
+      ids <- which(unlist(lapply(strsplit(gene_loci$cn, split = ", "), length)) > 1)
+      singleCNs <- strsplit(gene_loci$cn, split = ", ")
+      gene_loci$cn <- unlist(lapply(strsplit(gene_loci$cn, split = ", "), function(c) c[1]))
+      gene_loci2 <- gene_loci
+      for (i in 1:length(ids)){
+        dupRow <- gene_loci[ids[i],]
+        dupRow$cn <- singleCNs[[ids[i]]][2]
+        gene_loci2 <- rbind(gene_loci2, dupRow)
+      }
+      gene_loci <- gene_loci2
+    }
+    
+    return(list(gene_loci = gene_loci))
   }
 
-  gene_loci_tsg$cn <- "-"
-  gene_loci_tsg$Type <- "focal"
-  for (i in 1:dim(gene_loci_tsg)[1]) {
-    if(length(get_cn(gene_loci_tsg[i, ])) > 0) {
-      gene_loci_tsg$cn[i] <- get_cn(gene_loci_tsg[i, ])
-      gene_loci_tsg$Type[i] <- "complete"
-    } else {
-      gene_loci_tsg$cn[i] <- paste0(Tumorsuppressor$copy.number[grep(gene_loci_tsg$gene_name[i],
-                                                                     x = Tumorsuppressor$TumorSuppressor)],
-                                    sep = "", collapse = ", ")
-    }
-  }
-
-  return(list(gene_loci_onc = gene_loci_onc, gene_loci_tsg = gene_loci_tsg))
 }
-
 hrd_extr <- function(hrd_file) {
   hrd <- read.delim(hrd_file, sep = " ")
   sum <- hrd$HRD.sum

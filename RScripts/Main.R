@@ -42,8 +42,9 @@ protocol <- args[6]
 id <- args[7]
 germline <- args[8]
 tumor <- args[9]
-path_output <- paste(args[10], "Analyses/", sep = "/")
-path_input <- paste(args[10], "WES/", sep = "/")
+base_path <- args[10]
+path_output <- paste(base_path, "Analyses/", sep = "/")
+path_input <- paste(base_path, "WES/", sep = "/")
 path_script <- args[11]
 path_data <- args[12]
 targets_txt <- args[13]
@@ -61,7 +62,7 @@ actionable_genes <- args[24]
 covered_exons <- args[25]
 entity <- as.character(args[26])
 gender <- as.character(args[27])
-fusion_genes <- args[29]
+fusion_genes <- args[28]
 ampl_genes_txt <- args[29]
 
 #############
@@ -110,7 +111,7 @@ if (protocol == "panelTumor") {
   )
   tumor_bsqr <- paste0(
     path_input, sample,
-    "_td_output.sort.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png"
+    "_td_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/Images/per_base_quality.png"
   )
 }
 if (protocol == "tumorOnly") {

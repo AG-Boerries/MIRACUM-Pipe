@@ -35,10 +35,13 @@ tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
     mani_gr <- reduce(mani_gr)
     mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
                       ranges = IRanges(start = x$Start , end = x$Start))
-    tmb <- (length(findOverlaps(mut_gr, mani_gr))/sum(width(mani_gr))*1000000)/cov_t
+    #
     exon_region <- sum(width(mani_gr))/1000000
+    used_exon_region <- exon_region * cov_t
+    number_used_mutations_tmb <- length(findOverlaps(mut_gr, mani_gr))
+    tmb <- number_used_mutations_tmb/used_exon_region
   }
-  return(list(tmb = tmb, exon_region = exon_region))
+  return(list(tmb = tmb, exon_region = exon_region, used_exon_region = used_exon_region, number_used_mutations_tmb = number_used_mutations_tmb))
 }
 
 covered_region <- function(sureselect, mode = "T") {
@@ -721,7 +724,7 @@ helper_se <- function(x, i, id, db){
       clinsi <- unlist(strsplit(clinsi, split = "|", fixed = TRUE))
       cl <- clinsi[1]
     }
-    return(list(b = b, cc = cc, e = e, t = t, cl = cl))
+    return(list(b = b, cc = cc, e = e, t = t, cl = cl, fun = fun))
 }
 
 rg2se <- function(vec_ccc) {

@@ -40,10 +40,13 @@ coverage_plot <- function(path, outfilePDF, protocol) {
     cov[[i]] <- read.table(files[i])
     cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
   }
-  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
+  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20, TSO500 = 50)
   if (protocol != "panelTumor") {
     min_cov <- 8
     mit_cov <- 40
+  } else if (protocol == "panelTumor" & sureselect_type == "TSO500"){
+    min_cov <- 50
+    mit_cov <- 150
   } else {
     min_cov <- 20
     mit_cov <- 100
@@ -158,7 +161,7 @@ reads <- function(tfile, gfile) {
 }
 
 treads <- function(tfile) {
-  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 31, fill = TRUE)
+  treads_tab <- read.table(file = tfile, sep = "\t", skip = 7, nrows = 38, fill = TRUE)
   id <- which (as.character(treads_tab$V2) == "reads properly paired:")
   treads <- as.character(treads_tab$V3[id])
   treads <- as.numeric(treads)/1000000
@@ -170,7 +173,7 @@ treads <- function(tfile) {
               nRG = NULL, gin = NULL, gin_sd = NULL))
 }
 
-coverage_exon <- function(path, protocol = protocol){
+coverage_exon <- function(path, protocol, sureselect_type){
   #' Coverage Exons
   #'
   #' @description Coverage Exons
@@ -199,10 +202,13 @@ coverage_exon <- function(path, protocol = protocol){
     cov[[i]] <- read.table(files[i])
     cov_cumul[[i]] <- 1 - cumsum(cov[[i]][, 5])
   }
-  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20)
+  # Calculate Percentage of Targeted Bases with more reads than cutoff (WES = 8, Panel = 20, TSO500 = 50)
   if (protocol != "panelTumor") {
     min_cov <- 8
     mit_cov <- 40
+  } else if (protocol == "panelTumor" & sureselect_type == "TSO500"){
+    min_cov <- 50
+    mit_cov <- 150
   } else {
     min_cov <- 20
     mit_cov <- 100
@@ -227,7 +233,7 @@ quality_check <- function(path, nsamples, protocol) {
       filename <- paste0(path, "/", nsamples[i], "_output.sort.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
     if (protocol == "panelTumor") {
-      filename <- paste0(path, "/", nsamples[i], "_output.sort.realigned.fixed.recal_fastqc/fastqc_data.txt")
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
     sectionEndings <- which(str_detect(readLines(file(filename, "r", blocking = F)), ">>END_MODULE") == TRUE)
     fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")

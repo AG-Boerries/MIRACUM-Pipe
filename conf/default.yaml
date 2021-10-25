@@ -340,6 +340,8 @@ panel:
   
   fusions:
     fusionGenes: fusion_genes.txt
+  amplification:
+    amplificationGenes: TSO500_amplifications.txt
     
 annovar:
   # define annotation databases, together with their type, used. The databases have to be installed with annovar
@@ -383,4 +385,3 @@ reference:
     coveredExons: exons_5UTR.bed
     # positive list for genes in germline to be reported (e.g. by ACMG)
     # actionableGenes: actionable_genes.txt
-    amplifiedGenes: TSO500_genes_ampl_fusions.xlsx

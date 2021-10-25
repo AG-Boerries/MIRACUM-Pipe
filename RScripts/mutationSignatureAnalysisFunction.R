@@ -129,24 +129,25 @@ mutation_signature_analysis <- function(vcf_file = NULL, cutoff = 0.01,
   }
   ## load vcf Files
   sample.vcf <- readVcf(vcf_file, "hg19")
+  sample.vcf.flattend <- VariantAnnotation::expand(sample.vcf)
   ## create data.frame from mutations
   if(only_coding == TRUE){
-    mutations.coding <- predictCoding(sample.vcf, txdb, seqSource = Hsapiens)
+    mutations.coding <- predictCoding(sample.vcf.flattend, txdb, seqSource = Hsapiens)
     mutations <- data.frame(CHROM = as.character(seqnames(mutations.coding)),
                             POS = start(mutations.coding),
                             REF = as.character(mutations.coding$REF),
-                            ALT = as.character(unlist(mutations.coding$ALT)),
+                            ALT = as.character(mutations.coding$ALT),
                             Type = as.character(mutations.coding$CONSEQUENCE),
-                            FILT = fixed(sample.vcf)[, "FILTER"])
+                            FILT = as.character(mutations.coding$FILTER))
     mutations <- mutations[!mutations$Type == "synonymous", ]
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
   } else {  
-    mutations <- data.frame(CHROM = as.character(seqnames(sample.vcf)),
-                            POS = start(sample.vcf),
-                            REF = as.character(ref(sample.vcf)),
-                            ALT = as.character(unlist(alt(sample.vcf))),
-                            FILT = fixed(sample.vcf)[, "FILTER"])
+    mutations <- data.frame(CHROM = as.character(seqnames(sample.vcf.flattend)),
+                            POS = start(sample.vcf.flattend),
+                            REF = as.character(ref(sample.vcf.flattend)),
+                            ALT = as.character(alt(sample.vcf.flattend)),
+                            FILT = fixed(sample.vcf.flattend)[, "FILTER"])
     mutations$PID <- sample_name
     mutations$SUBGROUP <- sample_name
   }

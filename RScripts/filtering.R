@@ -142,7 +142,8 @@ filtering <- function(
       #tmb <- tmb_ex(x = x, manifest = sureselect, path_data = path_data, mode = mode, cov_t = cov_t)
     }
   } else {
-    tmb <- list(tmb = NULL, exon_region = NULL)
+    tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
+                number_used_mutations_tmb = NULL)
   }
   
   # Filter for exonic function
@@ -163,17 +164,18 @@ filtering <- function(
   x <- rare(x, maf)
 
   # TumorMutationBurden
-  if (mode == "T") {
-    if (protocol %in% c("panelTumor")) {
-      if (sureselect_type %in% c("TSO500")) {
-        tmb <- tumbu(x, 1.27)
-      } else {
-        tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
-      }
-    }
-  } else {
-    tmb <- list(tmb=NULL, exon_region=NULL)
-  }
+  # if (mode == "T") {
+  #   if (protocol %in% c("panelTumor")) {
+  #     if (sureselect_type %in% c("TSO500")) {
+  #       tmb <- tumbu(x, 1.27)
+  #     } else {
+  #       tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
+  #     }
+  #   }
+  # } else {
+  #   tmb <- tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
+  #                      number_used_mutations_tmb = NULL)
+  # }
 
   if (dim(x)[1] != 0) {
     # Include GeneName
@@ -243,7 +245,9 @@ filtering <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
 
@@ -257,7 +261,9 @@ filtering <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
 
@@ -270,7 +276,9 @@ filtering <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
   }
@@ -278,9 +286,7 @@ filtering <- function(
 
 filtering_mutect2 <- function(
   snpfile,
-  indelfile,
-  snpefffile_snp,
-  snpefffile_indel,
+  snpefffile,
   outfile,
   outfile_maf,
   path_data,
@@ -291,7 +297,7 @@ filtering_mutect2 <- function(
   protocol,
   sureselect,
   vaf = 0.05,
-  min_var_count = 4,
+  min_var_count = 20,
   maf = 0.01,
   actionable_genes = NA,
   covered_exons = covered_exons,
@@ -303,9 +309,7 @@ filtering_mutect2 <- function(
   #' @description Filters the somatic SNPs and InDel for analysis
   #'
   #' @param snpfile dataframe. Table of SNVs
-  #' @param indelfile dataframe. Table of InDels
   #' @param snpefffile_snp dataframe. Table with Results of SnpEff for SNVs
-  #' @param snpefffile_indel dataframe. Table with Results of SnpEff for indels
   #' @param path_data string. Directory of the databases
   #' @param path_script string. Directory of required scripts
   #' @param sureselect string. Kind of sequencer
@@ -339,10 +343,10 @@ filtering_mutect2 <- function(
   require(GenomicRanges)
 
   # Read Data
-  x <- read.delim(file = mutect2, header = T, stringsAsFactors = F, comment.char = "#")
+  x <- read.delim(file = snpfile, header = T, stringsAsFactors = F, comment.char = "#")
   
   # Filter for targeted region in tNGS
-  x <- target_check(x, sureselect, path_data)
+  x <- target_check(x, sureselect)
 
   # Calcualte covered region from bed file
   cov_region <- covered_region(sureselect = sureselect, mode = mode)
@@ -352,9 +356,9 @@ filtering_mutect2 <- function(
     x <- x[-id, ]
   }
   # Quality Filter
-  if (protocol ==  "Tumor_Only" & sureselect == "V5UTR"){
+  if (protocol ==  "tumorOnly" & sureselect_type == "V5UTR"){
     x <- x
-  } else if (sureselect %in% c("V5UTR", "V6", "V6UTR")) {
+  } else if (sureselect_type %in% c("V5UTR", "V6", "V6UTR")) {
     id.pass <- grep("PASS", x$Otherinfo10)
     if (length(id.pass) > 0) {
       x <- x[id.pass, ]
@@ -371,19 +375,17 @@ filtering_mutect2 <- function(
   }
   
   # Extract VAF, Readcounts (and Zygosity)
-  x <- vrz_gatk(x = x, mode = mode, protocol = protocol, manifest = sureselect)
+  x <- vrz_gatk(x = x, mode = mode, protocol = protocol)
   
   # VAF Filter
-  print(paste0("VAF>= ",vaf*100,"%"))
-  x <- exclude_gatk(x, vaf = vaf)
+  x <- exclude_gatk(x, vaf = vaf/100)
   # Remove Variants with Variant Read Count below 4/20
-  x <- mrc(x = x, min_var_count = 20)
+  x <- mrc(x = x, min_var_count = min_var_count)
   # snpEFF Annotation
   x <- snpeff(
     x = x,
-    sef_snp = mutect2_snpEff,
-    protocol = protocol,
-    manifest = sureselect
+    sef_snp = snpefffile,
+    protocol = protocol
   )
   
   # replace synonymous entries from refGene with snpEff consequence
@@ -402,11 +404,12 @@ filtering_mutect2 <- function(
   x <- filt(x, "downstream")
   
   # TMB calculation for WES
-  if (manifest != "TSO500"){
+  if (sureselect_type != "TSO500"){
     if (mode == "T"){
       tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
     } else {
-      tmb <- list(tmb = NULL, exon_region = NULL)
+      tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
+                  number_used_mutations_tmb = NULL)
     }
   }
   
@@ -425,16 +428,17 @@ filtering_mutect2 <- function(
   }
   
   # Filter for rare mutations
-  print(paste0("MAF<= ",maf*100,"%"))
-  x <- rare(x, cutoff = maf)
+  x <- rare(x, maf = maf)
   
   # TMB calculation for TSO500; only rare mutations; assumption: rare mutations are "somatic"
-  if (manifest == "TSO500") {
+  if (sureselect_type == "TSO500") {
     if (mode == "T"){
-      #tmb <- tumbu(x, 1.27)
-      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
+      id_ex <- which(x$Func.refGene == "exonic")
+      x_coding <- x[id_ex, ]
+      tmb <- tmb_ex(x_coding, covered_exons, mode = "T", cov_t)
     } else {
-      tmb <- list(tmb = NULL, exon_region = NULL)
+      tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
+                  number_used_mutations_tmb = NULL)
     }
   }
   
@@ -449,8 +453,8 @@ filtering_mutect2 <- function(
     # Database Queries
     x <- isflag(x, dbfile = paste(path_data, "flag_genes.txt", sep = "/"))
     x <- isogtsg(x, dbfile = paste(path_data, "cancerGeneList.tsv", sep = "/"))
-    x <- ishs(x, paste(path_data, "hotspots_v2.xlsx", sep = "/"))
-    x <- isihs(x, paste(path_data, "hotspots_v2.xlsx", sep = "/"))
+    x <- ishs(x, paste(path_data, "hotspots_v2.xls", sep = "/"))
+    x <- isihs(x, paste(path_data, "hotspots_v2.xls", sep = "/"))
     x <- rvis(x, paste(path_data, "RVIS_score.txt", sep = "/"))
     x <- trgt(x, paste(path_data, "TARGET_db.txt", sep = "/"))
     x <- dgidb(x, paste(path_data, "DGIdb_interactions.tsv", sep = "/"))
@@ -489,7 +493,7 @@ filtering_mutect2 <- function(
     out.maf <- txt2maf_mutect2(
       input = x,
       protocol = protocol,
-      snv_vcf = mutect2_snpEff,
+      snv_vcf = snpefffile,
       Center = 'Freiburg',
       refBuild = 'hg19',
       id = sample,
@@ -513,7 +517,9 @@ filtering_mutect2 <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
 
@@ -526,7 +532,9 @@ filtering_mutect2 <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
 
@@ -539,7 +547,9 @@ filtering_mutect2 <- function(
         tmb = tmb$tmb,
         exon_region = tmb$exon_region,
         maf = out.maf,
-        covered_region = cov_region
+        covered_region = cov_region,
+        used_exon_region = tmb$used_exon_region,
+        number_used_mutations_tmb = tmb$number_used_mutations_tmb
       )
     )
   }
