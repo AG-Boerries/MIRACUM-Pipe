@@ -83,7 +83,7 @@
 # }
 
 cnv_analysis <- function(ratio_file, cnvs_file, cpn_file, cnv_pvalue_txt, outfile_ideogram, path_data,
-                         path_script, targets_txt, id, outfile_cbioportal, outfile_seg, protocol){
+                         path_script, targets_txt, id, outfile_cbioportal, outfile_seg, protocol, ucsc_server){
 #' CNV Analysis
 #'
 #' @description Analyse the
@@ -121,7 +121,8 @@ cnv_analysis <- function(ratio_file, cnvs_file, cpn_file, cnv_pvalue_txt, outfil
                                                    "cancerGeneList.tsv",
                                                    sep = "/"),
                                    path_data = path_data,
-                                   path_script = path_script)
+                                   path_script = path_script,
+                                   ucsc_server = ucsc_server)
   
   cnv_analysis_results <- cnv_processing(cnv_file = cnvs_annotated$CNVsAnnotated,
                                          targets = targets,

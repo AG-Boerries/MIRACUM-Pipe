@@ -58,7 +58,8 @@ vaf <- as.numeric(args[21])*100
 min_var_count <- as.numeric(args[22])
 maf_cutoff <- as.numeric(args[23])
 actionable_genes <- args[24]
-coveredExons <- arg[25]
+coveredExons <- args[25]
+ucsc_server <- args[26]
 
 #############
 # Functions #
@@ -329,7 +330,8 @@ if (protocol == "somaticGermline" | protocol == "somatic"){
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
                                        outfile_seg = outfile_cnvs_seg,
                                        id = id,
-                                       protocol = protocol)
+                                       protocol = protocol,
+                                       ucsc_server = ucsc_server)
 }
 
 if (protocol == "tumorOnly"){
@@ -355,7 +357,8 @@ if (protocol == "tumorOnly"){
                                        outfile_cbioportal = outfile_cnvs_cbioportal,
                                        outfile_seg = outfile_cnvs_seg,
                                        id = id,
-                                       protocol = protocol)
+                                       protocol = protocol,
+                                       ucsc_server = ucsc_Server)
 }
 # # TODO CNV Panel
 # if (protocol == "panelTumor"){

@@ -24,6 +24,9 @@ readonly DIR_FUSIONS="${DIR_RNA}/fusioncatcher"
 
 # end paths
 
+# ucsc mysql server
+readonly CFG_UCSC_SERVER=$(get_config_value common.ucscServer "${PARAM_DIR_PATIENT}")
+
 ## Genome
 readonly FILE_GENOME="${DIR_REF}/genome/$(get_config_value reference.genome "${PARAM_DIR_PATIENT}")"
 
@@ -257,6 +260,8 @@ export CFG_FILE_GERMLINE_R1
 export CFG_FILE_GERMLINE_R2
 
 export CFG_FOLDER_RNA
+
+export CFG_UCSC_SERVER
 
 export DIR_TARGET
 export DIR_WES
