@@ -1,9 +1,6 @@
 [submodule "tools/FastQC"]
 	path = tools/FastQC
 	url = https://github.com/s-andrews/FastQC
-[submodule "tools/bwa"]
-	path = tools/bwa
-	url = https://github.com/lh3/bwa.git
 [submodule "tools/bam-readcount"]
 	path = tools/bam-readcount
 	url = https://github.com/genome/bam-readcount
