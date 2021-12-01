@@ -33,9 +33,11 @@ mut_sig_wCI <- function(
   } else {
       error("Unsupported Capture Region Kit.")
   }
-
+  
+  print(ref_genome)
   refGenome_path <- file.path(ref_genome)# hg19
   refGenome <- FaFile(refGenome_path)
+  print(refGenome)
 
   commonCutoff <- cutoff
 

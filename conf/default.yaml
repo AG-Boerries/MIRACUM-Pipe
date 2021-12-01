@@ -22,7 +22,7 @@ common:
   # set to no if the germline sample should be used only to identify somatic variants
   germline: yes
 
-sex: XX
+sex: 0
 
 general:
   # minimum base quality to call a variant
@@ -358,7 +358,7 @@ sequenza:
 
 reference:
   # define reference genome (located in references/Genome incl. indices)
-  genome: hg19.fa
+  genome: genome.fa
   # file containing the length of the chromosomes (located in references/chromosomes)
   length: hg19_chr.len
   # reference wig file for HRD calculation; if not present its generated (to be put/created in databases)

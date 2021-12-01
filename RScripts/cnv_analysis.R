@@ -112,7 +112,9 @@ cnv_analysis <- function(
     freec2seg(cnvs_file, cpn_file, id, outfile_seg)
   }
   
+  print("HRD")
   hrd <- hrd_extr(hrd_file)
+  print("Purity")
   pur <- purity_extr(purity_file)
   
   if (sureselect_type == "TSO500") {
@@ -150,14 +152,15 @@ cnv_analysis <- function(
                 = cnv_analysis_results, out = out, impa = impa,
                 gene_loci = type$gene_loci, hrd = hrd, purity = pur))
   }
-
+  
   type <- get_type(
     Oncogenes = cnvs_annotated$CNVOncogenes,
     Tumorsuppressor = cnvs_annotated$CNVTumorSuppressors,
     CNVsAnnotated = cnvs_annotated$CNVsAnnotated,
     sureselect_type = sureselect_type
   )
-
+	
+  
   return(
     list(
       cnvs_annotated = cnvs_annotated,

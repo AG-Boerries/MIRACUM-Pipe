@@ -70,6 +70,9 @@ fi
 
 ##################################################################################################################
 
+echo "${PARAM_DIR_PATIENT}"
+echo "${FILE_GENOME}"
+
 cd "${DIR_ANALYSES}" || exit 1
 
 # execute Main.R, i.e. complete analyses in R

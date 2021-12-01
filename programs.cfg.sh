@@ -4,7 +4,7 @@
 readonly CFG_AUTHOR=$(get_config_value common.author "${PARAM_DIR_PATIENT}")
 readonly CFG_CENTER=$(get_config_value common.center "${PARAM_DIR_PATIENT}")
 readonly CFG_PROTOCOL=$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")
-readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
+#readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
 readonly CFG_ENTITY=$(get_config_value common.entity "${PARAM_DIR_PATIENT}")
 
 # temporary folder
@@ -269,7 +269,7 @@ readonly MICROSATELLITE_SITES="${DIR_DATABASE}/$(get_config_value reference.micr
 # HRD
 readonly SEQUENZA_UTILS=$(command -v sequenza-utils)
 readonly SEQUENZA_WINDOW=$(get_config_value sequenza.window "${PARAM_DIR_PATIENT}")
-readonly SEQUENZA_NON_MATCHING_NORMAL=$(get_config_value sequenza.nonMatchingNormal "${PARAM_DIR_PATIENT}")
+readonly SEQUENZA_NON_MATCHING_NORMAL="${DIR_REF}/sequenza/$(get_config_value sequenza.nonMatchingNormal "${PARAM_DIR_PATIENT}")"
 readonly SEQUENZA_CHROMOSOMES=$(get_config_value sequenza.chromosomes "${PARAM_DIR_PATIENT}")
 
 # export parameters

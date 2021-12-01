@@ -72,7 +72,6 @@ fi
 ##################################################################################################################
 
 readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
-
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
 readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
@@ -136,4 +135,5 @@ fi
 ${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" \
   -C ${SEQUENZA_CHROMOSOMES} -o "${HRD_OUTPUT}"
 ${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"

@@ -65,6 +65,8 @@ gender <- as.character(args[27])
 fusion_genes <- args[28]
 ampl_genes_txt <- args[29]
 
+print(ref_genome)
+
 #############
 # Functions #
 # Mutation Analyses #
@@ -270,7 +272,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   stats_td <- paste0(path_input, sample, "_td_stats.txt")
   stats_gd <- paste0(path_input, sample, "_gd_stats.txt")
   ## Analysis
-  stats <- stats(
+  stats <- stats_func(
     path = path_input,
     outfile_pdf = coverage_out,
     stats_td = stats_td,
@@ -284,7 +286,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     sample,
     "_td_stats.txt"
   )
-  stats <- stats(
+  stats <- stats_func(
     path = path_input,
     outfile_pdf = coverage_out,
     stats_td = stats_td,
@@ -365,7 +367,7 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       vaf = vaf,
       min_var_count = min_var_count,
       maf = maf_cutoff,
-      actionable_genes = actionable_genes,
+      actionable_genes = NA,
       covered_exons = covered_exons,
       cov_t = stats$cover_exons$perc[[1]][1],
       sureselect_type = sureselect_type
@@ -590,63 +592,64 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     purity_file = purity_file,
     hrd_file = hrd_file
   )
+print("End CNVs")
 }
 
-if (protocol == "tumorOnly" | protocol == "panelTumor") {
-  ## Input/Output Files
-  ratio_file <- paste0(
-    path_input, "CNV/", sample,
-    "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt"
-  )
-  cnvs_file <- paste0(
-    path_input, "CNV/", sample,
-    "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs"
-  )
-  cpn_file <- paste0(
-    path_input, "CNV/", sample,
-    "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn"
-  )
-  # HRD/Purity
-  purity_file <- paste0(
-    path_input, "/",
-    sample,
-    "_sequenza/",
-    sample,
-    "_alternative_solutions.txt"
-  )
-  hrd_file <- paste0(
-    path_input,
-    "/",
-    sample,
-    "_HRD.txt"
-  )
-
-  # Results
-  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
-  cnv_ideogram_plot <- paste0(path_output, sample, "_CNV_Plot_Ideogram.pdf")
-  outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
-  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
-
-  cnv_analysis_results <- cnv_analysis(
-    ratio_file = ratio_file,
-    cnvs_file = cnvs_file,
-    cpn_file = cpn_file,
-    cnv_pvalue_txt = cnv_pvalue_txt,
-    outfile_ideogram = cnv_ideogram_plot,
-    path_data = path_data,
-    path_script = path_script,
-    targets_txt = targets_txt,
-    ampl_genes_txt = ampl_genes_txt,
-    outfile_cbioportal = outfile_cnvs_cbioportal,
-    outfile_seg = outfile_cnvs_seg,
-    id = id,
-    protocol = protocol,
-    sureselect_type = sureselect_type,
-    gender = gender,
-    purity_file = purity_file,
-    hrd_file = hrd_file
-  )
-}
+#if (protocol == "tumorOnly" | protocol == "panelTumor") {
+#  ## Input/Output Files
+#  ratio_file <- paste0(
+#    path_input, "CNV/", sample,
+#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt"
+#  )
+#  cnvs_file <- paste0(
+#    path_input, "CNV/", sample,
+#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs"
+#  )
+#  cpn_file <- paste0(
+#    path_input, "CNV/", sample,
+#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn"
+#  )
+#  # HRD/Purity
+#  purity_file <- paste0(
+#    path_input, "/",
+#    sample,
+#    "_sequenza/",
+#    sample,
+#    "_alternative_solutions.txt"
+#  )
+#  hrd_file <- paste0(
+#    path_input,
+#    "/",
+#    sample,
+#    "_HRD.txt"
+#  )
+#
+#  # Results
+#  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
+#  cnv_ideogram_plot <- paste0(path_output, sample, "_CNV_Plot_Ideogram.pdf")
+#  outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+#  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
+#
+#  cnv_analysis_results <- cnv_analysis(
+#    ratio_file = ratio_file,
+#    cnvs_file = cnvs_file,
+#    cpn_file = cpn_file,
+#    cnv_pvalue_txt = cnv_pvalue_txt,
+#    outfile_ideogram = cnv_ideogram_plot,
+#    path_data = path_data,
+#    path_script = path_script,
+#    targets_txt = targets_txt,
+#    ampl_genes_txt = ampl_genes_txt,
+#    outfile_cbioportal = outfile_cnvs_cbioportal,
+#    outfile_seg = outfile_cnvs_seg,
+#    id = id,
+#    protocol = protocol,
+#    sureselect_type = sureselect_type,
+#    gender = gender,
+#    purity_file = purity_file,
+#    hrd_file = hrd_file
+#  )
+#}
 
 ###############################
 # Mutation Signature Analysis #
