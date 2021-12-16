@@ -107,8 +107,8 @@ for name1 in ${names1}; do
   # keep
   hc_vcf=${DIR_WES}/${NameD}.output.${name1}.vcf
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
-    
-    
+
+
   ${CONVERT2ANNOVAR3} "${hc_avi}" "${hc_vcf}"
   ${BIN_CUT} "${hc_avi}" > "${hc_rci}"
   ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
@@ -132,12 +132,10 @@ for name1 in ${names1}; do
   # temp
   hc=${DIR_WES}/${NameD}.output.${name1}
   hc_T_avi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput
-
   # keep
   hc_fpf=${DIR_WES}/${NameD}.output.${name1}.fpfilter.vcf
   #hc_T_avi_multi=${DIR_WES}/${NameD}.output.${name1}.Sample1.avinput.hg19_multianno.csv
   hc_snpeff="${DIR_WES}/${NameD}.output.${name1}.SnpEff.vcf"
-  
   # annovar annotation
   ${CONVERT2ANNOVAR} "${hc}" "${hc_fpf}" -allsample
   ${TABLEANNOVAR} "${hc_T_avi}" "${DIR_ANNOVAR_DATA}" -protocol "${CFG_ANNOVAR_PROTOCOL}" -buildver hg19 \
@@ -153,11 +151,11 @@ CODINGARG="--includesnp --onlyAltering --mrnaseq --tolerate"
 CONVERTARG="--includeinfo"
 
 # Mutect2
-${BIN_GATK4} Mutect2 -R ${GENOME} -I ${recalbam} -O ${OUTPUT_GZ} \
+${BIN_GATK4} Mutect2 -R ${FILE_GENOME} -I ${recalbam} -O ${OUTPUT_GZ} \
  --callable-depth "${CFG_PANEL_MUTECT_CALLABLEDEPTH}" --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-base-quality-score "${CFG_GENERAL_MINBASEQUAL}" --base-quality-score-threshold "${CFG_GENERAL_MINBASEQUAL}"
 
 # Filter
-${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${GENOME} -O ${OUTPUT_FILTERED_GZ} --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-median-base-quality "${CFG_GENERAL_MINBASEQUAL}" --min-allele-fraction "${CFG_GENERAL_MINVAF}"
+${BIN_GATK4} FilterMutectCalls -V ${OUTPUT_GZ} -R ${FILE_GENOME} -O ${OUTPUT_FILTERED_GZ} --intervals "${CFG_REFERENCE_CAPTUREREGIONS}" --min-median-base-quality "${CFG_GENERAL_MINBASEQUAL}" --min-allele-fraction "${CFG_GENERAL_MINVAF}"
 gunzip "${OUTPUT_FILTERED_GZ}"
 
 # Annovar

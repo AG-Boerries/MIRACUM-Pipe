@@ -79,6 +79,7 @@ cnv_analysis <- function(
     cnvs = cnvs_annotated$CNVsAnnotated,
     ampl_genes = ampl_genes
   )
+
   ddr <- cnv_pathways(
     input = out,
     db = paste(path_data,"DNA_Damage_Response.txt",sep = "/")

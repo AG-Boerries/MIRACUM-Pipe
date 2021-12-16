@@ -233,7 +233,7 @@ quality_check <- function(path, nsamples, protocol) {
       filename <- paste0(path, "/", nsamples[i], "_output.sort.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
     if (protocol == "panelTumor") {
-      filename <- paste0(path, "/", nsamples[i], "_output.sort.filtered.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
+      filename <- paste0(path, "/", nsamples[i], "_output.sort.rmdup.realigned.fixed.recal_fastqc/fastqc_data.txt")
     }
     sectionEndings <- which(str_detect(readLines(file(filename, "r", blocking = F)), ">>END_MODULE") == TRUE)
     fastq_data <- read.table(file = filename, skip = 2 , nrows = 7, sep = "\t")

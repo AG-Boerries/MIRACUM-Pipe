@@ -52,6 +52,8 @@ if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]];
   readonly CFG_CASE=panelTumor
 fi
 
+echo ${CFG_CASE}
+
 # check inputs
 readonly VALID_SEXES=("XX XY")
 

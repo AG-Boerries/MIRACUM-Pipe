@@ -163,11 +163,24 @@ filtering <- function(
   # Filter for rare mutations
   x <- rare(x, maf)
 
+  # TMB calculation for TSO500; only rare mutations; assumption: rare mutations are "somatic"
+  if (sureselect_type == "TSO500") {
+    if (mode == "T"){
+      id_ex <- which(x$Func.refGene == "exonic")
+      x_coding <- x[id_ex, ]
+      tmb <- tmb_ex(x_coding, covered_exons, mode = "T", cov_t)
+    } else {
+      tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
+                  number_used_mutations_tmb = NULL)
+    }
+  }
+
+  
   # TumorMutationBurden
   # if (mode == "T") {
   #   if (protocol %in% c("panelTumor")) {
-  #     if (sureselect_type %in% c("TSO500")) {
-  #       tmb <- tumbu(x, 1.27)
+  #    if (sureselect_type %in% c("TSO500")) {
+  #      tmb <- tumbu(x, 1.27)
   #     } else {
   #       tmb <- tmb_ex(x, coveredExons, mode = "T", cov_t)
   #     }

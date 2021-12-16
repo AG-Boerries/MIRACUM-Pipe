@@ -1,4 +1,4 @@
-####################
+#####################
 # Variant Analysis #
 ####################
 
@@ -236,15 +236,15 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
   )
   mutect2_vcf <- paste0(
     path_input, "/", sample,
-    "_gatk4_mutect2_filtered.hg19_multianno.txt"
+    "_td_gatk4_mutect2_filtered.hg19_multianno.txt"
   )
   mutect2_snpEff_vcf <- paste0(
     path_input, "/", sample,
-    "_gatk4_mutect2_filtered_SnpEff.vcf"
+    "_td_gatk4_mutect2_filtered_SnpEff.vcf"
   )
   msi_file <- paste0(
     path_input, "/", sample,
-    "_vc_MSI"
+    "_td_MSI"
   )
 
   # Results
@@ -277,7 +277,8 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     outfile_pdf = coverage_out,
     stats_td = stats_td,
     stats_gd = stats_gd,
-    protocol = protocol
+    protocol = protocol,
+    sureselect_type = sureselect_type
   )
 }
 if (protocol == "panelTumor" | protocol == "tumorOnly") {
@@ -290,7 +291,8 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     path = path_input,
     outfile_pdf = coverage_out,
     stats_td = stats_td,
-    protocol = protocol
+    protocol = protocol,
+    sureselect_type = sureselect_type
   )
 }
 
@@ -431,14 +433,14 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     vaf = vaf,
     min_var_count = min_var_count,
     maf = maf_cutoff,
-    coveredExons = coveredExons,
+    covered_exons = covered_exons,
     cov_t = stats$cover_exons$perc[[1]][1],
     sureselect_type = sureselect_type
   )
   # GATK4 Mutect2
   filt_result_td_mutect2 <- filtering_mutect2(
-    mutect2_input = mutect2_vcf,
-    mutect2_snpEff = mutect2_snpEff_vcf,
+    snpfile = mutect2_vcf,
+    snpefffile = mutect2_snpEff_vcf,
     outfile_maf = maf_td_mutect2,
     id = id,
     path_data = path_data,
@@ -450,7 +452,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     vaf = vaf,
     min_var_count = min_var_count,
     maf = maf_cutoff,
-    coveredExons = coveredExons,
+    covered_exons = covered_exons,
     cov_t = stats$cover_exons$perc[[1]][1],
     sureselect_type = sureselect_type
   )
@@ -595,61 +597,61 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
 print("End CNVs")
 }
 
-#if (protocol == "tumorOnly" | protocol == "panelTumor") {
-#  ## Input/Output Files
-#  ratio_file <- paste0(
-#    path_input, "CNV/", sample,
-#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt"
-#  )
-#  cnvs_file <- paste0(
-#    path_input, "CNV/", sample,
-#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs"
-#  )
-#  cpn_file <- paste0(
-#    path_input, "CNV/", sample,
-#    "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn"
-#  )
-#  # HRD/Purity
-#  purity_file <- paste0(
-#    path_input, "/",
-#    sample,
-#    "_sequenza/",
-#    sample,
-#    "_alternative_solutions.txt"
-#  )
-#  hrd_file <- paste0(
-#    path_input,
-#    "/",
-#    sample,
-#    "_HRD.txt"
-#  )
-#
-#  # Results
-#  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
-#  cnv_ideogram_plot <- paste0(path_output, sample, "_CNV_Plot_Ideogram.pdf")
-#  outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
-#  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
-#
-#  cnv_analysis_results <- cnv_analysis(
-#    ratio_file = ratio_file,
-#    cnvs_file = cnvs_file,
-#    cpn_file = cpn_file,
-#    cnv_pvalue_txt = cnv_pvalue_txt,
-#    outfile_ideogram = cnv_ideogram_plot,
-#    path_data = path_data,
-#    path_script = path_script,
-#    targets_txt = targets_txt,
-#    ampl_genes_txt = ampl_genes_txt,
-#    outfile_cbioportal = outfile_cnvs_cbioportal,
-#    outfile_seg = outfile_cnvs_seg,
-#    id = id,
-#    protocol = protocol,
-#    sureselect_type = sureselect_type,
-#    gender = gender,
-#    purity_file = purity_file,
-#    hrd_file = hrd_file
-#  )
-#}
+if (protocol == "tumorOnly" | protocol == "panelTumor") {
+  ## Input/Output Files
+  ratio_file <- paste0(
+    path_input, "CNV/", sample,
+    "_td_output.sort.rmdup.realigned.fixed.recal.bam_ratio.txt"
+  )
+  cnvs_file <- paste0(
+    path_input, "CNV/", sample,
+    "_td_output.sort.rmdup.realigned.fixed.recal.bam_CNVs"
+  )
+  cpn_file <- paste0(
+    path_input, "CNV/", sample,
+    "_td_output.sort.rmdup.realigned.fixed.recal.bam_sample.cpn"
+  )
+  # HRD/Purity
+  purity_file <- paste0(
+    path_input, "/",
+    sample,
+    "_sequenza/",
+    sample,
+    "_alternative_solutions.txt"
+  )
+  hrd_file <- paste0(
+    path_input,
+    "/",
+    sample,
+    "_HRD.txt"
+  )
+
+  # Results
+  cnv_pvalue_txt <- paste0(cnvs_file, ".p.value.txt")
+  cnv_ideogram_plot <- paste0(path_output, sample, "_CNV_Plot_Ideogram.pdf")
+  outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
+  outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
+
+  cnv_analysis_results <- cnv_analysis(
+    ratio_file = ratio_file,
+    cnvs_file = cnvs_file,
+    cpn_file = cpn_file,
+    cnv_pvalue_txt = cnv_pvalue_txt,
+    outfile_ideogram = cnv_ideogram_plot,
+    path_data = path_data,
+    path_script = path_script,
+    targets_txt = targets_txt,
+    ampl_genes_txt = ampl_genes_txt,
+    outfile_cbioportal = outfile_cnvs_cbioportal,
+    outfile_seg = outfile_cnvs_seg,
+    id = id,
+    protocol = protocol,
+    sureselect_type = sureselect_type,
+    gender = gender,
+    purity_file = purity_file,
+    hrd_file = hrd_file
+  )
+}
 
 ###############################
 # Mutation Signature Analysis #
@@ -674,7 +676,11 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     vaf = vaf
   )
 } else {
-  vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+  if (protocol == "panelTumor") {
+    vcf <- paste0(path_input, sample, "_td_gatk4_mutect2_filtered.vcf")
+  } else {
+    vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+  }
   outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
   mut_sig_analysis <- mutation_signature_analysis(
     vcf_file = vcf,
@@ -685,6 +691,10 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     path_output = path_output,
     outfile_cbioportal = outfile_mutsig_cbioportal
   )
+  mut_sig <- data.frame(Signature = mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$out_sig_ind_df$sig,
+                        Process = mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$out_sig_ind_df$process,
+                        Frequency = mut_sig_analysis$CosmicValid_cutoffGen_LCDlist$norm_exposures[,1])
+  rownames(mut_sig) <- mut_sig$Signature
 }
 
 # Write Excel File
@@ -698,7 +708,8 @@ if (protocol == "somaticGermline") {
   )
   write.xlsx(
     x = output,
-    file = paste0(path_output, "/", sample, "_results.xlsx")
+    file = paste0(path_output, "/", sample, "_results.xlsx"),
+    overwrite = TRUE
     )
 } else if (protocol == "somatic") {
   output <- list(
@@ -709,27 +720,30 @@ if (protocol == "somaticGermline") {
   )
   write.xlsx(
     x = output,
-    file = paste0(path_output, "/", sample, "_results.xlsx")
+    file = paste0(path_output, "/", sample, "_results.xlsx"),
+    overwrite = TRUE
   )
   } else if (protocol == "panelTumor") {
     output <- list(
       Mutations = filt_result_td_mutect2$table,
       CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
-      Mutation_Signatures = mut_sig_ana$output$Summary
+      Mutation_Signatures = mut_sig$Summary
     )
     write.xlsx(
       x = output,
-      file = paste0(path_output, "/", sample, "_results.xlsx")
+      file = paste0(path_output, "/", sample, "_results.xlsx"),
+      overwrite = TRUE
     )
 } else {
   output <- list(
     Mutations = filt_result_td_mutect2$table,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
-    Mutation_Signatures = mut_sig_ana$output$Summary
+    Mutation_Signatures = mut_sig$Summary
   )
   write.xlsx(
     x = output,
-    file = paste0(path_output, "/", sample, "_results.xlsx")
+    file = paste0(path_output, "/", sample, "_results.xlsx"),
+    overwrite = TRUE
   )
 }
 
@@ -865,9 +879,9 @@ if (file.exists(fus_file)) {
         fus_tab <- fus_tab[, c("Gen1", "Chr1", "Pos1", "Gen2", "Chr2", "Pos2")]
       }
       if (sureselect_type == "TSO500") {
-        sub <- div(filt_result_td_mutect2$table, NULL, TRUE, protocol = protocol, manifest = "V5UTR")
+        sub <- div(filt_result_td_mutect2$table, NULL, TRUE, protocol = protocol, sureselect_type = "V5UTR")
       } else {
-        sub <- div(filt_result_td$table, NULL, TRUE, protocol = protocol, manifest = "V5UTR")
+        sub <- div(filt_result_td$table, NULL, TRUE, protocol = protocol, sureselect_type = "V5UTR")
       }
         
       cc <- circos_colors(
@@ -888,7 +902,8 @@ if (file.exists(fus_file)) {
         circosColors = as.vector(cc$circoscolors),
         mode = sureselect_type,
         protocol = "tumorOnly",
-        path_data = path_data
+        path_data = path_data,
+	trgt = bed_file
       )
       if (any(is.na(fusions$Plots$file))) {
         fus_38_files <- paste(
@@ -896,12 +911,12 @@ if (file.exists(fus_file)) {
           fusions$Plots$file[!is.na(fusions$Plots$file)], sep = "/"
         )
         for (i in 1:length(fus_38_files)) {
-          system(paste0("cp ", fus_38_files[i] , " ", output_path )) 
+          system(paste0("cp ", fus_38_files[i] , " ", path_output )) 
         }
       } else {
         fus_38_files <- paste(fusions$Plots$paths, fusions$Plots$file, sep = "/")
         for (i in 1:length(fus_38_files)) {
-          system(paste0("cp ", fus_38_files[i] , " ", output_path ))
+          system(paste0("cp ", fus_38_files[i] , " ", path_output ))
         }
       }
       fusions2cbioportal(fusions, sample, outfile_fusions_cbioportal)
@@ -977,5 +992,47 @@ if (protocol == "somaticGermline"){
 
   save.image("Report.RData")
 }
-
+if (protocol == "panelTumor") {
+  
+  tmb_med <- med_tmb(as.character(entity))
+  key_results <- keys(
+    mut_sig_ana = mut_sig,
+    mutation_analysis_result = mutation_analysis_result_mutect2,
+    mutation_analysis_result_gd = NULL,
+    filt_result_td = filt_result_td_mutect2,
+    cnv_analysis_results = cnv_analysis_results,
+    filt_result_gd = NULL,
+    med_tmb = tmb_med,
+    protocol = protocol,
+    fusions = fusions
+  )
+  
+  highlight_table <- highlight(
+    muts_tab = mutation_analysis_result_mutect2$som_mut_tab, protocol = protocol
+  )
+  
+  sq_tab <- summary_quality(stats = stats, protocol = protocol)
+  #
+  som_muts <- mutation_analysis_result_mutect2$mut_tab
+  sum_mut_cg <- highlight_detail(
+    muts_tab = mutation_analysis_result_mutect2$ts_og,
+    Mode = "Tumor",
+    protocol = protocol
+  )
+  sum_loh_cg <- NULL
+  
+  cnvs <- cnv_panel(cnv_results = cnv_analysis_results$out)
+  som_mut_pthw <- pthws_mut(df = mutation_analysis_result_mutect2$important_pathways, protocol = protocol)
+  som_mut_topart <- topart_mut(df = mutation_analysis_result_mutect2$important_pathways, protocol = protocol)
+  cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
+  
+  germ_mut_cg <- NULL
+  germ_mut_pthw <- NULL
+  
+  som_all <- highlight_detail(muts_tab = mutation_analysis_result_mutect2$som_mut_tab, Mode = "Tumor", protocol = protocol)
+  germ_all <- NULL
+  loh_all <- NULL
+  
+  save.image("Report.RData")
+}
 

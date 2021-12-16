@@ -374,7 +374,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               cnv)
-                "${DIR_SCRIPT}"/make_tumorOnly_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+                "${DIR_SCRIPT}"/make_panel_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
               ;;
 
               vc)

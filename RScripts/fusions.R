@@ -122,7 +122,7 @@ fusions_ana <- function(fus_file, path_data, fusion_genes = NULL) {
       }
 
       # keep only in-frame and out-of-frame fusions
-      keep <- which(ftd_fus$Effekt %in% c("in-frame", "out-of-frame"))
+      keep <- which(ftd_fus$Effekt %in% c("in-frame", "out-of-frame", "UTR/CDS(truncated)", "CDS(truncated)/UTR"))
       ftd_fus <- ftd_fus[keep,]
       fusions_ids <- paste(ftd_fus$Gen1, ftd_fus$Gen2, sep =  "--")
       flt_fus_ov <- flt_fus_ov[which(flt_fus_ov$Fusionen %in% fusions_ids),]

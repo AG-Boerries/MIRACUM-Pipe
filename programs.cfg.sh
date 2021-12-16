@@ -142,11 +142,11 @@ readonly CFG_PANEL_SAMTOOLS_MPILEUP2SNP_PVALUE=$(get_config_value panel.samtools
 readonly CFG_PANEL_SAMTOOLS_MPILEUP2SNP_STRANDFILTER=$(get_config_value panel.samtools.mpileup2snp.strandFilter "${PARAM_DIR_PATIENT}")
 
 # mpileup2indel
-readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINCOVERAGE=$(get_config_value tools.varscan.panel.mpileup2indel.minCoverage "${PARAM_DIR_PATIENT}")
-readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINREADS2=$(get_config_value tools.varscan.panel.mpileup2indel.minReads2 "${PARAM_DIR_PATIENT}")
-readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINFREQFORHOM=$(get_config_value tools.varscan.panel.mpileup2indel.minFreqForHom "${PARAM_DIR_PATIENT}")
-readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_PVALUE=$(get_config_value tools.varscan.panel.mpileup2indel.pValue "${PARAM_DIR_PATIENT}")
-readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_STRANDFILTER=$(get_config_value tools.varscan.panel.mpileup2indel.strandFilter "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINCOVERAGE=$(get_config_value panel.samtools.mpileup2indel.minCoverage "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINREADS2=$(get_config_value panel.samtools.mpileup2indel.minReads2 "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_MINFREQFORHOM=$(get_config_value panel.samtools.mpileup2indel.minFreqForHom "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_PVALUE=$(get_config_value panel.samtools.mpileup2indel.pValue "${PARAM_DIR_PATIENT}")
+readonly CFG_PANEL_SAMTOOLS_MPILEUP2INDEL_STRANDFILTER=$(get_config_value panel.samtools.mpileup2indel.strandFilter "${PARAM_DIR_PATIENT}")
 
 # varscan fpfilter
 readonly CFG_PANEL_VARSCAN_FPFILTER_MINVARCOUNT=$(get_config_value panel.varscan.fpfilter.minVarCount "${PARAM_DIR_PATIENT}")
@@ -176,10 +176,10 @@ readonly CFG_PANEL_MUTECT_CALLABLEDEPTH=$(get_config_value panel.mutect.callable
 readonly CFG_MUTECT_CALLABLEDEPTH=$(get_config_value wes.mutect.callableDepth "${PARAM_DIR_PATIENT}")
 
 # Fusions
-readonly CFG_FUSION_GENES=$(get_config_value panel.fusions.fusionGenes "${PARAM_DIR_PATIENT}")
+readonly CFG_FUSION_GENES="${DIR_SEQUENCING}/$(get_config_value panel.fusions.fusionGenes "${PARAM_DIR_PATIENT}")"
 
 # Amplifications
-readonly CFG_AMPLIFICATION_GENES=$(get_config_value panel.amplification.AmplificationGenes "${PARAM_DIR_PATIENT}")
+readonly CFG_AMPLIFICATION_GENES="${DIR_SEQUENCING}/$(get_config_value panel.amplification.amplificationGenes "${PARAM_DIR_PATIENT}")"
 
 # ANNOVAR Databases
 readonly CFG_ANNOVAR_PROTOCOL=$(get_config_value annovar.protocol "${PARAM_DIR_PATIENT}")
@@ -219,7 +219,7 @@ readonly BIN_BASE_RECALIBRATOR="${BIN_GATK} -T BaseRecalibrator -l INFO -R ${FIL
 readonly BIN_PRINT_READS="${BIN_GATK} -T PrintReads -R ${FILE_GENOME} -nct ${CFG_COMMON_CPUCORES} "
 
 # GATK4
-readonly BIN_GATK4="${DIR_TOOLS}/gatk4/gatk --java-options '-Xmx${CFG_COMMON_MEMORY}'"
+readonly BIN_GATK4="${DIR_TOOLS}/gatk4/gatk" # --java-options '-Xmx${CFG_COMMON_MEMORY}'"
 
 # PICARD
 readonly BIN_FIX_MATE="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -Dpicard.useLegacyParser=false -jar ${DIR_TOOLS}/picard/picard.jar FixMateInformation "
