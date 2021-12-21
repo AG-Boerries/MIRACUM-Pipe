@@ -631,7 +631,8 @@ if (protocol == "tumorOnly" | protocol == "panelTumor") {
   cnv_ideogram_plot <- paste0(path_output, sample, "_CNV_Plot_Ideogram.pdf")
   outfile_cnvs_cbioportal <- paste0(path_output, sample, "_CNV_cbioportal.txt")
   outfile_cnvs_seg <- paste0(path_output, sample, "_CNV.seg")
-
+  
+  print(gender)
   cnv_analysis_results <- cnv_analysis(
     ratio_file = ratio_file,
     cnvs_file = cnvs_file,
@@ -679,7 +680,8 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   if (protocol == "panelTumor") {
     vcf <- paste0(path_input, sample, "_td_gatk4_mutect2_filtered.vcf")
   } else {
-    vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+    #vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+    vcf <- paste0(path_input, sample, "_td_gatk4_mutect2_filtered.vcf")
   }
   outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
   mut_sig_analysis <- mutation_signature_analysis(
@@ -803,14 +805,13 @@ if (protocol == "tumorOnly") {
   } else {
     msi_helper <- "Instable"
   }
-  brca_helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
-  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    brca_helper <- paste0(round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
-                          " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
-                          ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")")
+  brca_helper <- which(mut_sig ==  "AC3")
+  if (length(brca_helper) == 1 & mut_sig["AC3", 3]*100 > 1) {
+    brca_helper <- paste0(round(mut_sig["AC3", 3]*100, digits = 1))
   } else {
     brca_helper <- "<1%"
   }
+
   biomarker <- data.frame(
     Tumor_Sample_Barcode = paste(as.character(id),"TD",sep = "_"),
     MSI_SCORE = mutation_analysis_result$msi,
