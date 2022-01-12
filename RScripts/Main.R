@@ -701,6 +701,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
 # Write Excel File
 print("Write Excel Table.")
 if (protocol == "somaticGermline") {
+  print("1 - somaticGermline")
   output <- list(
     Somatic_Mutations = filt_result_td$table,
     LoH_Mutations = filt_result_loh$table,
@@ -708,12 +709,14 @@ if (protocol == "somaticGermline") {
     Mutation_Signatures = mut_sig_ana$output$Summary,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated
   )
-  write.xlsx(
-    x = output,
-    file = paste0(path_output, "/", sample, "_results.xlsx"),
-    overwrite = TRUE
-    )
+  save(output, file = "excel_table_output.RData")
+  #write.xlsx(
+  #  x = output,
+  #  file = paste0(path_output, "/", sample, "_results.xlsx"),
+  #  overwrite = TRUE
+  #  )
 } else if (protocol == "somatic") {
+  print("2 - somatic")
   output <- list(
     Somatic_Mutations = filt_result_td$table,
     LoH_Mutations = filt_result_loh$table,
@@ -726,6 +729,7 @@ if (protocol == "somaticGermline") {
     overwrite = TRUE
   )
   } else if (protocol == "panelTumor") {
+    print("3 - panelTumor")
     output <- list(
       Mutations = filt_result_td_mutect2$table,
       CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
@@ -737,6 +741,7 @@ if (protocol == "somaticGermline") {
       overwrite = TRUE
     )
 } else {
+  print("4 - tumorOnly")
   output <- list(
     Mutations = filt_result_td_mutect2$table,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
