@@ -679,7 +679,8 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   if (protocol == "panelTumor") {
     vcf <- paste0(path_input, sample, "_td_gatk4_mutect2_filtered.vcf")
   } else {
-    vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+    #vcf <- paste0(path_input, sample, "_vc.output.snp.fpfilter.vcf")
+    vcf <- paste0(path_input, sample, "_td_gatk4_mutect2_filtered.vcf")
   }
   outfile_mutsig_cbioportal <- paste0(path_output, sample, "_mutsig_cbioportal")
   mut_sig_analysis <- mutation_signature_analysis(
@@ -698,6 +699,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
 }
 
 # Write Excel File
+print("Write Excel Table.")
 if (protocol == "somaticGermline") {
   output <- list(
     Somatic_Mutations = filt_result_td$table,
@@ -748,6 +750,7 @@ if (protocol == "somaticGermline") {
 }
 
 # Export TMB, MSI, HRD and BRCAness as text file for cBioPortal
+print("cBioPortal Export.")
 if(protocol == "panelTumor" & sureselect_type == "TSO500") {
   if (mutation_analysis_result_mutect2$msi < 20) {
     msi_helper <- "Non-MSI-H"
@@ -777,11 +780,9 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   } else {
     msi_helper <- "Instable"
   }
-  brca_helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
-  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    brca_helper <- paste0(round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
-                          " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
-                          ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")")
+  brca_helper <- which(mut_sig ==  "AC3")
+  if (length(brca_helper) == 1 & mut_sig["AC3", 3]*100 > 1) {
+    brca_helper <- paste0(round(mut_sig["AC3", 3]*100, digits = 1))
   } else {
     brca_helper <- "<1%"
   }
@@ -803,16 +804,16 @@ if (protocol == "tumorOnly") {
   } else {
     msi_helper <- "Instable"
   }
-  brca_helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
-  if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    brca_helper <- paste0(round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
-                          " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
-                          ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")")
+  brca_helper <- which(mut_sig ==  "AC3")
+  if (length(brca_helper) == 1 & mut_sig["AC3", 3] > 1.0) {
+    brca_helper <- paste0(round(mut_sig["AC3", 3], digits = 1),
+                          " (", round(mut_sig["AC3", 4], digits = 1),
+                          ";", round(mut_sig["AC3", 5], digits = 1) , ")")
   } else {
     brca_helper <- "<1%"
   }
   biomarker <- data.frame(
-    Tumor_Sample_Barcode = paste(as.character(id),"TD",sep = "_"),
+    Tumor_Sample_Barcode = paste(as.character(id), "TD", sep = "_"),
     MSI_SCORE = mutation_analysis_result$msi,
     MSI_TYPE = msi_helper,
     CVR_TMB_SCORE = filt_result_td$tmb,
@@ -933,6 +934,7 @@ if (file.exists(fus_file)) {
 save.image(file = "MTB.RData")
 
 # Prepare Report
+print("Report Preparation.")
 source(paste(path_script, "Report_tools.R", sep = "/"))
 
 if (protocol == "somaticGermline"){

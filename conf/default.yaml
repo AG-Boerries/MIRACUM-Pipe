@@ -27,7 +27,7 @@ sex: 0
 general:
   # minimum base quality to call a variant
   minBaseQual: 28
-  # minimum
+  # minimum population frequency from genomAD_genome; AF_popmax
   maf_cutoff: 0.001
   # minimum variant allele / tumor frequency to call a variant
   minVAF: 0.05
@@ -201,6 +201,34 @@ wes:
 ## Panel Parameters
 panel:  
   samtools:
+    mpileup:
+      #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
+      illumina: false
+      #-A, --count-orphans     do not discard anomalous read pairs
+      countOrphans: false
+      #-B, --no-BAQ            disable BAQ (per-Base Alignment Quality)
+      noBAQ: true
+      #-C, --adjust-MQ INT     adjust mapping quality; recommended:50, disable:0 [0]
+      adjustMQ: 50
+      #-d, --max-depth INT     max per-file depth; avoids excessive memory usage [8000]
+      maxDepth: 8000
+      #-E, --redo-BAQ          recalculate BAQ on the fly, ignore existing BQs
+      redoBAQ: false
+      #-G, --exclude-RG FILE   exclude read groups listed in FILE
+      excludeRG: false
+      #-l, --positions FILE    skip unlisted positions (chr pos) or regions (BED)
+      position: false
+      #-q, --min-MQ INT        skip alignments with mapQ smaller than INT [0]
+      minMQ: 1
+      #-r, --region REG        region in which pileup is generated
+      region: false
+      #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
+      ignoreRG: false
+      #-x, --ignore-overlaps   disable read-pair overlap detection
+      ignoreOverlaps: false
+      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] ->  minBaseQual
+  
+  varscan:
     mpileup2snp:
       #--min-coverage  Minimum read depth at a position to make a call [8]
       minCoverage: 20
@@ -228,8 +256,7 @@ panel:
       strandFilter: 1
       #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
       #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
-  
-  varscan:
+
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
       minVarCount: 4
