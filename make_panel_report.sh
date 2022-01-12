@@ -79,7 +79,7 @@ ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${C
   "${CFG_AMPLIFICATION_GENES}"
 
 # translate to tex
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/MTB.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
+${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/Report.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
 
 # PDF report
 mv "${DIR_ANALYSES}/Report_Panel.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex"
