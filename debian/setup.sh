@@ -11,7 +11,7 @@ function install_java8()
   apt-get install -y apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
   wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
   add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install adoptopenjdk-8-hotspot
+  apt-get update && apt-get -y install adoptopenjdk-8-hotspot
 }
 
 function install_jdk8()
