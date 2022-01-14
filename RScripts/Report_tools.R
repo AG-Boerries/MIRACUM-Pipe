@@ -78,7 +78,7 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entität", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
         paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
         paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
@@ -111,7 +111,7 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entität", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
         paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
         paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
@@ -936,9 +936,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertlänge",
+      "Insertl\"nge",
       "GC-Anteil",
-      "Mittlere Qualität"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -997,9 +997,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertlänge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualität"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_n != "Sehr gut") > 0)) {
       warn_n <- paste0(
@@ -1055,9 +1055,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 50",
       "Coverage > 150",
-      "Insertlänge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualität"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(

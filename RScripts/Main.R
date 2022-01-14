@@ -963,7 +963,7 @@ if (protocol == "somaticGermline"){
     fusions = fusions
   )
 
-  highlight_1 <- highlight(
+  highlight_table <- highlight(
     muts_tab = mutation_analysis_result$som_mut_tab,
     protocol = protocol
   )

@@ -36,7 +36,7 @@
 \usepackage{acronym}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
 
 <<setup, include=FALSE, cache=FALSE, echo=FALSE, eval=TRUE>>=
 library(knitr)
