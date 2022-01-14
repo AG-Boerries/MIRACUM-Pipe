@@ -709,12 +709,13 @@ if (protocol == "somaticGermline") {
     Mutation_Signatures = mut_sig_ana$output$Summary,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated
   )
-  save(output, file = "excel_table_output.RData")
-  #write.xlsx(
-  #  x = output,
-  #  file = paste0(path_output, "/", sample, "_results.xlsx"),
-  #  overwrite = TRUE
-  #  )
+  #save(output, file = "excel_table_output.RData")
+  write.xlsx(
+    x = output,
+    file = paste0(path_output, "/", sample, "_results.xlsx"),
+    overwrite = TRUE,
+    na.string = "."
+    )
 } else if (protocol == "somatic") {
   print("2 - somatic")
   output <- list(
@@ -726,7 +727,8 @@ if (protocol == "somaticGermline") {
   write.xlsx(
     x = output,
     file = paste0(path_output, "/", sample, "_results.xlsx"),
-    overwrite = TRUE
+    overwrite = TRUE,
+    na.string = "."
   )
   } else if (protocol == "panelTumor") {
     print("3 - panelTumor")
@@ -738,7 +740,8 @@ if (protocol == "somaticGermline") {
     write.xlsx(
       x = output,
       file = paste0(path_output, "/", sample, "_results.xlsx"),
-      overwrite = TRUE
+      overwrite = TRUE,
+      na.string = "."
     )
 } else {
   print("4 - tumorOnly")
@@ -750,7 +753,8 @@ if (protocol == "somaticGermline") {
   write.xlsx(
     x = output,
     file = paste0(path_output, "/", sample, "_results.xlsx"),
-    overwrite = TRUE
+    overwrite = TRUE,
+    na.string = "."
   )
 }
 
@@ -948,11 +952,10 @@ if (protocol == "somaticGermline"){
   tmb_med <- med_tmb(as.character(entity))
 
   key_results <- keys(
-    mut_sig_ana = mut_sig_ana,
+    mut_sig = mut_sig_ana,
     mutation_analysis_result = mutation_analysis_result,
     mutation_analysis_result_gd = mutation_analysis_result_gd,
-    mutation_analysis_result_10 = mutation_analysis_result_10,
-    filt_result_td_10 = filt_result_td_10,
+    filt_result_td = filt_result_td,
     cnv_analysis_results = cnv_analysis_results,
     filt_result_gd = filt_result_gd,
     med_tmb = tmb_med,
@@ -961,27 +964,26 @@ if (protocol == "somaticGermline"){
   )
 
   highlight_table <- highlight(
-    muts_tab = mutation_analysis_result_10$som_mut_tab,
+    muts_tab = mutation_analysis_result$som_mut_tab,
     protocol = protocol
   )
 
   sq_tab <- summary_quality(stats = stats, protocol = protocol)
 
   som_muts <- sum_muts(
-    tmp_5 = mutation_analysis_result$mut_tab,
-    tmp_10 = mutation_analysis_result_10$mut_tab
+    tmp = mutation_analysis_result$mut_tab
   )
   sum_mut_cg <- highlight_detail(
-    muts_tab = mutation_analysis_result_10$ts_og,
+    muts_tab = mutation_analysis_result$ts_og,
     Mode = "Tumor",
     protocol = protocol
   )
-  if (length(which(mutation_analysis_result_10$table_loh_mutations$is_oncogene == 1 |
-                  mutation_analysis_result_10$table_loh_mutations$is_tumorsuppressor == 1)) > 0) {
+  if (length(which(mutation_analysis_result$table_loh_mutations$is_oncogene == 1 |
+                  mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1)) > 0) {
     sum_loh_cg <- highlight_detail(
-      muts_tab = mutation_analysis_result_10$table_loh_mutations[
+      muts_tab = mutation_analysis_result$table_loh_mutations[
         which(
-          mutation_analysis_result_10$table_loh_mutations$is_oncogene == 1 | mutation_analysis_result_10$table_loh_mutations$is_tumorsuppressor == 1
+          mutation_analysis_result$table_loh_mutations$is_oncogene == 1 | mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1
         ),
       ],
       Mode = "LoH",
@@ -992,8 +994,8 @@ if (protocol == "somaticGermline"){
   }
   cnvs_og <- cnv_cg(gene_loci = cnv_analysis_results$gene_loci_onc, type = "OG")
   cnvs_tsg <- cnv_cg(gene_loci= cnv_analysis_results$gene_loci_tsg, type = "TSG")
-  som_mut_pthw <- pthws_mut(df = mutation_analysis_result_10$important_pathways, protocol = protocol)
-  som_mut_topart <- topart_mut(df = mutation_analysis_result_10$important_pathways, protocol = protocol)
+  som_mut_pthw <- pthws_mut(df = mutation_analysis_result$important_pathways, protocol = protocol)
+  som_mut_topart <- topart_mut(df = mutation_analysis_result$important_pathways, protocol = protocol)
   cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
 
   germ_mut_cg <- highlight_detail(muts_tab = filt_result_gd$table, Mode = "Germline", protocol = protocol)
@@ -1001,7 +1003,7 @@ if (protocol == "somaticGermline"){
 
   som_all <- highlight_detail(muts_tab = mutation_analysis_result$som_mut_tab, Mode = "Tumor", protocol = protocol)
   germ_all <- highlight_detail(muts_tab = mutation_analysis_result_gd$som_mut_tab, Mode = "Tumor", protocol = protocol)
-  loh_all <- highlight_detail(muts_tab = mutation_analysis_result_10$table_loh_mutations, Mode = "LoH", protocol = protocol)
+  loh_all <- highlight_detail(muts_tab = mutation_analysis_result$table_loh_mutations, Mode = "LoH", protocol = protocol)
 
   save.image("Report.RData")
 }
@@ -1009,7 +1011,7 @@ if (protocol == "panelTumor") {
   
   tmb_med <- med_tmb(as.character(entity))
   key_results <- keys(
-    mut_sig_ana = mut_sig,
+    mut_sig = mut_sig,
     mutation_analysis_result = mutation_analysis_result_mutect2,
     mutation_analysis_result_gd = NULL,
     filt_result_td = filt_result_td_mutect2,
