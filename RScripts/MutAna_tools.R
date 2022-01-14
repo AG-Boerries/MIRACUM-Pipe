@@ -344,7 +344,7 @@ tables <- function(x_s, x_l = NULL, protocol) {
   col_names <- c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                  "AAChange", "Variant_Allele_Frequency", "Zygosity",
                  "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
-                 "is_hotspot", "target", "AF_nfe",
+                 "is_hotspot", "target", "AF_popmax",
                  "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
                  "cosmic_coding", "Chr", "Start", "Ref",
                  "Alt")
@@ -370,7 +370,7 @@ tables <- function(x_s, x_l = NULL, protocol) {
                        "AAChange", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "AF_nfe", "CADD_phred", "condel.label", "REVEL_score",
+                       "AF_popmax", "CADD_phred", "condel.label", "REVEL_score",
                        "CLNSIG", "InterVar_automated", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
@@ -909,7 +909,7 @@ write_all_mut <- function(x_s, x_l = NULL){
     somatic <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                        "Variant_Allele_Frequency", "Variant_Reads",
                        "AAChange", "is_tumorsuppressor",
-                       "is_oncogene", "is_hotspot", "target", "AF_nfe",
+                       "is_oncogene", "is_hotspot", "target", "AF_popmax",
                        "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
                        "cosmic_coding"),
                   drop = FALSE]
@@ -927,7 +927,7 @@ write_all_mut <- function(x_s, x_l = NULL){
     loh <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                     "VAF_Tumor", "Count_Tumor", "AAChange",
                     "is_tumorsuppressor", "is_oncogene",
-                    "is_hotspot", "target", "AF_nfe", "CADD_phred",
+                    "is_hotspot", "target", "AF_popmax", "CADD_phred",
                     "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated", "cosmic_coding"),
                 drop = FALSE]
 

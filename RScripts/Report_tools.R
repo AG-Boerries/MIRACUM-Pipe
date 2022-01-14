@@ -1,6 +1,6 @@
 ## key_Results
 keys <- function(
-  mut_sig_ana,
+  mut_sig,
   mutation_analysis_result,
   mutation_analysis_result_gd,
   cnv_analysis_results,
@@ -16,23 +16,25 @@ keys <- function(
   } else if (sureselect_type %in% c("TSO500", "TruSight_Tumor")) {
     sureselect_type <- paste("Illumina", sureselect_type, sep = " ")
   }
-  brca_helper <- which(
-    mut_sig$Signature ==  "AC3"
-  )
-  if (length(brca_helper) == 1 & mut_sig_ana["AC3", 3] > 1.0) {
-    brca_helper <- paste0(
-      round(mut_sig_ana["AC3", 3], digits = 1),
-      " (", round(mut_sig_ana["AC3", 4], digits = 1),
-      ";", round(mut_sig_ana["AC3", 5], digits = 1) , ")"
-    )
-  } else {
-    brca_helper <- "<1%"
-  }
+
   if (protocol == "somaticGermline" | protocol == "somatic") {
     if (mutation_analysis_result$msi < 10) {
       msi_helper <- "MSS"
     } else {
       msi_helper <- "MSI"
+    }
+    brca_helper <- which(mut_sig$output$Summary$Signature ==  "AC3")
+    if (length(brca_helper) == 1 & mut_sig$output$Summary["AC3", 3] > 1.0) {
+      brca_helper <- paste0(
+        round(
+          mut_sig$output$Summary["AC3", 3],
+          digits = 1
+        ),
+        " (", round(mut_sig$output$Summary["AC3", 4], digits = 1),
+        ";", round(mut_sig$output$Summary["AC3", 5], digits = 1) , ")"
+      )
+    } else {
+      brca_helper <- "<1%"
     }
   }
   if (protocol == "panelTumor" | protocol == "tumorOnly") {
@@ -40,6 +42,12 @@ keys <- function(
       msi_helper <- "MSS"
     } else {
       msi_helper <- "MSI"
+    }
+    brca_helper <- which(mut_sig ==  "AC3")
+    if (length(brca_helper) == 1 & mut_sig["AC3", 3]*100 > 1) {
+      brca_helper <- paste0(round(mut_sig["AC3", 3]*100, digits = 1))
+    } else {
+      brca_helper <- "<1%"
     }
   }
   if (protocol == "panelTumor") {
@@ -836,14 +844,14 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
       )] <- "both"
 
       # Population frequency
-      highlight$AF_nfe <- as.character(format(
-        as.numeric(highlight$AF_nfe), scientific = TRUE, digits = 2
+      highlight$AF_popmax <- as.character(format(
+        as.numeric(highlight$AF_popmax), scientific = TRUE, digits = 2
       ))
-      highlight$AF_nfe[is.na(highlight$AF_nfe)] <- "."
+      highlight$AF_popmax[is.na(highlight$AF_popmax)] <- "."
 
       # output
       if (Mode == "Tumor") {
-        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_popmax", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -856,7 +864,7 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
           "Cancergene"
         )
       } else if (Mode == "LoH") {
-        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF_tumor", "VAF_normal", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF_tumor", "VAF_normal", "AF_popmax", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -870,7 +878,7 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
          "Cancergene"
         )
       } else if (Mode == "Germline") {
-        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_nfe", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
+        muts_tab <- highlight[, c("Gene.refGene_new", "AAChange", "Varsome", "VAF", "AF_popmax", "combineInterVarClinVar", "REVEL_cat", "cosmic", "Cancergene")]
         colnames(muts_tab) <- c(
           "Gen",
           "AA-Austausch",
@@ -1066,8 +1074,7 @@ summary_quality <- function(stats, protocol) {
   }
 }
 
-sum_muts <- function(tmp_5, tmp_10) {
-  tmp <- tmp_10
+sum_muts <- function(tmp) {
   colnames(tmp) <- c(
     "Mutationstyp",
     "Anzahl",
@@ -1076,10 +1083,6 @@ sum_muts <- function(tmp_5, tmp_10) {
     "Onkogene",
     "Hotspots"
   )
-  tmp[, 2] <- paste0(tmp_10[, 2], " (", tmp_5[, 2], ")")
-  tmp[, 4] <- paste0(tmp_10[, 4], " (", tmp_5[, 4], ")")
-  tmp[, 5] <- paste0(tmp_10[, 5], " (", tmp_5[, 5], ")")
-  tmp[, 6] <- paste0(tmp_10[, 6], " (", tmp_5[, 6], ")")
   tmp[c(1, 4), 3] <- "homozygot"
   tmp[c(2, 5), 3] <- "heterozygot"
 
