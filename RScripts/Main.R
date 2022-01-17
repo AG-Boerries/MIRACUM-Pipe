@@ -883,18 +883,43 @@ if (file.exists(fus_file)) {
       sep <- strsplit(x = as.character(fus_tab$Bruch2), split = ":")
       fus_tab$Chr2 <- unlist(lapply(sep, function(x){return( x[[1]])}))
       fus_tab$Pos2 <- unlist(lapply(sep, function(x){return( x[[2]])}))
-      id_genes <- union(which(nchar(fus_tab$Chr1) > 2), which(nchar(fus_tab$Chr2) > 2))
+      id_genes <- union(
+        which(
+          nchar(fus_tab$Chr1) > 2
+        ),
+        which(
+          nchar(fus_tab$Chr2) > 2
+        ))
       if (length(id_genes) > 0){
-        fus_tab <- fus_tab[-id_genes, c("Gen1", "Chr1", "Pos1", "Gen2", "Chr2", "Pos2")]
+        fus_tab <- fus_tab[-id_genes, c(
+          "Gen1",
+          "Chr1",
+          "Pos1",
+          "Gen2",
+          "Chr2",
+          "Pos2"
+        )]
       } else {
         fus_tab <- fus_tab[, c("Gen1", "Chr1", "Pos1", "Gen2", "Chr2", "Pos2")]
       }
       if (sureselect_type == "TSO500") {
-        sub <- div(filt_result_td_mutect2$table, NULL, TRUE, protocol = protocol, sureselect_type = "V5UTR")
+        sub <- div(
+          filt_result_td_mutect2$table,
+          NULL,
+          TRUE,
+          protocol = protocol,
+          sureselect_type = "V5UTR"
+        )
       } else {
-        sub <- div(filt_result_td$table, NULL, TRUE, protocol = protocol, sureselect_type = "V5UTR")
+        sub <- div(
+          filt_result_td$table,
+          NULL,
+          TRUE,
+          protocol = protocol,
+          sureselect_type = "V5UTR"
+        )
       }
-        
+
       cc <- circos_colors(
         x_s_snp = sub$x_s_snp,
         x_s_indel = sub$x_s_indel,
@@ -914,7 +939,7 @@ if (file.exists(fus_file)) {
         mode = sureselect_type,
         protocol = "tumorOnly",
         path_data = path_data,
-	trgt = bed_file
+        trgt = bed_file
       )
       if (any(is.na(fusions$Plots$file))) {
         fus_38_files <- paste(
@@ -922,12 +947,16 @@ if (file.exists(fus_file)) {
           fusions$Plots$file[!is.na(fusions$Plots$file)], sep = "/"
         )
         for (i in 1:length(fus_38_files)) {
-          system(paste0("cp ", fus_38_files[i] , " ", path_output )) 
+          system(paste0("cp ", fus_38_files[i], " ", path_output))
         }
       } else {
-        fus_38_files <- paste(fusions$Plots$paths, fusions$Plots$file, sep = "/")
+        fus_38_files <- paste(
+          fusions$Plots$paths,
+          fusions$Plots$file,
+          sep = "/"
+        )
         for (i in 1:length(fus_38_files)) {
-          system(paste0("cp ", fus_38_files[i] , " ", path_output ))
+          system(paste0("cp ", fus_38_files[i], " ", path_output))
         }
       }
       fusions2cbioportal(fusions, sample, outfile_fusions_cbioportal)
@@ -940,7 +969,6 @@ if (file.exists(fus_file)) {
 } else {
   fusions <- NULL
 }
-
 save.image(file = "MTB.RData")
 
 # Prepare Report
@@ -978,12 +1006,15 @@ if (protocol == "somaticGermline"){
     Mode = "Tumor",
     protocol = protocol
   )
-  if (length(which(mutation_analysis_result$table_loh_mutations$is_oncogene == 1 |
-                  mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1)) > 0) {
+  if (length(which(
+      mutation_analysis_result$table_loh_mutations$is_oncogene == 1 |
+      mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1
+    )) > 0) {
     sum_loh_cg <- highlight_detail(
       muts_tab = mutation_analysis_result$table_loh_mutations[
         which(
-          mutation_analysis_result$table_loh_mutations$is_oncogene == 1 | mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1
+          mutation_analysis_result$table_loh_mutations$is_oncogene == 1 |
+          mutation_analysis_result$table_loh_mutations$is_tumorsuppressor == 1
         ),
       ],
       Mode = "LoH",
@@ -992,23 +1023,54 @@ if (protocol == "somaticGermline"){
   } else {
     sum_loh_cg <- NULL
   }
-  cnvs_og <- cnv_cg(gene_loci = cnv_analysis_results$gene_loci_onc, type = "OG")
-  cnvs_tsg <- cnv_cg(gene_loci= cnv_analysis_results$gene_loci_tsg, type = "TSG")
-  som_mut_pthw <- pthws_mut(df = mutation_analysis_result$important_pathways, protocol = protocol)
-  som_mut_topart <- topart_mut(df = mutation_analysis_result$important_pathways, protocol = protocol)
+  cnvs_og <- cnv_cg(
+    gene_loci = cnv_analysis_results$gene_loci_onc,
+    type = "OG"
+  )
+  cnvs_tsg <- cnv_cg(
+    gene_loci= cnv_analysis_results$gene_loci_tsg,
+    type = "TSG"
+  )
+  som_mut_pthw <- pthws_mut(
+    df = mutation_analysis_result$important_pathways,
+    protocol = protocol
+  )
+  som_mut_topart <- topart_mut(
+    df = mutation_analysis_result$important_pathways,
+    protocol = protocol
+  )
   cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
 
-  germ_mut_cg <- highlight_detail(muts_tab = filt_result_gd$table, Mode = "Germline", protocol = protocol)
-  germ_mut_pthw <- pthws_mut(df = mutation_analysis_result_gd$important_pathways, protocol = protocol)
+  germ_mut_cg <- highlight_detail(
+    muts_tab = filt_result_gd$table,
+    Mode = "Germline",
+    protocol = protocol
+  )
+  germ_mut_pthw <- pthws_mut(
+    df = mutation_analysis_result_gd$important_pathways,
+    protocol = protocol
+  )
 
-  som_all <- highlight_detail(muts_tab = mutation_analysis_result$som_mut_tab, Mode = "Tumor", protocol = protocol)
-  germ_all <- highlight_detail(muts_tab = mutation_analysis_result_gd$som_mut_tab, Mode = "Tumor", protocol = protocol)
-  loh_all <- highlight_detail(muts_tab = mutation_analysis_result$table_loh_mutations, Mode = "LoH", protocol = protocol)
+  som_all <- highlight_detail(
+    muts_tab = mutation_analysis_result$som_mut_tab,
+    Mode = "Tumor",
+    protocol = protocol
+  )
+  germ_all <- highlight_detail(
+    muts_tab = mutation_analysis_result_gd$som_mut_tab,
+    Mode = "Tumor",
+    protocol = protocol
+  )
+  loh_all <- highlight_detail(
+    muts_tab = mutation_analysis_result$table_loh_mutations,
+    Mode = "LoH",
+    protocol = protocol
+  )
 
   save.image("Report.RData")
 }
-if (protocol == "panelTumor") {
-  
+if (protocol == "panelTumor" | protocol == "tumorOnly") {
+
   tmb_med <- med_tmb(as.character(entity))
   key_results <- keys(
     mut_sig = mut_sig,
@@ -1021,11 +1083,11 @@ if (protocol == "panelTumor") {
     protocol = protocol,
     fusions = fusions
   )
-  
+
   highlight_table <- highlight(
     muts_tab = mutation_analysis_result_mutect2$som_mut_tab, protocol = protocol
   )
-  
+
   sq_tab <- summary_quality(stats = stats, protocol = protocol)
   #
   som_muts <- mutation_analysis_result_mutect2$mut_tab
@@ -1035,19 +1097,28 @@ if (protocol == "panelTumor") {
     protocol = protocol
   )
   sum_loh_cg <- NULL
-  
+
   cnvs <- cnv_panel(cnv_results = cnv_analysis_results$out)
-  som_mut_pthw <- pthws_mut(df = mutation_analysis_result_mutect2$important_pathways, protocol = protocol)
-  som_mut_topart <- topart_mut(df = mutation_analysis_result_mutect2$important_pathways, protocol = protocol)
+  som_mut_pthw <- pthws_mut(
+    df = mutation_analysis_result_mutect2$important_pathways,
+    protocol = protocol
+  )
+  som_mut_topart <- topart_mut(
+    df = mutation_analysis_result_mutect2$important_pathways,
+    protocol = protocol
+  )
   cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
-  
+
   germ_mut_cg <- NULL
   germ_mut_pthw <- NULL
-  
-  som_all <- highlight_detail(muts_tab = mutation_analysis_result_mutect2$som_mut_tab, Mode = "Tumor", protocol = protocol)
+
+  som_all <- highlight_detail(
+    muts_tab = mutation_analysis_result_mutect2$som_mut_tab,
+    Mode = "Tumor",
+    protocol = protocol
+  )
   germ_all <- NULL
   loh_all <- NULL
-  
+
   save.image("Report.RData")
 }
-
