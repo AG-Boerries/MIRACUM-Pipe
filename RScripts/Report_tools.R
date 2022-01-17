@@ -133,7 +133,7 @@ keys <- function(
       )
     )
   }
-  if (protocol == "panelTumor" | protocol == "tumorOnly") {
+  if (protocol == "panelTumor") {
     mut_tab1 <- data.frame(
       Eigenschaften = c(
         "Capture Kit",
@@ -190,6 +190,64 @@ keys <- function(
           ), " Regionen"
         ),
         fus_tmp
+      )
+    )
+  }
+  if (protocol == "tumorOnly") {
+    mut_tab1 <- data.frame(
+      Eigenschaften = c(
+        "Capture Kit",
+        "Abgedeckte Region (total)",
+        "Abgedeckte Region (exonisch)",
+        paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
+        paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
+        paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
+        "Mikrosatelliten Status (Score)",
+        "HRD-Score (HRD-LoH|TAI|LST)",
+        "Purity (%)",
+        "Ploidity",
+        "Anzahl CN- Regionen"
+      ), Wert = c(
+        as.character(sureselect_type),
+        paste(
+          round(
+            x = as.numeric(filt_result_td$covered_region),
+            digits = 2
+          ), "Mb", sep = ""
+        ),
+        paste(
+          round(
+            x = as.numeric(filt_result_td$exon_region),
+            digits = 2
+          ), "Mb", sep = ""
+        ),
+        paste0(
+          round(
+            x = filt_result_td$tmb, digits = 2
+          ),
+          "/Mb", " (", filt_result_td$number_used_mutations_tmb, "/",
+          round(
+            x = as.numeric(filt_result_td$used_exon_region),
+            digits = 2
+          ), ")"
+        ),
+        tmb_helper,
+        as.character(round(
+          x = sum(as.numeric(mutation_analysis_result$mut_tab[, 3])),
+          digits = 0)
+        ),
+        brca_helper,
+        paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
+        cnv_analysis_results$hrd$score,
+        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$ploidy,
+        paste0(
+          round(
+            x = dim(cnv_analysis_results$cnvs_annotated$CNVsAnnotated)[1],
+            digits = 0
+          ), " Regionen"
+        )
       )
     )
   }

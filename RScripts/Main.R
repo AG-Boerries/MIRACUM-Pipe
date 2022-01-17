@@ -767,19 +767,21 @@ if(protocol == "panelTumor" & sureselect_type == "TSO500") {
     msi_helper <- "Instable"
   }
   brca_helper <- which(mut_sig ==  "AC3")
-  if (length(brca_helper) == 1 & mut_sig["AC3", 3]*100 > 1) {
-    brca_helper <- paste0(round(mut_sig["AC3", 3]*100, digits = 1))
+  if (length(brca_helper) == 1 & mut_sig["AC3", 3] * 100 > 1) {
+    brca_helper <- paste0(round(mut_sig["AC3", 3] * 100, digits = 1))
   } else {
     brca_helper <- "<1%"
   }
-  biomarker <- data.frame(Tumor_Sample_Barcode = paste(as.character(id),"TD",sep = "_"),
-                          MSI_SCORE = mutation_analysis_result_mutect2$msi,
-                          MSI_TYPE = msi_helper,
-                          CVR_TMB_SCORE = filt_result_td_mutect2$tmb,
-                          BRCAness = brca_helper,
-                          HRD = cnv_analysis_results$hrd$sum,
-                          Purity = cnv_analysis_results$purity$purity,
-                          Ploidity = cnv_analysis_results$purity$ploidy)
+  biomarker <- data.frame(
+    Tumor_Sample_Barcode = paste(as.character(id),"TD",sep = "_"),
+    MSI_SCORE = mutation_analysis_result_mutect2$msi,
+    MSI_TYPE = msi_helper,
+    CVR_TMB_SCORE = filt_result_td_mutect2$tmb,
+    BRCAness = brca_helper,
+    HRD = cnv_analysis_results$hrd$sum,
+    Purity = cnv_analysis_results$purity$purity,
+    Ploidity = cnv_analysis_results$purity$ploidy
+  )
   write.table(x = biomarker, file = biomarker_out , append = F, quote = F,
               sep = '\t', col.names = T, row.names = F)
 }
@@ -791,26 +793,34 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   }
   brca_helper <- which(mut_sig_ana$output$Summary$Signature ==  "AC3")
   if (length(brca_helper) == 1 & mut_sig_ana$output$Summary["AC3", 3] > 1.0) {
-    brca_helper <- paste0(round(mut_sig_ana$output$Summary["AC3", 3], digits = 1),
-                          " (", round(mut_sig_ana$output$Summary["AC3", 4], digits = 1),
-                          ";", round(mut_sig_ana$output$Summary["AC3", 5], digits = 1) , ")")
+    brca_helper <- paste0(
+      round(
+        mut_sig_ana$output$Summary["AC3", 3], digits = 1
+      ), " (", round(
+        mut_sig_ana$output$Summary["AC3", 4], digits = 1
+      ), ";", round(
+        mut_sig_ana$output$Summary["AC3", 5], digits = 1
+      ), ")"
+    )
   } else {
     brca_helper <- "<1%"
   }
-  
-  biomarker <- data.frame(Tumor_Sample_Barcode = paste(as.character(id), "TD", sep = "_"),
-                          MSI_SCORE = mutation_analysis_result$msi,
-                          MSI_TYPE = msi_helper,
-                          CVR_TMB_SCORE = filt_result_td$tmb,
-                          BRCAness = brca_helper,
-                          HRD = cnv_analysis_results$hrd$sum,
-                          Purity = cnv_analysis_results$purity$purity,
-                          Ploidity = cnv_analysis_results$purity$ploidy)
+
+  biomarker <- data.frame(
+    Tumor_Sample_Barcode = paste(as.character(id), "TD", sep = "_"),
+    MSI_SCORE = mutation_analysis_result$msi,
+    MSI_TYPE = msi_helper,
+    CVR_TMB_SCORE = filt_result_td$tmb,
+    BRCAness = brca_helper,
+    HRD = cnv_analysis_results$hrd$sum,
+    Purity = cnv_analysis_results$purity$purity,
+    Ploidity = cnv_analysis_results$purity$ploidy
+  )
   write.table(x = biomarker, file = biomarker_out, append = F, quote = F,
               sep = "\t", col.names = TRUE, row.names = F)
 }
 if (protocol == "tumorOnly") {
-  if (mutation_analysis_result$msi < 10) {
+  if (mutation_analysis_result_mutect2$msi < 10) {
     msi_helper <- "Non-MSI-H"
   } else {
     msi_helper <- "Instable"
@@ -824,7 +834,7 @@ if (protocol == "tumorOnly") {
 
   biomarker <- data.frame(
     Tumor_Sample_Barcode = paste(as.character(id), "TD", sep = "_"),
-    MSI_SCORE = mutation_analysis_result$msi,
+    MSI_SCORE = mutation_analysis_result_mutect2$msi,
     MSI_TYPE = msi_helper,
     CVR_TMB_SCORE = filt_result_td$tmb,
     BRCAness = brca_helper,
@@ -867,7 +877,9 @@ if (file.exists(fus_file)) {
   if (!is.null(fusions$Table)) {
     if (dim(fusions$Table)[1] != 0) {
       if (length(which(duplicated(fusions$Table[, c(1,3)]))) != 0) {
-        fus_tab <- fusions$Table[-which(duplicated(fusions$Table[, c(1,3)])), c(1:4)]
+        fus_tab <- fusions$Table[-which(
+          duplicated(fusions$Table[, c(1,3)])
+        ), c(1:4)]
       } else {
         fus_tab <- fusions$Table[, c(1:5) ]
       }

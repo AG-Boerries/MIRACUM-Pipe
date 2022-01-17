@@ -322,7 +322,7 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 
 <<eval=TRUE, results="tex", echo=FALSE, warning=FALSE>>=
 df <- data.frame(
-  Kriterium = c("Librarygröße", "Mean Coverage", "Basen > 50 Reads", "Basen > 150 Reads", "Exonische Basen > 50 Reads", "Exonische Basen > 150 Reads", "Insertgröße (Standardabweichung)", "QC-Anteil", "Mean Qualität pro Base"),
+  Kriterium = c("Librarygr\"oße", "Mean Coverage", "Basen > 50 Reads", "Basen > 150 Reads", "Exonische Basen > 50 Reads", "Exonische Basen > 150 Reads", "Insertgr\"oße (Standardabweichung)", "QC-Anteil", "Mean Qualit\"at pro Base"),
   Tumor = c(
     paste0(stats$avreads$nRT, " Mio Reads"),
     paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " Reads"),
