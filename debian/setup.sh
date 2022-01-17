@@ -11,7 +11,7 @@ function install_java8()
   apt-get install -y apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
   wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
   add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install adoptopenjdk-8-hotspot
+  apt-get update && apt-get -y install adoptopenjdk-8-hotspot
 }
 
 function install_jdk8()
@@ -45,6 +45,7 @@ function install_R()
   #apt-key adv --keyserver keyserver.ubuntu.com --recv-key 'E19F5F87128899B192B1A2C2AD5F960A256A04AF'
   #wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xe19f5f87128899b192b1a2c2ad5f960a256a04af | apt-key add - &&
   apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B8F25A8A73EACF41
   apt-get update && apt-get install -y -t buster-cran40 r-base
 }
 
