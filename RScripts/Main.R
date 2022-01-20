@@ -1040,7 +1040,7 @@ if (protocol == "somaticGermline"){
     type = "OG"
   )
   cnvs_tsg <- cnv_cg(
-    gene_loci= cnv_analysis_results$gene_loci_tsg,
+    gene_loci = cnv_analysis_results$gene_loci_tsg,
     type = "TSG"
   )
   som_mut_pthw <- pthws_mut(
@@ -1109,8 +1109,20 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     protocol = protocol
   )
   sum_loh_cg <- NULL
-
-  cnvs <- cnv_panel(cnv_results = cnv_analysis_results$out)
+  
+  if (protocol == "panelTumor") {
+    cnvs <- cnv_panel(cnv_results = cnv_analysis_results$out)
+  }
+  if (protocol == "tumorOnly") {
+    cnvs_og <- cnv_cg(
+      gene_loci = cnv_analysis_results$gene_loci_onc,
+      type = "OG"
+    )
+    cnvs_tsg <- cnv_cg(
+      gene_loci = cnv_analysis_results$gene_loci_tsg,
+      type = "TSG"
+    )
+  }
   som_mut_pthw <- pthws_mut(
     df = mutation_analysis_result_mutect2$important_pathways,
     protocol = protocol

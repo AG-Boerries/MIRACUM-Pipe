@@ -165,7 +165,59 @@ Im folgenden sind die \Sexpr{n_cnv} signifikanten Regionen mit \acp{CNV} als Ide
 Wie bei den Mutationen werden auch bei den CNVs betroffene Cancergenen (Onkogene und Tumorsuppressoren) genauer betrachtet und in folgenden Tabellen dargestellt. Dabei werden für Gene in Tabelle \ref{cnv_og} Losse und Gains von Kopien dargestellt.
 
 <<eval=TRUE, results="tex", echo=FALSE, warning = FALSE>>=
-kable(cnvs, caption = "Identifizierte \\acp{CNV}\\label{cnv_og}", booktabs = T, row.names = F, digits = 2) %>% kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 9, full_width = F) %>% column_spec(c(1), width = "5em") %>% column_spec(c(2:3), width = "1em") %>% row_spec(0, angle = 60)
+kables(
+  list(
+    kable(
+      cnvs_og$Gains, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ,
+  kable(cnvs_og$Losses, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ,
+  kable(
+    cnvs_og$Different, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ),
+  caption = "Identifizierte \\acp{CNV} in Onkogenen\\label{cnv_og}"
+) %>% kable_styling(latex_options = c("HOLD_position"), font_size = 8)
+@
+
+<<eval=FALSE, results="tex", echo=FALSE>>=
+tmpg <- tmp[-idl, c(1:2, 4)]
+tmpg$Oncogene <- gsub(pattern = ",", replacement = ", ", x = tmpg$Oncogene)
+colnames(tmpg) <- colnames(tmpo)
+if(dim(tmpg)[1]!=0){
+  kable(tmpg, format = "latex", caption = "Identifizierte Gains in Onkogenen\\label{og_gain}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+}else {
+  cap <- "Keine Gains in Onkogenen identifiziert.\\label{og_gain}"
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  }
+@
+
+<<eval=TRUE, results="tex", echo=FALSE, warning = FALSE>>=
+kables(
+  list(
+    kable(
+      cnvs_tsg$Gains, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ,
+  kable(cnvs_tsg$Losses, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ,
+  kable(
+    cnvs_tsg$Different, format = "latex", booktabs = T, valign = 't', row.names = F) %>% row_spec(0, angle = 60)
+  ),
+  caption = "Identifizierte \\acp{CNV} in Tumorsuppressoren\\label{cnv_tsg}"
+) %>% kable_styling(latex_options = c("HOLD_position"), font_size = 8)
+@
+
+<<eval=FALSE, results="tex", echo=FALSE>>=
+tmp <- cnv_analysis_results$cnvs_annotated$CNVTumorSuppressors
+idl <- which(tmp$status == "loss")
+tmpo <- tmp[idl, c(1:2, 4)]
+tmpo$TumorSuppressor <- gsub(pattern = ",", replacement = ", ", x = tmpo$TumorSuppressor)
+colnames(tmpo) <- c("Chromosom", "Kopien", "Tumorsuppressor")
+if(dim(tmpo)[1]!=0){
+  kable(tmpo, format = "latex", caption = "Identifizierte Losse in Tumorsuppressoren\\label{tsg_loss}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "2em") %>% row_spec(0, angle = 60)
+}else {
+  cap <- "Keine Losse in Tumorsuppressoren identifiziert.\\label{tsg_loss}"
+  kable(data.frame('Chromosom' = c("."), 'Kopien' = c("."), 'Onkogene' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(3), width = "30em") %>% column_spec(c(1:2), width = "1em") %>% row_spec(0, angle = 60)
+  }
 @
 
 \clearpage
