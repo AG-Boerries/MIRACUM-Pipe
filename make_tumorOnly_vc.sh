@@ -170,6 +170,6 @@ rm "${OUTPUT}.avinput"
 ${BIN_SNPEFF} "${OUTPUT}.vcf" > "${OUTPUT}_SnpEff.vcf"
 
 # MSI
-#${MSISENSOR2} -t "${recalbam}" -o "${MSI_OUTPUT}"
+${MSISENSOR2} -t "${recalbam}" -o "${MSI_OUTPUT}"
 
 #eo VC

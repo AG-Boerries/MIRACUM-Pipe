@@ -810,7 +810,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
               sep = "\t", col.names = TRUE, row.names = F)
 }
 if (protocol == "tumorOnly") {
-  if (mutation_analysis_result$msi < 10) {
+  if (mutation_analysis_result_mutect2$msi < 10) {
     msi_helper <- "Non-MSI-H"
   } else {
     msi_helper <- "Instable"
@@ -824,7 +824,7 @@ if (protocol == "tumorOnly") {
 
   biomarker <- data.frame(
     Tumor_Sample_Barcode = paste(as.character(id), "TD", sep = "_"),
-    MSI_SCORE = mutation_analysis_result$msi,
+    MSI_SCORE = mutation_analysis_result_mutect2$msi,
     MSI_TYPE = msi_helper,
     CVR_TMB_SCORE = filt_result_td$tmb,
     BRCAness = brca_helper,
