@@ -1614,7 +1614,7 @@ exclude <- function(x, vaf = 5){
   return(x)
 }
 
-exclude_gatk <- function(x, vaf = 0.1){
+exclude_gatk <- function(x, vaf = 0.05){
   id <- which(as.numeric(x$Variant_Allele_Frequency) >= vaf)
   if(length(id) > 0) {
     x <- x[id, ]

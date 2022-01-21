@@ -336,7 +336,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               cnv)
-		"${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+		            "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
               ;;
 
               vc)
@@ -495,6 +495,8 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
           fi
         fi
       fi
+    else
+        echo "Analyses already exist. If you want to re-analyze it, it has to be forced (-f)."
     fi
   fi
 fi

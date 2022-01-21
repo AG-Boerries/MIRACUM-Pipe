@@ -489,7 +489,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     msi_file = msi_file
   )
 }
-  
+
 
 # Combine MAF files to obtain one complete maf per patient
 if (protocol == "somaticGermline" | protocol == "somatic") {
@@ -1109,7 +1109,7 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     protocol = protocol
   )
   sum_loh_cg <- NULL
-  
+
   if (protocol == "panelTumor") {
     cnvs <- cnv_panel(cnv_results = cnv_analysis_results$out)
   }

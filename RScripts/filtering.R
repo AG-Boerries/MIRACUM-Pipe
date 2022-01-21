@@ -14,7 +14,7 @@ filtering <- function(
   id = id,
   protocol,
   sureselect,
-  vaf = 10,
+  vaf = 5,
   min_var_count = 4,
   maf = 0.001,
   actionable_genes = NA,
@@ -309,7 +309,7 @@ filtering_mutect2 <- function(
   id = id,
   protocol,
   sureselect,
-  vaf = 0.05,
+  vaf = 5,
   min_var_count = 20,
   maf = 0.01,
   actionable_genes = NA,
@@ -392,6 +392,7 @@ filtering_mutect2 <- function(
   
   # VAF Filter
   x <- exclude_gatk(x, vaf = vaf/100)
+  
   # Remove Variants with Variant Read Count below 4/20
   x <- mrc(x = x, min_var_count = min_var_count)
   # snpEFF Annotation
@@ -418,7 +419,7 @@ filtering_mutect2 <- function(
   
   # TMB calculation for WES
   if (protocol == "somaticGermline" | protocol == "somatic"){
-    if (mode == "T"){
+    if (mode == "T") {
       tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
     } else {
       tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
@@ -445,7 +446,7 @@ filtering_mutect2 <- function(
   
   # TMB calculation for panel (TSO500) and tumorOnly WES; only rare mutations; assumption: rare mutations are "somatic"
   if (protocol == "panelTumor" | protocol == "tumorOnly") {
-    if (mode == "T"){
+    if (mode == "T") {
       id_ex <- which(x$Func.refGene == "exonic")
       x_coding <- x[id_ex, ]
       tmb <- tmb_ex(x_coding, covered_exons, mode = "T", cov_t)
