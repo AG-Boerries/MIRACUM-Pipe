@@ -402,10 +402,10 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \clearpage
 
 <<eval=TRUE, results="tex", echo=FALSE, warning=FALSE>>=
-df <- data.frame(Kriterium = c("Librarygr\"oße", "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", "Insertgr\"oße (Standardabweichung)", "QC-Anteil", "Mean Qualit\"at pro Base"),
+df <- data.frame(Kriterium = c("Librarygr{\"o}{\ss}e", "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", "Insertgr{\"o}{\ss}e (Standardabweichung)", "QC-Anteil", "Mean Qualit{\"a}t pro Base"),
   Tumor = c(
   paste0(stats$avreads$nRT, " Mio Reads"),
-  paste0( round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), " Reads"),
+  paste0( round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), " X"),
   paste0(round(stats$cover$perc[[2]][1], digits = 2) * 100, "%"),
   paste0(round(stats$cover$perc[[2]][2], digits = 2) * 100, "%"),
   paste0(round(stats$cover_exons$perc[[2]][1], digits = 2) * 100, "%"),
@@ -415,7 +415,7 @@ df <- data.frame(Kriterium = c("Librarygr\"oße", "Mean Coverage", "Basen > 8 Re
   paste0(round(stats$qc_check$mean_QC[[2]], digits = 2))),
   Keimbahn = c(
   paste0(stats$avreads$nRG, " Mio Reads"),
-  paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " Reads"),
+  paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
   paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
   paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
   paste0(round(stats$cover_exons$perc[[1]][1], digits = 2) * 100, "%"),
@@ -423,10 +423,10 @@ df <- data.frame(Kriterium = c("Librarygr\"oße", "Mean Coverage", "Basen > 8 Re
   paste0(stats$avreads$gin, "bp (", stats$avreads$gin_sd, ")"),
   paste0(stats$qc_check$gc_content[[1]], "%"),
   paste0(round(stats$qc_check$mean_QC[[1]], digits = 2))),
-  Mindestwert = c("100 Mio Reads", "80 Reads", "90 %", "60 %", "90%", "60%", "100bp", "40-60%", 30)
+  Mindestwert = c("100 Mio Reads", "80 X", "90 %", "60 %", "90%", "60%", "100bp", "40-60%", 28)
   )
 
-kable(df, format = "latex", caption = "Qualit\"atskriterien\\label{qual}", booktabs = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9)
+kable(df, format = "latex", caption = "Qualit{\"a}tskriterien\\label{qual}", booktabs = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9)
 
 @
 

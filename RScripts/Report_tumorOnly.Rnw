@@ -84,7 +84,7 @@ if(dim(tmp) != 0) {
 \fi
 
 <<eval=TRUE, results="tex", echo=FALSE>>=
-kable(sq_tab, booktabs = T, row.names = F, caption = "\\footnotesize{Auff\"alligkeiten in Qualit\"atsmerkmalen der Proben}") %>% kable_styling(latex_options = c( "hold_position"), font_size = 9)
+kable(sq_tab, booktabs = T, row.names = F, caption = "\\footnotesize{Auff{\"a}lligkeiten in Qualit{\"a}tsmerkmalen der Proben}") %>% kable_styling(latex_options = c( "hold_position"), font_size = 9)
 @
 
 \clearpage
@@ -294,10 +294,10 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 
 <<eval=TRUE, results="tex", echo=FALSE, warning=FALSE>>=
 df <- data.frame(
-  Kriterium = c("Librarygr\"oße", "Mean Coverage", "Basen > 50 Reads", "Basen > 150 Reads", "Exonische Basen > 50 Reads", "Exonische Basen > 150 Reads", "Insertgr\"oße (Standardabweichung)", "QC-Anteil", "Mean Qualit\"at pro Base"),
+  Kriterium = c("Librarygr{\"o}{\ss}e", "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", "Insertgr{\"o}{\ss}e (Standardabweichung)", "QC-Anteil", "Mean Qualit{\"a}t pro Base"),
   Tumor = c(
     paste0(stats$avreads$nRT, " Mio Reads"),
-    paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " Reads"),
+    paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
     paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
     paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
     paste0(round(stats$cover_exons$perc[[1]][1], digits = 2) * 100, "%"),
@@ -306,7 +306,7 @@ df <- data.frame(
     paste0(stats$qc_check$gc_content[[1]], "%"),
     paste0(round(stats$qc_check$mean_QC[[1]], digits = 2))
   ),
-  Mindestwert = c("50 Mio Reads", "1000 Reads", "90%", "90%", "90%", "90%", "100bp", "40-60%", 30)
+  Mindestwert = c("100 Mio Reads", "80 X", "90%", "90%", "90%", "90%", "100bp", "40-60%", 28)
 )
 
 kable(df, format = "latex", caption = "Qualit\"atskriterien\\label{qual}", booktabs = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9)

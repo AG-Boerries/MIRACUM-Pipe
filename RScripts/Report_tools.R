@@ -78,7 +78,7 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
         paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
         paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
@@ -140,7 +140,7 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
         paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
         paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
@@ -200,7 +200,7 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
         paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
         paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
@@ -573,7 +573,7 @@ highlight <- function(muts_tab, protocol) {
 
     # VAF
     highlight$VAF <- gsub(pattern = "%", replacement = "", x = highlight$VAF)
-    if (protocol == "panelTumor") {
+    if (protocol == "panelTumor" | protocol == "tumorOnly") {
       highlight$VAF <- as.numeric(highlight$VAF)*100
     }
 
@@ -712,7 +712,7 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
           pattern = "%", replacement = "",
           x = highlight$Variant_Allele_Frequency
         )
-        if (protocol == "panelTumor") {
+        if (protocol == "panelTumor" | protocol == "tumorOnly") {
           highlight$VAF <- as.numeric(highlight$VAF)*100
         }
         highlight$VAF <- paste0(
@@ -879,7 +879,7 @@ summary_quality <- function(stats, protocol) {
     ) >= 40 && as.numeric(stats$qc_check$gc_content[[2]]) <= 60) {
       q_t[5] <- "Sehr gut"
     } else {q_t[5] <- "Akzeptabel"}
-    if (round(stats$qc_check$mean_QC[[2]], digits = 2) > 30) {
+    if (round(stats$qc_check$mean_QC[[2]], digits = 2) > 28) {
       q_t[6] <- "Sehr gut"
     } else {q_t[6] <- "Akzeptabel" }
     qp_t <- c(
@@ -897,9 +897,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertl\"nge",
+      "Insertl{\"a}nge",
       "GC-Anteil",
-      "Mittlere Qualit\"at"
+      "Mittlere Qualit{\"a}t"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -939,7 +939,7 @@ summary_quality <- function(stats, protocol) {
     } else {
       q_n[5] <- "Akzeptabel"
     }
-    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30) {
+    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 28) {
       q_n[6] <- "Sehr gut"
     } else {q_n[6] <- "Akzeptabel"
     }
@@ -958,9 +958,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertl\"ange",
+      "Insertl{\"a}nge",
       "GC-Anteil",
-      "Mittlere Qualit\"at"
+      "Mittlere Qualit{\"a}t"
     )
     if (length(which(q_n != "Sehr gut") > 0)) {
       warn_n <- paste0(
@@ -973,10 +973,10 @@ summary_quality <- function(stats, protocol) {
       q_n1 <- "Keine"
     }
     tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
-    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
     return(tab)
   }
-  if (protocol == "panelTumor" | protocol == "tumorOnly") {
+  if (protocol == "panelTumor") {
     q_t <- c()
     if (round(x = sum(
       stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
@@ -998,7 +998,7 @@ summary_quality <- function(stats, protocol) {
     ) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60) {
       q_t[5] <- "Sehr gut"
     } else {q_t[5] <- "Akzeptabel"}
-    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 30) {
+    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 28) {
       q_t[6] <- "Sehr gut"
     } else {q_t[6] <- "Akzeptabel" }
     qp_t <- c(
@@ -1016,9 +1016,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 50",
       "Coverage > 150",
-      "Insertl\"ange",
+      "Insertl{\"a}nge",
       "GC-Anteil",
-      "Mittlere Qualit\"at"
+      "Mittlere Qualit{\"a}t"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -1030,7 +1030,64 @@ summary_quality <- function(stats, protocol) {
       q_t1 <- "Keine."
     }
     tab <- rbind(c("Tumor", q_t1))
-    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
+    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
+    return(tab)
+  }
+  if (protocol == "tumorOnly") {
+    q_t <- c()
+    if (round(x = sum(
+      stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
+    ), digits = 2) < 150) {
+      q_t[1] <- "Akzeptabel" } else {
+        q_t[1] <- "Sehr gut"
+      }
+    if (round(stats$cover$perc[[1]][1], digits = 2) * 100 > 80) {
+      q_t[2] <- "Sehr gut"
+    } else { q_t[2] <- "Akzeptabel" }
+    if (round(stats$cover$perc[[1]][2], digits = 2) * 100 > 80) {
+      q_t[3] <- "Sehr gut"
+    } else {q_t[3] <- "Akzeptabel" }
+    if (as.numeric(stats$avreads$tin) > 100) {
+      q_t[4] <- "Sehr gut"
+    } else {q_t[4] <- "Akzeptabel" }
+    if (as.numeric(
+      stats$qc_check$gc_content[[1]]
+    ) >= 40 && as.numeric(stats$qc_check$gc_content[[1]]) <= 60) {
+      q_t[5] <- "Sehr gut"
+    } else {q_t[5] <- "Akzeptabel"}
+    if (round(stats$qc_check$mean_QC[[1]], digits = 2) > 28) {
+      q_t[6] <- "Sehr gut"
+    } else {q_t[6] <- "Akzeptabel" }
+    qp_t <- c(
+      round(
+        x = sum(
+          stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
+        ), digits = 2
+      ), paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
+      paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
+      as.numeric(stats$avreads$tin),
+      as.numeric(stats$qc_check$gc_content[[1]]),
+      round(stats$qc_check$mean_QC[[1]], digits = 2)
+    )
+    names(qp_t) <- c(
+      "Mittlere Coverage",
+      "Coverage > 8",
+      "Coverage > 40",
+      "Insertl{\"a}nge",
+      "GC-Anteil",
+      "Mittlere Qualit{\"a}t"
+    )
+    if (length(which(q_t != "Sehr gut") > 0)) {
+      warn_t <- paste0(
+        names(qp_t)[which(q_t != "Sehr gut")],
+        ": ", qp_t[which(q_t != "Sehr gut")]
+      )
+      q_t1 <- paste0(warn_t, collapse = ", ")
+    } else {
+      q_t1 <- "Keine."
+    }
+    tab <- rbind(c("Tumor", q_t1))
+    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
     return(tab)
   }
 }
@@ -1039,7 +1096,7 @@ sum_muts <- function(tmp) {
   colnames(tmp) <- c(
     "Mutationstyp",
     "Anzahl",
-    "Zygosit\"at",
+    "Zygosit{\"a}t",
     "Tumorsuppressoren",
     "Onkogene",
     "Hotspots"
@@ -1227,7 +1284,7 @@ pthws_mut <- function(df, protocol) {
     df$VAF <- gsub(
       pattern = "%", replacement = "", x = df$VAF, fixed = TRUE
     )
-    if (protocol == "panelTumor") {
+    if (protocol == "panelTumor" | protocol == "tumorOnly") {
       df$VAF <- as.numeric(df$VAF)*100
     }
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
@@ -1319,7 +1376,7 @@ topart_mut <- function(df, protocol) {
     )
     # VAF
     df$VAF <- gsub(pattern = "%", replacement = "", x = df$VAF, fixed = TRUE)
-    if (protocol == "panelTumor") {
+    if (protocol == "panelTumor" | protocol == "tumorOnly") {
       df$VAF <- as.numeric(df$VAF)*100
     }
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
