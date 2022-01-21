@@ -1054,7 +1054,7 @@ if (protocol == "somaticGermline"){
   cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
 
   germ_mut_cg <- highlight_detail(
-    muts_tab = filt_result_gd$table,
+    muts_tab = mutation_analysis_result_gd$ts_og,
     Mode = "Germline",
     protocol = protocol
   )
