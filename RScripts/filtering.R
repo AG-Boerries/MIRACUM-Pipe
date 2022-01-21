@@ -417,7 +417,7 @@ filtering_mutect2 <- function(
   x <- filt(x, "downstream")
   
   # TMB calculation for WES
-  if (sureselect_type != "TSO500"){
+  if (protocol == "somaticGermline" | protocol == "somatic"){
     if (mode == "T"){
       tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
     } else {
@@ -443,8 +443,8 @@ filtering_mutect2 <- function(
   # Filter for rare mutations
   x <- rare(x, maf = maf)
   
-  # TMB calculation for TSO500; only rare mutations; assumption: rare mutations are "somatic"
-  if (sureselect_type == "TSO500") {
+  # TMB calculation for panel (TSO500) and tumorOnly WES; only rare mutations; assumption: rare mutations are "somatic"
+  if (protocol == "panelTumor" | protocol == "tumorOnly") {
     if (mode == "T"){
       id_ex <- which(x$Func.refGene == "exonic")
       x_coding <- x[id_ex, ]
@@ -479,7 +479,7 @@ filtering_mutect2 <- function(
       ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
                "Gene.refGene", "GeneName", "ExonicFunc.refGene",
                "AAChange.refGene", "AAChange", "CChange",
-               "AF_nfe", 
+               "AF_popmax", 
                "Variant_Allele_Frequency", "Variant_Reads",
                "Zygosity", "is_tumorsuppressor", "is_oncogene", "is_hotspot",
                "is_flag", "target", "DGIdb", "condel.label", "cosmic_coding",
@@ -490,7 +490,7 @@ filtering_mutect2 <- function(
       ids <- c("Chr", "Start", "End", "Ref", "Alt", "Func.refGene",
                "Gene.refGene", "GeneName", "ExonicFunc.refGene",
                "AAChange.refGene", "AAChange", "CChange",
-               "AF_nfe", "VAF_Normal", "VAF_Tumor", "Count_Normal",
+               "AF_popmax", "VAF_Normal", "VAF_Tumor", "Count_Normal",
                "Count_Tumor", "is_tumorsuppressor", "is_oncogene",
                "is_hotspot", "is_flag", "target", "DGIdb", "condel.label",
                "cosmic_coding", "CLNSIG", "CLINSIG",
