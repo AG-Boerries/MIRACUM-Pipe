@@ -1037,7 +1037,7 @@ summary_quality <- function(stats, protocol) {
     q_t <- c()
     if (round(x = sum(
       stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]
-    ), digits = 2) < 150) {
+    ), digits = 2) < 80) {
       q_t[1] <- "Akzeptabel" } else {
         q_t[1] <- "Sehr gut"
       }
