@@ -344,59 +344,105 @@ acmg <- function(df) {
     pattern = ".", replacement = 0,
     x = df$InterVar, fixed = TRUE
   )
-  # ClinVar
+  # ClinVar \\x2c
   if ("CLNSIG" %in% colnames(df)) {
     df$CLNSIG_new <- df$CLNSIG
   } else {
     df$CLNSIG_new <- df$ClinVar
   }
   df$CLNSIG_new <- gsub(
-    pattern = "\\x2c_other", fixed = TRUE,
+    pattern = ",_other", fixed = TRUE,
+    replacement = "", x = df$CLNSIG_new
+  )
+  df$CLNSIG_new <- gsub(
+    pattern = "other", fixed = TRUE,
+    replacement = "", x = df$CLNSIG_new
+  )
+  df$CLNSIG_new <- gsub(
+    pattern = ",_drug_response", fixed = TRUE,
+    replacement = "", x = df$CLNSIG_new
+  )
+  df$CLNSIG_new <- gsub(
+    pattern = "risk_factor", fixed = TRUE,
     replacement = "", x = df$CLNSIG_new
   )
   df$CLNSIG_new <- gsub(
     pattern = "Pathogenic",
-    replacement = 5, x = df$CLNSIG_new)
+    replacement = 5, x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = "Likely_pathogenic",
-    replacement = 4, x = df$CLNSIG_new)
+    replacement = 4, x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = "Uncertain_significance",
-    replacement = 3, x = df$CLNSIG_new)
+    replacement = 3, x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = "Likely_benign",
-    replacement = 2, x = df$CLNSIG_new)
+    replacement = 2, x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = "Benign",
-    replacement = 1, x = df$CLNSIG_new)
+    replacement = 1, x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = "Conflicting_interpretations_of_pathogenicity",
-    replacement = 4, x = df$CLNSIG_new)
+    replacement = 4, x = df$CLNSIG_new
+  )
+  df$CLNSIG_new <- gsub(
+    pattern = "not_provided", fixed = TRUE,
+    replacement = ".", x = df$CLNSIG_new
+  )
   df$CLNSIG_new <- gsub(
     pattern = ".",
     replacement = 0, x = df$CLNSIG_new, fixed = TRUE)
   df$CLNSIG_new[is.na(df$CLNSIG_new)] <- 0
+
   df$CLNSIG <- gsub(
-    pattern = "\\x2c_other", fixed = TRUE,
-    replacement = "", x = df$CLNSIG)
+    pattern = ",_other", fixed = TRUE,
+    replacement = "", x = df$CLNSIG
+  )
+  df$CLNSIG <- gsub(
+    pattern = "other", fixed = TRUE,
+    replacement = "", x = df$CLNSIG
+  )
+  df$CLNSIG <- gsub(
+    pattern = ",_drug_response", fixed = TRUE,
+    replacement = "", x = df$CLNSIG
+  )
+  df$CLNSIG <- gsub(
+    pattern = "risk_factor", fixed = TRUE,
+    replacement = "", x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Pathogenic",
-    replacement = 5, x = df$CLNSIG)
+    replacement = 5, x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Likely_pathogenic",
-    replacement = 4, x = df$CLNSIG)
+    replacement = 4, x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Uncertain_significance",
-    replacement = 3, x = df$CLNSIG)
+    replacement = 3, x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Likely_benign",
-    replacement = 2, x = df$CLNSIG)
+    replacement = 2, x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Benign",
-    replacement = 1, x = df$CLNSIG)
+    replacement = 1, x = df$CLNSIG
+  )
   df$CLNSIG <- gsub(
     pattern = "Conflicting_interpretations_of_pathogenicity",
-    replacement = "4*", x = df$CLNSIG)
+    replacement = "4*", x = df$CLNSIG
+  )
+  df$CLNSIG <- gsub(
+    pattern = "not_provided", fixed = TRUE,
+    replacement = ".", x = df$CLNSIG
+  )
   df$CLNSIG[is.na(df$CLNSIG)] <- "."
   # combined classification; use most severe
   df$Classification <- unlist(lapply(

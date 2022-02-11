@@ -54,13 +54,13 @@ covered_region <- function(sureselect, mode = "T") {
     gr <- reduce(gr)
     region <- sum(width(gr))/1000000
   } else {
-    region = NULL
+    region <- NULL
   }
   return(region)
 }
 
 
-filt <- function(x, func){
+filt <- function(x, func) {
   #' Filter for function
   #'
   #' @description Filters for functionality

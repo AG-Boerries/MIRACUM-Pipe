@@ -41,9 +41,10 @@ function install_R()
 apt-get update & apt-get upgrade -y
 
 # packages that are required for installation
+# libcurl4-openssl-dev
 apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev git-core cmake patch cmake ca-certificates \
-  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libssl-dev libmariadbclient-dev tabix libmpfr-dev \
-  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev libcurl4-openssl-dev libncursesw5-dev libhts-dev libncurses5-dev \
+  autoconf wget zip unzip zlib1g-dev libbz2-dev liblzma-dev libssl-dev libmariadb-dev tabix libmpfr-dev \
+  libncurses5-dev libxml2-dev libcairo2-dev libxt-dev libgit2-dev libcurl4-gnutls-dev libncursesw5-dev libhts-dev libncurses5-dev \
   python python-dev python-numpy python-biopython python-xlrd python-openpyxl \
   gfortran \
   default-jre \
