@@ -1047,10 +1047,9 @@ addCondel <- function(x, dbfile){
 
 target_check <- function(input, sureselect){
   man <- read.delim(file = sureselect, header = FALSE)
-  colnames(man) <- c("Chrom", "Start", "End", "Gen_Exon")
   gr_man <- makeGRangesFromDataFrame(man[, c(1:3)], keep.extra.columns = FALSE,
-                                    ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "Chrom",
-                                    start.field = "Start", end.field = "End", starts.in.df.are.0based = FALSE)
+                                    ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "V1",
+                                    start.field = "V2", end.field = "V3", starts.in.df.are.0based = FALSE)
 
   gr_x <- makeGRangesFromDataFrame(input, keep.extra.columns = FALSE, ignore.strand = TRUE,
                                 seqinfo = NULL, seqnames.field = "Chr", start.field = "Start",

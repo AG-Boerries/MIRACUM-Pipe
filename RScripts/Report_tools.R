@@ -78,13 +78,13 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
         paste0("Anzahl somatischer Mutationen inkl. LoH (VAF > ", vaf, "%)"),
         paste0("BRCAness (%) inkl. KI", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
         "HRD-Score (HRD-LoH|TAI|LST)",
-        "Purity (%)",
-        "Ploidity",
+        "bioinformatischer Tumorzellgehalt (%)",
+        "Ploidie",
         "Anzahl CN- Regionen",
         paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
       ), Wert = c(
@@ -140,13 +140,13 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
         paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
         paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
         "HRD-Score (HRD-LoH|TAI|LST)",
-        "Purity (%)",
-        "Ploidity",
+        "bioinformatischer Tumozellgehalt (%)",
+        "Ploidie",
         "Anzahl CN- Regionen",
         "Fusionen"
       ), Wert = c(
@@ -200,13 +200,13 @@ keys <- function(
         "Abgedeckte Region (total)",
         "Abgedeckte Region (exonisch)",
         paste0("Mutationslast (exonisch, VAF > ", vaf, "%)"),
-        paste0("Mittlere TMB der Entit{\"a}t", " (", entity, ")"),
+        paste0("Mittlere TMB der Entit\"at", " (", entity, ")"),
         paste0("Anzahl der Mutationen (VAF > ", vaf, "%)"),
         paste0("BRCAness (%)", " (VAF > ", vaf, "%)"),
         "Mikrosatelliten Status (Score)",
         "HRD-Score (HRD-LoH|TAI|LST)",
-        "Purity (%)",
-        "Ploidity",
+        "bioinformatischer Tumorzellgehalt (%)",
+        "Ploidie",
         "Anzahl CN- Regionen"
       ), Wert = c(
         as.character(sureselect_type),
@@ -897,9 +897,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertl{\"a}nge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualit{\"a}t"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -958,9 +958,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertl{\"a}nge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualit{\"a}t"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_n != "Sehr gut") > 0)) {
       warn_n <- paste0(
@@ -973,7 +973,7 @@ summary_quality <- function(stats, protocol) {
       q_n1 <- "Keine"
     }
     tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
-    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
+    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
     return(tab)
   }
   if (protocol == "panelTumor") {
@@ -1016,9 +1016,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 50",
       "Coverage > 150",
-      "Insertl{\"a}nge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualit{\"a}t"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -1030,7 +1030,7 @@ summary_quality <- function(stats, protocol) {
       q_t1 <- "Keine."
     }
     tab <- rbind(c("Tumor", q_t1))
-    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
+    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
     return(tab)
   }
   if (protocol == "tumorOnly") {
@@ -1073,9 +1073,9 @@ summary_quality <- function(stats, protocol) {
       "Mittlere Coverage",
       "Coverage > 8",
       "Coverage > 40",
-      "Insertl{\"a}nge",
+      "Insertl\"ange",
       "GC-Anteil",
-      "Mittlere Qualit{\"a}t"
+      "Mittlere Qualit\"at"
     )
     if (length(which(q_t != "Sehr gut") > 0)) {
       warn_t <- paste0(
@@ -1087,7 +1087,7 @@ summary_quality <- function(stats, protocol) {
       q_t1 <- "Keine."
     }
     tab <- rbind(c("Tumor", q_t1))
-    colnames(tab) <- c("Probe" , "Auff{\"a}lligkeiten")
+    colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
     return(tab)
   }
 }
@@ -1096,7 +1096,7 @@ sum_muts <- function(tmp) {
   colnames(tmp) <- c(
     "Mutationstyp",
     "Anzahl",
-    "Zygosit{\"a}t",
+    "Zygosit\"at",
     "Tumorsuppressoren",
     "Onkogene",
     "Hotspots"
