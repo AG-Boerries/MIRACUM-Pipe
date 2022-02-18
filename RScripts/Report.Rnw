@@ -298,7 +298,7 @@ if(dim(mutation_analysis_result$table_loh_mutations)[1] != 0) {
     hyper_refs <- paste0("https://search.cancervariants.org/\\#", tmp$Gene.refGene, "\\%20", substr(x = tmp$AAChange, start = 3, stop = nchar(tmp$AAChange)))
     tmp$AAChange <- paste0("{\\href{", hyper_refs, "}{", tmp$AAChange, "}}")
     tmp$Gene.refGene <- tmp$Gene.refGene_new
-    tmp <- tmp[id, c(1:8, 11:14, 9:10)]
+    tmp <- tmp[, c(1:8, 11:14, 9:10)]
     tmp$VAF_Normal <- paste0(tmp$VAF_Normal, " (", tmp$Count_Normal, ")")
     tmp$VAF_Normal <- gsub(pattern = "%",replacement = "\\%", x = tmp$VAF_Normal, fixed = TRUE)
     tmp$VAF_Tumor <- paste0(tmp$VAF_Tumor, " (", tmp$Count_Tumor, ")")
