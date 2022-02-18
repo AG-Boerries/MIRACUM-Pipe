@@ -138,8 +138,9 @@ filtering <- function(
   # TumorMutationBurden
   if (mode == "T") {
     if (protocol %in% c("somatic", "somaticGermline", "tumorOnly")) {
-      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
-      #tmb <- tmb_ex(x = x, manifest = sureselect, path_data = path_data, mode = mode, cov_t = cov_t)
+      id_ex <- which(x$Func.refGene == "exonic")
+      x_coding <- x[id_ex, ]
+      tmb <- tmb_ex(x_coding, covered_exons, mode = "T", cov_t)
     }
   } else {
     tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
@@ -420,7 +421,9 @@ filtering_mutect2 <- function(
   # TMB calculation for WES
   if (protocol == "somaticGermline" | protocol == "somatic"){
     if (mode == "T") {
-      tmb <- tmb_ex(x, covered_exons, mode = "T", cov_t)
+      id_ex <- which(x$Func.refGene == "exonic")
+      x_coding <- x[id_ex, ]
+      tmb <- tmb_ex(x_coding, covered_exons, mode = "T", cov_t)
     } else {
       tmb <- list(tmb = NULL, exon_region = NULL, used_exon_region = NULL,
                   number_used_mutations_tmb = NULL)
