@@ -23,6 +23,8 @@ wes:
     # minimum base quality to call a variant
     minBaseQual: 28
     maf_cutoff: 0.001
+    # minimum variant allele / tumor frequency to call a variant
+    minVAF: 0.05
 
   samtools:
     mpileup:
@@ -54,8 +56,6 @@ wes:
       #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> tools.general.minBaseQual
 
   varscan:
-  # minimum variant allele / tumor frequency to call a variant
-    minVAF: 0.05
 
     somatic:
       #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
@@ -80,6 +80,34 @@ wes:
       validation: 0
 
       #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> tools.varscan.minVAF
+
+    tumorOnly:
+      mpileup2snp:
+        #--min-coverage  Minimum read depth at a position to make a call [8]
+        minCoverage: 20
+        #--min-reads2    Minimum supporting reads at a position to call variants [2]
+        minReads2: 2        
+        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+        minFreqForHom: 0.75
+        #--p-value       Default p-value threshold for calling variants [99e-02]
+        pValue: 0.99
+        #--strand-filter Ignore variants with >90% support on one strand [1]
+        strandFilter: 1
+
+        #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.minVAF
+        #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.general.minBaseQual
+    
+      mpileup2indel:
+        #--min-coverage  Minimum read depth at a position to make a call [8]
+        minCoverage: 20
+        #--min-reads2    Minimum supporting reads at a position to call variants [2]
+        minReads2: 2
+        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+        minFreqForHom: 0.75
+        #--p-value       Default p-value threshold for calling variants [99e-02]
+        pValue: 0.99
+        #--strand-filter Ignore variants with >90% support on one strand [1]
+        strandFilter: 1
 
     processSomatic:
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]

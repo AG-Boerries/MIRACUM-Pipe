@@ -86,10 +86,10 @@ readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbam}" > "${mpileup}"
 ${BIN_VAR_SCAN} mpileup2snp "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2SNP_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2SNP_MINREADS2}" \
     --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2SNP_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2SNP_PVALUE}" --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" \
-    --strand-filter "${CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_VARSCAN_MINVAF}" --output-vcf 1 > "${snpvcf}"
+    --strand-filter "${CFG_VARSCAN_MPILEUP2SNP_STRANDFILTER}" --min-var-freq "${CFG_GENERAL_MINVAF}" --output-vcf 1 > "${snpvcf}"
 ${BIN_VAR_SCAN} mpileup2indel "${mpileup}" --min-coverage "${CFG_VARSCAN_MPILEUP2INDEL_MINCOVERAGE}" --min-reads2 "${CFG_VARSCAN_MPILEUP2INDEL_MINREADS2}" \
     --min-freq-for-hom "${CFG_VARSCAN_MPILEUP2INDEL_MINFREQFORHOM}" --p-value "${CFG_VARSCAN_MPILEUP2INDEL_PVALUE}" --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" \
-    --strand-filter "${CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_VARSCAN_MINVAF}" --output-vcf 1 > "${indelvcf}"
+    --strand-filter "${CFG_VARSCAN_MPILEUP2INDEL_STRANDFILTER}" --min-var-freq "${CFG_GENERAL_MINVAF}" --output-vcf 1 > "${indelvcf}"
 
 
 readonly names1="snp indel"
@@ -109,7 +109,7 @@ for name1 in ${names1}; do
   ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
   ${BIN_VAR_SCAN} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
       --min-ref-basequal "${CFG_GENERAL_MINBASEQUAL}" --min-var-basequal "${CFG_GENERAL_MINBASEQUAL}" \
-      --min-var-count "${CFG_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_VARSCAN_MINVAF}" \
+      --min-var-count "${CFG_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_GENERAL_MINVAF}" \
       --min-var-count-lc "${CFG_VARSCAN_FPFILTER_MINVARCOUNTLC}" --max-somatic-p "${CFG_VARSCAN_FPFILTER_MAXSOMATICP}" \
       --max-somatic-p-depth "${CFG_VARSCAN_FPFILTER_MAXSOMATICPDEPTH}" --min-ref-readpos "${CFG_VARSCAN_FPFILTER_MINREFREADPOS}" \
       --min-var-readpos "${CFG_VARSCAN_FPFILTER_MINVARREADPOS}" --min-ref-dist3 "${CFG_VARSCAN_FPFILTER_MINREFDIST3}" \

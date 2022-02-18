@@ -88,7 +88,7 @@ readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" "${recalbamGD}" "${recalbamTD}" | ${BIN_SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
   --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" \
-  --min-var-freq "${CFG_VARSCAN_MINVAF}" --min-freq-for-hom "${CFG_VARSCAN_SOMATIC_MINFREQFORHOM}" \
+  --min-var-freq "${CFG_GENERAL_MINVAF}" --min-freq-for-hom "${CFG_VARSCAN_SOMATIC_MINFREQFORHOM}" \
   --min-avg-qual "${CFG_GENERAL_MINBASEQUAL}" --normal-purity "${CFG_VARSCAN_SOMATIC_NORMALPURITY}" \
   --min-coverage-normal "${CFG_VARSCAN_SOMATIC_MINCOVERAGENORMAL}" --min-coverage-tumor "${CFG_VARSCAN_SOMATIC_MINCOVERAGETUMOR}" \
   --p-value "${CFG_VARSCAN_SOMATIC_PVALUE}" --somatic-p-value "${CFG_VARSCAN_SOMATIC_SOMATICPVALUE}" \
@@ -96,9 +96,9 @@ ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SA
 
 # Processing of somatic mutations
 
-${BIN_PROCESSSOMATIC} "${snpvcf}" --min-tumor-freq "${CFG_VARSCAN_MINVAF}" \
+${BIN_PROCESSSOMATIC} "${snpvcf}" --min-tumor-freq "${CFG_GENERAL_MINVAF}" \
  --max-normal-freq "${CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ}" --p-value "${CFG_VARSCAN_PROCESSSOMATIC_PVALUE}"
-${BIN_PROCESSSOMATIC} "${indelvcf}" --min-tumor-freq "${CFG_VARSCAN_MINVAF}" \
+${BIN_PROCESSSOMATIC} "${indelvcf}" --min-tumor-freq "${CFG_GENERAL_MINVAF}" \
  --max-normal-freq "${CFG_VARSCAN_PROCESSSOMATIC_MAXNORMALFREQ}" --p-value "${CFG_VARSCAN_PROCESSSOMATIC_PVALUE}"
 
 # FP Filter:  snp.Somatic.hc snp.LOH.hc snp.Germline.hc
@@ -134,7 +134,7 @@ for name1 in ${names1}; do
     ${BIN_BAM_READCOUNT} -l "${hc_rci}" "${recalbam}" > "${hc_rcs}"
     ${BIN_VAR_SCAN} fpfilter "${hc_vcf}" "${hc_rcs}" --output-file "${hc_fpf}" --keep-failures 1 \
       --min-ref-basequal "${CFG_GENERAL_MINBASEQUAL}" --min-var-basequal "${CFG_GENERAL_MINBASEQUAL}" \
-      --min-var-count "${CFG_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_VARSCAN_MINVAF}" \
+      --min-var-count "${CFG_VARSCAN_FPFILTER_MINVARCOUNT}" --min-var-freq "${CFG_GENERAL_MINVAF}" \
       --min-var-count-lc "${CFG_VARSCAN_FPFILTER_MINVARCOUNTLC}" --max-somatic-p "${CFG_VARSCAN_FPFILTER_MAXSOMATICP}" \
       --max-somatic-p-depth "${CFG_VARSCAN_FPFILTER_MAXSOMATICPDEPTH}" --min-ref-readpos "${CFG_VARSCAN_FPFILTER_MINREFREADPOS}" \
       --min-var-readpos "${CFG_VARSCAN_FPFILTER_MINVARREADPOS}" --min-ref-dist3 "${CFG_VARSCAN_FPFILTER_MINREFDIST3}" \

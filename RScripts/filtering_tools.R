@@ -26,7 +26,7 @@ tmb_ex <- function(x, coveredExons, mode = "T", cov_t) {
   require(GenomicRanges)
   if (mode != "T") {
     tmb <- NULL
-  } else if {
+  } else if (!is.null(coveredExons)) {
     bed <- read.delim(coveredExons, header = FALSE)
     mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
                        ranges = IRanges(start = bed$V2, end = bed$V3))
