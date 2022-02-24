@@ -137,7 +137,7 @@ Im Anhang befinden sich Tabellen zu allen detektierten somatischen, LoH und Keim
 \ifthenelse{\equal{\detokenize{\Sexpr{nchar(actionable_genes) > 0}}}{\detokenize{TRUE}}}{Die Keimbahnmutationen sind gemäß der Empfehlungen des American College of Medical Genetics für Zusatzbefunde bei Exom- und Genom-Untersuchungen (ACMG SF v2.0, PubMed 27854360) gefiltert, sodass nur Gene berichtet werden, aus deren Veränderung sich gezielt therapeutische oder präventive Maßnahmen ableiten lassen.}{}
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(sum_mut_cg$muts_tab)[1] == 0) {
+if (dim(sum_mut_cg$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Alle identifizierten somatischen Mutationen in Cancergenes geordnet nach VAF\\label{som_mut_cg}."
@@ -151,7 +151,7 @@ if(dim(sum_mut_cg$muts_tab)[1] == 0) {
 
 \subsubsection{LoH}
 <<loh_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(sum_loh_cg$muts_tab)[1] == 0) {
+if (dim(sum_loh_cg$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}."
@@ -402,7 +402,7 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 \clearpage
 
 <<eval=TRUE, results="tex", echo=FALSE, warning=FALSE>>=
-df <- data.frame(Kriterium = c("Librarygr{\"o}{\ss}e", "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", "Insertgr{\"o}{\ss}e (Standardabweichung)", "QC-Anteil", "Mean Qualit{\"a}t pro Base"),
+df <- data.frame(Kriterium = c("Librarygr\"o{\ss}e", "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", "Insertgr\"o{\ss}e (Standardabweichung)", "QC-Anteil", "Mean Qualit\"at pro Base"),
   Tumor = c(
   paste0(stats$avreads$nRT, " Mio Reads"),
   paste0( round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), " X"),
@@ -426,7 +426,7 @@ df <- data.frame(Kriterium = c("Librarygr{\"o}{\ss}e", "Mean Coverage", "Basen >
   Mindestwert = c("100 Mio Reads", "80 X", "90 %", "60 %", "90%", "60%", "100bp", "40-60%", 28)
   )
 
-kable(df, format = "latex", caption = "Qualit{\"a}tskriterien\\label{qual}", booktabs = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9)
+kable(df, format = "latex", caption = "Qualit\"atskriterien\\label{qual}", booktabs = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9)
 
 @
 

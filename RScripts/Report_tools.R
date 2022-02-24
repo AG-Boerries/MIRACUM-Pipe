@@ -118,7 +118,7 @@ keys <- function(
         brca_helper,
         paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
         cnv_analysis_results$hrd$score,
-        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$purity*100,
         cnv_analysis_results$purity$ploidy,
         paste0(
           round(
@@ -181,7 +181,7 @@ keys <- function(
         brca_helper,
         paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
         cnv_analysis_results$hrd$score,
-        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$purity*100,
         cnv_analysis_results$purity$ploidy,
         paste0(
           round(
@@ -240,7 +240,7 @@ keys <- function(
         brca_helper,
         paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
         cnv_analysis_results$hrd$score,
-        cnv_analysis_results$purity$purity,
+        cnv_analysis_results$purity$purity*100,
         cnv_analysis_results$purity$ploidy,
         paste0(
           round(
