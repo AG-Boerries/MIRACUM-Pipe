@@ -137,7 +137,8 @@ Im Anhang befinden sich Tabellen zu allen detektierten somatischen, LoH und Keim
 \ifthenelse{\equal{\detokenize{\Sexpr{nchar(actionable_genes) > 0}}}{\detokenize{TRUE}}}{Die Keimbahnmutationen sind gemäß der Empfehlungen des American College of Medical Genetics für Zusatzbefunde bei Exom- und Genom-Untersuchungen (ACMG SF v2.0, PubMed 27854360) gefiltert, sodass nur Gene berichtet werden, aus deren Veränderung sich gezielt therapeutische oder präventive Maßnahmen ableiten lassen.}{}
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if (dim(sum_mut_cg$muts_tab)[1] == 0) {
+#if (dim(sum_mut_cg$muts_tab)[1] == 0) {
+if (is.null(sum_mut_cg$muts_tab)) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Alle identifizierten somatischen Mutationen in Cancergenes geordnet nach VAF\\label{som_mut_cg}."
@@ -151,8 +152,9 @@ if (dim(sum_mut_cg$muts_tab)[1] == 0) {
 
 \subsubsection{LoH}
 <<loh_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if (dim(sum_loh_cg$muts_tab)[1] == 0) {
-  kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
+#if (dim(sum_loh_cg$muts_tab)[1] == 0) {
+if (is.null(sum_loh_cg$muts_tab)) {
+  kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine LoH in Cancergenes identifiziert.\\label{loh_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}."
   if (length(sum_loh_cg$id_hs) > 0) {
@@ -246,7 +248,8 @@ Außerdem werden auch die CNVs auf ihre Zugehörigkeit zu den fünf wichtigen Si
 <<som_mut_imp_pws, echo=FALSE, eval=TRUE, results="tex">>=
 options(knitr.kable.NA = ".")
 tmp <- som_mut_pthw
-if (dim(tmp)[1] == 0){
+if (is.null(tmp)) {
+#if (dim(tmp)[1] == 0){
   cap <- "Keine somatischen Mutationen in wichtigen Signalwegen identifiziert.\\label{imp_ptws}"
   kable(data.frame(Signalweg = c("."), Gen = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else {
@@ -257,7 +260,8 @@ if (dim(tmp)[1] == 0){
 \subsection{CNVs in wichtigen Signalwegen}
 <<echo=FALSE, eval=TRUE, results="tex">>=
 tmp <- cnvs_pthws
-if (dim(tmp)[1] == 0){
+if (is.null(tmp)) {
+#if (dim(tmp)[1] == 0){
   cap <- "Es wurden keine CNVs in wichtigen Signalwegen identifiziert."
   kable(data.frame(Signalweg = c("."), Status = c("."), Kopien = c("."), Gene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else {
@@ -287,7 +291,8 @@ Hat der Patient insgesamt mehr als 3 Punkte und stammt mindestens einer dieser P
 <<top_art, echo=FALSE, eval=TRUE, results="tex">>=
 options(knitr.kable.NA = ".")
 tmp <- som_mut_topart
-if(dim(som_mut_topart)[1] == 0) {
+#if(dim(som_mut_topart)[1] == 0) {
+if (is.null(som_mut_topart)) {
   kable(data.frame('Signalweg' = c("."), 'Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage)' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c(".")), format = "latex", caption = "Keine somatischen Mutationen in TOPART-G1-Genen.\\label{top_art}.", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else{
   kable(tmp, format = "latex", caption = "Somatische Mutationen in TOPART-G1-Genen\\label{top_art}.", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(1:3, 4, 9), width = "5em") %>% column_spec(c(2:3, 8), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
@@ -316,7 +321,8 @@ Analog zu Kapitel \ref{imp_pathways_section}, Tabelle \ref{imp_ptws}, werden Kei
 <<gl_ip, echo=FALSE, eval=TRUE, results='tex'>>=
 options(knitr.kable.NA = ".")
 tmp <- germ_mut_pthw
-if(dim(tmp)[1] == 0) {
+if (is.null(tmp)) {
+#if(dim(tmp)[1] == 0) {
   cap <- "Keine Keimbahnmutationen in wichtigen Signalwegen identifiziert.\\label{gl_ip}"
   kable(data.frame('Signalweg' = c("."), 'Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 7), width = "5em") %>% column_spec(c(1:2, 4:5, 6), width = "3em") %>% column_spec(c(7), width = "1em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else {
@@ -405,7 +411,7 @@ Für die Analysen werden nur Reads mit einer durchschnittlichen Basenqualität v
 df <- data.frame(Kriterium = c('Librarygr\"o\"se', "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", 'Insertgr\"o\"se (Standardabweichung)', "QC-Anteil", 'Mean Qualit\"at pro Base'),
   Tumor = c(
   paste0(stats$avreads$nRT, " Mio Reads"),
-  paste0( round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), " X"),
+  paste0(round(x = sum(stats$cover$cov[[2]][, 2] * stats$cover$cov[[2]][, 5]), digits = 2), " X"),
   paste0(round(stats$cover$perc[[2]][1], digits = 2) * 100, "%"),
   paste0(round(stats$cover$perc[[2]][2], digits = 2) * 100, "%"),
   paste0(round(stats$cover_exons$perc[[2]][1], digits = 2) * 100, "%"),
@@ -415,7 +421,7 @@ df <- data.frame(Kriterium = c('Librarygr\"o\"se', "Mean Coverage", "Basen > 8 R
   paste0(round(stats$qc_check$mean_QC[[2]], digits = 2))),
   Keimbahn = c(
   paste0(stats$avreads$nRG, " Mio Reads"),
-  paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
+  paste0(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
   paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
   paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
   paste0(round(stats$cover_exons$perc[[1]][1], digits = 2) * 100, "%"),

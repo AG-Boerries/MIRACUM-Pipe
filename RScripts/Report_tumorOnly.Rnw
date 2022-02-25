@@ -134,7 +134,8 @@ Bei den \textbf{Gensymbolen} ist ein Link zu \textbf{\textit{Genome Nexus}} hint
 Im Anhang befinden sich Tabellen zu allen detektierten Mutationen (Kap \ref{all_som_mut}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über \Sexpr{vaf}\% gelistet.
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(sum_mut_cg$muts_tab)[1] == 0) {
+if (is.null(sum_mut_cg$muts_tab)) {
+#if(dim(sum_mut_cg$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Alle identifizierten Mutationen in Cancergenes geordnet nach VAF.\\label{som_mut_cg}."
@@ -229,7 +230,8 @@ Außerdem werden auch die CNVs auf ihre Zugehörigkeit zu den fünf wichtigen Si
 <<som_mut_imp_pws, echo=FALSE, eval=TRUE, results="tex">>=
 options(knitr.kable.NA = ".")
 tmp <- som_mut_pthw
-if (dim(tmp)[1] == 0){
+if (is.null(tmp)) {
+#if (dim(tmp)[1] == 0){
   cap <- "Keine Mutationen in wichtigen Signalwegen identifiziert.\\label{imp_ptws}"
   kable(data.frame(Signalweg = c("."), Gen = c("."), 'AA-Austausch' = c("."), Funktion = c("."), VAF = c("."), MAF = c("."), Condel = c("."), Cosmic = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else {
@@ -240,7 +242,8 @@ if (dim(tmp)[1] == 0){
 \subsection{CNVs in wichtigen Signalwegen}
 <<echo=FALSE, eval=TRUE, results="tex">>=
 tmp <- cnvs_pthws
-if (dim(tmp)[1] == 0){
+if (is.null(tmp)) {
+#if (dim(tmp)[1] == 0){
   cap <- "Es wurden keine CNVs in wichtigen Signalwegen identifiziert."
   kable(data.frame(Signalweg = c("."), Status = c("."), Kopien = c("."), Gene = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c("HOLD_position", "repeat_header"), font_size = 9, full_width = T) %>% column_spec(1, width = "15em") %>% column_spec(c(2:3), width = "5em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else {
@@ -270,7 +273,8 @@ Hat der Patient insgesamt mehr als 3 Punkte und stammt mindestens einer dieser P
 <<top_art, echo=FALSE, eval=TRUE, results="tex">>=
 options(knitr.kable.NA = ".")
 tmp <- som_mut_topart
-if(dim(som_mut_topart)[1] == 0) {
+if (is.null(tmp)) {
+#if(dim(som_mut_topart)[1] == 0) {
   kable(data.frame('Signalweg' = c("."), 'Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage)' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c(".")), format = "latex", caption = "Keine somatischen Mutationen in TOPART-G1-Genen.\\label{top_art}.", booktabs = T, longtable = T, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2:3, 8), width = "5em") %>% column_spec(c(4:6), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
 } else{
   kable(tmp, format = "latex", caption = "Mutationen in TOPART-G1-Genen\\label{top_art}.", booktabs = T, longtable = T, row.names = F, escape = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(1:3, 4, 9), width = "5em") %>% column_spec(c(2:3, 8), width = "3em") %>% column_spec(c(7), width = "2em") %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
@@ -297,7 +301,7 @@ df <- data.frame(
   Kriterium = c('Librarygr\"o\"se', "Mean Coverage", "Basen > 8 Reads", "Basen > 40 Reads", "Exonische Basen > 8 Reads", "Exonische Basen > 40 Reads", 'Insertgr\"o\"se (Standardabweichung)', "QC-Anteil", 'Mean Qualit\"at pro Base'),
   Tumor = c(
     paste0(stats$avreads$nRT, " Mio Reads"),
-    paste0( round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
+    paste0(round(x = sum(stats$cover$cov[[1]][, 2] * stats$cover$cov[[1]][, 5]), digits = 2), " X"),
     paste0(round(stats$cover$perc[[1]][1], digits = 2) * 100, "%"),
     paste0(round(stats$cover$perc[[1]][2], digits = 2) * 100, "%"),
     paste0(round(stats$cover_exons$perc[[1]][1], digits = 2) * 100, "%"),
