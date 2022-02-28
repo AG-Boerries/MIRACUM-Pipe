@@ -169,6 +169,10 @@ ${BIN_FASTQC} "${fastq_o1_p_t}" -o "${DIR_WES}"
 ${BIN_FASTQC} "${fastq_o2_p_t}" -o "${DIR_WES}"
 
 # make bam
+if [ ! -f "${FILE_GENOME}.bwt.2bit.64" ]; then
+  echo "bwa-mem2 index not existing. Generating ..."
+  ${BIN_BWAMEMINDEX} ${FILE_GENOME}
+fi
 ${BIN_BWAMEM} -R "@RG\tID:${NameD}\tSM:${NameD}\tPL:illumina\tLB:lib1\tPU:unit1" -t "${CFG_COMMON_CPUCORES}" "${FILE_GENOME}" \
 "${fastq_o1_p_t}" "${fastq_o2_p_t}" | ${BIN_SAMVIEW} -bS - >"${bam}"
 

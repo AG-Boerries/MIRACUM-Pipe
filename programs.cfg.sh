@@ -186,6 +186,7 @@ readonly BIN_CUT="cut -f1,2,3"
 
 # Alignment
 readonly BIN_BWAMEM="${DIR_TOOLS}/bwa-mem2/bwa-mem2 mem -M "
+readonly BIN_BWAMEMINDEX="${DIR_TOOLS}/bwa-mem2/bwa-mem2 index"
 
 # BAM-Readcount
 readonly BIN_BAM_READCOUNT="${DIR_TOOLS}/bam-readcount/bin/bam-readcount -q ${CFG_SAMTOOLS_MPILEUP_MINMQ} -b ${CFG_GENERAL_MINBASEQUAL} -w 1 -f ${FILE_GENOME} "
@@ -381,6 +382,7 @@ export DIR_TRIMMOMATIC_ADAPTER
 export BIN_CUT
 
 export BIN_BWAMEM
+export BIN_BWAMEMINDEX
 
 export BIN_BAM_READCOUNT
 
