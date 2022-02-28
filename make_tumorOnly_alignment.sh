@@ -151,7 +151,7 @@ ${BIN_SAMINDEX} "${rmdupbam}" "${bai}"
 ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"
 
 # realign bam
-${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}" # not working with panels due to the many reads per position
+${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
 
 # fix bam
 ${BIN_FIX_MATE} -INPUT "${realignedbam}" -OUTPUT "${fixedbam}" -SO coordinate -VALIDATION_STRINGENCY LENIENT -CREATE_INDEX true

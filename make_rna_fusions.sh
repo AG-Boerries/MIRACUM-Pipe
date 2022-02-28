@@ -61,14 +61,14 @@ fi
 [[ -d "${DIR_RNA}" ]] || mkdir -p "${DIR_RNA}"
 [[ -d "${DIR_FUSIONS}" ]] || mkdir -p "${DIR_FUSIONS}"
 
-readonly input="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FOLDER_RNA}"
-
 # SAMPLE
+readonly input="${DIR_INPUT}/${PARAM_DIR_PATIENT}/${CFG_FOLDER_RNA}"
 # readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_${PARAM_TASK}
 
 # FASTQC
-for f in ${input}*.fastq.gz; do
-    ${BIN_FASTQC} "${f}" -o "${DIR_RNA}"
+for f in ${input}/*.fastq.gz; do
+    	echo ${f}
+	${BIN_FASTQC} "${f}" -o "${DIR_RNA}"
 done
 
 # Pseudoalignment

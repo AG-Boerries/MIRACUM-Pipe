@@ -16,3 +16,9 @@
 [submodule "tools/cnvkit"]
 	path = tools/cnvkit
 	url = https://github.com/etal/cnvkit.git
+[submodule "tools/msisensor2"]
+	path = tools/msisensor2
+	url = https://github.com/niu-lab/msisensor2.git
+[submodule "tools/msisensor-pro"]
+	path = tools/msisensor-pro
+	url = https://github.com/xjtu-omics/msisensor-pro

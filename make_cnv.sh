@@ -48,7 +48,7 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
+if [[ "$(get_config_value common.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
   readonly CFG_CASE=somaticGermline
 else
   readonly CFG_CASE=somatic
@@ -72,8 +72,15 @@ fi
 ##################################################################################################################
 
 readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
-
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
+
+readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
+readonly NameGD=${CFG_CASE}_${PARAM_DIR_PATIENT}_gd
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+readonly recalbamGD=${DIR_WES}/${NameGD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
+readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
 
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
@@ -116,5 +123,17 @@ mateOrientation = FR
 captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
-export PATH=${PATH}:${BIN_SAMTOOLS}
+export PATH="${BIN_SAMTOOLS}:${PATH}"
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
+
+# HRD
+if [ ! -f "${HRD_REF_WIG}" ]; then
+    echo "${HRD_REF_WIG} does not exist. Generating ..."
+    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
+fi
+
+${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbamGD}" --tumor "${recalbamTD}" \
+  -C ${SEQUENZA_CHROMOSOMES} -o "${HRD_OUTPUT}"
+${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+
+${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
