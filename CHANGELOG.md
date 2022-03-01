@@ -1,5 +1,14 @@
 # Changelog
 
+## Release v4.0.0
+
+* Integration of Mutect2 (GATK4) for tumorOnly and Panel variant calling
+* Analysis of the TSO500 panel handels of the DNA and RNA part of the panel
+* Calcualtion of various complex biomarkers like TMB, MSI, HRD,
+* Calcualtion of more QC metrics, e.g. bioinformatic tumor cell content (purity)
+* Various bugfixes
+* Adjustments of the PDF report mainly structure and readability
+
 ## Release v3.1.0
 
 * Updated ClinVar version to clinvar_20210123; re-run of ./setup.sh -t setup_tools from the MIRACUM-Pipe-docker repository recommended or manual installation of the updated annovar databases:

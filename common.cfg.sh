@@ -12,7 +12,9 @@ function get_config_value()
     cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
     pwd -P
   )
-
+  #echo ${DIR_SCRIPT}
+  #echo ${2}
+  #echo ${1}
   # first look inside the patient specific config
   patient_conf="${SCRIPT_PATH}"/assets/input/"${2}"/patient.yaml
   if [[ -f "${patient_conf}" ]]; then
@@ -26,7 +28,7 @@ function get_config_value()
   if [[ -z "${value}" ]]; then
     value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/custom.yaml 2> /dev/null)
 
-    # if value not available in custom config, take global config's value
+# if value not available in custom config, take global config's value
     if [[ -z "${value}" ]]; then
       value=$(shyaml get-value "${1}" < "${SCRIPT_PATH}"/conf/default.yaml 2> /dev/null)
     fi
