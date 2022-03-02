@@ -252,6 +252,15 @@ filtering <- function(
       snv_vcf = snpefffile_snp,
       indel_vcf = snpefffile_indel
     )
+    write.table(
+      x = out.maf,
+      file = outfile_maf,
+      append = F,
+      quote = F,
+      sep = "\t",
+      col.names = T,
+      row.names = F
+    )
 
     return(
       list(
@@ -267,7 +276,7 @@ filtering <- function(
 
   } else if (mode == "N" | mode == "T") {
     print("No SNVs passed filter!")
-    out.maf <- NULL
+    out.maf <- data.frame()
     msi <- NULL
     return(
       list(
@@ -283,7 +292,7 @@ filtering <- function(
 
   } else if (mode == "LOH") {
     print("No LOH passed filter!")
-    out.maf <- NULL
+    out.maf <- data.frame()
     return(
       list(
         table = x,
@@ -511,7 +520,7 @@ filtering_mutect2 <- function(
       input = x,
       protocol = protocol,
       snv_vcf = snpefffile,
-      Center = 'Freiburg',
+      Center = center,
       refBuild = 'hg19',
       id = sample,
       sep = "\t",
@@ -542,8 +551,8 @@ filtering_mutect2 <- function(
 
   } else if (mode == "N" | mode == "T") {
     print("No SNVs passed filter!")
-    out.maf <- NULL
-    return(
+    out.maf <- data.frame()
+   return(
       list(
         table = x,
         tmb = tmb$tmb,
@@ -557,7 +566,7 @@ filtering_mutect2 <- function(
 
   } else if (mode == "LOH") {
     print("No LOH passed filter!")
-    out.maf <- NULL
+    out.maf <- data.frame()
     return(
       list(
         table = x,

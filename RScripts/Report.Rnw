@@ -134,7 +134,7 @@ Bei den \textbf{Gensymbolen} ist ein Link zu \textbf{\textit{Genome Nexus}} hint
 
 Im Anhang befinden sich Tabellen zu allen detektierten somatischen, LoH und Keimbahnmutationen (Kap \ref{all_som_mut}, \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\ref{all_loh}}{}, \ref{all_germline}). Es werden allerdings nur seltene, exonische Mutationen mit einer VAF über \Sexpr{vaf} \% gelistet.
 
-\ifthenelse{\equal{\detokenize{\Sexpr{nchar(actionable_genes) > 0}}}{\detokenize{TRUE}}}{Die Keimbahnmutationen sind gemäß der Empfehlungen des American College of Medical Genetics für Zusatzbefunde bei Exom- und Genom-Untersuchungen (ACMG SF v3.0, PubMed 34012068) gefiltert, sodass nur Gene berichtet werden, aus deren Veränderung sich gezielt therapeutische oder präventive Maßnahmen ableiten lassen.}{}
+\ifthenelse{\equal{\detokenize{\Sexpr{!is.na(actionable_genes)}}}{\detokenize{TRUE}}}{Die Keimbahnmutationen sind gemäß der Empfehlungen des American College of Medical Genetics für Zusatzbefunde bei Exom- und Genom-Untersuchungen (ACMG SF v3.0, PubMed 34012068) gefiltert, sodass nur Gene berichtet werden, aus deren Veränderung sich gezielt therapeutische oder präventive Maßnahmen ableiten lassen.}{}
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
 #if (dim(sum_mut_cg$muts_tab)[1] == 0) {

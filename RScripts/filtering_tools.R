@@ -216,7 +216,7 @@ mrc <- function(x, min_var_count){
 }
 
 actionable <- function(x, actionable_genes) {
-  if(is.na(actionable_genes) | actionable_genes == "" ) {
+  if(is.na(actionable_genes)) {
     return(x)
   }
   genes <- read.table(actionable_genes, header = F)

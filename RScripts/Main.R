@@ -58,7 +58,7 @@ target_capture_cor_factors <- args[20]
 vaf <- as.numeric(args[21])*100
 min_var_count <- as.numeric(args[22])
 maf_cutoff <- as.numeric(args[23])
-actionable_genes <- args[24]
+actionable_genes <- ifelse(args[24]=="/opt/MIRACUM-Pipe/databases/", NA, args[24])
 covered_exons <- args[25]
 entity <- as.character(args[26])
 gender <- as.character(args[27])
@@ -369,7 +369,7 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       vaf = vaf,
       min_var_count = min_var_count,
       maf = maf_cutoff,
-      actionable_genes = NA,
+      actionable_genes = actionable_genes,
       covered_exons = covered_exons,
       cov_t = stats$cover_exons$perc[[1]][1],
       sureselect_type = sureselect_type
