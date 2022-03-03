@@ -215,12 +215,12 @@ mrc <- function(x, min_var_count){
   return(x)
 }
 
-actionable <- function(x, actionable_genes) {
+actionable <- function(x, column, actionable_genes) {
   if(is.na(actionable_genes)) {
     return(x)
   }
   genes <- read.table(actionable_genes, header = F)
-  actionable_matches <- which(x$Gene.refGene %in% genes$V1)
+  actionable_matches <- which(get(column, x) %in% genes$V1)
   return(x[actionable_matches,])
 }
 
@@ -1621,7 +1621,7 @@ exclude_gatk <- function(x, vaf = 0.05){
   return(x)
 }
 
-loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){
+loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10, actionable_genes = NA){
   filt_loh$table$VAF_Tumor <- as.character(filt_loh$table$VAF_Tumor)
   filt_loh$table$VAF_Normal <- as.character(filt_loh$table$VAF_Normal)
   table_id_loss <- which(as.numeric(substr(filt_loh$table$VAF_Tumor, start = 1,
@@ -1666,6 +1666,11 @@ loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline
     maf_filt_loh_loss$Mutation_Status <- rep("LoH", times = dim(maf_filt_loh_loss)[1])
     if(dim(maf_filt_loh_loss)[1] > 0) {
       filt_gd$maf <- rbind(filt_gd$maf, maf_filt_loh_loss)
+    }
+
+    if (!is.na(actionable_genes) & nrow(filt_gd$maf) > 0 & nrow(filt_gd$table) > 0) {
+      filt_gd$maf <- actionable(filt_gd$maf, "Hugo_Symbol", actionable_genes)
+      filt_gd$table <- actionable(filt_gd$table, "Gene.refGene", actionable_genes)
     }
   } else {
     filt_gd = filt_gd

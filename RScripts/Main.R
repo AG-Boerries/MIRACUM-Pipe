@@ -309,7 +309,6 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     snpefffile_snp = snpefffile_snp,
     snpefffile_indel = snpefffile_indel,
     outfile = filter_out_td,
-    outfile_maf = maf_td,
     path_data = path_data,
     path_script = path_script,
     mode = "T",
@@ -333,7 +332,6 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     snpefffile_snp = snpefffile_snp_loh,
     snpefffile_indel = snpefffile_indel_loh,
     outfile = loh_out,
-    outfile_maf = maf_loh,
     path_data = path_data,
     path_script = path_script,
     mode = "LOH",
@@ -358,7 +356,6 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       snpefffile_snp = snpefffile_snp_gd,
       snpefffile_indel = snpefffile_indel_gd,
       outfile =  filter_out_gd,
-      outfile_maf = maf_gd,
       path_data = path_data,
       path_script = path_script,
       mode = "N",
@@ -378,7 +375,8 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       filt_loh = filt_result_loh,
       filt_gd = filt_result_gd,
       protocol = protocol,
-      vaf = vaf
+      vaf = vaf,
+      actionable_genes = actionable_genes
     )
     filt_result_gd <- loh_correction$gd
     filt_result_loh <- loh_correction$loh
@@ -422,7 +420,6 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
     snpefffile_snp = snpefffile_snp_td,
     snpefffile_indel = snpefffile_indel_td,
     outfile = filter_out_td,
-    outfile_maf = maf_td,
     path_data = path_data,
     path_script = path_script,
     mode = "T",
@@ -441,7 +438,6 @@ if (protocol == "panelTumor" | protocol == "tumorOnly") {
   filt_result_td_mutect2 <- filtering_mutect2(
     snpfile = mutect2_vcf,
     snpefffile = mutect2_snpEff_vcf,
-    outfile_maf = maf_td_mutect2,
     id = id,
     path_data = path_data,
     path_script = path_script,
@@ -508,6 +504,17 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
         col.names = T,
         row.names = F
       )
+      if (nrow(filt_result_gd$maf) > 0) {
+        write.table(
+          x = maf_comb,
+          file = maf_gd,
+          append = F,
+          quote = F,
+          sep = "\t",
+          col.names = T,
+          row.names = F
+        )
+      }
   } else {
     maf_comb <- smartbind(
       filt_result_td$maf,
@@ -516,6 +523,28 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     write.table(
       x = maf_comb,
       file = maf_complete,
+      append = F,
+      quote = F,
+      sep = "\t",
+      col.names = T,
+      row.names = F
+    )
+  }
+  if (nrow(filt_result_td$maf) > 0) {
+    write.table(
+      x = maf_comb,
+      file = maf_td,
+      append = F,
+      quote = F,
+      sep = "\t",
+      col.names = T,
+      row.names = F
+    )
+  }
+    if (nrow(filt_result_loh$maf) > 0) {
+    write.table(
+      x = maf_comb,
+      file = maf_loh,
       append = F,
       quote = F,
       sep = "\t",
