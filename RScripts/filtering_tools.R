@@ -1624,18 +1624,25 @@ exclude_gatk <- function(x, vaf = 0.05){
 loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline", vaf = 10){
   filt_loh$table$VAF_Tumor <- as.character(filt_loh$table$VAF_Tumor)
   filt_loh$table$VAF_Normal <- as.character(filt_loh$table$VAF_Normal)
-  id_loss <- which(as.numeric(substr(filt_loh$table$VAF_Tumor, start = 1,
-                          stop = nchar(filt_loh$table$VAF_Tumor) - 1)) <  20)
-  filt_loh_loss <- filt_loh$table[id_loss, ]
-  filt_loh$table <- filt_loh$table[-id_loss, ]
+  table_id_loss <- which(as.numeric(substr(filt_loh$table$VAF_Tumor, start = 1,
+                                           stop = nchar(filt_loh$table$VAF_Tumor) - 1)) < 20)
+  filt_loh_loss <- filt_loh$table[table_id_loss, ]
+  filt_loh$table <- filt_loh$table[-table_id_loss, ]
+  
+  maf_vaf_tumor <-100*as.numeric(filt_loh$maf$t_alt_count) / (as.numeric(filt_loh$maf$t_alt_count) + as.numeric(filt_loh$maf$t_ref_count))
+  maf_vaf_normal <- 100*as.numeric(filt_loh$maf$n_alt_count) / (as.numeric(filt_loh$maf$n_alt_count) + as.numeric(filt_loh$maf$n_ref_count))
+  maf_id_loss <- which(maf_vaf_tumor < 20)
+  maf_filt_loh_loss <- filt_loh$maf[maf_id_loss, ]
+  filt_loh$maf <- filt_loh$maf[-maf_id_loss, ]
+  
   if (protocol == "somaticGermline"){
     filt_loh_loss$Variant_Reads <- filt_loh_loss$Count_Normal
     filt_loh_loss$Variant_Allele_Frequency <- filt_loh_loss$VAF_Normal
     filt_loh_loss$Zygosity <- rep(x = "het", times = dim(filt_loh_loss)[1])
     id_hom <- which(as.numeric(substr(filt_loh_loss$VAF_Normal, start = 1,
-                           stop = nchar(filt_loh_loss$VAF_Normal) - 1)) > 75)
+                                      stop = nchar(filt_loh_loss$VAF_Normal) - 1)) > 75)
     id_exclude <- which(as.numeric(substr(filt_loh_loss$VAF_Normal, start = 1,
-                               stop = nchar(filt_loh_loss$VAF_Normal) - 1)) < 10)
+                                          stop = nchar(filt_loh_loss$VAF_Normal) - 1)) < 10)
     if (length(id_hom) > 0){
       filt_loh_loss$Zygosity[id_hom] <- "hom"
     }
@@ -1648,6 +1655,17 @@ loh_correction <- function(filt_loh, filt_gd = NULL, protocol = "somaticGermline
     filt_loh_loss$Type <- rep("LoH", times = dim(filt_loh_loss)[1])
     if(dim(filt_loh_loss)[1] > 0) {
       filt_gd$table <- rbind(filt_gd$table, filt_loh_loss)
+    }
+    
+    normal_vaf <- 100*as.numeric(maf_filt_loh_loss$n_alt_count) / (as.numeric(maf_filt_loh_loss$n_alt_count) + as.numeric(maf_filt_loh_loss$n_ref_count))
+    maf_id_exclude <- which(normal_vaf < 10)
+    if (length(maf_id_exclude) > 0){
+      maf_filt_loh_loss <- maf_filt_loh_loss[-maf_id_exclude, ]
+    }
+    filt_gd$maf$Mutation_Status <- rep("Germline", times = dim(filt_gd$maf)[1])
+    maf_filt_loh_loss$Mutation_Status <- rep("LoH", times = dim(maf_filt_loh_loss)[1])
+    if(dim(maf_filt_loh_loss)[1] > 0) {
+      filt_gd$maf <- rbind(filt_gd$maf, maf_filt_loh_loss)
     }
   } else {
     filt_gd = filt_gd
