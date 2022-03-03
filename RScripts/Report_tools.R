@@ -1278,8 +1278,8 @@ pthws_mut <- function(df, protocol) {
   if (length(id_to) != 0) {
     df <- df[-c(id_to:dim(df)[1]), ]
   }
-  if (class(df) == "list" | is.null(df)) {
-    if (is.null(df)) {
+  if (nrow(df) == 0 | class(df) == "list" | is.null(df)) {
+    if (nrow(df) == 0 | is.null(df)) {
       return(NULL)
     } else if (sum(lapply(df, function(x){return(dim(x)[1])})) == 0){
       return(NULL)
