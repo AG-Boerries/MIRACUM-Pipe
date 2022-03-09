@@ -255,8 +255,8 @@ mut_sig_wCI <- function(
   colnames(output$Normalized_Exposures) <- c(sample)
   colnames(output$Summary)[3] <- c(sample)
 
-  #write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
-  #           headerStyle = createStyle(textDecoration = 'bold'))
+  write.xlsx(output, paste0(path_output,"/",sample, "_Mutation_Signature_Summary.xlsx"), rowNames = T, firstRow = T,
+             headerStyle = createStyle(textDecoration = 'bold'))
 
   # Is 0 in the CI in any?
   CI <- length(which(output$Confidence_Intervals$lower[which(output$Confidence_Intervals$sig == "AC3")] < 0))
