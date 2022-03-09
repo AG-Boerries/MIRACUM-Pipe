@@ -625,7 +625,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     purity_file = purity_file,
     hrd_file = hrd_file,
     ucsc_server = ucsc_server,
-    cnv_annotation = cnv_annotation
+    cnv_region_annotation = cnv_region_annotation
   )
 print("End CNVs")
 }
@@ -684,7 +684,7 @@ if (protocol == "tumorOnly" | protocol == "panelTumor") {
     purity_file = purity_file,
     hrd_file = hrd_file,
     ucsc_server = ucsc_server,
-    cnv_annotation = cnv_annotation
+    cnv_region_annotation = cnv_region_annotation
   )
 }
 
