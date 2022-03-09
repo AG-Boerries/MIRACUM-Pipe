@@ -61,7 +61,7 @@ cnv_analysis <- function(
     path_data = path_data,
     path_script = path_script,
     ucsc_server = ucsc_server,
-    cnv_annotaion = cnv_annotaion
+    cnv_annotation = cnv_annotation
   )
 
   cnv_analysis_results <- cnv_processing(

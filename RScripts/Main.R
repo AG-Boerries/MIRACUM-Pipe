@@ -65,7 +65,7 @@ gender <- as.character(args[27])
 fusion_genes <- args[28]
 ampl_genes_txt <- args[29]
 ucsc_server <- args[30]
-cnv_annotaion <- args[31]
+cnv_annotation <- args[31]
 
 print(ref_genome)
 
@@ -625,7 +625,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     purity_file = purity_file,
     hrd_file = hrd_file,
     ucsc_server = ucsc_server,
-    cnv_annotaion = cnv_annotaion
+    cnv_annotation = cnv_annotation
   )
 print("End CNVs")
 }
@@ -684,7 +684,7 @@ if (protocol == "tumorOnly" | protocol == "panelTumor") {
     purity_file = purity_file,
     hrd_file = hrd_file,
     ucsc_server = ucsc_server,
-    cnv_annotaion = cnv_annotaion
+    cnv_annotation = cnv_annotation
   )
 }
 

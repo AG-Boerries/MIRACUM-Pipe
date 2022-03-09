@@ -258,7 +258,7 @@ offline_query <- function(location, db) {
 }
 
 cnv_annotation <- function(cnv_pvalue_txt, dbfile,
-                           path_data, path_script, ucsc_server, cnv_annotaion) {
+                           path_data, path_script, ucsc_server, cnv_annotation) {
   #' CNV Annotation
   #'
   #' @description Annotate the CNV Regions
@@ -288,7 +288,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   ts <- db[ts, ]
   og <- which(db$Is.Oncogene == "Yes")
   onc <- db[og, ]
-  
+
   x$genes <- "."
   x$TumorSuppressor <- "."
   x$Oncogene <- "."
@@ -296,7 +296,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   not.significant <- c()
 
 # Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
-  if (cnv_annotaion == "online") {
+  if (cnv_annotation == "online") {
     for(i in 1:nrow(x)) {
       cat("Processing CNV#", i, "\n")
       
@@ -336,7 +336,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
       }
     }
   }
-  if (cnv_annotaion == "offline") {
+  if (cnv_annotation == "offline") {
     for(i in 1:nrow(x)) {
       cat("Processing CNV#", i, "\n")
 
