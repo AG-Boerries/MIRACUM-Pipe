@@ -16,7 +16,7 @@ cnv_analysis <- function(
   hrd_file,
   gender,
   ucsc_server,
-  cnv_annotaion
+  cnv_annotation
 ) {
 #' CNV Analysis
 #'
