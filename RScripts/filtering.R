@@ -6,7 +6,6 @@ filtering <- function(
   snpefffile_snp,
   snpefffile_indel,
   outfile,
-  outfile_maf,
   path_data,
   path_script,
   mode = "T",
@@ -89,7 +88,7 @@ filtering <- function(
 
   # Filter for actionable genes in Germline
   if (protocol == "somaticGermline" & mode == "N") {
-    x <- actionable(x, actionable_genes)
+    x <- actionable(x, "Gene.refGene", actionable_genes)
   }
 
   # Quality Filter
@@ -252,15 +251,6 @@ filtering <- function(
       snv_vcf = snpefffile_snp,
       indel_vcf = snpefffile_indel
     )
-    write.table(
-      x = out.maf,
-      file = outfile_maf,
-      append = F,
-      quote = F,
-      sep = "\t",
-      col.names = T,
-      row.names = F
-    )
 
     return(
       list(
@@ -311,7 +301,6 @@ filtering_mutect2 <- function(
   snpfile,
   snpefffile,
   outfile,
-  outfile_maf,
   path_data,
   path_script,
   mode = "T",
@@ -526,15 +515,6 @@ filtering_mutect2 <- function(
       sep = "\t",
       idCol = NULL,
       Mutation_Status = mode
-    )
-    write.table(
-      x = out.maf,
-      file = outfile_maf,
-      append = F,
-      quote = F,
-      sep = "\t",
-      col.names = T,
-      row.names = F
     )
     
     return(
