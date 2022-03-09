@@ -23,6 +23,8 @@ common:
   # set to no if the germline sample should be used only to identify somatic variants
   germline: yes
   ucscServer: genome-euro-mysql.soe.ucsc.edu
+  # Mapping of CNV regions (chr, start, end) to genes; allowed values online / offline
+  cnvAnnotation: online
 
 sex: 0
 

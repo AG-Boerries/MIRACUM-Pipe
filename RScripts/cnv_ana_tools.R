@@ -258,7 +258,7 @@ offline_query <- function(location, db) {
 }
 
 cnv_annotation <- function(cnv_pvalue_txt, dbfile,
-                           path_data, path_script, ucsc_server){
+                           path_data, path_script, ucsc_server, cnv_annotaion) {
   #' CNV Annotation
   #'
   #' @description Annotate the CNV Regions
@@ -296,45 +296,75 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   not.significant <- c()
 
 # Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
-  for(i in 1:nrow(x)) {
-    cat("Processing CNV#", i, "\n")
-    
-    if (x$WilcoxonRankSumTestPvalue[i] < 0.05
-       & x$KolmogorovSmirnovPvalue[i] < 0.05
-       & !is.na(x$WilcoxonRankSumTestPvalue[i])
-       & !is.na(x$KolmogorovSmirnovPvalue[i])) {
-      location <- list(x$chr[i], x$start[i], x$end[i])
-      # try USCS SQL server first
-      query <- try(del_dup_query(location, ucsc_server), silent = TRUE)
-      if (inherits(query, 'try-error')){
-        # try biomaRt next
-        if (is.null(ensembl)) {
-          ensembl <- useMart("ensembl", dataset="hsapiens_gene_ensembl", host="grch37.ensembl.org")
-        }
-        query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
-        if (inherits(query, 'try-error')){
-          warning("Check your internet connection. Connection to USCS SQL and biomaRt server failed. Using offline annotation!")
-	        query <- offline_query(location, db = edb)
-        }
-      }
-      query2 <- unlist(query)
-      x$genes[i] <- paste(query2, collapse = ",")
+  if (cnv_annotaion == "online") {
+    for(i in 1:nrow(x)) {
+      cat("Processing CNV#", i, "\n")
       
-      # Test for Tumor Suppressors
-      id.ts <- which(ts$Hugo.Symbol %in% query2)
-      if(sum(id.ts) > 0) {
-        x$TumorSuppressor[i] <- paste(ts$Hugo.Symbol[id.ts], collapse = ",")
+      if (x$WilcoxonRankSumTestPvalue[i] < 0.05
+        & x$KolmogorovSmirnovPvalue[i] < 0.05
+        & !is.na(x$WilcoxonRankSumTestPvalue[i])
+        & !is.na(x$KolmogorovSmirnovPvalue[i])) {
+        location <- list(x$chr[i], x$start[i], x$end[i])
+        # try USCS SQL server first
+        query <- try(del_dup_query(location, ucsc_server), silent = TRUE)
+        if (inherits(query, 'try-error')){
+          # try biomaRt next
+          if (is.null(ensembl)) {
+            ensembl <- useMart("ensembl", dataset="hsapiens_gene_ensembl", host="grch37.ensembl.org")
+          }
+          query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
+          if (inherits(query, 'try-error')){
+            warning("Check your internet connection. Connection to USCS SQL and biomaRt server failed. Using offline annotation!")
+            query <- offline_query(location, db = edb)
+          }
+        }
+        query2 <- unlist(query)
+        x$genes[i] <- paste(query2, collapse = ",")
+
+        # Test for Tumor Suppressors
+        id.ts <- which(ts$Hugo.Symbol %in% query2)
+        if(sum(id.ts) > 0) {
+          x$TumorSuppressor[i] <- paste(ts$Hugo.Symbol[id.ts], collapse = ",")
+        }
+        id.onc <- which(onc$Hugo.Symbol %in% query2)
+        if(sum(id.onc) > 0) {
+          x$Oncogene[i] <- paste(onc$Hugo.Symbol[id.onc], collapse = ",")
+        }
+        x$Length[i] <- x$end[i] - x$start[i]
+      } else {
+        not.significant <- c(not.significant, i)
       }
-      id.onc <- which(onc$Hugo.Symbol %in% query2)
-      if(sum(id.onc) > 0) {
-        x$Oncogene[i] <- paste(onc$Hugo.Symbol[id.onc], collapse = ",")
-      }
-      x$Length[i] <- x$end[i] - x$start[i]
-    } else {
-      not.significant <- c(not.significant, i)
     }
   }
-  
+  if (cnv_annotaion == "offline") {
+    for(i in 1:nrow(x)) {
+      cat("Processing CNV#", i, "\n")
+
+      if (x$WilcoxonRankSumTestPvalue[i] < 0.05
+        & x$KolmogorovSmirnovPvalue[i] < 0.05
+        & !is.na(x$WilcoxonRankSumTestPvalue[i])
+        & !is.na(x$KolmogorovSmirnovPvalue[i])) {
+        location <- list(x$chr[i], x$start[i], x$end[i])
+        query <- offline_query(location, db = edb)
+        query2 <- unlist(query)
+        x$genes[i] <- paste(query2, collapse = ",")
+
+        # Test for Tumor Suppressors
+        id.ts <- which(ts$Hugo.Symbol %in% query2)
+        if(sum(id.ts) > 0) {
+          x$TumorSuppressor[i] <- paste(ts$Hugo.Symbol[id.ts], collapse = ",")
+        }
+        id.onc <- which(onc$Hugo.Symbol %in% query2)
+        if(sum(id.onc) > 0) {
+          x$Oncogene[i] <- paste(onc$Hugo.Symbol[id.onc], collapse = ",")
+        }
+        x$Length[i] <- x$end[i] - x$start[i]
+      } else {
+        not.significant <- c(not.significant, i)
+      }
+    }
+  }
+
   if (length(not.significant) > 0){
     x1 <- x[-not.significant, ]
   } else {
