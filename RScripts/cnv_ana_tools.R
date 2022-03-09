@@ -212,7 +212,7 @@ make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol){
   dev.off()
 }
 
-del_dup_query <- function(da.fr){
+del_dup_query <- function(da.fr, server){
   require(RMySQL)
   require(doMC)
   time1 <- Sys.time()
@@ -222,7 +222,7 @@ del_dup_query <- function(da.fr){
   stop_list <- unlist(da.fr[[3]])
   out <- mclapply(1:length(ucscchroms), function(i){
     con<- dbConnect(RMySQL::MySQL(),
-                    host="genome-euro-mysql.soe.ucsc.edu",
+                    host = server,
                     user = "genome",
                     password = '',
                     port = 3306,
@@ -258,7 +258,7 @@ offline_query <- function(location, db) {
 }
 
 cnv_annotation <- function(cnv_pvalue_txt, dbfile,
-                           path_data, path_script){
+                           path_data, path_script, ucsc_server){
   #' CNV Annotation
   #'
   #' @description Annotate the CNV Regions
@@ -296,7 +296,6 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   not.significant <- c()
 
 # Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
-  
   for(i in 1:nrow(x)) {
     cat("Processing CNV#", i, "\n")
     
@@ -306,14 +305,16 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
        & !is.na(x$KolmogorovSmirnovPvalue[i])) {
       location <- list(x$chr[i], x$start[i], x$end[i])
       # try USCS SQL server first
-      query <- try(del_dup_query(location), silent = TRUE)
+      query <- try(del_dup_query(location, ucsc_server), silent = TRUE)
       if (inherits(query, 'try-error')){
         # try biomaRt next
-	ensembl=useMart("ensembl", dataset="hsapiens_gene_ensembl", host="grch37.ensembl.org")
+        if (is.null(ensembl)) {
+          ensembl <- useMart("ensembl", dataset="hsapiens_gene_ensembl", host="grch37.ensembl.org")
+        }
         query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
         if (inherits(query, 'try-error')){
           warning("Check your internet connection. Connection to USCS SQL and biomaRt server failed. Using offline annotation!")
-	  query <- offline_query(location, db = edb)
+	        query <- offline_query(location, db = edb)
         }
       }
       query2 <- unlist(query)

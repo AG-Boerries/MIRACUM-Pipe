@@ -14,7 +14,8 @@ cnv_analysis <- function(
   sureselect_type,
   purity_file,
   hrd_file,
-  gender
+  gender,
+  ucsc_server
 ) {
 #' CNV Analysis
 #'
@@ -57,7 +58,8 @@ cnv_analysis <- function(
     cnv_pvalue_txt = pvalue_txt,
     dbfile =  paste(path_data, "cancerGeneList.tsv", sep = "/"),
     path_data = path_data,
-    path_script = path_script
+    path_script = path_script,
+    ucsc_server = ucsc_server
   )
 
   cnv_analysis_results <- cnv_processing(
