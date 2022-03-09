@@ -297,6 +297,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
 
 # Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
   if (cnv_annotation == "online") {
+    print("Online CNV Region annotation mode.")
     for(i in 1:nrow(x)) {
       cat("Processing CNV#", i, "\n")
       
@@ -337,6 +338,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
     }
   }
   if (cnv_annotation == "offline") {
+    print("Offline CNV Region annotation mode.")
     for(i in 1:nrow(x)) {
       cat("Processing CNV#", i, "\n")
 
