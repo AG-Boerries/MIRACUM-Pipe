@@ -247,6 +247,16 @@ del_dup_query <- function(da.fr, server){
   return(out)
 }
 
+offline_query <- function(location, db) {
+  require(ensembldb)
+  chr <- unlist(location[[1]])
+  start <- unlist(location[[2]])
+  end <- unlist(location[[3]])
+  out <- genes(db, filter = ~ seq_name == chr & ((tx_start >= start & tx_start <= end) | (tx_end >= start & tx_end <= end)))
+  out <- unique(out$symbol)
+  return(out)
+}
+
 cnv_annotation <- function(cnv_pvalue_txt, dbfile,
                            path_data, path_script, ucsc_server){
   #' CNV Annotation
@@ -267,6 +277,8 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   #' @details of these genes is generated. Each gene has also a column with the
   #' @details total copy number. The table is divided in two subtables
   #' @details containing oncogenes and tumorsuppressor genes. 
+  library(EnsDb.Hsapiens.v75)
+  edb <- EnsDb.Hsapiens.v75
   x <- as.data.frame(cnv_pvalue_txt)
   x <- data.frame(x)
 
@@ -283,10 +295,7 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
   x$Length <- "."
   not.significant <- c()
 
-# Try annotation first with SQL server if this fails try with biomaRt
-
-  ensembl <- NULL
-  
+# Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
   for(i in 1:nrow(x)) {
     cat("Processing CNV#", i, "\n")
     
@@ -304,7 +313,8 @@ cnv_annotation <- function(cnv_pvalue_txt, dbfile,
         }
         query <- try(getBM(c('hgnc_symbol'), filters = c('chromosome_name', 'start', 'end'), values = location, mart = ensembl), silent = TRUE)
         if (inherits(query, 'try-error')){
-          error("Check your internet connection. Connection to UCSC SQL and biomaRt server failed!")
+          warning("Check your internet connection. Connection to USCS SQL and biomaRt server failed. Using offline annotation!")
+	        query <- offline_query(location, db = edb)
         }
       }
       query2 <- unlist(query)
