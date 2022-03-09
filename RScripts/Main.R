@@ -65,7 +65,7 @@ gender <- as.character(args[27])
 fusion_genes <- args[28]
 ampl_genes_txt <- args[29]
 ucsc_server <- args[30]
-cnv_annotation <- args[31]
+cnv_region_annotation <- args[31]
 
 print(ref_genome)
 
