@@ -87,7 +87,7 @@ cnv_analysis <- function(
 
   ddr <- cnv_pathways(
     input = out,
-    db = paste(path_data,"DNA_Damage_Response.txt",sep = "/")
+    db = paste(path_data, "DNA_Damage_Response.txt",sep = "/")
   )
   pam <- cnv_pathways(
     input = out,
@@ -114,17 +114,28 @@ cnv_analysis <- function(
   )
 
   if (dim(out)[1] != 0) {
-    cnvs2cbioportal(out, id, outfile_cbioportal, gender = gender, ampl_genes = ampl_genes)
-    freec2seg(cnvs_file, cpn_file, id, outfile_seg)
+    cnvs2cbioportal(
+      out,
+      id,
+      outfile_cbioportal,
+      gender = gender,
+      ampl_genes = ampl_genes
+    )
+    freec2seg(
+      cnvs_file,
+      cpn_file,
+      id,
+      outfile_seg
+    )
   }
-  
+
   print("HRD")
   hrd <- hrd_extr(hrd_file)
   print("Purity")
   pur <- purity_extr(purity_file)
-  
+
   if (sureselect_type == "TSO500") {
-    if(dim(out)[1]!=0){
+    if(dim(out)[1] != 0) {
       db <- read.delim(
         paste(
           path_data, "cancerGeneList.tsv", sep = "/"
@@ -135,7 +146,7 @@ cnv_analysis <- function(
       ts <- which(db$Is.Tumor.Suppressor.Gene == "Yes")
       idx <- which(as.character(out$Gene) %in% db$Hugo.Symbol[ts])
       out$is_tumorsuppressor[idx] <- 1
-  
+
       out$is_oncogene <- 0
       og <- which(db$Is.Oncogene == "Yes")
       idx <- which (as.character(out$Gene) %in% db$Hugo.Symbol[og])
@@ -144,29 +155,41 @@ cnv_analysis <- function(
       out$Cancergene[which(out$is_tumorsuppressor == 1)] <- "TSG"
       out$Cancergene[which(out$is_oncogene == 1)] <- paste0(
         "OG", out$Cancergene[which(out$is_oncogene == 1)])
-      
+
       type <- get_type(Oncogenes = out, sureselect_type = sureselect_type)
-      
+
       # merge outputs
-      out <- merge(x = out, y = type$gene_loci, by.x = c("Gene", "CopyNumber"),
-                   by.y = c("gene_name", "cn"))
-      
+      out <- merge(
+        x = out,
+        y = type$gene_loci,
+        by.x = c("Gene", "CopyNumber"),
+        by.y = c("gene_name", "cn")
+      )
+
     } else {
       type <- NULL
     }
-    return(list(cnvs_annotated = cnvs_annotated, cnv_analysis_results
-                = cnv_analysis_results, out = out, impa = impa,
-                gene_loci = type$gene_loci, hrd = hrd, purity = pur))
+    return(
+      list(
+        cnvs_annotated = cnvs_annotated,
+        cnv_analysis_results = cnv_analysis_results,
+        out = out,
+        impa = impa,
+        gene_loci = type$gene_loci,
+        hrd = hrd,
+        purity = pur
+      )
+    )
   }
-  
+
   type <- get_type(
     Oncogenes = cnvs_annotated$CNVOncogenes,
     Tumorsuppressor = cnvs_annotated$CNVTumorSuppressors,
     CNVsAnnotated = cnvs_annotated$CNVsAnnotated,
     sureselect_type = sureselect_type
   )
-	
-  
+
+
   return(
     list(
       cnvs_annotated = cnvs_annotated,

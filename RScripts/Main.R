@@ -744,7 +744,6 @@ if (protocol == "somaticGermline") {
     Mutation_Signatures = mut_sig_ana$output$Summary,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated
   )
-  #save(output, file = "excel_table_output.RData")
   write.xlsx(
     x = output,
     file = paste0(path_output, "/", sample, "_results.xlsx"),
