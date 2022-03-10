@@ -22,6 +22,7 @@ common:
   # process and annotate germline file, allowed values: yes, no
   # set to no if the germline sample should be used only to identify somatic variants
   germline: yes
+  # ucsc mysql server can also be hosted local e.g. using https://github.com/nr23730/ucsc-hg19-refgene
   ucscServer: genome-euro-mysql.soe.ucsc.edu
   # Mapping of CNV regions (chr, start, end) to genes; allowed values: online / offline
   cnvAnnotation: online
