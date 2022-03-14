@@ -491,7 +491,7 @@ if(dim(germ_all$muts_tab)[1] == 0){
   }
 }
 @
-}{}
+} {}
 \clearpage
 \section{ACMG Klassen}\label{ACMG_class}
 
