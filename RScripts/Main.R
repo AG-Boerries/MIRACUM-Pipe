@@ -1182,15 +1182,9 @@ if (protocol == "somatic") {
   )
   cnvs_pthws <- pathws_cnv(df = cnv_analysis_results$impa)
 
-  germ_mut_cg <- highlight_detail(
-    muts_tab = mutation_analysis_result_gd$ts_og,
-    Mode = "Germline",
-    protocol = protocol
-  )
-  germ_mut_pthw <- pthws_mut(
-    df = mutation_analysis_result_gd$important_pathways,
-    protocol = protocol
-  )
+  germ_mut_cg <- NULL
+
+  germ_mut_pthw <- NULL
 
   som_all <- highlight_detail(
     muts_tab = mutation_analysis_result$som_mut_tab,

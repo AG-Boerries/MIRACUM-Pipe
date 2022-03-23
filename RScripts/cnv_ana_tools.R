@@ -22,7 +22,7 @@ assess_significance <- function(ratio_file, cnvs_file) {
     IRanges(
       ratio$Start,
       ratio$Start
-    ), core = ratio$Ratio
+    ), score = ratio$Ratio
   )
   overlaps <- subsetByOverlaps(ratio.bed, cnvs.bed)
   normals <- GenomicRanges::setdiff(ratio.bed, cnvs.bed)
@@ -539,7 +539,7 @@ cnv_processing <- function(
   cnv$status <- as.character(cnv$status)
   cnv$chr <- as.character(cnv$chr)
 # LOSS
-  for (i in 1:length(cnv$status)) {
+  for(i in 1:length(cnv$status)) {
     if(cnv$status[i] == "loss") {
       s <- strsplit(cnv$genes[i], split = ",", fixed = TRUE)
       cnv.genes <- c(cnv.genes, s[[1]])

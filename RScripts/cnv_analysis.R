@@ -64,7 +64,6 @@ cnv_analysis <- function(
     ucsc_server = ucsc_server,
     cnv_region_annotation = cnv_region_annotation
   )
-
   cnv_analysis_results <- cnv_processing(
     cnv_file = cnvs_annotated$CNVsAnnotated,
     targets = targets,
