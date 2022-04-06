@@ -133,7 +133,7 @@ reads <- function(tfile, gfile = NULL) {
   #' @param gfile string. Name of germline input file
   #'
   #' @return list of
-  #' @return nRT numerical. Total number of reads in tumor data 
+  #' @return nRT numerical. Total number of reads in tumor data
   #' @return nRG numerical. Total number of reads in germline data
   #' 
   #' 
@@ -164,20 +164,20 @@ reads <- function(tfile, gfile = NULL) {
       greads_tab <- readSamtoolsStats(gfile, "SN")$SN
       ngreads <- round(
         as.numeric(
-          treads_tab$value[which(
-            as.character(treads_tab$description) == "reads properly paired:"
+          greads_tab$value[which(
+            as.character(greads_tab$description) == "reads properly paired:"
           )]
         ) / 1000000
       )
       gin_size <- as.character(
-        treads_tab$value[which(
-          as.character(treads_tab$description) == "insert size average:"
+        greads_tab$value[which(
+          as.character(greads_tab$description) == "insert size average:"
         )]
       )
       gin_sd <- as.character(
-        treads_tab$value[which(
+        greads_tab$value[which(
           as.character(
-            treads_tab$description
+            greads_tab$description
           ) == "insert size standard deviation:"
         )]
       )
