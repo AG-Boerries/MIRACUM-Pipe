@@ -94,7 +94,7 @@ filtering <- function(
   # Quality Filter
   id.pass <- grep("PASS", x$Otherinfo)
   if (length(id.pass) > 0) {
-    x <- x[id.pass,]
+    x <- x[id.pass, ]
   } else {
     stop("No variant passed quality filter!")
   }
@@ -103,9 +103,9 @@ filtering <- function(
   x <- vrz(x, mode, protocol = protocol)
 
   # Filter for targets region in panels
-  if (protocol == "panelTumor"){
-    x <- target_check(x, sureselect)
-  }
+  #if (protocol == "panelTumor") {
+  x <- target_check(x, sureselect)
+  #}
 
   # Calcualte covered region from bed file
   cov_region <- covered_region(sureselect = sureselect, mode = mode)
