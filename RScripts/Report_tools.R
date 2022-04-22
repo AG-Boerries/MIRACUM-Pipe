@@ -765,200 +765,200 @@ highlight <- function(muts_tab, protocol) {
 highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
  highlight <- muts_tab
   if (dim(muts_tab)[1] == 0) {
-     highlight <- NULL
-     id_hs <- c()
-    } else {
-      # Genome Nexus
-      highlight$Gene.refGene <- unlist(
-        lapply(
-          strsplit(
-            x = as.character(highlight$Gene.refGene), split = ";", fixed = TRUE
-          ), function(x) {
-            return(x[[1]])
-          }
-        )
+    muts_tab <- NULL
+    id_hs <- NULL
+  } else {
+    # Genome Nexus
+    highlight$Gene.refGene <- unlist(
+      lapply(
+        strsplit(
+          x = as.character(highlight$Gene.refGene), split = ";", fixed = TRUE
+        ), function(x) {
+          return(x[[1]])
+        }
       )
-      highlight$Gene.refGene_new <- highlight$Gene.refGene
-      if (length(which(highlight$Alt == "-" | highlight$Ref == "-")) > 0) {
-        highlight$Gene.refGene_new[-which(
-          highlight$Alt == "-" | highlight$Ref == "-"
-        )] <- l_gen_nex(df = highlight[-which(
-          highlight$Alt == "-" | highlight$Ref == "-"
-        ), ], type = "SNV") 
-        if (length(which(highlight$Alt == "-")) > 0) {
-          highlight$Gene.refGene_new[which(
-            highlight$Alt == "-"
-          )] <- l_gen_nex(df = highlight[which(
-            highlight$Alt == "-"
-          ), ], type = "DEL") 
-        }
-        if (length(which(highlight$Ref == "-")) > 0) {
-          highlight$Gene.refGene_new[which(
-            highlight$Ref == "-"
-          )] <- l_gen_nex(df = highlight[which(
-            highlight$Ref == "-"
-          ), ], type = "INS")
-        }
-      } else {
-        highlight$Gene.refGene_new <- l_gen_nex(df = highlight, type = "SNV")
+    )
+    highlight$Gene.refGene_new <- highlight$Gene.refGene
+    if (length(which(highlight$Alt == "-" | highlight$Ref == "-")) > 0) {
+      highlight$Gene.refGene_new[-which(
+        highlight$Alt == "-" | highlight$Ref == "-"
+      )] <- l_gen_nex(df = highlight[-which(
+        highlight$Alt == "-" | highlight$Ref == "-"
+      ), ], type = "SNV") 
+      if (length(which(highlight$Alt == "-")) > 0) {
+        highlight$Gene.refGene_new[which(
+          highlight$Alt == "-"
+        )] <- l_gen_nex(df = highlight[which(
+          highlight$Alt == "-"
+        ), ], type = "DEL") 
       }
-      # Cancer Consortium Meta-Knowledgebase
-      highlight$AAChange <- meta(df = highlight)
+      if (length(which(highlight$Ref == "-")) > 0) {
+        highlight$Gene.refGene_new[which(
+          highlight$Ref == "-"
+        )] <- l_gen_nex(df = highlight[which(
+          highlight$Ref == "-"
+        ), ], type = "INS")
+      }
+    } else {
+      highlight$Gene.refGene_new <- l_gen_nex(df = highlight, type = "SNV")
+    }
+    # Cancer Consortium Meta-Knowledgebase
+    highlight$AAChange <- meta(df = highlight)
 
-      # Function
-      highlight$ExonicFunc.refGene <- ex_func(df = highlight)
+    # Function
+    highlight$ExonicFunc.refGene <- ex_func(df = highlight)
 
-      # VarSome links
-      highlight$Varsome <- varsome(df = highlight, mode = "2")
+    # VarSome links
+    highlight$Varsome <- varsome(df = highlight, mode = "2")
 
-      # VAF
-      if (Mode %in% c("Tumor", "Germline")) {
-        highlight$VAF <- gsub(
+    # VAF
+    if (Mode %in% c("Tumor", "Germline")) {
+      highlight$VAF <- gsub(
+        pattern = "%", replacement = "",
+        x = highlight$Variant_Allele_Frequency
+      )
+      if (protocol == "panelTumor" | protocol == "tumorOnly") {
+        highlight$VAF <- as.numeric(highlight$VAF)*100
+      }
+      highlight$VAF <- paste0(
+        highlight$VAF, " (", highlight$Variant_Reads, ")"
+      )
+    } else if (Mode == "LoH") {
+      highlight$VAF_Normal <- gsub(
+        pattern = "%", replacement = "",
+        x = highlight$VAF_Normal, fixed = TRUE
+      )
+      highlight$VAF_Tumor <- gsub(
+        pattern = "%",replacement = "",
+        x = highlight$VAF_Tumor, fixed = TRUE
+      )
+      highlight$VAF_normal <- paste0(
+        highlight$VAF_Normal, " (", highlight$Count_Normal, ")"
+      )
+      highlight$VAF_tumor <- paste0(
+        highlight$VAF_Tumor, " (", highlight$Count_Tumor, ")"
+      )
+    }
+    # InterVar (ACMG)
+    highlight$combineInterVarClinVar <- acmg(df = highlight)[, 1]
+    highlight$Classification <- acmg(df = highlight)[, 2]
+
+    # REVEL
+    res_revel <- revel(df = highlight)
+    highlight$REVEL <- res_revel$revel
+    highlight$REVEL_cat <- res_revel$cat
+
+    # COSMIC
+    highlight$cosmic <- cosmic(df = highlight)
+
+    # Order table
+    if (Mode %in% c("Tumor", "Germline")) {
+      highlight <- highlight[order(
+        as.numeric(gsub(
           pattern = "%", replacement = "",
           x = highlight$Variant_Allele_Frequency
-        )
-        if (protocol == "panelTumor" | protocol == "tumorOnly") {
-          highlight$VAF <- as.numeric(highlight$VAF)*100
-        }
-        highlight$VAF <- paste0(
-          highlight$VAF, " (", highlight$Variant_Reads, ")"
-        )
-      } else if (Mode == "LoH") {
-        highlight$VAF_Normal <- gsub(
-          pattern = "%", replacement = "",
-          x = highlight$VAF_Normal, fixed = TRUE
-        )
-        highlight$VAF_Tumor <- gsub(
-          pattern = "%",replacement = "",
-          x = highlight$VAF_Tumor, fixed = TRUE
-        )
-        highlight$VAF_normal <- paste0(
-          highlight$VAF_Normal, " (", highlight$Count_Normal, ")"
-        )
-        highlight$VAF_tumor <- paste0(
-          highlight$VAF_Tumor, " (", highlight$Count_Tumor, ")"
-        )
-      }
-      # InterVar (ACMG)
-      highlight$combineInterVarClinVar <- acmg(df = highlight)[, 1]
-      highlight$Classification <- acmg(df = highlight)[, 2]
-
-      # REVEL
-      res_revel <- revel(df = highlight)
-      highlight$REVEL <- res_revel$revel
-      highlight$REVEL_cat <- res_revel$cat
-
-      # COSMIC
-      highlight$cosmic <- cosmic(df = highlight)
-
-      # Order table
-      if (Mode %in% c("Tumor", "Germline")) {
-        highlight <- highlight[order(
-          as.numeric(gsub(
-            pattern = "%", replacement = "",
-            x = highlight$Variant_Allele_Frequency
-          )),
-          decreasing = TRUE
-        ), , drop = FALSE]
-      } else if (Mode == "LoH") {
-        highlight <- highlight[order(
-          as.numeric(highlight$VAF_Tumor), decreasing = TRUE
-        ), , drop = FALSE]
-      }
-      highlight <- highlight[order(
-        as.numeric(highlight$Classification), decreasing = TRUE
+        )),
+        decreasing = TRUE
       ), , drop = FALSE]
-      id_hs <- which(highlight$is_hotspot != 0)
-
-      # cancer genes
-      highlight$Cancergene <- "."
-      highlight$Cancergene[which(highlight$is_tumorsuppressor == 1)] <- "TSG"
-      highlight$Cancergene[which(highlight$is_oncogene == 1)] <- "OG"
-      highlight$Cancergene[which(
-        highlight$is_oncogene == 1 & highlight$is_tumorsuppressor == 1
-      )] <- "both"
-
-      # Population frequency
-      highlight$AF_popmax <- as.character(format(
-        as.numeric(highlight$AF_popmax), scientific = TRUE, digits = 2
-      ))
-      highlight$AF_popmax[is.na(highlight$AF_popmax)] <- "."
-
-      # output
-      if (Mode == "Tumor") {
-        muts_tab <- highlight[, c(
-          "Gene.refGene_new",
-          "AAChange",
-          "Varsome",
-          "VAF",
-          "AF_popmax",
-          "combineInterVarClinVar",
-          "REVEL_cat",
-          "cosmic",
-          "Cancergene"
-        )]
-        colnames(muts_tab) <- c(
-          "Gen",
-          "AA-Austausch",
-          "Funktion / VarSome",
-          "VAF [\\%] (Coverage)",
-          "MAF",
-          "InterVar | ClinVar",
-          "REVEL",
-          "Cosmic",
-          "Cancergene"
-        )
-      } else if (Mode == "LoH") {
-        muts_tab <- highlight[, c(
-          "Gene.refGene_new",
-          "AAChange",
-          "Varsome",
-          "VAF_tumor",
-          "VAF_normal",
-          "AF_popmax",
-          "combineInterVarClinVar",
-          "REVEL_cat",
-          "cosmic",
-          "Cancergene"
-        )]
-        colnames(muts_tab) <- c(
-          "Gen",
-          "AA-Austausch",
-          "Funktion / VarSome",
-          "VAF [\\%] (Coverage) Tumor",
-          "VAF [\\%] (Coverage) Keimbahn",
-          "MAF",
-          "InterVar | ClinVar",
-          "REVEL",
-         "Cosmic",
-         "Cancergene"
-        )
-      } else if (Mode == "Germline") {
-        muts_tab <- highlight[, c(
-          "Gene.refGene_new",
-          "AAChange",
-          "Varsome",
-          "VAF",
-          "AF_popmax",
-          "combineInterVarClinVar",
-          "REVEL_cat",
-          "cosmic",
-          "Cancergene"
-        )]
-        colnames(muts_tab) <- c(
-          "Gen",
-          "AA-Austausch",
-          "Funktion / VarSome",
-          "VAF [\\%] (Coverage)",
-          "MAF",
-          "InterVar | ClinVar",
-          "REVEL",
-          "Cosmic",
-          "Cancergene"
-        )
-      }
+    } else if (Mode == "LoH") {
+      highlight <- highlight[order(
+        as.numeric(highlight$VAF_Tumor), decreasing = TRUE
+      ), , drop = FALSE]
     }
-    return(list(muts_tab = muts_tab, id_hs = id_hs))
+    highlight <- highlight[order(
+      as.numeric(highlight$Classification), decreasing = TRUE
+    ), , drop = FALSE]
+    id_hs <- which(highlight$is_hotspot != 0)
+
+    # cancer genes
+    highlight$Cancergene <- "."
+    highlight$Cancergene[which(highlight$is_tumorsuppressor == 1)] <- "TSG"
+    highlight$Cancergene[which(highlight$is_oncogene == 1)] <- "OG"
+    highlight$Cancergene[which(
+      highlight$is_oncogene == 1 & highlight$is_tumorsuppressor == 1
+    )] <- "both"
+
+    # Population frequency
+    highlight$AF_popmax <- as.character(format(
+      as.numeric(highlight$AF_popmax), scientific = TRUE, digits = 2
+    ))
+    highlight$AF_popmax[is.na(highlight$AF_popmax)] <- "."
+
+    # output
+    if (Mode == "Tumor") {
+      muts_tab <- highlight[, c(
+        "Gene.refGene_new",
+        "AAChange",
+        "Varsome",
+        "VAF",
+        "AF_popmax",
+        "combineInterVarClinVar",
+        "REVEL_cat",
+        "cosmic",
+        "Cancergene"
+      )]
+      colnames(muts_tab) <- c(
+        "Gen",
+        "AA-Austausch",
+        "Funktion / VarSome",
+        "VAF [\\%] (Coverage)",
+        "MAF",
+        "InterVar | ClinVar",
+        "REVEL",
+        "Cosmic",
+        "Cancergene"
+      )
+    } else if (Mode == "LoH") {
+      muts_tab <- highlight[, c(
+        "Gene.refGene_new",
+        "AAChange",
+        "Varsome",
+        "VAF_tumor",
+        "VAF_normal",
+        "AF_popmax",
+        "combineInterVarClinVar",
+        "REVEL_cat",
+        "cosmic",
+        "Cancergene"
+      )]
+      colnames(muts_tab) <- c(
+        "Gen",
+        "AA-Austausch",
+        "Funktion / VarSome",
+        "VAF [\\%] (Coverage) Tumor",
+        "VAF [\\%] (Coverage) Keimbahn",
+        "MAF",
+        "InterVar | ClinVar",
+        "REVEL",
+        "Cosmic",
+        "Cancergene"
+      )
+    } else if (Mode == "Germline") {
+      muts_tab <- highlight[, c(
+        "Gene.refGene_new",
+        "AAChange",
+        "Varsome",
+        "VAF",
+        "AF_popmax",
+        "combineInterVarClinVar",
+        "REVEL_cat",
+        "cosmic",
+        "Cancergene"
+      )]
+      colnames(muts_tab) <- c(
+        "Gen",
+        "AA-Austausch",
+        "Funktion / VarSome",
+        "VAF [\\%] (Coverage)",
+        "MAF",
+        "InterVar | ClinVar",
+        "REVEL",
+        "Cosmic",
+        "Cancergene"
+      )
+    }
+  }
+  return(list(muts_tab = muts_tab, id_hs = id_hs))
  }
  
 summary_quality <- function(stats, protocol) {
