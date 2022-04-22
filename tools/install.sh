@@ -3,7 +3,7 @@
 # variables
 readonly VERSION_TRIMMOMATIC="0.39"
 # 2.20.6
-readonly VERSION_PICARD="2.26.4"
+readonly VERSION_PICARD="2.27.1"
 readonly VERSION_VARSCAN="2.4.4"
 # 2.28.0
 readonly VERSION_BEDTOOLS="2.30.0"
@@ -175,9 +175,11 @@ echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 #################
 # fusioncatcher #
 #################
-cd ${DIR_SCRIPT}
-wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
-python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
+#cd ${DIR_SCRIPT}
+#wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
+#python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
+cd ${DIR_SCRIPT}/fusioncatcher/tools/
+./install_tools.sh
 
 ##################
 # sequenza-utils #
