@@ -765,7 +765,7 @@ highlight <- function(muts_tab, protocol) {
 highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
  highlight <- muts_tab
   if (dim(muts_tab)[1] == 0) {
-     highlight <- data.frame()
+     highlight <- NULL
      id_hs <- c()
     } else {
       # Genome Nexus
@@ -773,7 +773,9 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
         lapply(
           strsplit(
             x = as.character(highlight$Gene.refGene), split = ";", fixed = TRUE
-          ), function(x) { return(x[[1]]) }
+          ), function(x) {
+            return(x[[1]])
+          }
         )
       )
       highlight$Gene.refGene_new <- highlight$Gene.refGene

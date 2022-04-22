@@ -175,9 +175,11 @@ echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 #################
 # fusioncatcher #
 #################
-cd ${DIR_SCRIPT}
-wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
-python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
+#cd ${DIR_SCRIPT}
+#wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
+#python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
+cd ${DIR_SCRIPT}/fusioncatcher/tools/
+./install_tools.sh
 
 ##################
 # sequenza-utils #

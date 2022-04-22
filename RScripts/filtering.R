@@ -125,7 +125,7 @@ filtering <- function(
   if (length(syn.snv) > 0) {
     x$ExonicFunc.refGene[syn.snv] <- x[syn.snv, "Consequence_snpEff"]
   }
-  
+
   # Filter for function
   x <- filt(x, "intergenic")
   x <- filt(x, "intronic")
