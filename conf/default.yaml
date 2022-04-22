@@ -14,7 +14,7 @@ common:
         # base filenames of the input files, e.g. sample_ID_DNA_S7_L00 for sample_ID_DNA_S7_L001_R1_001.fastq.gz, and provide the number of paired-end files, i.e. only give the number for one direction (R1 or R2)
         tumor: Sample_ID_DNA_S7_L00
         numberOfFiles: 4
-  entity: BRCA
+  entity: Other
   RNA:
     # folder contatining RNA fastq files for RNA fusions
     folder: RNA

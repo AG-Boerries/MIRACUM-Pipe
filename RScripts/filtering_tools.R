@@ -29,12 +29,12 @@ tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
   if (mode != "T") {
     tmb <- NULL
   } else {
-    bed <- read.delim(covered_exons, header = FALSE)
+    bed <- read.delim(covered_exons, header = FALSE, comment.char = "#")
     mani_gr <- GRanges(seqnames = bed$V1, strand = "*",
                        ranges = IRanges(start = bed$V2, end = bed$V3))
     mani_gr <- reduce(mani_gr)
     mut_gr <- GRanges(seqnames = x$Chr, strand = "*",
-                      ranges = IRanges(start = x$Start , end = x$Start))
+                      ranges = IRanges(start = x$Start, end = x$Start))
     #
     exon_region <- sum(width(mani_gr))/1000000
     used_exon_region <- exon_region * cov_t
@@ -46,13 +46,13 @@ tmb_ex <- function(x, covered_exons, mode = "T", cov_t) {
 
 covered_region <- function(sureselect, mode = "T") {
   if (mode == "T") {
-    bed <- read.delim(sureselect, header = FALSE)
+    bed <- read.delim(sureselect, header = FALSE, comment.char = "#")
     gr <- GRanges(
       seqnames = bed$V1, strand = "*",
       ranges = IRanges(start = bed$V2, end = bed$V3)
     )
     gr <- reduce(gr)
-    region <- sum(width(gr))/1000000
+    region <- sum(width(gr)) / 1000000
   } else {
     region <- NULL
   }
@@ -1045,8 +1045,8 @@ addCondel <- function(x, dbfile){
   return(x)
 }
 
-target_check <- function(input, sureselect){
-  man <- read.delim(file = sureselect, header = FALSE)
+target_check <- function(input, sureselect) {
+  man <- read.delim(file = sureselect, header = FALSE, comment.char = "#")
   gr_man <- makeGRangesFromDataFrame(man[, c(1:3)], keep.extra.columns = FALSE,
                                     ignore.strand = TRUE, seqinfo = NULL, seqnames.field = "V1",
                                     start.field = "V2", end.field = "V3", starts.in.df.are.0based = FALSE)
