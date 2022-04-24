@@ -101,6 +101,22 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
 readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
 readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
 readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
+readonly HRD_INFO=${DIR_WES}/${NameD}.small.seqz._info_seg.txt
+
+# HRD
+if [ ! -f "${HRD_REF_WIG}" ]; then
+    echo "${HRD_REF_WIG} does not exist. Generating ..."
+    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
+fi
+
+${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${bam}" --tumor "${bam}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" \
+  -C ${SEQUENZA_CHROMOSOMES} -o "${HRD_OUTPUT}"
+${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
+
+# Extract ploidy and purity from sequenza
+PLOIDY=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(round(read.table('${HRD_INFO}', header = T)\$ploidy))")
+CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.table('${HRD_INFO}', header = T)\$cellularity)")
 
 # build config file
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
@@ -117,7 +133,8 @@ minCNAlength = 3
 maxThreads = ${CFG_COMMON_CPUCORES}
 noisyData = TRUE
 outputDir = ${DIR_CNV_OUTPUT}
-ploidy = 2
+ploidy = ${PLOIDY}
+contamination = ${CONTAMINATION}
 printNA = FALSE
 readCountThreshold = 50
 samtools = ${BIN_SAMTOOLS}
@@ -125,7 +142,6 @@ sex = ${CFG_SEX}
 step = 0
 window = 0
 uniqueMatch = TRUE
-contaminationAdjustment = TRUE
 
 [sample]
 
@@ -141,14 +157,3 @@ EOI
 # run CNV calling
 export PATH="${BIN_SAMTOOLS}:${PATH}"
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
-
-# HRD
-if [ ! -f "${HRD_REF_WIG}" ]; then
-    echo "${HRD_REF_WIG} does not exist. Generating ..."
-    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
-fi
-
-${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${bam}" --tumor "${bam}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" \
-  -C ${SEQUENZA_CHROMOSOMES} -o "${HRD_OUTPUT}"
-${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
-${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
