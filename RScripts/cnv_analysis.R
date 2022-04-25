@@ -46,6 +46,11 @@ cnv_analysis <- function(
   load(paste(path_data, "hallmarksOfCancer_GeneSets.RData", sep = "/"))
   targets <- read.table(targets_txt)
 
+  print("HRD")
+  hrd <- hrd_extr(hrd_file)
+  print("Purity")
+  pur <- purity_extr(purity_file)
+
   pvalue_txt <- assess_significance(
     ratio_file = ratio_file,
     cnvs_file = cnvs_file
@@ -127,11 +132,6 @@ cnv_analysis <- function(
       outfile_seg
     )
   }
-
-  print("HRD")
-  hrd <- hrd_extr(hrd_file)
-  print("Purity")
-  pur <- purity_extr(purity_file)
 
   if (sureselect_type == "TSO500") {
     if(dim(out)[1] != 0) {

@@ -115,6 +115,7 @@ noisyData = TRUE
 outputDir = ${DIR_CNV_OUTPUT}
 ploidy = ${PLOIDY}
 contamination = ${CONTAMINATION}
+contaminationAdjustment = TRUE
 printNA = FALSE
 readCountThreshold = 50
 samtools = ${BIN_SAMTOOLS}
@@ -134,6 +135,14 @@ mateOrientation = FR
 mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_gd_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 inputFormat = BAM
 mateOrientation = FR
+
+[BAF]
+
+makePileup = ${CFG_REFERENCE_DBSNP}
+fastaFile = ${FILE_GENOME}
+minimalCoveragePerPosition = ${CFG_VARSCAN_SOMATIC_MINCOVERAGE}
+minimalQualityPerPosition = ${CFG_GENERAL_MINBASEQUAL}
+SNPfile = ${CFG_REFERENCE_DBSNP}
 
 [target]
 

@@ -309,7 +309,7 @@ panel:
   mutect:
     #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
     #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
-    callableDepth: 8
+    callableDepth: 20
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
 

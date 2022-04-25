@@ -126,7 +126,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot) {
   ratio_new <- ratio
   ratio_new$Value <- ratio_new$Ratio*ploidy
   ratio_new$Chromosome <- paste('chr', ratio_new$Chromosome, sep = '')
-  
+
   pdf(file = outfile_plot, width = 15, height = 15, pointsize = 20)
   gtrellis_layout(n_track = 3, nrow = 5, byrow = F, equal_width = FALSE,
                   track_axis = c(FALSE, TRUE, FALSE), 

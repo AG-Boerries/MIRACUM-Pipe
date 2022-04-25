@@ -3,11 +3,13 @@
 ## Release v4.0.0
 
 * Integration of Mutect2 (GATK4) for tumorOnly and Panel variant calling
-* Analysis of the TSO500 panel handels of the DNA and RNA part of the panel
-* Calcualtion of various complex biomarkers like TMB, MSI, HRD,
+* Analysis of the TSO500 panel makes us of the DNA and RNA part of the panel
+* Integration of sequenza for HRD calculation
+* Calcualtion of various complex biomarkers like TMB, MSI, HRD
 * Calcualtion of more QC metrics, e.g. bioinformatic tumor cell content (purity)
+* Using predicted ploidy and tumor cell content values from sequenta as input for ControlFREEC
 * Various bugfixes
-* Adjustments of the PDF report mainly structure and readability
+* Adjustments of the PDF report; mainly structure and readability
 
 ## Release v3.1.0
 
