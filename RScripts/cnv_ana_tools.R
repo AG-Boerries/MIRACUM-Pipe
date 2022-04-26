@@ -927,6 +927,7 @@ freec2seg <- function(cnvs_file, cpn_file, id, outfile_seg) {
   }
 
   bam$seg.mean[!is.finite(bam$seg.mean)] <- -1
-
+  bam$num.mark <- as.integer(bam$num.mark)
+  
   write.table(bam, outfile_seg, sep = "\t", quote = F, row.names = F)
 }
