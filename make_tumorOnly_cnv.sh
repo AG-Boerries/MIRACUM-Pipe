@@ -120,6 +120,7 @@ sex = ${CFG_SEX}
 step = 0
 window = 0
 uniqueMatch = TRUE
+BedGraphOutput = TRUE
 
 [sample]
 

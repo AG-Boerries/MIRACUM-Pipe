@@ -8,6 +8,7 @@
 * Calcualtion of various complex biomarkers like TMB, MSI, HRD
 * Calcualtion of more QC metrics, e.g. bioinformatic tumor cell content (purity)
 * Using predicted ploidy and tumor cell content values from sequenta as input for ControlFREEC
+* Use BAF functionality of ControlFREEC
 * Various bugfixes
 * Adjustments of the PDF report; mainly structure and readability
 
