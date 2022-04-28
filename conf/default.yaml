@@ -309,7 +309,7 @@ panel:
   mutect:
     #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
     #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
-    callableDepth: 8
+    callableDepth: 20
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
 
@@ -579,7 +579,7 @@ reference:
     captureRegionName: V5UTR
     # target capture correlation factors for mutation signature analysis
     captureCorFactors : targetCapture_cor_factors.rda
-    # covered exons by capture kit; basically intersection of exome with capture regions
+    # covered exons by capture kit; basically intersection of exons with capture regions
     # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed -u
     coveredExons: exons_5UTR.bed
     # positive list for genes in germline to be reported (e.g. by ACMG)

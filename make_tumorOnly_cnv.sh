@@ -111,13 +111,16 @@ noisyData = TRUE
 outputDir = ${DIR_CNV_OUTPUT}
 ploidy = ${PLOIDY}
 contamination = ${CONTAMINATION}
+contaminationAdjustment = TRUE
 printNA = FALSE
 readCountThreshold = 50
 samtools = ${BIN_SAMTOOLS}
+bedtools = ${DIR_TOOLS}/bedtools2/bin/bedtools
 sex = ${CFG_SEX}
 step = 0
 window = 0
 uniqueMatch = TRUE
+BedGraphOutput = TRUE
 
 [sample]
 
