@@ -125,6 +125,14 @@ mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_td_output.sort.rmdup.real
 inputFormat = BAM
 mateOrientation = FR
 
+[BAF]
+
+makePileup = ${CFG_REFERENCE_DBSNP}
+fastaFile = ${FILE_GENOME}
+minimalCoveragePerPosition = ${CFG_TUMORONLY_VARSCAN_MPILEUP2SNP_MINCOVERAGE}
+minimalQualityPerPosition = ${CFG_GENERAL_MINBASEQUAL}
+SNPfile = ${CFG_REFERENCE_DBSNP}
+
 [target]
 
 captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
