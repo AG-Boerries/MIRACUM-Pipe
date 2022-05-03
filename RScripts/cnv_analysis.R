@@ -51,6 +51,7 @@ cnv_analysis <- function(
   print("Purity")
   pur <- purity_extr(purity_file)
   ploidy <- round(pur$ploidy)
+  print(paste("Processing CNVs with Ploidy", ploidy))
 
   pvalue_txt <- assess_significance(
     ratio_file = ratio_file,
@@ -60,7 +61,7 @@ cnv_analysis <- function(
   make_cnv_ideo_sig(
     ratio_file = pvalue_txt,
     outfile_ideogram = cnv_ideogram_plot,
-    ploidy <- ploidy
+    ploidy = ploidy
   )
 
   cnvs_annotated <- cnv_annotation(
