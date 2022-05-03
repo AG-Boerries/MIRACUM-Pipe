@@ -68,7 +68,7 @@ kable(tmp1, booktabs = T, row.names = F, caption = "\\footnotesize{Schl\"usseler
 {
 <<highlight, echo=FALSE, eval=TRUE, results="tex", warning=FALSE>>=
 tmp <- highlight_table$highlight
-if(dim(tmp) != 0) {
+if(dim(tmp)[1] != 0) {
   cap <- "\\footnotesize{Mutationen mit ACMG Klassifizierungen: Warscheinlich Pathogen (4), Pathogen (5), Conflicting Interpretations of Pathogenicity (4*). Revel: \\textbf{D}(eleterious), \\textbf{N}(eutral). Hotspots sind \\textbf{fett} dargestellt.}"
   if(length(highlight_table$id_hs) > 0) {
     kable(tmp, format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F, escape = FALSE) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% row_spec(highlight_table$id_hs, bold = TRUE) %>% column_spec(1, bold = T) %>% row_spec(0, angle = 60)
