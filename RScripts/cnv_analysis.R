@@ -50,6 +50,7 @@ cnv_analysis <- function(
   hrd <- hrd_extr(hrd_file)
   print("Purity")
   pur <- purity_extr(purity_file)
+  ploidy <- round(pur$ploidy)
 
   pvalue_txt <- assess_significance(
     ratio_file = ratio_file,
@@ -58,7 +59,8 @@ cnv_analysis <- function(
 
   make_cnv_ideo_sig(
     ratio_file = pvalue_txt,
-    outfile_ideogram = cnv_ideogram_plot
+    outfile_ideogram = cnv_ideogram_plot,
+    ploidy <- ploidy
   )
 
   cnvs_annotated <- cnv_annotation(
@@ -74,7 +76,8 @@ cnv_analysis <- function(
     targets = targets,
     db = hallmarksOfCancer,
     path_data = path_data,
-    path_script = path_script
+    path_script = path_script,
+    ploidy = ploidy
   )
   if (sureselect_type == "TSO500") {
     ampl_genes <- read.delim(
@@ -123,7 +126,8 @@ cnv_analysis <- function(
       id,
       outfile_cbioportal,
       gender = gender,
-      ampl_genes = ampl_genes
+      ampl_genes = ampl_genes,
+      ploidy = ploidy
     )
     freec2seg(
       cnvs_file,
