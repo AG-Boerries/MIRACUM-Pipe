@@ -44,7 +44,7 @@ assess_significance <- function(ratio_file, cnvs_file) {
 
     KS <- function(values,normals){
       resultks <- try(ks.test(values, score(normals)), silent = TRUE)
-      if (class(resultks) == "try-error") {
+      if (inherits(class(resultks), "try-error")) {
         return(list("statistic" = NA, "p.value" = NA, "alternative" = NA,
                     "method" = NA, "data.name" = NA))
       } else {
@@ -398,6 +398,7 @@ cnv_annotation <- function(
 # Try annotation first with SQL server if this fails try with biomaRt, if no internet connection available use offline
   if (cnv_region_annotation == "online") {
     print("Online CNV Region annotation mode.")
+    ensembl <- NULL
     for(i in 1:nrow(x)) {
       cat("Processing CNV#", i, "\n")
 

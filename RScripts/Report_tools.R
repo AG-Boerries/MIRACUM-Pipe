@@ -1075,7 +1075,7 @@ summary_quality <- function(stats, protocol) {
       )
       q_n1 <- paste0(warn_n, collapse = ", ")
     } else {
-      q_n1 <- "Keine"
+      q_n1 <- "Keine."
     }
     tab <- rbind(c("Tumor", q_t1), c("Keimbahn", q_n1))
     colnames(tab) <- c("Probe" , "Auff\"alligkeiten")
