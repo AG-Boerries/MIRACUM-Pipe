@@ -187,7 +187,7 @@ make_cnv_graph <- function(ratio_file, ploidity = '2', outfile_plot) {
   dev.off()
 }
 
-make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol) {
+make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol, ploidy) {
   #' Make CNV Graph for significant ones
   #'
   #' @description Plot significant CNVs on Genome
@@ -201,7 +201,7 @@ make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol) {
   require(circlize)
   require(ComplexHeatmap)
   ratio <- as.data.frame(ratio_file)
-
+  
   colnames(ratio) <- c(
     "chr",
     "start",
@@ -213,21 +213,29 @@ make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol) {
   )  
   ratio_new <- ratio
   ratio_new$chr <- paste('chr', ratio_new$chr, sep = '')
-
-  col_fun <- colorRamp2(
-    c(0, 1, 3, 4, 5, 6),
-    c("darkblue",
+  
+  ploidies <- c(0, 1, 2, 3, 4, 5, 6)
+  ploidies <- ploidies[-(ploidy + 1)]
+  colors <- c("darkblue",
     "mediumblue",
     "red",
     "firebrick3",
     "red4",
     "darkred")
+  if (ploidy == 1) {
+    colors <- colors[-2]
+    ploidies <- ploidies[-6]
+  }
+  col_fun <- colorRamp2(
+    ploidies,
+    colors
   )
   cm <- ColorMapping(col_fun = col_fun)
   lgd <- color_mapping_legend(cm, plot = FALSE, title = "total Copy Number")
-
-  ratio_new$CopyNumber[which(as.numeric(ratio_new$CopyNumber) > 6)] <- 6
-
+  
+  ratio_new$CopyNumber[which(as.numeric(ratio_new$CopyNumber) > 0 & as.numeric(ratio_new$CopyNumber) < ploidy)] <- 1
+  ratio_new$CopyNumber[which(as.numeric(ratio_new$CopyNumber) > length(ploidies))] <- length(ploidies)
+  
   pdf(file = outfile_ideogram, width = 12, height = 12, pointsize = 20)
   gtrellis_layout(
     n_track = 1,
@@ -241,16 +249,16 @@ make_cnv_ideo_sig <- function(ratio_file, outfile_ideogram, protocol) {
     ideogram_track_height = unit(3, "mm"),
     legend = lgd
   )
-
+  
   tt <- which(
     as.numeric(
-      ratio_new$CopyNumber) > 2 | (as.numeric(
+      ratio_new$CopyNumber) > ploidy | (as.numeric(
         ratio_new$CopyNumber
-      ) < 2 & as.numeric(ratio_new$CopyNumber) != -1
-    )
+      ) < ploidy & as.numeric(ratio_new$CopyNumber) != -1
+      )
   )
   tmp <- ratio_new[tt,]
-
+  
   add_track(
     track = 1, tmp, panel_fun = function(gr) {
       grid.rect(
@@ -514,7 +522,8 @@ cnv_processing <- function(
   targets,
   db,
   path_data,
-  path_script
+  path_script,
+  ploidy
 ) {
   #' CNV Processing
   #'
@@ -559,7 +568,7 @@ cnv_processing <- function(
   # GAIN #
   cnv.genes <- c()
   for(i in 1:length(cnv$status)) {
-    if(cnv$copy.number[i] > 3) {
+    if(cnv$copy.number[i] > ploidy) {
       s <- strsplit(cnv$genes[i], split = ",", fixed = TRUE)
       cnv.genes <- c(cnv.genes, s[[1]])
     }
@@ -640,7 +649,7 @@ cnv_pathways <- function(input, db) {
   return(l)
 }
 
-cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = NULL) {
+cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = NULL, ploidy) {
   #print(gender)
   #print(ampl_genes)
   #' Export annotated CNVs to a txt file
@@ -713,9 +722,9 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = N
   # convert total copy numbers from Control-FREEC to allowed values
   # allowed values -2, -1, 0, 1, 2, NA
   cnvs.out[,3][cnvs.out[,3] == 0] <- -2
-  cnvs.out[,3][cnvs.out[,3] == 1] <- -1
-  cnvs.out[,3][cnvs.out[,3] == 2] <- 0
-  cnvs.out[,3][cnvs.out[,3] <= 6 & cnvs.out[,3] >= 3 ] <- 1
+  cnvs.out[,3][cnvs.out[,3] > 0 && cnvs.out[,3] < ploidy] <- -1
+  cnvs.out[,3][cnvs.out[,3] == ploidy] <- 0
+  cnvs.out[,3][cnvs.out[,3] <= 6 & cnvs.out[,3] > ploidy] <- 1
   cnvs.out[,3][cnvs.out[,3] > 6] <- 2
 
   write.table(
