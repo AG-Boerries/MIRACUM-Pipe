@@ -136,7 +136,7 @@ Im Anhang befinden sich Tabellen zu allen detektierten somatischen, LoH und Keim
 \ifthenelse{\equal{\detokenize{\Sexpr{nchar(actionable_genes) > 0}}}{\detokenize{TRUE}}}{Die Keimbahnmutationen sind gemäß der Empfehlungen des American College of Medical Genetics für Zusatzbefunde bei Exom- und Genom-Untersuchungen (ACMG SF v2.0, PubMed 27854360) gefiltert, sodass nur Gene berichtet werden, aus deren Veränderung sich gezielt therapeutische oder präventive Maßnahmen ableiten lassen.}{}
 
 <<som_mut_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(sum_mut_cg$muts_tab)[1] == 0) {
+if(is.null(sum_mut_cg$muts_tab) || dim(sum_mut_cg$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.\\label{som_mut_cg}", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Alle identifizierten somatischen Mutationen in Cancergenes geordnet nach VAF.\\label{som_mut_cg}."
@@ -150,7 +150,7 @@ if(dim(sum_mut_cg$muts_tab)[1] == 0) {
 
 \subsubsection{LoH}
 <<loh_cg, eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(sum_loh_cg$muts_tab)[1] == 0) {
+if(is.null(sum_loh_cg$muts_tab) || dim(sum_loh_cg$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   cap_1 <- "Identifizierte Loss of Heterozygosity geordnet nach VAF in der Tumorprobe \\label{loh_cg}."
@@ -297,7 +297,7 @@ if(dim(som_mut_topart)[1] == 0) {
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Veränderungen in der Keimbahn}
 Es werden alle Keimbahnmutationen in Cancergenes gelistet (Tab \ref{gl_cg}). Die Spalten sind analog zu Tabelle \ref{som_mut_cg} in Kapitel \ref{som_mut_section}.
 <<gl_cg, echo=FALSE, eval=TRUE, results='tex'>>=
-if(dim(germ_mut_cg$muts_tab)[1] == 0){
+if(is.null(germ_mut_cg$muts_tab) || dim(germ_mut_cg$muts_tab)[1] == 0){
   cap <- "Keine Mutationen in Cancergenes in der Keimbahn identifiziert.\\label{gl_cg}"
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage)' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = cap, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 7), width = "5em") %>% column_spec(c(1, 5), width = "5em") %>% column_spec(c(3:4), width = "3em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
@@ -447,7 +447,7 @@ Die Mean-Coverage und die Gesamtcoverage der beiden Proben ist ein weiteres Qual
 \section{Tabellen aller detektierten Mutationen}
 \subsection{Somatische Mutationen}\label{all_som_mut}
 <<eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(som_all$muts_tab)[1] == 0) {
+if(is.null(som_all$muts_tab) || dim(som_all$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Es wurden keine somatischen Mutationen in Cancergenes identifiziert.", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position"), font_size = 9) %>% column_spec(c(2, 7), width = "6em") %>% column_spec(c(1, 5), width = "4em") %>% column_spec(c(3:4), width = "4em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   if (length(som_all$id_hs) > 0) {
@@ -460,7 +460,7 @@ if(dim(som_all$muts_tab)[1] == 0) {
 
 \subsection{Loss of Heterozygosity}\label{all_loh}
 <<eval=TRUE, results="tex", echo=FALSE>>=
-if(dim(loh_all$muts_tab)[1] == 0) {
+if(is.null(loh_all$muts_tab) || dim(loh_all$muts_tab)[1] == 0) {
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage) Tumor' = c("."), 'VAF (Coverage) Keimbahn' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = cap_1, booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(8), width = "6em") %>% column_spec(c(1, 2), width = "5em") %>% column_spec(c(4:5), width = "3em") %>% column_spec(c(7, 9:10), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   if (length(loh_all$id_hs) > 0) {
@@ -474,7 +474,7 @@ if(dim(loh_all$muts_tab)[1] == 0) {
 
 \ifthenelse{\equal{\detokenize{\Sexpr{protocol}}}{\detokenize{somaticGermline}}}{\subsection{Keimbahn Mutationen}\label{all_germline}
 <<echo=FALSE, eval=TRUE, results='tex'>>=
-if(dim(germ_all$muts_tab)[1] == 0){
+if(is.null(germ_all$muts_tab) || dim(germ_all$muts_tab)[1] == 0){
   kable(data.frame('Gen' = c("."), 'AA-Austausch' = c("."), 'Funktion' = c("."), 'VAF (Coverage)' = c("."), 'MAF' = c("."), 'Condel' = c("."), 'Cosmic' = c("."), 'OG' = c("."), 'TSG' = c(".")), format = "latex", caption = "Keine Mutationen in Cancergenes in der Keimbahn identifiziert.", booktabs = T, longtable = T, digits = 2, row.names = F) %>% kable_styling(latex_options = c( "HOLD_position", "repeat_header"), font_size = 9) %>% column_spec(c(2, 7), width = "5em") %>% column_spec(c(1, 5), width = "5em") %>% column_spec(c(3:4), width = "3em") %>% column_spec(c(6, 8:9), width = "2em") %>% row_spec(0, angle = 60)
 } else {
   if (length(germ_all$id_hs) > 1) {

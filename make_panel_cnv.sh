@@ -101,7 +101,7 @@ readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
 readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
 readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
 readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
-readonly HRD_INFO=${DIR_WES}/${NameD}.small.seqz._info_seg.txt
+readonly HRD_MODEL=${DIR_WES}/${NameD}_sequenza/${NameD}_alternative_solutions.txt
 
 # HRD
 if [ ! -f "${HRD_REF_WIG}" ]; then
@@ -115,8 +115,8 @@ ${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
 
 # Extract ploidy and purity from sequenza
-PLOIDY=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(round(read.table('${HRD_INFO}', header = T)\$ploidy))")
-CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.table('${HRD_INFO}', header = T)\$cellularity)")
+PLOIDY=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(round(read.delim('${HRD_MODEL}', header = T)[1, 2]))")
+CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.delim('${HRD_MODEL}', header = T)[1, 1])")
 
 # build config file
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
