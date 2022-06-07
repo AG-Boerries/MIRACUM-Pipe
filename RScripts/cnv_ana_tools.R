@@ -722,7 +722,7 @@ cnvs2cbioportal <- function(cnvs, id, outfile_cbioportal, gender, ampl_genes = N
   # convert total copy numbers from Control-FREEC to allowed values
   # allowed values -2, -1, 0, 1, 2, NA
   cnvs.out[,3][cnvs.out[,3] == 0] <- -2
-  cnvs.out[,3][cnvs.out[,3] > 0 && cnvs.out[,3] < ploidy] <- -1
+  cnvs.out[,3][cnvs.out[,3] > 0 & cnvs.out[,3] < ploidy] <- -1
   cnvs.out[,3][cnvs.out[,3] == ploidy] <- 0
   cnvs.out[,3][cnvs.out[,3] <= 6 & cnvs.out[,3] > ploidy] <- 1
   cnvs.out[,3][cnvs.out[,3] > 6] <- 2
