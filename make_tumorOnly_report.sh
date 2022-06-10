@@ -79,7 +79,7 @@ ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${C
   "${CFG_AMPLIFICATION_GENES}" "${CFG_UCSC_SERVER}" "${CFG_CNV_ANNOTATION}"
 
 # translate to tex
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/Report.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_tumorOnly.Rnw');"
+${BIN_RSCRIPT} -e "load('${DIR_ANALYSES}/Report.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_tumorOnly.Rnw');"
 
 # fix possible knitr syntax issues
 sed -i 's/\\textbf{.\\textbf{.}/\\textbf{.}/' ${DIR_ANALYSES}/Report.tex
