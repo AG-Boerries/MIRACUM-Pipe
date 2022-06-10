@@ -662,7 +662,7 @@ highlight <- function(muts_tab, protocol) {
         highlight$Ref == "-"
       )] <- l_gen_nex(df = highlight[which(
         highlight$Ref == "-"
-      )], type = "INS")
+      ), ], type = "INS")
       }
     } else {
       highlight$Gene.refGene_new <- l_gen_nex(df = highlight, type = "SNV")
