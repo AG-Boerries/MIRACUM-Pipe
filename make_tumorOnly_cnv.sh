@@ -93,7 +93,7 @@ ${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
 
 # Extract ploidy and purity from sequenza
 PLOIDY=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(round(read.delim('${HRD_MODEL}', header = T)[1, 2]))")
-CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.delim('${HRD_MODEL}', header = T)[1, 1]))")
+CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.delim('${HRD_MODEL}', header = T)[1, 1])")
 
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
