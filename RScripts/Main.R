@@ -708,7 +708,8 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
     path_output = path_output,
     sample_name = id,
     outfile_cbioportal = outfile_mutsig_cbioportal,
-    vaf = vaf
+    vaf = vaf,
+    bed_file = bed_file
   )
 } else {
   if (protocol == "panelTumor") {

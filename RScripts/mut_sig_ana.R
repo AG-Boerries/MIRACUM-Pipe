@@ -9,7 +9,8 @@ mut_sig_wCI <- function(
   path_output,
   sample_name,
   outfile_cbioportal,
-  vaf
+  vaf,
+  bed_file
   ) {
   library(getopt)
   library(dplyr)
@@ -31,7 +32,14 @@ mut_sig_wCI <- function(
   } else if (sureselect_type %in% names(targetCapture_cor_factors)){
     targetCapture <- sureselect_type
   } else {
-      error("Unsupported Capture Region Kit.")
+      print("Generating correlation foctors for bed file.")
+      calculate_target_capture_correlation(
+        bed.file = bed_file,
+        genome = ref_genome,
+        targetCapture = target_capture_cor_factors,
+        name = sureselect_type
+      )
+      load(target_capture_cor_factors)
   }
   
   print(ref_genome)
