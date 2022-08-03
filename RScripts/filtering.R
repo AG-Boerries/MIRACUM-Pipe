@@ -510,7 +510,7 @@ filtering_mutect2 <- function(
       protocol = protocol,
       snv_vcf = snpefffile,
       Center = center,
-      refBuild = 'hg19',
+      refBuild = 'GRCh37',
       id = sample,
       sep = "\t",
       idCol = NULL,
