@@ -6,6 +6,11 @@ MIRACUM-Pipe incorporates tools for detecting single nucleotide variants (SNVs),
 
 MIRACUM-Pipe is intended for research use only and not for patient treatment, diagnosis and/or medical records!
 
+## Cite
+
+If you use this repository please cite:
+[![DOI](https://zenodo.org/badge/188185624.svg)](https://zenodo.org/badge/latestdoi/188185624)
+
 ## Getting Started
 
 This repo is intended to be run as docker (see [MIRACUM-Pipe-docker](https://github.com/AG-Boerries/MIRACUM-Pipe-docker)). Alternatively, you can pick a [Galaxy version](https://github.com/AG-Boerries/MIRACUM-Pipe-galaxy).
