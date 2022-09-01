@@ -508,7 +508,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
       )
       if (nrow(filt_result_gd$maf) > 0) {
         write.table(
-          x = maf_comb,
+          x = filt_result_gd$maf,
           file = maf_gd,
           append = F,
           quote = F,
@@ -534,7 +534,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   }
   if (nrow(filt_result_td$maf) > 0) {
     write.table(
-      x = maf_comb,
+      x = filt_result_td$maf,
       file = maf_td,
       append = F,
       quote = F,
@@ -545,7 +545,7 @@ if (protocol == "somaticGermline" | protocol == "somatic") {
   }
     if (nrow(filt_result_loh$maf) > 0) {
     write.table(
-      x = maf_comb,
+      x = filt_result_loh$maf,
       file = maf_loh,
       append = F,
       quote = F,
