@@ -82,7 +82,7 @@ ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${C
 ${BIN_RSCRIPT} -e "load('${DIR_ANALYSES}/Report.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
 
 # fix possible knitr syntax issues
-sed -i 's/\\textbf{.\\textbf{.}/\\textbf{.}/' ${DIR_ANALYSES}/Report.tex
+sed -i 's/\\textbf{.\\textbf{.}/\\textbf{.}/' ${DIR_ANALYSES}/Report_Panel.tex
 
 # PDF report
 mv "${DIR_ANALYSES}/Report_Panel.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex"
