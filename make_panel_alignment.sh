@@ -143,7 +143,11 @@ do
 done
 
 # Merge BAMs
-${BIN_SAMTOOLS} merge -f "${bam}" "${DIR_WES}/${NameD}_1.bam" "${DIR_WES}/${NameD}_2.bam" "${DIR_WES}/${NameD}_3.bam" "${DIR_WES}/${NameD}_4.bam"
+# ${BIN_SAMTOOLS} merge -f "${bam}" "${DIR_WES}/${NameD}_1.bam" "${DIR_WES}/${NameD}_2.bam" "${DIR_WES}/${NameD}_3.bam" "${DIR_WES}/${NameD}_4.bam"
+for f_n in ${file_numbers}
+do
+  ${BIN_SAMTOOLS} merge -f "${bam}" "${DIR_WES}/${NameD}_${f_n}.bam"
+done
 
 ############
 # # Alternative if only two files, one paired-end sample

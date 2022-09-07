@@ -95,7 +95,7 @@ cnv_analysis <- function(
 
   ddr <- cnv_pathways(
     input = out,
-    db = paste(path_data, "DNA_Damage_Response.txt",sep = "/")
+    db = paste(path_data, "DNA_Damage_Response.txt", sep = "/")
   )
   pam <- cnv_pathways(
     input = out,

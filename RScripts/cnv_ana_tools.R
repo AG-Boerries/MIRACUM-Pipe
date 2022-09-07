@@ -31,7 +31,7 @@ assess_significance <- function(ratio_file, cnvs_file) {
   for (i in c(1:length(cnvs[,1]))) {
     values <- score(subsetByOverlaps(ratio.bed, cnvs.bed[i]))
 
-    W <- function(values, normals){
+    W <- function(values, normals) {
       resultw <- try(wilcox.test(values, score(normals)), silent = TRUE)
       if (class(resultw) == "try-error") {
         return(list("statistic" = NA, "parameter" = NA, "p.value" = NA,
@@ -42,9 +42,9 @@ assess_significance <- function(ratio_file, cnvs_file) {
       }
     }
 
-    KS <- function(values,normals){
+    KS <- function(values, normals) {
       resultks <- try(ks.test(values, score(normals)), silent = TRUE)
-      if (inherits(class(resultks), "try-error")) {
+      if (class(resultks) == "try-error") {
         return(list("statistic" = NA, "p.value" = NA, "alternative" = NA,
                     "method" = NA, "data.name" = NA))
       } else {
