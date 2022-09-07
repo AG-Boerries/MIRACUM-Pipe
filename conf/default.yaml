@@ -286,9 +286,9 @@ panel:
       #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
       maxBasequalDiff: 50
       #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
-      minRefAVGRL: 90
+      minRefAVGRL: 80
       #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
-      minVarAVGRL: 90
+      minVarAVGRL: 80
       #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
       maxRlDiff: 0.25
       #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
@@ -298,7 +298,7 @@ panel:
       #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
       minMMQSDiff: 0
       #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
-      maxMMQSDiff: 50
+      maxMMQSDiff: 65
       #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
       minRefMapQual: 15
       #--min-var-mapqual	Minimum average mapping quality for var allele [15]
