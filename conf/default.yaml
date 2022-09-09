@@ -236,7 +236,7 @@ panel:
   varscan:
     mpileup2snp:
       #--min-coverage  Minimum read depth at a position to make a call [8]
-      minCoverage: 20
+      minCoverage: 50
       #--min-reads2    Minimum supporting reads at a position to call variants [2]
       minReads2: 2        
       #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
@@ -264,7 +264,7 @@ panel:
 
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
-      minVarCount: 4
+      minVarCount: 20
       #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
       minVarCountLC: 2
       #--max-somatic-p		Maximum somatic p-value [0.05]
@@ -309,7 +309,7 @@ panel:
   mutect:
     #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
     #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
-    callableDepth: 20
+    callableDepth: 50
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
 
