@@ -770,7 +770,7 @@ if (protocol == "somaticGermline") {
     output <- list(
       Mutations = filt_result_td_mutect2$table,
       CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
-      Mutation_Signatures = mut_sig$Summary
+      Mutation_Signatures = mut_sig
     )
     write.xlsx(
       x = output,
@@ -783,7 +783,7 @@ if (protocol == "somaticGermline") {
   output <- list(
     Mutations = filt_result_td_mutect2$table,
     CopyNumberVariations = cnv_analysis_results$cnvs_annotated$CNVsAnnotated,
-    Mutation_Signatures = mut_sig$Summary
+    Mutation_Signatures = mut_sig
   )
   write.xlsx(
     x = output,
