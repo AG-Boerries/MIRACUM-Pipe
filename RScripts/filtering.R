@@ -389,8 +389,10 @@ filtering_mutect2 <- function(
   # Extract VAF, Readcounts (and Zygosity)
   x <- vrz_gatk(x = x, mode = mode, protocol = protocol)
   
+  x <- normalize_vaf_gatk(x = x)
+
   # VAF Filter
-  x <- exclude_gatk(x, vaf = vaf/100)
+  x <- exclude(x, vaf = vaf)
   
   # Remove Variants with Variant Read Count below 4/20
   x <- mrc(x = x, min_var_count = min_var_count)
