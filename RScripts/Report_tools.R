@@ -676,9 +676,6 @@ highlight <- function(muts_tab, protocol) {
 
     # VAF
     highlight$VAF <- gsub(pattern = "%", replacement = "", x = highlight$VAF)
-    if (protocol == "panelTumor" | protocol == "tumorOnly") {
-      highlight$VAF <- as.numeric(highlight$VAF)*100
-    }
 
     # InterVar (ACMG)
     highlight$Classification <- acmg(df = highlight)[, 2]
@@ -817,9 +814,6 @@ highlight_detail <- function(muts_tab, Mode = "Tumor", protocol) {
         pattern = "%", replacement = "",
         x = highlight$Variant_Allele_Frequency
       )
-      if (protocol == "panelTumor" | protocol == "tumorOnly") {
-        highlight$VAF <- as.numeric(highlight$VAF)*100
-      }
       highlight$VAF <- paste0(
         highlight$VAF, " (", highlight$Variant_Reads, ")"
       )
@@ -1389,9 +1383,6 @@ pthws_mut <- function(df, protocol) {
     df$VAF <- gsub(
       pattern = "%", replacement = "", x = df$VAF, fixed = TRUE
     )
-    if (protocol == "panelTumor" | protocol == "tumorOnly") {
-      df$VAF <- as.numeric(df$VAF)*100
-    }
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
     # AAChange
     df$AAChange <- gsub(
@@ -1481,9 +1472,7 @@ topart_mut <- function(df, protocol) {
     )
     # VAF
     df$VAF <- gsub(pattern = "%", replacement = "", x = df$VAF, fixed = TRUE)
-    if (protocol == "panelTumor" | protocol == "tumorOnly") {
-      df$VAF <- as.numeric(df$VAF)*100
-    }
+
     df$VAF <- paste0(df$VAF, " (", df$Reads, ")")
     # AAChange
     df$AAChange <- gsub(
