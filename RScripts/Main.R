@@ -66,6 +66,7 @@ fusion_genes <- args[28]
 ampl_genes_txt <- args[29]
 ucsc_server <- args[30]
 cnv_region_annotation <- args[31]
+germlineVaf <- as.numeric(args[32])*100
 
 print(ref_genome)
 
@@ -365,7 +366,7 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       id = id,
       protocol = protocol,
       sureselect = bed_file,
-      vaf = vaf,
+      vaf = germlineVaf,
       min_var_count = min_var_count,
       maf = maf_cutoff,
       actionable_genes = actionable_genes,

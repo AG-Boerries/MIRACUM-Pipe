@@ -36,6 +36,7 @@ general:
   maf_cutoff: 0.001
   # minimum variant allele / tumor frequency to call a variant
   minVAF: 0.05
+  minGermlineVAF: 0.25
 
 wes:
   samtools:
