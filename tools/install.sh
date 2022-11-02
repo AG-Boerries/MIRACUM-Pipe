@@ -131,11 +131,13 @@ mv ${DIR_SCRIPT}/bam-readcount/build/bin ${DIR_SCRIPT}/bam-readcount/bin
 rm -rf ${DIR_SCRIPT}/bam-readcount/build
 
 #######
-# bwa #
+# bwa-mem2 #
 #######
-cd ${DIR_SCRIPT}/bwa && make && chmod +x bwa
-rm -f *.o
-
+cd ${DIR_SCRIPT}
+wget https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2 -O bwa-mem2.tar.bz2
+tar -xf bwa-mem2.tar.bz2
+rm bwa-mem2*.tar.bz2
+mv bwa-mem2* bwa-mem2
 
 ##########
 # htslib #

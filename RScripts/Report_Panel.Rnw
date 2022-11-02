@@ -442,7 +442,7 @@ if(is.null(som_all$muts_tab || )dim(som_all$muts_tab)[1] == 0) {
 \begin{itemize}
 \item FastQC: 0.11.10.devel
 \item Trimmomatic: 0.39
-\item BWA: 0.7.17-r1198-dirty
+\item bwa-mem2: 2.2.1
 \item bam-readcount: 0.8.0-unstable-7-625eea2
 \item samtools 1.10
 \item GATK: 3.8-1-0-gf15c1c3ef
