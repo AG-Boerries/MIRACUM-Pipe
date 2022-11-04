@@ -33,7 +33,7 @@ assess_significance <- function(ratio_file, cnvs_file) {
 
     W <- function(values, normals) {
       resultw <- try(wilcox.test(values, score(normals)), silent = TRUE)
-      if (class(resultw) == "try-error") {
+      if (inherits(class(resultw), "try-error")) {
         return(list("statistic" = NA, "parameter" = NA, "p.value" = NA,
                     "null.value" = NA, "alternative" = NA, "method" = NA,
                     "data.name" = NA))
@@ -44,7 +44,7 @@ assess_significance <- function(ratio_file, cnvs_file) {
 
     KS <- function(values, normals) {
       resultks <- try(ks.test(values, score(normals)), silent = TRUE)
-      if (class(resultks) == "try-error") {
+      if (inherits(class(resultks), "try-error")) {
         return(list("statistic" = NA, "p.value" = NA, "alternative" = NA,
                     "method" = NA, "data.name" = NA))
       } else {
