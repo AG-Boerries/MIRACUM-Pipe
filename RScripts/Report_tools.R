@@ -86,7 +86,7 @@ keys <- function(
         "bioinformatischer Tumorzellgehalt (%)",
         "Ploidie",
         "Anzahl CN- Regionen",
-        paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
+        paste0("Anzahl seltener Keimbahnmutationen (VAF > ", germlineVaf, "%)")
       ), Wert = c(
         as.character(sureselect_type),
         paste(
