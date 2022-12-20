@@ -54,7 +54,7 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
+if [[ "$(get_config_value common.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
   readonly CFG_CASE=somaticGermline
 else
   readonly CFG_CASE=somatic
@@ -113,9 +113,10 @@ readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed
 readonly csv=${DIR_TMP}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal_data.csv
 
 # keep
-recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
+readonly recalbam=${DIR_WES}/${NameD}_output.sort.filtered.rmdup.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
+readonly coverageexons=${DIR_WES}/${NameD}_coverage.exons.txt
 
 # fastqc zip to WES
 ${BIN_FASTQC} "${FILE_FASTQ_1}" -o "${DIR_WES}"
@@ -151,7 +152,7 @@ ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"
 ${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
 
 # fix bam
-${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+${BIN_FIX_MATE} -INPUT "${realignedbam}" -OUTPUT "${fixedbam}" -SO coordinate -VALIDATION_STRINGENCY LENIENT -CREATE_INDEX true
 
 # make csv
 ${BIN_BASE_RECALIBRATOR} -I "${fixedbam}" \
@@ -163,5 +164,8 @@ ${BIN_PRINT_READS} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 # coverage
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
 
-# zip
+# advanced qc / coverage of exonic regions
+${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_COVERED_EXONS}" | grep '^all' > "${coverageexons}"
+
+# fastqc
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"

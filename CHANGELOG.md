@@ -1,5 +1,30 @@
 # Changelog
 
+## Release v4.0.0
+
+* Integration of Mutect2 (GATK4) for tumorOnly and Panel variant calling
+* Analysis of the TSO500 panel makes us of the DNA and RNA part of the panel
+* Integration of sequenza for HRD calculation
+* Calcualtion of various complex biomarkers like TMB, MSI, HRD
+* Calcualtion of more QC metrics, e.g. bioinformatic tumor cell content (purity)
+* Using predicted ploidy and tumor cell content values from sequenta as input for ControlFREEC
+* Use BAF functionality of ControlFREEC
+* Various bugfixes
+* Adjustments of the PDF report; mainly structure and readability
+
+## Release v3.1.0
+
+* Updated ClinVar version to clinvar_20210123; re-run of ./setup.sh -t setup_tools from the MIRACUM-Pipe-docker repository recommended or manual installation of the updated annovar databases:
+
+```bash
+# annovar databases
+./annotate_variation.pl -buildver hg19 -downdb -webfrom annovar clinvar_20210123 humandb/
+```
+
+* Introduced duplicate removal for panel pipeline
+* Implemented advanced qc and coverage metrics
+* Included RNA Fusion detection for panels containing RNA data
+
 ## Minor Updates
 
 * Update of several annovar databases; re-start of ./setup.sh -t setup_tools from the MIRACUM-Pipe-docker repository recommended or manual installation of the updated annovar databases:

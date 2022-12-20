@@ -46,15 +46,9 @@ fi
 
 # load patient yaml
 readonly CFG_SEX=$(get_config_value sex "${PARAM_DIR_PATIENT}")
-#readonly CFG_PROTOCOL=$(get_config_value common.protocol# "${PARAM_DIR_PATIENT}")
 if [[ "$(get_config_value common.protocol "${PARAM_DIR_PATIENT}")" = "panel" ]]; then
   readonly CFG_CASE=panelTumor
 fi
-#if [[ "$(get_config_value annotation.germline "${PARAM_DIR_PATIENT}")" = "True" ]]; then
-#  readonly CFG_CASE=somaticGermline
-#else
-#  readonly CFG_CASE=somatic
-#fi
 
 # check inputs
 readonly VALID_SEXES=("XX XY")
@@ -80,10 +74,15 @@ cd "${DIR_ANALYSES}" || exit 1
 ${BIN_RSCRIPT} "${DIR_RSCRIPT}/Main.R" "${CFG_CASE}" "${PARAM_DIR_PATIENT}" "${CFG_FILE_GERMLINE_R1}" "${CFG_FILE_TUMOR_R1}" \
   "${DIR_TARGET}" "${DIR_RSCRIPT}" "${DIR_DATABASE}" "${CFG_REFERENCE_CAPTUREGENES}" "${CFG_REFERENCE_COVEREDREGION}" \
   "${CFG_AUTHOR}" "${CFG_CENTER}" "${CFG_REFERENCE_CAPTUREREGIONS}" "${CFG_REFERENCE_CAPTUREREGIONNAME}" "${FILE_GENOME}" \
-  "${CFG_REFERENCE_CAPTURECORFACTORS}" "${CFG_PANEL_MINVAF}" "${CFG_VARSCAN_PANEL_FPFILTER_MINVARCOUNT}" "${CFG_GENERAL_MAFCUTOFF}"
+  "${CFG_REFERENCE_CAPTURECORFACTORS}" "${CFG_GENERAL_MINVAF}" "${CFG_PANEL_VARSCAN_FPFILTER_MINVARCOUNT}" "${CFG_GENERAL_MAFCUTOFF}" \
+  "${CFG_REFERENCE_ACTIONABLEGENES}" "${CFG_REFERENCE_COVERED_EXONS}" "${CFG_ENTITY}" "${CFG_SEX}" "${CFG_FUSION_GENES}" \
+  "${CFG_AMPLIFICATION_GENES}" "${CFG_UCSC_SERVER}" "${CFG_CNV_ANNOTATION}"
 
 # translate to tex
-${BIN_RSCRIPT} --vanilla -e "load('${DIR_ANALYSES}/MTB.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
+${BIN_RSCRIPT} -e "load('${DIR_ANALYSES}/Report.RData'); library(knitr); knit('${DIR_RSCRIPT}/Report_Panel.Rnw');"
+
+# fix possible knitr syntax issues
+sed -i 's/\\textbf{.\\textbf{.}/\\textbf{.}/' ${DIR_ANALYSES}/Report_Panel.tex
 
 # PDF report
 mv "${DIR_ANALYSES}/Report_Panel.tex" "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.tex"

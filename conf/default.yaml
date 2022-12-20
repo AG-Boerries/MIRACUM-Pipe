@@ -10,19 +10,34 @@ common:
     tumor_R2: tumor_R2.fastq.gz
     germline_R1: germline_R1.fastq.gz
     germline_R2: germline_R2.fastq.gz
+    panel:
+        # base filenames of the input files, e.g. sample_ID_DNA_S7_L00 for sample_ID_DNA_S7_L001_R1_001.fastq.gz, and provide the number of paired-end files, i.e. only give the number for one direction (R1 or R2)
+        tumor: Sample_ID_DNA_S7_L00
+        numberOfFiles: 4
+  entity: Other
+  RNA:
+    # folder contatining RNA fastq files for RNA fusions
+    folder: RNA
   protocol: wes
-
-annotation:
   # process and annotate germline file, allowed values: yes, no
   # set to no if the germline sample should be used only to identify somatic variants
-  germline: no
+  germline: yes
+  # ucsc mysql server can also be hosted local e.g. using https://github.com/nr23730/ucsc-hg19-refgene
+  ucscServer: genome-euro-mysql.soe.ucsc.edu
+  # Mapping of CNV regions (chr, start, end) to genes; allowed values: online / offline
+  cnvAnnotation: online
 
-tools:
-  general:
-    # minimum base quality to call a variant
-    minBaseQual: 28
-    maf_cutoff: 0.001
+sex: 0
 
+general:
+  # minimum base quality to call a variant
+  minBaseQual: 28
+  # minimum population frequency from genomAD_genome; AF_popmax
+  maf_cutoff: 0.001
+  # minimum variant allele / tumor frequency to call a variant
+  minVAF: 0.05
+
+wes:
   samtools:
     mpileup:
       #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
@@ -49,13 +64,9 @@ tools:
       ignoreRG: false
       #-x, --ignore-overlaps   disable read-pair overlap detection
       ignoreOverlaps: false
-
-      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] -> tools.general.minBaseQual
+      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] ->  minBaseQual
 
   varscan:
-  # minimum variant allele / tumor frequency to call a variant
-    minVAF: 0.05
-
     somatic:
       #--min-coverage - Minimum coverage in normal and tumor to call variant [8]
       minCoverage: 8
@@ -77,16 +88,14 @@ tools:
       strandFilter: 0
       #--validation - If set to 1, outputs all compared positions even if non-variant
       validation: 0
-
-      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> tools.varscan.minVAF
+      #--min-var-freq - Minimum variant frequency to call a heterozygote [0.10] -> minVAF
 
     processSomatic:
       #--max-normal-freq - Maximum variant allele frequency in normal [0.05]
       maxNormalFreq: 0.05
       #--p-value - P-value for high-confidence calling [0.07]
       pValue: 0.07
-
-      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] -> tools.varscan.minVAF
+      #--min-tumor-freq - Minimum variant allele frequency in tumor [0.10] ->  minVAF
 
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
@@ -135,93 +144,20 @@ tools:
       #--min-var-freq		Minimum variant allele frequency [0.05] -> tools.varscan.minVAF
       #--min-ref-basequal	Minimum average base quality for ref allele [15] -> tools.general.minBaseQual
       #--min-var-basequal	Minimum average base quality for var allele [15] -> tools.general.minBaseQual
-
-## Panel Parameter for varscan
-    panel:
-      minVAF: 0.05
-      minBaseQual: 20
-
-      mpileup2snp:
-        #--min-coverage  Minimum read depth at a position to make a call [8]
-        minCoverage: 20
-        #--min-reads2    Minimum supporting reads at a position to call variants [2]
-        minReads2: 2        
-        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
-        minFreqForHom: 0.75
-        #--p-value       Default p-value threshold for calling variants [99e-02]
-        pValue: 0.99
-        #--strand-filter Ignore variants with >90% support on one strand [1]
-        strandFilter: 1
-
-        #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.minVAF
-        #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.general.minBaseQual
-    
-      mpileup2indel:
-        #--min-coverage  Minimum read depth at a position to make a call [8]
-        minCoverage: 20
-        #--min-reads2    Minimum supporting reads at a position to call variants [2]
-        minReads2: 2
-        #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
-        minFreqForHom: 0.75
-        #--p-value       Default p-value threshold for calling variants [99e-02]
-        pValue: 0.99
-        #--strand-filter Ignore variants with >90% support on one strand [1]
-        strandFilter: 1
-        
-        #--min-var-freq  Minimum variant allele frequency threshold [0.01] -> tools.varscan.panel.minVAF
-        #--min-avg-qual  Minimum base quality at a position to count a read [15] -> tools.varscan.panel.minBaseQual
-
-      fpfilter:
-        #--min-var-count		Minimum number of variant-supporting reads [4]
-        minVarCount: 4
-        #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
-        minVarCountLC: 2
-        #--max-somatic-p		Maximum somatic p-value [0.05]
-        maxSomaticP: 0.05
-        #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
-        maxSomaticPDepth: 10
-        #--min-ref-readpos	Minimum average read position of ref-supporting reads [0.1]
-        minRefReadpos: 0.1
-        #--min-var-readpos	Minimum average read position of var-supporting reads [0.1]
-        minVarReadpos: 0.1
-        #--min-ref-dist3		Minimum average distance to effective 3' end (ref) [0.1]
-        minRefDist3: 0.1
-        #--min-var-dist3		Minimum average distance to effective 3' end (var) [0.1]
-        minVarDist3: 0.1
-        #--min-strandedness	Minimum fraction of variant reads from each strand [0.01]
-        minStrandedness: 0.01
-        #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
-        minStrandReads: 5
-        #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
-        maxBasequalDiff: 50
-        #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
-        minRefAVGRL: 90
-        #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
-        minVarAVGRL: 90
-        #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
-        maxRlDiff: 0.25
-        #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
-        maxRefMMQS: 100
-        #--max-var-mmqs		Maximum mismatch quality sum of variant-supporting reads [100]
-        maxVarMMQS: 100
-        #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
-        minMMQSDiff: 0
-        #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
-        maxMMQSDiff: 50
-        #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
-        minRefMapQual: 15
-        #--min-var-mapqual	Minimum average mapping quality for var allele [15]
-        minVarMapQual: 15
-        #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
-        maxMapQualDiff: 50
-
-  annovar:
-    # define annotation databases, together with their type, used. The databases have to be installed with annovar
-    #protocol: 'refGene,gnomad_exome,exac03,esp6500siv2_ea,EUR.sites.2015_08,avsnp150,clinvar_20180603,intervar_20180118,dbnsfp35a,cosmic_coding,cosmic_noncoding'
-    #argop: 'g,f,f,f,f,f,f,f,f,f,f'
-    protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20200316,intervar_20180118,dbnsfp41a,cosmic_coding,cosmic_noncoding'
-    argop: 'g,f,f,f,f,f,f,f'
   
+  mutect:
+    #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
+    #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
+    callableDepth: 8
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
+
+  filterMutectCalls:
+    #--contamination-estimate 0.5?; Estimate of contamination.  Default value: 0.0 (evtl. tumor purity)
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
+    #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
+
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
     # 0: the "unknown" region is attached to the "known" region on the right
@@ -248,7 +184,174 @@ tools:
     # set TRUE for target resequencing data (e.g., exome-seq) to avoid false positive predictions due to non-uniform capture
     noisyData: TRUE
     # genome ploidy; In case of doubt, you can set different values and Control-FREEC will select the one that explains most observed CNAs
-    ploidy: 2,3
+    ploidy: 2
+    # set FALSE to avoid printing "-1" to the _ratio.txt files. Useful for exome-seq or targeted sequencing data
+    printNA: FALSE
+    # threshold on the minimal number of reads per window in the control sample
+    # Useful for exome-seq or targeted sequencing data
+    # recommended value >=50 for for exome data
+    readCountThreshold: 50
+    # step (used only when "window" is specified); do not use for exome sequencing (instead set "window=0")
+    step: 0
+    # explicit window size (higher priority than coefficientOfVariation);
+    # for whole genome sequencing: "window=50000"
+    # for whole exome sequencing: "window=0"
+    window: 0
+    # Use a mappability profile to correct read counts (in this case a mappability file must be provided with "gemMappabilityFile" )
+    uniqueMatch: TRUE
+    # set TRUE to correct for contamination by normal cells.
+    # If "contamination" is not provided, it will automatically evaluate the level of contamination
+    contaminationAdjustment: TRUE
+
+## Panel Parameters
+panel:  
+  samtools:
+    mpileup:
+      #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
+      illumina: false
+      #-A, --count-orphans     do not discard anomalous read pairs
+      countOrphans: false
+      #-B, --no-BAQ            disable BAQ (per-Base Alignment Quality)
+      noBAQ: true
+      #-C, --adjust-MQ INT     adjust mapping quality; recommended:50, disable:0 [0]
+      adjustMQ: 50
+      #-d, --max-depth INT     max per-file depth; avoids excessive memory usage [8000]
+      maxDepth: 8000
+      #-E, --redo-BAQ          recalculate BAQ on the fly, ignore existing BQs
+      redoBAQ: false
+      #-G, --exclude-RG FILE   exclude read groups listed in FILE
+      excludeRG: false
+      #-l, --positions FILE    skip unlisted positions (chr pos) or regions (BED)
+      position: false
+      #-q, --min-MQ INT        skip alignments with mapQ smaller than INT [0]
+      minMQ: 1
+      #-r, --region REG        region in which pileup is generated
+      region: false
+      #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
+      ignoreRG: false
+      #-x, --ignore-overlaps   disable read-pair overlap detection
+      ignoreOverlaps: false
+      #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] ->  minBaseQual
+  
+  varscan:
+    mpileup2snp:
+      #--min-coverage  Minimum read depth at a position to make a call [8]
+      minCoverage: 50
+      #--min-reads2    Minimum supporting reads at a position to call variants [2]
+      minReads2: 2        
+      #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+      minFreqForHom: 0.75
+      #--p-value       Default p-value threshold for calling variants [99e-02]
+      pValue: 0.99
+      #--strand-filter Ignore variants with >90% support on one strand [1]
+      strandFilter: 1
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
+      
+    mpileup2indel:
+      #--min-coverage  Minimum read depth at a position to make a call [8]
+      minCoverage: 20
+      #--min-reads2    Minimum supporting reads at a position to call variants [2]
+      minReads2: 2
+      #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+      minFreqForHom: 0.75
+      #--p-value       Default p-value threshold for calling variants [99e-02]
+      pValue: 0.99
+      #--strand-filter Ignore variants with >90% support on one strand [1]
+      strandFilter: 1
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
+
+    fpfilter:
+      #--min-var-count		Minimum number of variant-supporting reads [4]
+      minVarCount: 20
+      #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
+      minVarCountLC: 2
+      #--max-somatic-p		Maximum somatic p-value [0.05]
+      maxSomaticP: 0.05
+      #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
+      maxSomaticPDepth: 10
+      #--min-ref-readpos	Minimum average read position of ref-supporting reads [0.1]
+      minRefReadpos: 0.1
+      #--min-var-readpos	Minimum average read position of var-supporting reads [0.1]
+      minVarReadpos: 0.1
+      #--min-ref-dist3		Minimum average distance to effective 3' end (ref) [0.1]
+      minRefDist3: 0.1
+      #--min-var-dist3		Minimum average distance to effective 3' end (var) [0.1]
+      minVarDist3: 0.1
+      #--min-strandedness	Minimum fraction of variant reads from each strand [0.01]
+      minStrandedness: 0.01
+      #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
+      minStrandReads: 5
+      #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
+      maxBasequalDiff: 50
+      #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
+      minRefAVGRL: 80
+      #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
+      minVarAVGRL: 80
+      #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
+      maxRlDiff: 0.25
+      #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
+      maxRefMMQS: 100
+      #--max-var-mmqs		Maximum mismatch quality sum of variant-supporting reads [100]
+      maxVarMMQS: 100
+      #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
+      minMMQSDiff: 0
+      #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
+      maxMMQSDiff: 65
+      #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
+      minRefMapQual: 15
+      #--min-var-mapqual	Minimum average mapping quality for var allele [15]
+      minVarMapQual: 15
+      #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
+      maxMapQualDiff: 50
+
+  mutect:
+    #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
+    #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
+    callableDepth: 50
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
+
+  filterMutectCalls:
+    #--contamination-estimate 0.5?; Estimate of contamination.  Default value: 0.0 (evtl. tumor purity)
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
+    #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
+  
+  cnvkit:
+    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
+    # only needed if no matched "normal" sample is available
+    # https://cnvkit.readthedocs.io/en/stable/index.html
+    flatReference: FlatReference.cnn
+
+  ControlFREEC:
+    # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
+    # 0: the "unknown" region is attached to the "known" region on the right
+    # 1: make a separate fragment of this unknown region and then attaches it to the left or to the right region choosing the longer one
+    # 2: make a separate fragment of this unknown region and then attaches it to the left or to the right region but the ploidy copy number has a priority
+    # 3: make a separate fragment of this unknown region and then attaches it to the left or to the right region choosing the longer one but this known region should make at least half-size of the unknown region
+    # 4: make a separate fragment of this unknown region and do not assign any copy number to this region at all
+    breakPointType: 4
+    # positive value of threshold for segmentation of normalized profiles
+    breakPointThreshold: 1.2
+    # set to 1 or 2 to correct the Read Count (RC) for GC-content bias and low mappability even when you have a control sample
+    # 0: simply model "sample RC ~ Control RC"
+    # 1: normalize the sample and the control RC using GC-content and then calculate the ratio "Sample RC/contol RC"
+    # 2: model "sample RC ~ Control RC" bias, and then normalize for GC-content
+    forceGCcontentNormalization: 1
+    # intercept of polynomial
+    # 1 - with GC-content,
+    # 0 - with a control dataset
+    intercept: 1
+    # minimal number of consecutive windows to call a CNA
+    # 3 for WES and 1 for WGS
+    minCNAlength: 3
+    # maxThreads: 12 -> cpucores
+    # set TRUE for target resequencing data (e.g., exome-seq) to avoid false positive predictions due to non-uniform capture
+    noisyData: TRUE
+    # genome ploidy; In case of doubt, you can set different values and Control-FREEC will select the one that explains most observed CNAs
+    ploidy: 2
     # set FALSE to avoid printing "-1" to the _ratio.txt files. Useful for exome-seq or targeted sequencing data
     printNA: FALSE
     # threshold on the minimal number of reads per window in the control sample
@@ -267,22 +370,206 @@ tools:
     # If "contamination" is not provided, it will automatically evaluate the level of contamination
     contaminationAdjustment: TRUE
   
+  fusions:
+    fusionGenes: fusion_genes.txt
+  amplification:
+    amplificationGenes: TSO500_amplifications.txt
+
+## tumorOnly Parameters
+tumorOnly:  
+  samtools:
+    mpileup:
+        #-6, --illumina1.3+      quality is in the Illumina-1.3+ encoding
+        illumina: false
+        #-A, --count-orphans     do not discard anomalous read pairs
+        countOrphans: false
+        #-B, --no-BAQ            disable BAQ (per-Base Alignment Quality)
+        noBAQ: true
+        #-C, --adjust-MQ INT     adjust mapping quality; recommended:50, disable:0 [0]
+        adjustMQ: 50
+        #-d, --max-depth INT     max per-file depth; avoids excessive memory usage [8000]
+        maxDepth: 8000
+        #-E, --redo-BAQ          recalculate BAQ on the fly, ignore existing BQs
+        redoBAQ: false
+        #-G, --exclude-RG FILE   exclude read groups listed in FILE
+        excludeRG: false
+        #-l, --positions FILE    skip unlisted positions (chr pos) or regions (BED)
+        position: false
+        #-q, --min-MQ INT        skip alignments with mapQ smaller than INT [0]
+        minMQ: 1
+        #-r, --region REG        region in which pileup is generated
+        region: false
+        #-R, --ignore-RG         ignore RG tags (one BAM = one sample)
+        ignoreRG: false
+        #-x, --ignore-overlaps   disable read-pair overlap detection
+        ignoreOverlaps: false
+        #-Q, --min-BQ INT        skip bases with baseQ/BAQ smaller than INT [13] ->  minBaseQual
+
+  varscan:
+    mpileup2snp:
+      #--min-coverage  Minimum read depth at a position to make a call [8]
+      minCoverage: 8
+      #--min-reads2    Minimum supporting reads at a position to call variants [2]
+      minReads2: 2        
+      #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+      minFreqForHom: 0.75
+      #--p-value       Default p-value threshold for calling variants [99e-02]
+      pValue: 0.99
+      #--strand-filter Ignore variants with >90% support on one strand [1]
+      strandFilter: 0
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
+      
+    mpileup2indel:
+      #--min-coverage  Minimum read depth at a position to make a call [8]
+      minCoverage: 8
+      #--min-reads2    Minimum supporting reads at a position to call variants [2]
+      minReads2: 2
+      #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
+      minFreqForHom: 0.75
+      #--p-value       Default p-value threshold for calling variants [99e-02]
+      pValue: 0.99
+      #--strand-filter Ignore variants with >90% support on one strand [1]
+      strandFilter: 0
+      #--min-var-freq  Minimum variant allele frequency threshold [0.01] ->  minVAF
+      #--min-avg-qual  Minimum base quality at a position to count a read [15] ->  minBaseQual
+  
+    fpfilter:
+      #--min-var-count		Minimum number of variant-supporting reads [4]
+      minVarCount: 4
+      #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
+      minVarCountLC: 2
+      #--max-somatic-p		Maximum somatic p-value [0.05]
+      maxSomaticP: 0.05
+      #--max-somatic-p-depth	Depth required to test max somatic p-value [10]
+      maxSomaticPDepth: 10
+      #--min-ref-readpos	Minimum average read position of ref-supporting reads [0.1]
+      minRefReadpos: 0.1
+      #--min-var-readpos	Minimum average read position of var-supporting reads [0.1]
+      minVarReadpos: 0.1
+      #--min-ref-dist3		Minimum average distance to effective 3' end (ref) [0.1]
+      minRefDist3: 0.1
+      #--min-var-dist3		Minimum average distance to effective 3' end (var) [0.1]
+      minVarDist3: 0.1
+      #--min-strandedness	Minimum fraction of variant reads from each strand [0.01]
+      minStrandedness: 0.01
+      #--min-strand-reads	Minimum allele depth required to perform the strand tests [5]
+      minStrandReads: 5
+      #--max-basequal-diff		Maximum average base quality diff (ref - var) [50]
+      maxBasequalDiff: 50
+      #--min-ref-avgrl		Minimum average trimmed read length for ref allele [90]
+      minRefAVGRL: 90
+      #--min-var-avgrl		Minimum average trimmed read length for var allele [90]
+      minVarAVGRL: 90
+      #--max-rl-diff		Maximum average relative read length difference (ref - var) [0.25]
+      maxRlDiff: 0.25
+      #--max-ref-mmqs		Maximum mismatch quality sum of reference-supporting reads [100]
+      maxRefMMQS: 100
+      #--max-var-mmqs		Maximum mismatch quality sum of variant-supporting reads [100]
+      maxVarMMQS: 100
+      #--min-mmqs-diff		Minimum average mismatch quality sum (var - ref) [0]
+      minMMQSDiff: 0
+      #--max-mmqs-diff		Maximum average mismatch quality sum (var - ref) [50]
+      maxMMQSDiff: 50
+      #--min-ref-mapqual	Minimum average mapping quality for ref allele [15]
+      minRefMapQual: 15
+      #--min-var-mapqual	Minimum average mapping quality for var allele [15]
+      minVarMapQual: 15
+      #--max-mapqual-diff	Maximum average mapping quality (ref - var) [50]
+      maxMapQualDiff: 50
+
+  mutect:
+    #--base-quality-score-threshold 28; Base qualities below this threshold will be reduced to the minimum (6)  Default value: 18
+    #--callable-depth 8; Minimum depth to be considered callable for Mutect stats.  Does not affect genotyping. Default value: 10
+    callableDepth: 8
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-base-quality-score 28; Minimum base quality required to consider a base for calling  Default value: 10
+
+  filterMutectCalls:
+    #--contamination-estimate 0.5?; Estimate of contamination.  Default value: 0.0 (evtl. tumor purity)
+    #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
+    #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
+    #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
+  
   cnvkit:
     # supply cnvkit reference file, called FlatReference for tumor only CN calculation
     # only needed if no matched "normal" sample is available
     # https://cnvkit.readthedocs.io/en/stable/index.html
     flatReference: FlatReference.cnn
 
+  ControlFREEC:
+    # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
+    # 0: the "unknown" region is attached to the "known" region on the right
+    # 1: make a separate fragment of this unknown region and then attaches it to the left or to the right region choosing the longer one
+    # 2: make a separate fragment of this unknown region and then attaches it to the left or to the right region but the ploidy copy number has a priority
+    # 3: make a separate fragment of this unknown region and then attaches it to the left or to the right region choosing the longer one but this known region should make at least half-size of the unknown region
+    # 4: make a separate fragment of this unknown region and do not assign any copy number to this region at all
+    breakPointType: 4
+    # positive value of threshold for segmentation of normalized profiles
+    breakPointThreshold: 1.2
+    # set to 1 or 2 to correct the Read Count (RC) for GC-content bias and low mappability even when you have a control sample
+    # 0: simply model "sample RC ~ Control RC"
+    # 1: normalize the sample and the control RC using GC-content and then calculate the ratio "Sample RC/contol RC"
+    # 2: model "sample RC ~ Control RC" bias, and then normalize for GC-content
+    forceGCcontentNormalization: 1
+    # intercept of polynomial
+    # 1 - with GC-content,
+    # 0 - with a control dataset
+    intercept: 1
+    # minimal number of consecutive windows to call a CNA
+    # 3 for WES and 1 for WGS
+    minCNAlength: 3
+    # maxThreads: 12 -> cpucores
+    # set TRUE for target resequencing data (e.g., exome-seq) to avoid false positive predictions due to non-uniform capture
+    noisyData: TRUE
+    # genome ploidy; In case of doubt, you can set different values and Control-FREEC will select the one that explains most observed CNAs
+    ploidy: 2
+    # set FALSE to avoid printing "-1" to the _ratio.txt files. Useful for exome-seq or targeted sequencing data
+    printNA: FALSE
+    # threshold on the minimal number of reads per window in the control sample
+    # Useful for exome-seq or targeted sequencing data
+    # recommended value >=50 for for exome data
+    readCountThreshold: 50
+    # step (used only when "window" is specified); do not use for exome sequencing (instead set "window=0")
+    step: 0
+    # explicit window size (higher priority than coefficientOfVariation);
+    # for whole genome sequencing: "window=50000"
+    # for whole exome sequencing: "window=0"
+    window: 0
+    # Use a mappability profile to correct read counts (in this case a mappability file must be provided with "gemMappabilityFile" )
+    uniqueMatch: TRUE
+    # set TRUE to correct for contamination by normal cells.
+    # If "contamination" is not provided, it will automatically evaluate the level of contamination
+    contaminationAdjustment: TRUE
+    
+annovar:
+  # define annotation databases, together with their type, used. The databases have to be installed with annovar
+  protocol: 'refGene,gnomad211_genome,avsnp150,clinvar_20210501,intervar_20180118,dbnsfp42a,cosmic_coding,cosmic_noncoding'
+  argop: 'g,f,f,f,f,f,f,f'
+
+sequenza:
+  # define sequenza-utils parameter
+  # --window WINDOW; Window size used for binning the original seqz file. Default is 50.
+  window: 50
+  # if used for samples without mathcing normal as control a separate non-matching-normal file in bam format is needed
+  # file should be stored in references/sequenza
+  nonMatchingNormal: non_matching_normal.bam
+  chromosomes: chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX
+
 reference:
-  # define reference genome
-  genome: hg19.fa
-  # file containing the length of the chromosomes
+  # define reference genome (located in references/Genome incl. indices)
+  genome: genome.fa
+  # file containing the length of the chromosomes (located in references/chromosomes)
   length: hg19_chr.len
-  # database of known SNPs
+  # reference wig file for HRD calculation; if not present its generated (to be put/created in databases)
+  hrdRef: hg19all.wig.gz
+  # microsatellite sites for msisnesor-pro; if not present its generated (to be put/created in databases)
+  microsatelliteSites: microsatellite_sites_hg19
+  # database of known SNPs (located in databses/dbSNP)
   dbSNP: snp150hg19.vcf.gz
-  # Mappability file needed for calling CNVs with ControlFREEC
+  # Mappability file needed for calling CNVs with ControlFREEC (located in reference/mappability)
   mappability: out100m2_hg19.gem
-  sequencing:
+  sequencing: # all located in references/sequencing
     # target region covered by the sequencer in .bed format
     captureRegions: V5UTR.bed
     # file containing all the covered genes as HUGO Symbols
@@ -293,3 +580,8 @@ reference:
     captureRegionName: V5UTR
     # target capture correlation factors for mutation signature analysis
     captureCorFactors : targetCapture_cor_factors.rda
+    # covered exons by capture kit; basically intersection of exons with capture regions
+    # e.g. bedtools intersect -u -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed
+    coveredExons: exons_5UTR.bed
+    # positive list for genes in germline to be reported (e.g. by ACMG)
+    # actionableGenes: actionable_genes.txt

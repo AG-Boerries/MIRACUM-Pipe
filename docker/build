@@ -69,6 +69,6 @@ case "$1" in
             ;;
 
         *)
-            echo $"Usage: $0 {base|R|tools|report|interface|all} [args]"
+            echo $"Usage: $0 {base|R|tools|report|interface|all|report_interface} [args]"
             exit 1
 esac

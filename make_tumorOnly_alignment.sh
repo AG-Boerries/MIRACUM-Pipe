@@ -108,9 +108,10 @@ readonly fixedbai=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.fixed.bai
 readonly csv=${DIR_TMP}/${NameD}_output.sort.rmdup.realigned.fixed.recal_data.csv
 
 # keep
-recalbam=${DIR_WES}/${NameD}_output.sort.rmdup.realigned.fixed.recal.bam
+readonly recalbam=${DIR_WES}/${NameD}_output.sort.rmdup.realigned.fixed.recal.bam
 readonly statstxt=${DIR_WES}/${NameD}_stats.txt
 readonly coveragetxt=${DIR_WES}/${NameD}_coverage.all.txt
+readonly coverageexons=${DIR_WES}/${NameD}_coverage.exons.txt
 
 ############
 # fastqc zip to WES
@@ -146,10 +147,11 @@ ${BIN_SAMINDEX} "${rmdupbam}" "${bai}"
 ${BIN_REALIGNER_TARGER_CREATOR} -o "${bamlist}" -I "${rmdupbam}"
 
 # realign bam
-${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}" # not working with panels due to the many reads per position
+${BIN_INDEL_REALIGNER} -I "${rmdupbam}" -targetIntervals "${bamlist}" -o "${realignedbam}"
 
 # fix bam
-${BIN_FIX_MATE} INPUT="${realignedbam}" OUTPUT="${fixedbam}" SO=coordinate VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true
+${BIN_FIX_MATE} -INPUT "${realignedbam}" -OUTPUT "${fixedbam}" -SO coordinate -VALIDATION_STRINGENCY LENIENT -CREATE_INDEX true
+
 
 # make csv
 ${BIN_BASE_RECALIBRATOR} -I "${fixedbam}" \
@@ -160,6 +162,9 @@ ${BIN_PRINT_READS} -I "${fixedbam}" -BQSR "${csv}" -o "${recalbam}"
 
 # coverage
 ${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_CAPTUREREGIONS}" | grep '^all' >"${coveragetxt}"
+
+# advanced qc / coverage of exonic regions
+${BIN_COVERAGE} -b "${recalbam}" -a "${CFG_REFERENCE_COVERED_EXONS}" | grep '^all' > "${coverageexons}"
 
 # fastqc
 ${BIN_FASTQC} "${recalbam}" -o "${DIR_WES}"

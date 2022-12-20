@@ -17,7 +17,99 @@ find_indel <- function(list){
   return(id)
 }
 
-div <- function(x_s, x_l, no_loh){
+find_indel_2 <- function(list){
+  #' Indel Finder
+  #'
+  #' @description Find Indels in list
+  #'
+  #' @param list dataframe. List of mutations
+  #'
+  #' @return id indexvector. List of indices
+  #'
+  #' @details Given a list of mutations find the indels by checking the
+  #' @details reference and alternative bases. 
+  id.ref <- which(nchar(as.character(list$Ref)) > 1)
+  id.alt <- which(nchar(as.character(list$Alt)) > 1)
+  id <- unique( c(id.ref, id.alt) )
+  return(id)
+}
+
+# div <- function(x_s, x_l, no_loh) {
+#   #' Mutation separation
+#   #'
+#   #' @description Separate mutions
+#   #'
+#   #' @param x_s dataframe. List of somatic mutations
+#   #' @param x_l dataframe. List of LoH mutations
+#   #' @param no_loh logical. Logical describing existence of LoH mutations
+#   #'
+#   #' @return list of
+#   #' @return x_s_snp dataframe. List of somatic SNVs
+#   #' @return x_s_indel dataframe. List of somatic InDels
+#   #' @return x_l_snp dataframe. List of LoH SNVs
+#   #' @return x_l_indel dataframe. List of LoH InDels
+#   #' @return no_loh logical. Describing existence of LoH mutations
+#   #' @return no_indel_somatic logical. Describing existence of somatic Indels
+#   #' @return no_snp logical. Describing existence of SNVs
+#   #' @return no_indel_loh logical. Describing existence of LoH Indels
+#   #'
+#   #' @details Build separate dataframes for different type of mutations.
+#   #' @details Split somatic and LoH mutations in SNVs and InDels. Return also
+#   #' @details some logicals for existence of mutations at all.
+
+#   no_indel_somatic <- FALSE
+#   # if (protocol == "Tumor_Only" & manifest == "V5UTR") {
+#   #  indel_s <- find_indel_2(x_s)
+#   # } else {
+#   #  indel_s <- find_indel(x_s)
+#   # }
+#   indel_s <- find_indel(x_s)
+#   if (length(indel_s) > 0) {
+#     x_s_snp <- x_s[-indel_s, ]
+#     x_s_indel <- x_s[indel_s, ]
+#   } else {
+#     x_s_snp <- x_s
+#     x_s_indel <- data.frame()
+#     cat("No Indels in Somatic!\n")
+#     no_indel_somatic <- TRUE
+#   }
+
+#   if (dim(x_s_snp)[1] > 0) {
+#     no_snp <- FALSE
+#   } else {
+#     no_snp <- TRUE
+#   }
+
+#   no_indel_loh <- FALSE
+#   no_snp_loh <- FALSE
+#   if (!no_loh) {
+#     indel_l <- find_indel(x_l)
+#     if (length(indel_l) == 0) {
+#       no_indel_loh <- TRUE
+#       x_l_snp <- x_l
+#       x_l_indel <- data.frame()
+#       cat("No Indels in LOH!\n")
+#     } else if (length(indel_l) == dim(x_l)[1]) {
+#       no_snp_loh <- TRUE
+#       x_l_snp <- data.frame()
+#       x_l_indel <- x_l
+#     } else {
+#       x_l_snp <- x_l[-indel_l, ]
+#       x_l_indel <- x_l[indel_l, ]
+#     }
+#   } else {
+#     x_l_snp <- data.frame()
+#     x_l_indel <- data.frame()
+#   }
+#   return(list(
+#     x_s_snp = x_s_snp, x_s_indel = x_s_indel, x_l_snp = x_l_snp,
+#     x_l_indel = x_l_indel, no_loh = no_loh,
+#     no_indel_somatic = no_indel_somatic, no_snp = no_snp,
+#     no_indel_loh = no_indel_loh, no_snp_loh = no_snp_loh
+#   ))
+# }
+
+div <- function(x_s, x_l, no_loh, protocol, sureselect_type) {
   #' Mutation separation
   #'
   #' @description Separate mutions
@@ -39,14 +131,12 @@ div <- function(x_s, x_l, no_loh){
   #' @details Build separate dataframes for different type of mutations.
   #' @details Split somatic and LoH mutations in SNVs and InDels. Return also
   #' @details some logicals for existence of mutations at all.
-
   no_indel_somatic <- FALSE
-  #if (protocol == "Tumor_Only" & manifest == "V5UTR") {
-  #  indel_s <- find_indel_2(x_s)
-  #} else {
-  #  indel_s <- find_indel(x_s)
-  #}
-  indel_s <- find_indel(x_s)
+  if (protocol == "Tumor_Only" & sureselect_type == "V5UTR") {
+    indel_s <- find_indel_2(x_s)
+  } else {
+    indel_s <- find_indel(x_s)
+  }
   if (length(indel_s) > 0){
     x_s_snp <- x_s[-indel_s, ]
     x_s_indel <- x_s[indel_s, ]
@@ -90,7 +180,7 @@ div <- function(x_s, x_l, no_loh){
               no_indel_loh = no_indel_loh, no_snp_loh = no_snp_loh))
 }
 
-mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol){
+mut_tab <- function(x_s_snp, x_s_indel, x_l_snp, x_l_indel, protocol) {
   #' Mutation Table
   #'
   #' @description Build Mutation Table
@@ -232,7 +322,7 @@ mut_stats <- function(x_s, x_l = NULL, tumbu, protocol) {
               loh_mut <- lohmutations))
 }
 
-tables <- function(x_s, x_l = NULL, protocol){
+tables <- function(x_s, x_l = NULL, protocol) {
   #' Create Tables
   #'
   #' @description Write Tables for Tumorsuppressors/Oncogenes, all somatic
@@ -244,52 +334,56 @@ tables <- function(x_s, x_l = NULL, protocol){
   #' @return list of
   #' @return ts_og_table dataframe. List of mutations in tumorsuppressors and
   #' @return oncogenes
-  #' @return sm_table dataframe. List if somatic mutations
+  #' @return sm_table dataframe. List of somatic mutations
   #' @return lm_table dataframe. List of LoH mutations
   #'
   #' @details The Tables TumorSuppressor-OncogeneTable,
   #' @details somaticMutations and lohMutations are generated and
   #' @details stored.
 
-  ts_og_table <- x_s[x_s$is_tumorsuppressor == 1 |
-                       x_s$is_oncogene == 1,
-                     c("Gene.refGene", "GeneName",
-                       "ExonicFunc.refGene", "AAChange",
-                       "Variant_Allele_Frequency",
-                       "Zygosity", "Variant_Reads", "is_tumorsuppressor",
-                       "is_oncogene", "is_hotspot", "target",
-                       "AF_nfe", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
-                       "Alt"), drop = FALSE]
+  col_names <- c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                 "AAChange", "Variant_Allele_Frequency", "Zygosity",
+                 "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
+                 "is_hotspot", "target", "AF_popmax",
+                 "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
+                 "cosmic_coding", "Chr", "Start", "Ref",
+                 "Alt")
 
-  sm_table <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                     "AAChange", "Variant_Allele_Frequency", "Zygosity",
-                     "Variant_Reads", "is_tumorsuppressor", "is_oncogene",
-                     "is_hotspot", "target", "AF_nfe",
-                     "CADD_phred", "condel.label", "CLINSIG",
-                     "cosmic_coding", "Chr", "Start", "Ref",
-                     "Alt"), drop = FALSE]
+  ts_og_table <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+  colnames(ts_og_table) <- col_names
+  sm_table <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+  colnames(sm_table) <- col_names
+
+  if (!is.null(x_s) && dim(x_s)[1]) {
+    ts_og_table <- x_s[
+      x_s$is_tumorsuppressor == 1 |
+      x_s$is_oncogene == 1,
+      col_names,
+      drop = FALSE
+    ]
+
+    sm_table <- x_s[, col_names, drop = FALSE]
+  }
 
   if (!is.null(x_l)){
     lm_table <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
                        "AAChange", "VAF_Normal", "VAF_Tumor",
                        "Count_Normal", "Count_Tumor", "is_tumorsuppressor",
                        "is_oncogene", "is_hotspot", "target",
-                       "AF_nfe", "CADD_phred", "condel.label",
-                       "CLINSIG", "cosmic_coding", "Chr", "Start", "Ref",
+                       "AF_popmax", "CADD_phred", "condel.label", "REVEL_score",
+                       "CLNSIG", "InterVar_automated", "cosmic_coding", "Chr", "Start", "Ref",
                        "Alt"), drop = FALSE]
 
-  }else{
+  } else {
     lm_table <- data.frame()
-    
   }
+
   return(list(ts_og_table = ts_og_table, sm_table = sm_table,
               lm_table = lm_table))
 }
 
-get_mapping_matrix <- function(annovar_table, row_index)
-{
-  if (length(row_index)==0) return(NULL)
+get_mapping_matrix <- function(annovar_table, row_index) {
+  if (length(row_index) == 0) return(NULL)
   col_index <- match(c("Chr", "Start", "Gene.refGene"), colnames(annovar_table))
   new_table <- annovar_table[row_index, col_index]
   new_table[] <- lapply(new_table, as.character)
@@ -297,23 +391,20 @@ get_mapping_matrix <- function(annovar_table, row_index)
   return(new_table)
 }
 
-add_default_value <- function(mapping_matrix)
-{
+add_default_value <- function(mapping_matrix) {
   if (is.null(mapping_matrix)) return(mapping_matrix)
   new_matrix <- cbind(mapping_matrix, rep(1, nrow(mapping_matrix)))
   colnames(new_matrix)[ncol(new_matrix)] <- "Value"
   return(new_matrix)	
 }
 
-rename_chr <- function(mapping_matrix)
-{
+rename_chr <- function(mapping_matrix) {
   new_matrix <- mapping_matrix
   new_matrix[,1] <- gsub("chr", "", new_matrix[,1])
   return(new_matrix)	
 }
 
-duplicate_first_raw <- function(mapping_matrix)
-{
+duplicate_first_raw <- function(mapping_matrix) {
   if (is.null(mapping_matrix)) return(NULL)
   new_matrix <- mapping_matrix
   new_matrix <- rbind(new_matrix[1,], new_matrix)
@@ -321,7 +412,17 @@ duplicate_first_raw <- function(mapping_matrix)
   return(new_matrix)
 }
 
-circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_indel = NULL, no_loh, no_indel_somatic, no_snp, no_indel_loh, no_snp_loh){
+circos_colors <- function(
+  x_s_snp = NULL,
+  x_s_indel = NULL,
+  x_l_snp = NULL,
+  x_l_indel = NULL,
+  no_loh,
+  no_indel_somatic,
+  no_snp,
+  no_indel_loh,
+  no_snp_loh
+) {
   #' Circos Colors
   #'
   #' @description Prepare List and colors for Circosplot
@@ -397,8 +498,16 @@ circos_colors <- function(x_s_snp = NULL, x_s_indel = NULL, x_l_snp = NULL, x_l_
   return(list(map_mat = oc_matrices, circoscolors = circoscolors))
 }
 
-omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
-                          circosColors = NULL, protocol, sureselect, sureselect_type) {
+omicCircosUni <- function(
+  listOfMap,
+  label = NULL,
+  minR,
+  outfile,
+  circosColors = NULL,
+  protocol,
+  sureselect,
+  sureselect_type
+) {
   #' omic Circos Uni
   #'
   #' @description Create the Circosplot
@@ -407,7 +516,7 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   #' @param minR numerical. Minimum radius
   #' @param outfile string. Name of output file
   #' @param circosColors vector of strings. Colors for Circosplot
-  #' 
+  #'
   #' @details This function plots the human genome on a circle.
   #' @details The mutations are then arranged by location on smaller
   #' @details concentric circle. Each mutation type gets an extra circle.
@@ -524,8 +633,138 @@ omicCircosUni <- function(listOfMap, label = NULL, minR, outfile,
   dev.off()	
 }
 
-omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
-                          circosColors = NULL, protocol, sureselect) {
+# omicCircosFus2 <- function(
+#   listOfMap,
+#   fusions,
+#   label = NULL,
+#   minR,
+#   outfile,
+#   circosColors = NULL,
+#   protocol,
+#   sureselect
+# ) {
+#   #' omic Circos with Fusions
+#   #'
+#   #' @description Create the Circosplot
+#   #'
+#   #' @param listOfMap matrix. Mutationmatrix to be plotted
+#   #' @param minR numerical. Minimum radius
+#   #' @param outfile string. Name of output file
+#   #' @param circosColors vector of strings. Colors for Circosplot
+#   #' @param protocol string. Name of the analysis protocol
+#   #' @param mode string. Name of the capture kit.
+#   #'
+#   #' @details This function plots the human genome on a circle.
+#   #' @details The mutations are then arranged by location on smaller
+#   #' @details concentric circle. Each mutation type gets an extra circle.
+#   #' @details If there is no mutation of a mutation type, the circle is
+#   #' @details excluded and there are less circles. The plot is stored in
+#   #' @details the given output file.
+#   #' @details For smaller panels the captured regions are highlighted in
+#   #' @details the circosplot. That is controlled by protocol and mode. 
+
+
+#   # Human chromosomes
+#   data(UCSC.hg19.chr)
+#   ref <- UCSC.hg19.chr
+#   ref[,1] <- gsub("chr", "", ref[,1])
+#   db <- segAnglePo(ref, seg = as.character(unique(ref[,1])))
+#   colors <- rainbow(24, alpha = 0.8)
+  
+#   # Parameters
+#   labelR <- 350
+#   chrR <- labelR - 25
+#   if(is.null(circosColors)){
+#     circosColors <- rainbow(length(listOfMap), alpha = 0.8)
+#   }
+#   circosW <- floor((chrR - minR) / length(listOfMap))
+#   circosR <- chrR - 1.5 * circosW + 50
+  
+#   # Add highlighted area for targeted regions
+#   if (protocol == "panelTumor"){
+#     tg <- read.delim(file = sureselect, header = FALSE)
+    
+#     hili <- as.data.frame(matrix(NA, nrow = nrow(tg), ncol = 7))
+#     hili$V7 <- hili$V8 <- "#fff68f"
+#     hili$V1 <- 50
+#     hili$V2 <- 250
+#     hili$V3 <- hili$V5 <- tg$V1
+#     hili$V4 <- tg$V2
+#     hili$V6 <- tg$V3
+#     hili$V5 <- gsub("chr", "", hili$V5)
+#     hili$V3 <- gsub("chr", "", hili$V3)
+#     hili <- as.matrix(hili)
+#   }
+  
+#   # Plot
+#   pdf(outfile)
+#   par(mar=c(2, 2, 2, 2))
+#   plot(c(1, 800), c(1, 800), type = "n", axes = FALSE, xlab = "", ylab = "",
+#        main = "")
+#   circos(R = chrR, cir = db, type = "chr", col = colors, print.chr.lab = TRUE,
+#          W = 2, scale = TRUE, lwd=1.5)
+#   if(protocol == "panelTumor"){
+#       for (i in 1:dim(hili)[1]){
+#         circos(R=chrR, cir=db, W=40, mapping=hili[i, ], type = "hl", lwd=1.5)
+#     }
+#   }
+#   if (!is.null(label)){
+#     circos(R = labelR, cir = db, W = 20, mapping = label, type = "label",
+#            col = "black", side = "out", cex = 0.4, lwd=1.5)
+#   }
+#   for (i in 1:length(listOfMap)) {
+#     if (!is.null(listOfMap[[i]])) {
+#       circos(R = circosR, cir = db, W = circosW, mapping = listOfMap[[i]],
+#              type = "b", col = circosColors[i], col.v = 4, lwd = 1.5)
+#       circosR <- circosR - 1.5 *circosW
+#     }
+#   }
+#   colors_fus <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+#                   "#D55E00", "#CC79A7", "#999999")
+#   fusions2 <- fusions[, c(2:3, 1, 5:6, 4)]
+#   fusions2 <- as.data.frame(fusions2)
+#   circos(R = 75, cir = db, W = circosW, mapping = fusions2,
+#          type = "link", lwd = 2, col = colors_fus)
+#   # Label
+#   if (length(circosColors) == 4){
+#     text(0,75, "SNV", adj = 0, col = "#FF0000CC")
+#     text(0,50, "InDel", adj = 0, col = "#008000CC")
+#     text(0,25, "LoH SNV", adj = 0, col = "#00FFFFCC")
+#     text(0,0, "LoH InDel", adj = 0, col = "#8000FFCC")
+#   } else{
+#     l <- length(circosColors)
+#     l <- l*25
+#     if ("#FF0000CC" %in% circosColors){
+#       text(0,l, "SNV", adj = 0, col = "#FF0000CC")
+#       l <- l-25
+#     }
+#     if ("#008000CC" %in% circosColors){
+#       text(0,l, "InDel", adj = 0, col = "#008000CC")
+#       l <- l-25
+#     }
+#     if ("#00FFFFCC" %in% circosColors){
+#       text(0,l, "LoH SNV", adj = 0, col = "#00FFFFCC")
+#       l <- l-25
+#     }
+#     if ("#8000FFCC" %in% circosColors){
+#       text(0,l, "LoH InDel", adj = 0, col = "#8000FFCC")
+#     }
+#   }
+#   dev.off()	
+# }
+
+omicCircosFus2 <- function(
+  listOfMap,
+  fusions,
+  label = NULL,
+  minR,
+  outfile,
+  circosColors = NULL,
+  mode = "V6",
+  protocol = "Tumor_Normal",
+  path_data,
+  trgt
+) {
   #' omic Circos with Fusions
   #'
   #' @description Create the Circosplot
@@ -545,7 +784,7 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
   #' @details the given output file.
   #' @details For smaller panels the captured regions are highlighted in
   #' @details the circosplot. That is controlled by protocol and mode. 
-
+  require(OmicCircos)
 
   # Human chromosomes
   data(UCSC.hg19.chr)
@@ -564,20 +803,27 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
   circosR <- chrR - 1.5 * circosW + 50
   
   # Add highlighted area for targeted regions
-  if (protocol == "panelTumor"){
-    tg <- read.delim(file = sureselect, header = FALSE)
-    
+  if (protocol != "Tumor_Normal" & mode %in% c("TruSight_Tumor", "TSO500", "TruSight_Amplicon", "Patho")){
+    # Targeted Area Highlighting in CircosPlot 
+    tg <- read.delim(file = trgt, header = FALSE)
+    if (mode == "Patho"){
+      tg <- tg[-c(1:2), ]
+    }
     hili <- as.data.frame(matrix(NA, nrow = nrow(tg), ncol = 7))
     hili$V7 <- hili$V8 <- "#fff68f"
-    hili$V1 <- 50
-    hili$V2 <- 250
+    hili$V1 <- 75
+    hili$V2 <- 300
     hili$V3 <- hili$V5 <- tg$V1
     hili$V4 <- tg$V2
     hili$V6 <- tg$V3
     hili$V5 <- gsub("chr", "", hili$V5)
     hili$V3 <- gsub("chr", "", hili$V3)
     hili <- as.matrix(hili)
+    if (mode == "TruSight_Amplicon"){
+      hili <- hili[-c(213),]
+    }
   }
+  
   
   # Plot
   pdf(outfile)
@@ -586,7 +832,8 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
        main = "")
   circos(R = chrR, cir = db, type = "chr", col = colors, print.chr.lab = TRUE,
          W = 2, scale = TRUE, lwd=1.5)
-  if(protocol == "panelTumor"){
+  if(protocol != "Tumor_Normal" & mode %in% c("TruSight_Tumor", "TSO500",
+                                              "TruSight_Amplicon", "Patho")){
       for (i in 1:dim(hili)[1]){
         circos(R=chrR, cir=db, W=40, mapping=hili[i, ], type = "hl", lwd=1.5)
     }
@@ -596,7 +843,7 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
            col = "black", side = "out", cex = 0.4, lwd=1.5)
   }
   for (i in 1:length(listOfMap)) {
-    if (!is.null(listOfMap[[i]])) {
+    if (!is.null(listOfMap[[i]]) & !is.na(listOfMap[[i]])) {
       circos(R = circosR, cir = db, W = circosW, mapping = listOfMap[[i]],
              type = "b", col = circosColors[i], col.v = 4, lwd = 1.5)
       circosR <- circosR - 1.5 *circosW
@@ -636,6 +883,7 @@ omicCircosFus2 <- function(listOfMap, fusions, label = NULL, minR, outfile,
   dev.off()	
 }
 
+
 write_all_mut <- function(x_s, x_l = NULL){
   #' Write all Mutations
   #'
@@ -649,44 +897,48 @@ write_all_mut <- function(x_s, x_l = NULL){
   #' @return mut vector of strings. List of mutated genes
   #' 
   #' @details A table with all mutations (somatic and LoH) is saved.
-  mutations_somatic <- as.character(x_s$Gene.refGene)
-  mutations_somatic <- unique(mutations_somatic)
+  col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
+                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
+                 "Condel", "REVEL_score", "CLNSIG", "InterVar_automated", "COSMIC")
+  all_mutations <- data.frame(matrix(ncol = length(col_names), nrow = 0))
+
+  if (!is.null(x_s) && dim(x_s)[1]) {
+    mutations_somatic <- as.character(x_s$Gene.refGene)
+    mutations_somatic <- unique(mutations_somatic)
+
+    somatic <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                       "Variant_Allele_Frequency", "Variant_Reads",
+                       "AAChange", "is_tumorsuppressor",
+                       "is_oncogene", "is_hotspot", "target", "AF_popmax",
+                       "CADD_phred", "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated",
+                       "cosmic_coding"),
+                  drop = FALSE]
+
+      colnames(somatic) <- col_names
+      all_mutations <- rbind(all_mutations, somatic)
+  } else {
+    mutations_somatic <- c()
+  }
+
   if (!is.null(x_l)){
     mutations_loh <- as.character(x_l$Gene.refGene)
     mutations_loh <- unique(mutations_loh)
+
+    loh <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
+                    "VAF_Tumor", "Count_Tumor", "AAChange",
+                    "is_tumorsuppressor", "is_oncogene",
+                    "is_hotspot", "target", "AF_popmax", "CADD_phred",
+                    "condel.label", "REVEL_score", "CLNSIG", "InterVar_automated", "cosmic_coding"),
+                drop = FALSE]
+
+    colnames(loh) <- col_names
+    all_mutations <- rbind(all_mutations, loh)
   } else {
     mutations_loh <- c()
   }
 
   mut <- unique(c(mutations_somatic, mutations_loh))
 
-  tmp1 <- x_s[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                  "Variant_Allele_Frequency", "Variant_Reads",
-                  "AAChange", "is_tumorsuppressor",
-                  "is_oncogene", "is_hotspot", "target", "AF_nfe",
-                  "CADD_phred", "condel.label", "CLINSIG",
-                  "cosmic_coding"),
-              drop = FALSE]
-  if (!is.null(x_l)){
-    tmp2 <- x_l[, c("Gene.refGene", "GeneName", "ExonicFunc.refGene",
-                    "VAF_Tumor", "Count_Tumor", "AAChange",
-                    "is_tumorsuppressor", "is_oncogene",
-                    "is_hotspot", "target", "AF_nfe", "CADD_phred",
-                    "condel.label", "CLINSIG", "cosmic_coding"),
-                drop = FALSE]
-    }
-  col_names <- c("Symbol", "GeneName", "ExonicFunc", "VAF", "Reads",
-                 "AAChange", "TSG", "OG", "HS", "target", "MAF", "CADD",
-                 "Condel", "CLINSIG", "COSMIC")
-  colnames(tmp1) <- col_names
-  if (!is.null(x_l)) {
-    colnames(tmp2) <- col_names
-  }
-  if (!is.null(x_l)) {
-    all_mutations <- rbind(tmp1, tmp2)
-    } else {
-      all_mutations <- tmp1
-    }
   return(list(all_muts = all_mutations, mut = mut))
 }
 
@@ -879,21 +1131,24 @@ imp_pws <- function(ch_mat, all_muts){
   #' 
   #' @details A Table for the important Pathways is built that contains all the
   #' @details mutations found belonging to them.
-  print("PI3K-AKT-mTOR:")
-  tmp <- rownames(ch_mat)[ch_mat[, 3] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("RAF-MEK-ERK:")
-  tmp <- rownames(ch_mat)[ch_mat[, 4] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("DNA Damage Response:")
-  tmp <- rownames(ch_mat)[ch_mat[, 2] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("Cell Cycle:")
-  tmp <- rownames(ch_mat)[ch_mat[, 1] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
-  print("Tyrosine Kinases:")
-  tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
-  print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("PI3K-AKT-mTOR:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 3] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("RAF-MEK-ERK:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 4] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("DNA Damage Response:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 2] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("Cell Cycle:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 1] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("Tyrosine Kinases:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 5] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
+  #print("TopArt:")
+  #tmp <- rownames(ch_mat)[ch_mat[, 6] == 1]
+  #print(all_muts[match(tmp, all_muts$Symbol), c("Symbol", "ExonicFunc")])
   #print("PI3K-AKT-mTOR:")
   pi3k <- rownames(ch_mat)[ch_mat[, 3] == 1]
   if (length(pi3k) != 0){
@@ -939,9 +1194,18 @@ imp_pws <- function(ch_mat, all_muts){
   } else {
     tyrosine_genes <- c()
     }
+  #print("TopArt:")
+  topart <- rownames(ch_mat)[ch_mat[, 6] == 1]
+  if (length(topart) != 0){
+    topart_genes <- all_muts[match(topart, all_muts$Symbol), ]
+    topart_genes$Pathway <- "."
+    topart_genes[1, "Pathway"] <- "Topart"
+  } else {
+    topart_genes <- c()
+    }
 
   important_pathways <- rbind(pi3k_genes, raf_genes, dna_damage_genes,
-                              cell_cycle_genes, tyrosine_genes)
+                              cell_cycle_genes, tyrosine_genes, topart_genes)
   return(important_pws = important_pathways)
 }
 
@@ -1011,4 +1275,18 @@ get_status <- function(table, inf_tab_snv, inf_tab_indel) {
     table$Classification <- reference$ANNOTATION_control[ids]
   }
   return(table)
+}
+
+msi <- function(msi_file) {
+  if (file.exists(msi_file)) {
+    msi <- read.table(
+      file = msi_file,
+      header = TRUE,
+      stringsAsFactors = FALSE
+    )
+    msi_score <- msi[1, 3]
+  } else {
+    msi_score <- NULL
+  }
+  return(msi = msi_score)
 }

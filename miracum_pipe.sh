@@ -9,7 +9,7 @@ readonly DIR_SCRIPT=$(
 # shellcheck source=common.cfg.sh
 . "${DIR_SCRIPT}"/common.cfg.sh
 
-readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel")
+readonly VALID_TASKS=("gd td vc cnv report td_gd_parallel vc_cnv_parallel rna_fusions")
 readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 function usage() {
@@ -99,13 +99,14 @@ function run_panel_pipe() {
   setup "${dir_patient}" "${dir_target}"
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
+  ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log") &
+  ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log") &
+  wait
 
   # use parallel shell scripting
-  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") #&
-  # TODO CNV calling
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
-  #wait
+  ("${DIR_SCRIPT}"/make_panel_vc.sh -d "${dir_patient}" &> "${dir_log}/vc.log") &
+  ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${dir_patient}" &> "${dir_log}/cnv.log") &
+  wait
 
   # create report based on the results of the processes above
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
@@ -124,7 +125,8 @@ function run_panel_pipe_seq() {
 
   ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${dir_patient}" &> "${dir_log}/td.log")
   ("${DIR_SCRIPT}"/make_panel_vc.sh  -d "${dir_patient}" &> "${dir_log}/vc.log")
-  #("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
+  ("${DIR_SCRIPT}"/make_panel_cnv.sh -d "${dir_patient}" &> "${dir_log}/cnv.log")
+  ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${dir_patient}" &> "${dir_log}/fusions.log")
   ("${DIR_SCRIPT}"/make_panel_report.sh -d "${dir_patient}" &> "${dir_log}/report.log")
 
   cleanup "${dir_patient}"
@@ -176,7 +178,7 @@ function get_case() {
   local dir_patient="${1}"
 
   if [[ "$(get_config_value common.protocol "${dir_patient}")" = "wes" ]]; then
-    if [[ "$(get_config_value annotation.germline "${dir_patient}")" = "True" ]]; then
+    if [[ "$(get_config_value common.germline "${dir_patient}")" = "True" ]]; then
       echo "somaticGermline"
     else
       echo "somatic"
@@ -334,7 +336,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
 
               cnv)
-                "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
+		            "${DIR_SCRIPT}"/make_cnv.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log"
               ;;
 
               vc)
@@ -364,6 +366,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
             esac
           ;;
+
           panel)
             case "${PARAM_TASK}" in
               td)
@@ -378,6 +381,10 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
                 "${DIR_SCRIPT}"/make_panel_vc.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log"
               ;;
 
+              rna_fusions)
+                "${DIR_SCRIPT}"/make_rna_fusions.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/fusions.log"
+              ;;
+
               report)
                 "${DIR_SCRIPT}"/make_panel_report.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/report.log"
                 if [[ -f "${DIR_ANALYSES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_Report_Panel.pdf" ]]; then
@@ -388,6 +395,12 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
                 fi
               ;;
 
+              td_rna_fusions_parallel)
+                ("${DIR_SCRIPT}"/make_panel_alignment.sh -t td -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/td.log") &
+                ("${DIR_SCRIPT}"/make_rna_fusions.sh -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/fusions.log") &
+                wait
+              ;;
+
               vc_cnv_parallel)
                 ("${DIR_SCRIPT}"/make_panel_vc.sh  -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/vc.log") &
                 ("${DIR_SCRIPT}"/make_panel_cnv.sh -p -d "${PARAM_DIR_PATIENT}" &> "${DIR_LOG}/cnv.log") &
@@ -395,6 +408,7 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
               ;;
             esac
           ;;
+
           tumorOnly)
             case "${PARAM_TASK}" in
               td)
@@ -481,6 +495,8 @@ if [[ ! -z "${PARAM_PROTOCOL}" ]]; then
           fi
         fi
       fi
+    else
+        echo "Analyses already exist. If you want to re-analyze it, it has to be forced (-f)."
     fi
   fi
 fi

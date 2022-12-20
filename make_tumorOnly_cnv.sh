@@ -73,6 +73,28 @@ readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 
 [[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
 
+readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}
+readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
+readonly recalbam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
+readonly HRD_OUTPUT=${DIR_WES}/${NameD}.seqz.gz
+readonly HRD_OUTPUT_SMALL=${DIR_WES}/${NameD}.small.seqz.gz
+readonly HRD_MODEL=${DIR_WES}/${NameD}_sequenza/${NameD}_alternative_solutions.txt
+
+# HRD
+if [ ! -f "${HRD_REF_WIG}" ]; then
+    echo "${HRD_REF_WIG} does not exist. Generating ..."
+    ${SEQUENZA_UTILS} gc_wiggle --fasta "${FILE_GENOME}" -w "${SEQUENZA_WINDOW}" -o "${HRD_REF_WIG}"
+fi
+
+${SEQUENZA_UTILS} bam2seqz -S "${BIN_SAMTOOLS}" -gc "${HRD_REF_WIG}" --fasta "${FILE_GENOME}" -n "${recalbam}" --tumor "${recalbam}" --normal2 "${SEQUENZA_NON_MATCHING_NORMAL}" \
+  -C ${SEQUENZA_CHROMOSOMES} -o "${HRD_OUTPUT}"
+${SEQUENZA_UTILS} seqz_binning -s "${HRD_OUTPUT}" -w "${SEQUENZA_WINDOW}" -o "${HRD_OUTPUT_SMALL}"
+${BIN_RSCRIPT} "${DIR_RSCRIPT}/HRD.R" "${NameD}" "${DIR_WES}"
+
+# Extract ploidy and purity from sequenza
+PLOIDY=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(round(read.delim('${HRD_MODEL}', header = T)[1, 2]))")
+CONTAMINATION=$(${BIN_RSCRIPT} "--vanilla" "-e" "cat(1-read.delim('${HRD_MODEL}', header = T)[1, 1])")
+
 cat >"${DIR_WES}"/CNV_config.txt <<EOI
 [general]
 
@@ -87,15 +109,18 @@ minCNAlength = 3
 maxThreads = ${CFG_COMMON_CPUCORES}
 noisyData = TRUE
 outputDir = ${DIR_CNV_OUTPUT}
-ploidy = 2,3
+ploidy = ${PLOIDY}
+contamination = ${CONTAMINATION}
+contaminationAdjustment = TRUE
 printNA = FALSE
 readCountThreshold = 50
 samtools = ${BIN_SAMTOOLS}
+bedtools = ${DIR_TOOLS}/bedtools2/bin/bedtools
 sex = ${CFG_SEX}
 step = 0
 window = 0
 uniqueMatch = TRUE
-contaminationAdjustment = TRUE
+BedGraphOutput = TRUE
 
 [sample]
 
@@ -103,11 +128,18 @@ mateFile = ${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_td_output.sort.rmdup.real
 inputFormat = BAM
 mateOrientation = FR
 
+[BAF]
+
+makePileup = ${CFG_REFERENCE_DBSNP}
+fastaFile = ${FILE_GENOME}
+minimalCoveragePerPosition = ${CFG_TUMORONLY_VARSCAN_MPILEUP2SNP_MINCOVERAGE}
+minimalQualityPerPosition = ${CFG_GENERAL_MINBASEQUAL}
+SNPfile = ${CFG_REFERENCE_DBSNP}
+
 [target]
 
 captureRegions = ${CFG_REFERENCE_CAPTUREREGIONS}
 EOI
 
-export PATH=${PATH}:${BIN_SAMTOOLS}
+export PATH="${BIN_SAMTOOLS}:${PATH}"
 ${BIN_FREEC} -conf "${DIR_WES}"/CNV_config.txt
-

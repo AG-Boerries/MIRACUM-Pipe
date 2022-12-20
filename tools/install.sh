@@ -2,9 +2,11 @@
 
 # variables
 readonly VERSION_TRIMMOMATIC="0.39"
-readonly VERSION_PICARD="2.20.6"
+# 2.20.6
+readonly VERSION_PICARD="2.27.1"
 readonly VERSION_VARSCAN="2.4.4"
-readonly VERSION_BEDTOOLS="2.28.0"
+# 2.28.0
+readonly VERSION_BEDTOOLS="2.30.0"
 
 ########
 readonly DIR_SCRIPT=$(
@@ -71,7 +73,7 @@ rm -f snpEff.zip
 
 # download database
 cd ${DIR_SCRIPT}/snpEff
-wget https://sourceforge.net/projects/snpeff/files/databases/v4_3/snpEff_v4_3_GRCh37.75.zip -O GRCh37.75.zip
+wget https://downloads.sourceforge.net/project/snpeff/databases/v4_3/snpEff_v4_3_GRCh37.75.zip -O GRCh37.75.zip
 unzip -o GRCh37.75.zip
 rm -f GRCh37.37.zip
 
@@ -92,14 +94,8 @@ rm -f trimmomatic.zip
 mv Trimmomatic* Trimmomatic
 mv Trimmomatic/trimmomatic-${VERSION_TRIMMOMATIC}.jar Trimmomatic/trimmomatic.jar
 
-###############
-# Trimmomatic #
-###############
-cd ${DIR_SCRIPT}
-
 
 ###### COMPILE SUBMODULES #######
-
 
 #########
 # FREEC #
@@ -117,7 +113,7 @@ chmod +x src/freec
 mv src/freec bin
 
 # add module
-cd cd ${DIR_SCRIPT}/FREEC/mappability
+cd ${DIR_SCRIPT}/FREEC/mappability
 wget https://xfer.curie.fr/get/nil/7hZIk1C63h0/hg19_len100bp.tar.gz
 tar -xzf hg19_len100bp.tar.gz
 rm -f hg19_len100bp.tar.gz
@@ -175,10 +171,37 @@ rm -f ${DIR_SCRIPT}/htslib/*.o
 # add lib folder system wide
 echo "$DIR_SCRIPT/htslib" > /etc/ld.so.conf.d/htslib.conf
 
-##########
-# cnvkit #
-##########
-# installed with apt-get
 
-#cd ${DIR_SCRIPT}/cnvkit
-#pip3 install -e .
+#################
+# fusioncatcher #
+#################
+#cd ${DIR_SCRIPT}
+#wget http://sf.net/projects/fusioncatcher/files/bootstrap.py -O bootstrap.py
+#python bootstrap.py --prefix=${DIR_SCRIPT} -t -y
+cd ${DIR_SCRIPT}/fusioncatcher/tools/
+./install_tools.sh
+
+##################
+# sequenza-utils #
+##################
+#pip3 install sequenza-utils
+
+##############
+# msisensor2 #
+##############
+cd ${DIR_SCRIPT}/msisensor2
+chmod +x msisensor2
+
+#################
+# msisensor-pro #
+#################
+cd ${DIR_SCRIPT}/msisensor-pro
+#wget https://github.com/xjtu-omics/msisensor-pro/raw/master/binary/msisensor-pro
+#chmod +x msisensor-pro
+./INSTALL
+
+############
+# agfusion #
+############
+cd /opt/MIRACUM-Pipe/databases
+agfusion download -g hg38

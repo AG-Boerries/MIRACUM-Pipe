@@ -15,5 +15,7 @@ assets/input/*
 assets/output/*
 !assets/output/.gitkeep
 
+docker/*.log
+
 .idea
 .vscode

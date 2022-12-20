@@ -496,3 +496,148 @@ plotExposuresConfidence <- function(in_complete_df,
   grid.draw(all_g)
 }
 
+#' Export mutation signatures to a txt file
+#' 
+#' @describtion Export mutation signatures to a text file for subsequent import in cbioportal
+#' 
+#' @param signatures dataframe. Table of mutation signatures
+#' @param all_signatures dataframe. Table of all possible mutation signatures
+#' @param id string. Sample ID
+#' @param outfile_cbioportal string. Name of the outputfile
+mutsig2cbioportal_wes <- function(signatures, all_signatures, id, outfile_cbioportal){
+  signatures.contribution <- data.frame(ENTITY_STABLE_ID = paste0("mutational_signature_contribution_", all_signatures$sig), NAME = all_signatures$sig, DESCRIPTION = all_signatures$process)
+  signatures.limit <- data.frame(ENTITY_STABLE_ID = paste0("mutational_signature_limit_", all_signatures$sig), NAME = all_signatures$sig, DESCRIPTION = all_signatures$process, Sample_Id = 1)
+  
+  rownames(signatures.contribution) <- signatures.contribution$NAME
+  signatures.contribution <- merge(signatures.contribution,signatures,by="row.names",all.x=TRUE)[,-c(1,5:6,8:9)]
+  signatures.contribution[,4] <- signatures.contribution[,4]/100
+  
+  # set sample specific column name
+  colnames(signatures.contribution)[4] <- paste(id,"TD",sep = "_")
+  colnames(signatures.limit)[4] <- paste(id,"TD",sep = "_")
+  
+  signatures.contribution[,4][is.na(signatures.contribution[,4])] <- 0
+  signatures.limit <- signatures.limit[order(signatures.limit$NAME),]
+  signatures.contribution <- signatures.contribution[order(signatures.contribution$NAME),]
+  signatures.limit[,4][signatures.contribution[,4] == 0] <- 1
+  signatures.limit[,4][signatures.contribution[,4] != 0] <- 0
+  
+  write.table(x = signatures.contribution, file = paste0(outfile_cbioportal, "_contribution.txt"), quote = F, sep = "\t", col.names = T, row.names = F)
+  write.table(x = signatures.limit, file = paste0(outfile_cbioportal, "_limit.txt"), quote = F, sep = "\t", col.names = T, row.names = F)
+}
+
+#' Export mutation signatures to a txt file
+#' 
+#' @describtion Export mutation signatures to a text file for subsequent import in cbioportal
+#' 
+#' @param signatures dataframe. Table of mutation signatures
+#' @param id string. Sample ID
+#' @param outfile_cbioportal string. Name of the outputfile
+mutsig2cbioportal <- function(signatures, id, outfile_cbioportal){
+
+  signatures.contribution <- data.frame(ENTITY_STABLE_ID = paste0("mutational_signature_contribution_", signatures$out_sig_ind_df$sig), NAME = signatures$out_sig_ind_df$sig, DESCRIPTION = signatures$out_sig_ind_df$process)
+  signatures.limit <- data.frame(ENTITY_STABLE_ID = paste0("mutational_signature_limit_", signatures$out_sig_ind_df$sig), NAME = signatures$out_sig_ind_df$sig, DESCRIPTION = signatures$out_sig_ind_df$process, Sample_Id = 1)
+  
+  rownames(signatures.contribution) <- signatures.contribution$NAME
+  signatures.contribution <- merge(signatures.contribution,signatures$norm_exposures,by="row.names",all.x=TRUE)[,-c(1)]
+
+  # set sample specific column name
+  colnames(signatures.contribution)[4] <- paste(id,"TD",sep = "_")
+  colnames(signatures.limit)[4] <- paste(id,"TD",sep = "_")
+  
+  signatures.contribution[,4][is.na(signatures.contribution[,4])] <- 0
+  signatures.limit <- signatures.limit[order(signatures.limit$NAME),]
+  signatures.contribution <- signatures.contribution[order(signatures.contribution$NAME),]
+  signatures.limit[,4][signatures.contribution[,4] == 0] <- 1
+  signatures.limit[,4][signatures.contribution[,4] != 0] <- 0
+  
+  write.table(x = signatures.contribution, file = paste0(outfile_cbioportal, "_contribution.txt"), quote = F, sep = "\t", col.names = T, row.names = F)
+  write.table(x = signatures.limit, file = paste0(outfile_cbioportal, "_limit.txt"), quote = F, sep = "\t", col.names = T, row.names = F)
+}
+
+#' Calculate target capture correlation factors
+#' 
+#' @param bed.file string. input bed file
+#' @param genome string. reference genome
+#' @param name string. Name of the new target capture reference
+#' @param targetCapture string. target capture correlation factors list. will be extended.
+#' 
+calculate_target_capture_correlation <- function(
+  bed.file,
+  genome,
+  targetCapture,
+  name
+  ) {
+    require(bedr)
+    require(plyr)
+    require(stringr)
+
+    # read bed file
+  bed <- read.delim(
+    bed.file,
+    header = FALSE,
+    comment.char = "#",
+    sep = "\t"
+  )
+  bed <- transform(
+    bed,
+    V1 = as.character(V1),
+    V2 = as.numeric(V2),
+    V3 = as.numeric(V3)
+  )
+  bed <- bedr.sort.region(bed)
+
+  # extract regions from fasta
+  fasta <- get.fasta(
+    bed,
+    fasta = genome
+  )
+
+  # load targetCapture_cor_factors
+  load(targetCapture)
+
+  # read triplets with every possible shift
+  tripletlist1 <- strsplit(
+    as.character(fasta$sequence),
+    split = "(?<=.{3})",
+    perl = TRUE
+  )
+  tripletlist2 <- strsplit(
+    as.character(
+      substring(fasta$sequence, 2)
+    ),
+    split = "(?<=.{3})",
+    perl = TRUE
+  )
+  tripletlist3 <- strsplit(
+    as.character(
+      substring(fasta$sequence, 3)
+    ),
+    split = "(?<=.{3})",
+    perl = TRUE
+  )
+  triplets1 <- unlist(tripletlist1)
+  triplets2 <- unlist(tripletlist2)
+  triplets3 <- unlist(tripletlist3)
+  triplets <- c(triplets1, triplets2, triplets3)
+
+  # filter by sequence
+  counts <- count(
+    toupper(
+      triplets
+      )
+    )
+  # remove sequences with length lower than 3
+  countsFiltered <- counts[str_length(counts$x) == 3, ]
+
+  # remove ambigious triplets
+  countsFiltered <- countsFiltered[str_detect(countsFiltered$x, "N", negate = TRUE),]
+
+  # calculate correction factors
+  abs_cor <- targetCapture_cor_factors["hs37d5"]$hs37d5$abs_cor / countsFiltered$freq
+  rel_cor <- abs_cor / (sum(targetCapture_cor_factors["hs37d5"]$hs37d5$abs_cor) / sum(countsFiltered$freq))
+
+  # save computated data
+  targetCapture_cor_factors[[name]] <- list("rel_cor" = rel_cor, "abs_cor" = abs_cor)
+  save(targetCapture_cor_factors, file = file.path(targetCapture))
+}
