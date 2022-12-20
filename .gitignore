@@ -16,3 +16,4 @@ assets/output/*
 !assets/output/.gitkeep
 
 .idea
+.vscode
