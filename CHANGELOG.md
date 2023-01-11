@@ -1,5 +1,10 @@
 # Changelog
 
+## Release v4.0.1
+
+* Remove cnvkit parameters section in .yaml
+* Adjusted coverage parameters settings for panel analysis
+
 ## Release v4.0.0
 
 * Integration of Mutect2 (GATK4) for tumorOnly and Panel variant calling
