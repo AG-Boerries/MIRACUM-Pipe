@@ -250,7 +250,7 @@ panel:
       
     mpileup2indel:
       #--min-coverage  Minimum read depth at a position to make a call [8]
-      minCoverage: 20
+      minCoverage: 50
       #--min-reads2    Minimum supporting reads at a position to call variants [2]
       minReads2: 2
       #--min-freq-for-hom      Minimum frequency to call homozygote [0.75]
@@ -264,7 +264,7 @@ panel:
 
     fpfilter:
       #--min-var-count		Minimum number of variant-supporting reads [4]
-      minVarCount: 20
+      minVarCount: 30
       #--min-var-count-lc	Minimum number of variant-supporting reads when depth below somaticPdepth [2]
       minVarCountLC: 2
       #--max-somatic-p		Maximum somatic p-value [0.05]
@@ -319,12 +319,6 @@ panel:
     #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
     #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
   
-  cnvkit:
-    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
-    # only needed if no matched "normal" sample is available
-    # https://cnvkit.readthedocs.io/en/stable/index.html
-    flatReference: FlatReference.cnn
-
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
     # 0: the "unknown" region is attached to the "known" region on the right
@@ -491,12 +485,6 @@ tumorOnly:
     #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
     #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
   
-  cnvkit:
-    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
-    # only needed if no matched "normal" sample is available
-    # https://cnvkit.readthedocs.io/en/stable/index.html
-    flatReference: FlatReference.cnn
-
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
     # 0: the "unknown" region is attached to the "known" region on the right
