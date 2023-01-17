@@ -348,10 +348,6 @@ readonly BIN_SNPEFF="${BIN_JAVA} -Xmx${CFG_COMMON_MEMORY} -jar ${DIR_TOOLS}/snpE
 readonly BIN_FREEC="${DIR_TOOLS}/FREEC/bin/freec "
 readonly FILE_REFERENCE_MAPPABILITY="${DIR_REF}/mappability/$(get_config_value reference.mappability "${PARAM_DIR_PATIENT}")"
 
-# cnvkit
-readonly FILE_FLAT_REFERENCE="${DIR_REF}/cnvkit/$(get_config_value tools.cnvkit.flatReference "${PARAM_DIR_PATIENT}")"
-readonly BIN_CNVKIT=$(command -v cnvkit.py)
-
 # R
 readonly BIN_RSCRIPT=$(command -v Rscript)
 
@@ -621,9 +617,6 @@ export BIN_SNPEFF
 
 export BIN_FREEC
 export FILE_REFERENCE_MAPPABILITY
-
-export FILE_FLAT_REFERENCE
-export BIN_CNVKIT
 
 export BIN_RSCRIPT
 
