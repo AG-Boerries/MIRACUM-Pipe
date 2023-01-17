@@ -71,23 +71,6 @@ fi
 
 ##################################################################################################################
 
-#readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
-
-#[[ -d "${DIR_CNV_OUTPUT}" ]] || mkdir -p "${DIR_CNV_OUTPUT}"
-
-# names
-#readonly NameD=${CFG_CASE}_${PARAM_DIR_PATIENT}_cnv
-#readonly NameTD=${CFG_CASE}_${PARAM_DIR_PATIENT}_td
-
-# keep
-#readonly bam=${DIR_WES}/${NameTD}_output.sort.rmdup.realigned.fixed.recal.bam
-#readonly cnr=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cnr
-#readonly cns=${DIR_CNV_OUTPUT}/${NameTD}_output.sort.rmdup.realigned.fixed.cns
-
-# cnv calling
-#cnvkit batch --method amplicon --reference "${FILE_FLAT_REFERENCE}" --output-dir "${DIR_CNV_OUTPUT}" "${bam}"
-#cnvkit segment "${cnr}" -o "${cns}" --rscript-path "${BIN_RSCRIPT}"
-
 # CNV Calling with ControlFREEC
 readonly DIR_CNV_OUTPUT="${DIR_WES}/CNV"
 

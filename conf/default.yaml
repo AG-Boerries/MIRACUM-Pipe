@@ -318,12 +318,6 @@ panel:
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
     #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
-  
-  cnvkit:
-    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
-    # only needed if no matched "normal" sample is available
-    # https://cnvkit.readthedocs.io/en/stable/index.html
-    flatReference: FlatReference.cnn
 
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
@@ -490,12 +484,6 @@ tumorOnly:
     #--intervals V6UTR.bed; One or more genomic intervals over which to operate  This argument may be specified 0 or more times. Default value: null
     #--min-allele-fraction 0.05; Minimum allele fraction required  Default value: 0.0 (VAF?)
     #--min-median-base-quality 28; Minimum median base quality of alt reads  Default value: 20
-  
-  cnvkit:
-    # supply cnvkit reference file, called FlatReference for tumor only CN calculation
-    # only needed if no matched "normal" sample is available
-    # https://cnvkit.readthedocs.io/en/stable/index.html
-    flatReference: FlatReference.cnn
 
   ControlFREEC:
     # desired behavior in the ambiguous regions (poly-N or low mappability regions between two different copy number values)
@@ -552,7 +540,7 @@ sequenza:
   # --window WINDOW; Window size used for binning the original seqz file. Default is 50.
   window: 50
   # if used for samples without mathcing normal as control a separate non-matching-normal file in bam format is needed
-  # file should be stored in references/sequenza
+  # file should be stored in MIRACUM-Pipe-docker/assets/references/sequenza
   nonMatchingNormal: non_matching_normal.bam
   chromosomes: chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX
 
