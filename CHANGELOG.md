@@ -1,9 +1,9 @@
 # Changelog
-
 ## Release v4.0.1
 
 * Remove cnvkit parameters section in .yaml
 * Adjusted coverage parameters settings for panel analysis
+* Improved handling of multiple fastq files for tNGS, i.e. multiple fastq files are now concatenate before further processing
 
 ## Release v4.0.0
 
