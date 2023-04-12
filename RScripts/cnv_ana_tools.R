@@ -883,8 +883,8 @@ get_type <- function(
 
     return(list(gene_loci = gene_loci))
   }
-
 }
+
 hrd_extr <- function(hrd_file) {
   hrd <- read.delim(hrd_file, sep = " ")
   sum <- hrd$HRD.sum
