@@ -418,12 +418,13 @@ cnv_annotation <- function(
         # try USCS SQL server first
         query <- try(del_dup_query(location, ucsc_server), silent = TRUE)
         if (inherits(query, 'try-error')) {
+          print("UCSC connection failed; try biomart.")
           # try biomaRt next
           if (is.null(ensembl)) {
             ensembl <- useMart(
               "ensembl",
               dataset = "hsapiens_gene_ensembl",
-              host = "grch37.ensembl.org"
+              host = "https://grch37.ensembl.org"
             )
           }
           query <- try(

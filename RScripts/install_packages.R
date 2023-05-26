@@ -51,4 +51,5 @@ packages <- c(
 )
 BiocManager::install(pkgs = packages, update  = TRUE, ask = FALSE)
 BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = TRUE, ask = FALSE)
+#devtools::install_bitbucket(repo = "sequenzatools/sequenza.git")
 devtools::install_github('sztup/scarHRD', build_vignettes = FALSE)
