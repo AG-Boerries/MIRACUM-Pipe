@@ -154,6 +154,10 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
       path_input, sample,
       "_vc.output.indel.NORMAL.SnpEff.vcf"
     )
+    bammatcherfile <- paste0(
+      path_input, sample,
+      "_bam-matcher.txt"
+    )
     outfile_circos_gd <- paste0(
       path_output, sample,
      "_GD_circos.pdf"
@@ -411,7 +415,8 @@ if (protocol == "somatic" | protocol == "somaticGermline") {
     protocol = protocol,
     sureselect = bed_file,
     sureselect_type = sureselect_type,
-    msi_file = msi_file
+    msi_file = msi_file,
+    bammatcherfile = bammatcherfile
   )
 }
 if (protocol == "panelTumor" | protocol == "tumorOnly") {

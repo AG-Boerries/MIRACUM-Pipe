@@ -369,6 +369,9 @@ readonly SEQUENZA_WINDOW=$(get_config_value sequenza.window "${PARAM_DIR_PATIENT
 readonly SEQUENZA_NON_MATCHING_NORMAL="${DIR_REF}/sequenza/$(get_config_value sequenza.nonMatchingNormal "${PARAM_DIR_PATIENT}")"
 readonly SEQUENZA_CHROMOSOMES=$(get_config_value sequenza.chromosomes "${PARAM_DIR_PATIENT}")
 
+# BAM-Matcher
+readonly BAM_MATCHER=python3 /opt/MIRACUM-Pipe/tools/bam-matcher/bam-matcher.py --reference ${FILE_GENOME} --short-output
+
 # export parameters
 export CFG_AUTHOR
 export CFG_CENTER
@@ -632,3 +635,5 @@ export SEQUENZA_UTILS
 export SEQUENZA_WINDOW
 export SEQUENZA_NON_MATCHING_NORMAL
 export SEQUENZA_CHROMOSOMES
+
+export BAM_MATCHER
