@@ -29,7 +29,7 @@ packages <- c(
     "VariantAnnotation",
     "BSgenome.Hsapiens.UCSC.hg19",
     "TxDb.Hsapiens.UCSC.hg19.knownGene",
-    "gdata",
+    "readxl",
     "stringi",
     "tidyr",
     "ensembldb",
