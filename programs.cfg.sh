@@ -370,7 +370,7 @@ readonly SEQUENZA_NON_MATCHING_NORMAL="${DIR_REF}/sequenza/$(get_config_value se
 readonly SEQUENZA_CHROMOSOMES=$(get_config_value sequenza.chromosomes "${PARAM_DIR_PATIENT}")
 
 # BAM-Matcher
-readonly BAM_MATCHER=python3 /opt/MIRACUM-Pipe/tools/bam-matcher/bam-matcher.py --reference ${FILE_GENOME} --short-output
+readonly BAM_MATCHER="python3 /opt/MIRACUM-Pipe/tools/bam-matcher/bam-matcher.py --reference ${FILE_GENOME} --short-output"
 
 # export parameters
 export CFG_AUTHOR
