@@ -41,7 +41,6 @@ packages <- c(
     "getopt",
     "IRanges",
     "DNAcopy",
-    "copynumber",
     "devtools",
     "optparse",
     "bedr",
@@ -50,5 +49,6 @@ packages <- c(
 )
 BiocManager::install(pkgs = packages, update  = TRUE, ask = FALSE)
 BiocManager::install(c("YAPSA", "SomaticSignatures"), update  = TRUE, ask = FALSE)
+devtools::install_github("buschlab/copynumber", build_vignettes = FALSE)
 devtools::install_version("sequenza", version = "3.0.0", repos = "http://cran.us.r-project.org")
 devtools::install_github('sztup/scarHRD', build_vignettes = FALSE)
