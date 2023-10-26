@@ -216,18 +216,18 @@ pip3 install -r requirements.txt
 cat >"${DIR_SCRIPT}"/bam-matcher/bam-matcher.conf <<EOI
 [VariantCallers]
 caller:    gatk4
-gatk3:     GenomeAnalysisTK.jar
-gatk4:     gatk4/gatk
+gatk3:     /opt/MIRACUM-Pipe/tools/gatk/GenomeAnalysisTK.jar
+gatk4:     /opt/MIRACUM-Pipe/tools/gatk4/gatk
 freebayes: freebayes
 samtools:  samtools
-varscan:   VarScan.jar
+varscan:   /opt/MIRACUM-Pipe/tools/bam-matcher/VarScan.jar
 java:      java
 
 [ScriptOptions]
 DP_threshold: 15
 number_of_SNPs:
 fast_freebayes: True
-VCF_file: 1kg.exome.highAF.1511.vcf
+VCF_file: /opt/MIRACUM-Pipe/tools/bam-matcher/1kg.exome.highAF.1511.vcf
 
 
 [VariantCallerParameters]
