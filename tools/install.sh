@@ -205,3 +205,51 @@ cd ${DIR_SCRIPT}/msisensor-pro
 ############
 cd /opt/MIRACUM-Pipe/databases
 agfusion download -g hg38
+
+###############
+# bam-matcher #
+###############
+cd ${DIR_SCRIPT}/bam-matcher
+pip3 install --upgrade numpy
+pip3 install -r requirements.txt
+
+cat >"${DIR_SCRIPT}"/bam-matcher/bam-matcher.conf <<EOI
+[VariantCallers]
+caller:    gatk4
+gatk3:     /opt/MIRACUM-Pipe/tools/gatk/GenomeAnalysisTK.jar
+gatk4:     /opt/MIRACUM-Pipe/tools/gatk4/gatk
+freebayes: freebayes
+samtools:  samtools
+varscan:   /opt/MIRACUM-Pipe/tools/bam-matcher/VarScan.jar
+java:      java
+
+[ScriptOptions]
+DP_threshold: 15
+number_of_SNPs:
+fast_freebayes: True
+VCF_file: /opt/MIRACUM-Pipe/tools/bam-matcher/1kg.exome.highAF.1511.vcf
+
+
+[VariantCallerParameters]
+GATK_MEM:    4
+GATK_nt:     1
+VARSCAN_MEM: 4
+
+[GenomeReference]
+REFERENCE: /opt/MIRACUM-Pipe/assets/references/genome/genome.fa
+REF_ALTERNATE:
+CHROM_MAP:
+
+[BatchOperations]
+CACHE_DIR: ${DIR_TMP}
+[Miscellaneous]
+EOI
+
+awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.1511.vcf > ${DIR_SCRIPT}/bam-matcher/tmp.vcf
+mv ${DIR_SCRIPT}/bam-matcher/tmp.vcf ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.1511.vcf
+
+awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.3680.vcf > ${DIR_SCRIPT}/bam-matcher/tmp.vcf
+mv ${DIR_SCRIPT}/bam-matcher/tmp.vcf ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.3680.vcf
+
+awk '{if($0 !~ /^#/) print "chr"$0; else print $0}' ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.7550.vcf > ${DIR_SCRIPT}/bam-matcher/tmp.vcf
+mv ${DIR_SCRIPT}/bam-matcher/tmp.vcf ${DIR_SCRIPT}/bam-matcher/1kg.exome.highAF.7550.vcf

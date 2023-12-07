@@ -86,6 +86,7 @@ readonly recalbamTD=${DIR_WES}/${NameTD}_output.sort.filtered.rmdup.realigned.fi
 readonly snpvcf=${DIR_WES}/${NameD}.output.snp.vcf
 readonly indelvcf=${DIR_WES}/${NameD}.output.indel.vcf
 readonly MSI_OUTPUT=${DIR_WES}/${NameD}_MSI
+readonly BAMMATCHER_OUTPUT=${DIR_WES}/${CFG_CASE}_${PARAM_DIR_PATIENT}_bam-matcher.txt
 
 ${BIN_MPILEUP} --adjust-MQ "${CFG_SAMTOOLS_MPILEUP_ADJUSTMQ}" --min-MQ "${CFG_SAMTOOLS_MPILEUP_MINMQ}" --min-BQ "${CFG_GENERAL_MINBASEQUAL}" --max-depth "${CFG_SAMTOOLS_MPILEUP_MAXDEPTH}" -f "${FILE_GENOME}" -l "${CFG_REFERENCE_CAPTUREREGIONS}" "${recalbamGD}" "${recalbamTD}" | ${BIN_SOMATIC} --output-snp "${snpvcf}" --output-indel "${indelvcf}" \
   --min-coverage "${CFG_VARSCAN_SOMATIC_MINCOVERAGE}" --tumor-purity "${CFG_VARSCAN_SOMATIC_TUMORPURITY}" \
@@ -217,5 +218,7 @@ if [ ! -f "${MICROSATELLITE_SITES}" ]; then
 fi
 
 ${MSISENSOR_PRO} -d ${MICROSATELLITE_SITES} -n "${recalbamGD}" -t "${recalbamTD}" -o "${MSI_OUTPUT}"
+
+${BAM_MATCHER} --bam1 ${recalbamGD} --bam2 ${recalbamTD} --output "${BAMMATCHER_OUTPUT}"
 
 #eo VC

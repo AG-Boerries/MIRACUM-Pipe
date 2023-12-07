@@ -33,7 +33,7 @@ function install_R()
   echo "deb http://cloud.r-project.org/bin/linux/debian buster-cran40/" >> /etc/apt/sources.list && \
   apt-key add "/opt/MIRACUM-Pipe/debian/r_key.asc"
   #apt-key adv --keyserver keyserver.ubuntu.com --recv-key B8F25A8A73EACF41
-  apt-get update && apt-get install -y --no-install-recommends -t buster-cran40 r-base-dev
+  apt-get update && apt-get install -y --no-install-recommends -t buster-cran40 r-base-dev=4.2.3-1~bustercran.0 r-base-core=4.2.3-1~bustercran.0
   R CMD javareconf
 }
 
