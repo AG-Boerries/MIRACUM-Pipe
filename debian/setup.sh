@@ -9,9 +9,9 @@ function install_java8()
 {
   ## install jre8
   apt-get install -y --no-install-recommends apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common && \
-  wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
-  add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
-  apt-get update && apt-get install -y --no-install-recommends adoptopenjdk-8-hotspot
+  wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - && \
+  add-apt-repository --yes https://packages.adoptium.net/artifactory/deb/ && \
+  apt-get update && apt-get install -y --no-install-recommends temurin-8-jdk
 }
 
 function install_texlive()

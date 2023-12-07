@@ -63,7 +63,7 @@ filtering <- function(
   require(stringr)
   require(openxlsx)
   require(Rsamtools)
-  require(gdata)
+  require(readxl)
   require(GenomicRanges)
 
   source(paste(path_script, "filtering_tools.R", sep = "/"))
