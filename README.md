@@ -1,4 +1,4 @@
-## CAVE:
+## CAVE
 The MIRACUM-Pipe is no longer maintained and updated.
 
 # MIRACUM-Pipe
