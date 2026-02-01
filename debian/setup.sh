@@ -60,5 +60,5 @@ apt-get install -y --no-install-recommends build-essential gcc-multilib libc-dev
   install_R && \
   install_texlive && \
   python3 -m pip install wheel && \
-  python3 -m pip install shyaml agfusion sequenza-utils && \
+  python3 -m pip install shyaml agfusion==1.4.1 pyensembl==2.2.9 gtfparse==1.3.0 sequenza-utils && \
   apt-get -y autoremove
