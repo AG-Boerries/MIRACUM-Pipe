@@ -14,7 +14,8 @@ mutation_analysis <- function(
   protocol,
   sureselect,
   sureselect_type,
-  msi_file
+  msi_file,
+  bammatcherfile
 ) {
   #' Mutation Analysis
   #'
@@ -35,6 +36,7 @@ mutation_analysis <- function(
   #' @param targets_txt string. Path of the targets.txt file provided by the Capture Kit manufracturer
   #' @param protocol string. Type of protocol used for analyses
   #' @param sureselect string. Path to capture region bed file
+  #' @param bammatcherfile string. Patho to the output file of bam-matcher
   #'
   #' @return returns list of
   #' @return ts_og dataframe. Table of mutations in tumorsuppressor and
@@ -52,6 +54,7 @@ mutation_analysis <- function(
   #' @return som_mut_tab dataframe. Table of somatic mutations
   #' @return table_loh_mutations dataframe. Table of LoH mutations
   #' @return all_mutations dataframe. Table of all mutations
+  #' @return bam_matcher. Table of bam-matcher result
   #'
   #' @note The following files are produced by mutation_analysis:
   #' @note - "MutationTable.txt"
@@ -158,6 +161,12 @@ mutation_analysis <- function(
     importantpws <- imp_pws(check_mat, all_mut$all_muts)
   }
   msi <- msi(msi_file)
+
+  bam_matcher <- data.frame()
+  if (protocol == "somaticGermline" || protocol == "somatic") {
+    bam_matcher <- read.table(bammatcherfile, header = T, comment.char = "", sep = "\t")
+  }
+
   return(list(mut_tab = mutation_table,
               ts_og = tbl$ts_og_table,
               go = NULL, reactome = NULL,
@@ -170,5 +179,6 @@ mutation_analysis <- function(
               som_mut_tab = tbl$sm_table,
               table_loh_mutations = tbl$lm_table,
               all_mutations = all_mut$all_muts,
-              msi = msi))
+              msi = msi),
+              bam_matcher = bam_matcher)
 }

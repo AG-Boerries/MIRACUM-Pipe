@@ -36,6 +36,22 @@ keys <- function(
     } else {
       brca_helper <- "<1%"
     }
+
+    bammatcher_helper <-  paste0("Tumor/Normal passen nicht zusammen (", mutation_analysis_result$bam_matcher$FracCommon, "%).")
+    bammatcher_count = mutation_analysis_result$bam_matcher$Same + mutation_analysis_result$bam_matcher$Different
+    bammatcher_count_plus = bammatcher_count + max(mutation_analysis_result$bam_matcher$X1het.2sub, mutation_analysis_result$bam_matcher$X1sub.2het)
+    if (bammatcher_count <= 20) {
+      bammatcher_helper <- "Keine Bestimmung möglich."
+    } else if (bammatcher_count <= 100) {
+      if (bammatcher_count_plus >= 0.8) {
+        bammatcher_helper <- paste0("Tumor/Normal passen zusammen (", mutation_analysis_result$bam_matcher$FracCommon, "%).")
+      }
+    } else {
+      if (mutation_analysis_result$bam_matcher$FracCommon >= 0.8) {
+        bammatcher_helper <- paste0("Tumor/Normal passen zusammen (", mutation_analysis_result$bam_matcher$FracCommon, "%).")
+      }
+    }
+
   }
   if (protocol == "panelTumor" | protocol == "tumorOnly") {
     if (mutation_analysis_result$msi < 20) {
@@ -84,6 +100,7 @@ keys <- function(
         "Mikrosatelliten Status (Score)",
         "HRD-Score (HRD-LoH|TAI|LST)",
         "bioinformatischer Tumorzellgehalt (%)",
+        "bioinformatischer Check",
         "Ploidie",
         "Anzahl CN- Regionen",
         paste0("Anzahl seltener Keimbahnmutationen (VAF > ", vaf, "%)")
@@ -119,6 +136,7 @@ keys <- function(
         paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
         cnv_analysis_results$hrd$score,
         cnv_analysis_results$purity$purity*100,
+        bammatcher_helper,
         cnv_analysis_results$purity$ploidy,
         paste0(
           round(
@@ -146,6 +164,7 @@ keys <- function(
         "Mikrosatelliten Status (Score)",
         "HRD-Score (HRD-LoH|TAI|LST)",
         "bioinformatischer Tumorzellgehalt (%)",
+        "bioinformatischer Check",
         "Ploidie",
         "Anzahl CN- Regionen"
       ), Wert = c(
@@ -180,6 +199,7 @@ keys <- function(
         paste(msi_helper," (", mutation_analysis_result$msi, "%)", sep = ""),
         cnv_analysis_results$hrd$score,
         cnv_analysis_results$purity$purity*100,
+        bammatcher_helper,
         cnv_analysis_results$purity$ploidy,
         paste0(
           round(
